@@ -1,4 +1,5 @@
 #!/bin/bash
+
 while [[ $# -gt 1 ]]
 do
     key="$1"
@@ -14,5 +15,7 @@ do
     esac
     shift
 done
+
+./build.sh
 
 nginx -c "$PREFIX_PATH/conf/conf" -p "$PREFIX_PATH"
