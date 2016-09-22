@@ -5,12 +5,14 @@ var sass = require('gulp-sass');
 var inject = require('gulp-inject');
 var clean = require('gulp-clean');
 
+var destination = 'dist/web/';
+
 gulp.task('sass', function () {
     return gulp.src('src/scss/**/*.scss')
         .pipe(sourcemaps.init())
         .pipe(sass().on('error', sass.logError))
         .pipe(sourcemaps.write())
-        .pipe(gulp.dest('dist/css'));
+        .pipe(gulp.dest(destination + 'css'));
 });
 
 gulp.task('javascript', function() {
@@ -21,7 +23,7 @@ gulp.task('javascript', function() {
             presets: ['es2015']
         }))
         .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest('dist/javascript'));
+        .pipe(gulp.dest(destination + 'javascript'));
 });
 
 gulp.task('html', ['javascript', 'sass'], function() {
@@ -29,7 +31,7 @@ gulp.task('html', ['javascript', 'sass'], function() {
     var sources = gulp.src(['./dist/javascript/**/*.js', './dist/css/**/*.css'], {read: false});
 
     return target.pipe(inject(sources))
-        .pipe(gulp.dest('./dist'));
+        .pipe(gulp.dest(destination));
 });
 
 gulp.task('clean', function () {

@@ -15,4 +15,4 @@ do
     shift
 done
 
-nginx -c "$PREFIX_PATH/conf/conf" -p "$PREFIX_PATH" -s stop
+nginx -c "$PREFIX_PATH/conf" -p "$PREFIX_PATH" -s stop
