@@ -1,0 +1,4 @@
+jetty:start
+jetty:run
+ls
+jetty:start
