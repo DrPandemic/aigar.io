@@ -19,3 +19,6 @@ done
 ./build.sh
 
 nginx -c "$PREFIX_PATH/conf" -p "$PREFIX_PATH"
+
+cd ../game/
+sbt "~;jetty:stop;jetty:start"
