@@ -12,7 +12,7 @@ To start the project you need to go in the `bin` folder
 will build the assets, start nginx and start the game server.
 The `-p` flag represents the absolute path of the `api` folder.
 
-`./start.sh -p "/home/my_user/Projects/ai-competition/api"`
+`./stop.sh -p "/home/my_user/Projects/ai-competition/api"`
 will stop the nginx server.
 
 By default, nginx will be running on port 1337.
