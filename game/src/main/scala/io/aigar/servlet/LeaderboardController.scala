@@ -17,6 +17,5 @@ class LeaderboardController extends AigarStack with JacksonJsonSupport {
       Leaderboard("asd"),
       Leaderboard("another")
     )
-
   }
 }
