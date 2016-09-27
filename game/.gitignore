@@ -33,6 +33,7 @@ logs/*
 target/
 project/boot
 lib_managed/*
+project/target/
 project/build/target
 project/build/lib_managed
 project/build/src_managed
