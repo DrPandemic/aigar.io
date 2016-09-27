@@ -3,4 +3,7 @@ language: scala
 scala:
   - 2.11.8
 
+notifications:
+  email: false
+
 script: cd game && sbt clean test
