@@ -1,4 +1,4 @@
-package io.aigar.servlet
+package io.aigar.controller
 
 import org.json4s.{DefaultFormats, Formats}
 import org.scalatra.json._

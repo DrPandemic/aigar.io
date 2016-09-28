@@ -1,4 +1,4 @@
-import io.aigar.servlet._
+import io.aigar.controller._
 import org.scalatra._
 import javax.servlet.ServletContext
 

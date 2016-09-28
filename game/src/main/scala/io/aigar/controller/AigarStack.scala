@@ -1,4 +1,4 @@
-package io.aigar.servlet
+package io.aigar.controller
 
 import org.scalatra._
 import scalate.ScalateSupport
