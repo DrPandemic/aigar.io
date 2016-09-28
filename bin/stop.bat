@@ -11,9 +11,10 @@ if not "%~1"=="-p" goto UNKNOWN
 :SPECIFIC
 
 set PREFIX_PATH=%2
+set CONFIG_PATH=%2/conf
 
 cd ../api/nginx-1.11.4-windows
-nginx -c "%PREFIX_PATH%/conf" -p "%PREFIX_PATH%" -s stop
+nginx -c %CONFIG_PATH% -p %PREFIX_PATH% -s stop
 cd ../../bin
 
 goto DONE
