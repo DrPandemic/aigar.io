@@ -5,8 +5,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="">
-    <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
 
     <title>Aigar.io</title>
@@ -29,9 +27,25 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+    
+    
+    <script type="application/javascript">
+    function draw() {
+      var canvas = document.getElementById("gameCanvas");
+      if (canvas.getContext) {
+        var ctx = canvas.getContext("2d");
+
+        ctx.fillStyle = "rgb(200,0,0)";
+        ctx.fillRect (10, 10, 50, 50);
+
+        ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
+        ctx.fillRect (30, 30, 50, 50);
+      }
+    }
+  </script>
   </head>
 
-  <body>
+  <body onload="draw();">
 
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
@@ -70,7 +84,7 @@
               </ul>
             </li>
           <div class="game">
-            <p>This is where the game will be played</p>
+            <canvas id="gameCanvas" width="900" height="600" style="border:1px solid #000000; background-color:black;"></canvas>
           </div><!-- /.blog-post -->
         </div><!-- /.blog-main -->
 
