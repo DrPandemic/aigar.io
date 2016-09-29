@@ -11,11 +11,12 @@ if not "%~1"=="-p" goto UNKNOWN
 :SPECIFIC
 
 set PREFIX_PATH=%2
+set CONFIG_PATH=%2/conf
 start build.bat
 start sbt.bat
 
 cd ../api/nginx-1.11.4-windows
-nginx -c "%PREFIX_PATH%/conf" -p "%PREFIX_PATH%"
+nginx -c %CONFIG_PATH% -p %PREFIX_PATH%
 cd ../../bin
 
 goto DONE
