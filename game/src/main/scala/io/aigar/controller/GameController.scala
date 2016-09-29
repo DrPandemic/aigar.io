@@ -1,5 +1,6 @@
 package io.aigar.controller
 
+import io.aigar.controller.response._
 import org.json4s.{DefaultFormats, Formats}
 import org.scalatra.json._
 
@@ -10,27 +11,21 @@ class GameController extends AigarStack with JacksonJsonSupport {
     contentType = formats("json")
   }
 
-  case class Game(id: String, name: String)
   object GameData {
     var all = List(
-      Game("0", "360 no scope"),
-      Game("1", "that game")
+      GameState(1, 13),
+      GameState(1, 50)
     )
   }
 
-  abstract class Response
-  case class Failure(message: String) extends Response
-  case class GameSuccesses(data: List[Game]) extends Response
-  case class GameSuccess(data: Game) extends Response
-  case class Success(data: String) extends Response
+  case class Failure(data: String)
+  case class Success(data: String)
 
   get("/:id") {
-    GameSuccess(
-      GameData.all find (_.id == params("id")) match {
-        case Some(b) => b
-        case None => halt(404)
-      }
-    )
+    GameData.all find (_.id.toString() == params("id")) match {
+      case Some(b) => b
+      case None => halt(404)
+    }
   }
 
   post("/") {
