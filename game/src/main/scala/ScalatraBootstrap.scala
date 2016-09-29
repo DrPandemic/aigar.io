@@ -1,9 +1,11 @@
-import io.aigar._
+import io.aigar.controller._
 import org.scalatra._
 import javax.servlet.ServletContext
 
 class ScalatraBootstrap extends LifeCycle {
-  override def init(context: ServletContext) {
-    context.mount(new AigarServlet, "/*")
+  override def init(context: ServletContext): Unit = {
+    val path = "/api/1"
+    context.mount(new LeaderboardController(), s"$path/leaderboard/*")
+    context.mount(new GameController(), s"$path/game/*")
   }
 }
