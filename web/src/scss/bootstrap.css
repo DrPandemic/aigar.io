@@ -1223,7 +1223,7 @@ h2,
 h3,
 .h3 {
   margin-top: 20px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 h1 small,
 .h1 small,
@@ -3057,26 +3057,26 @@ fieldset[disabled] a.btn {
   pointer-events: none;
 }
 .btn-default {
-  color: #333;
-  background-color: #fff;
+  color: #fff;
+  background-color: #333;
   border-color: #ccc;
 }
 .btn-default:focus,
 .btn-default.focus {
-  color: #333;
-  background-color: #e6e6e6;
+  color: #e6e6e6;
+  background-color: #333;
   border-color: #8c8c8c;
 }
 .btn-default:hover {
-  color: #333;
-  background-color: #e6e6e6;
+  color: #e6e6e6;
+  background-color: #333;
   border-color: #adadad;
 }
 .btn-default:active,
 .btn-default.active,
 .open > .dropdown-toggle.btn-default {
-  color: #333;
-  background-color: #e6e6e6;
+  color: #e6e6e6;
+  background-color: #333;
   border-color: #adadad;
 }
 .btn-default:active:hover,
@@ -3088,8 +3088,8 @@ fieldset[disabled] a.btn {
 .btn-default:active.focus,
 .btn-default.active.focus,
 .open > .dropdown-toggle.btn-default.focus {
-  color: #333;
-  background-color: #d4d4d4;
+  color: #d4d4d4;
+  background-color: #333;
   border-color: #8c8c8c;
 }
 .btn-default:active,
