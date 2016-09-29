@@ -11,7 +11,7 @@ class GameController extends AigarStack with JacksonJsonSupport {
     contentType = formats("json")
   }
 
-  object GameData {
+  object GameStates {
     var all = List(
       GameState(1, 13),
       GameState(1, 50)
@@ -22,17 +22,19 @@ class GameController extends AigarStack with JacksonJsonSupport {
   case class Success(data: String)
 
   get("/:id") {
-    GameData.all find (_.id.toString() == params("id")) match {
-      case Some(b) => b
-      case None => halt(404)
-    }
+    GameStateResponse(
+      GameStates.all find (_.id.toString() == params("id")) match {
+        case Some(b) => b
+        case None => halt(404)
+      }
+    )
   }
 
   post("/") {
-    Success("Well done, the game was created")
+    GameCreationResponse(GameCreation(42, "http://somewherekindasafe.xyz"))
   }
 
   post("/:id/action") {
-    Success("Are you sure you want to do that?")
+    SuccessResponse("ok")
   }
 }
