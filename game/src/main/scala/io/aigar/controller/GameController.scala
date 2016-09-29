@@ -24,12 +24,6 @@ class GameController extends AigarStack with JacksonJsonSupport {
   case class GameSuccess(data: Game) extends Response
   case class Success(data: String) extends Response
 
-  get("/") {
-    GameSuccesses(
-      GameData.all
-    )
-  }
-
   get("/:id") {
     GameSuccess(
       GameData.all find (_.id == params("id")) match {
