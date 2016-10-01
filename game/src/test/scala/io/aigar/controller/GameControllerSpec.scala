@@ -16,9 +16,7 @@ class GameControlleSpec extends MutableScalatraSpec with JsonMatchers {
       get("/1") {
         status must_== 200
 
-        val state = parse(body).extract[GameStateResponse].data
-        state.id must be_>=(0)
-        state.tick must be_>=(0)
+        parse(body).extract[GameStateResponse] must not(throwAn[MappingException])
       }
     }
   }
@@ -29,7 +27,6 @@ class GameControlleSpec extends MutableScalatraSpec with JsonMatchers {
         status must_== 200
 
         val result = parse(body).extract[GameCreationResponse].data
-        result.id must be_>=(0)
         result.url must startWith("http://")
       }
     }

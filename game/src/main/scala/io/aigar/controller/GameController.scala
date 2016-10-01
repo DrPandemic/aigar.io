@@ -13,8 +13,17 @@ class GameController extends AigarStack with JacksonJsonSupport {
 
   object GameStates {
     var all = List(
-      GameState(1, 13),
-      GameState(1, 50)
+      GameState(
+        1,
+        5,
+        List(
+          Player(12, "such", 555, List(Cell(5, 5, Position(10,10), Direction(10, 10)))),
+          Player(13, "wow", 555, List[Cell]())
+        ),
+        Food(List(Position(5,5)), List[Position](), List[Position]()),
+        Size(10, 10),
+        List[Position]()
+      )
     )
   }
 

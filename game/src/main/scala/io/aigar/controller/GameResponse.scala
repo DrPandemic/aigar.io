@@ -1,6 +1,42 @@
 package io.aigar.controller.response
 
-case class GameState(id: Int, tick: Int)
+case class Position(
+  x: Float,
+  y: Float
+)
+case class Direction(
+  x: Float,
+  y: Float
+)
+case class Size(
+  width: Int,
+  height: Int
+)
+case class Cell(
+  id: Int,
+  masse: Int,
+  position: Position,
+  direction: Direction
+)
+case class Player(
+  id: Int,
+  name: String,
+  total_mass: Integer,
+  cells: List[Cell]
+)
+case class Food(
+  regular: List[Position],
+  silver: List[Position],
+  gold: List[Position]
+)
+case class GameState(
+  id: Int,
+  tick: Int,
+  players: List[Player],
+  food: Food,
+  map: Size,
+  viruses: List[Position]
+)
 case class GameStateResponse(data: GameState)
 
 case class GameCreation(id: Int, url: String)
