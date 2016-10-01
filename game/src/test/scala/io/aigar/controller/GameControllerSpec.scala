@@ -34,11 +34,17 @@ class GameControlleSpec extends MutableScalatraSpec with JsonMatchers {
 
   "POST /:id/action on GameController" should {
     "return a success" in {
-      post("/123/action") {
+      post("/1/action") {
         status must_== 200
 
         val result = parse(body).extract[SuccessResponse]
         result.data must be_==("ok")
+      }
+    }
+
+    "fails with bad arguments" in {
+      post("1/action", Map("something" -> "42")) {
+        status must_!= 200
       }
     }
   }
