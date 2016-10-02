@@ -3,7 +3,7 @@ import io.aigar.controller._
 import org.scalatra.test.specs2._
 
 class GameControlleSpec extends MutableScalatraSpec {
-  addServlet(classOf[GameController], "/*")
+  addServlet(classOf[GameController[Database]], "/*")
 
   "GET / on GameController" should {
     "return status 200" in {

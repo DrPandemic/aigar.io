@@ -3,7 +3,7 @@ import io.aigar.controller._
 import org.scalatra.test.specs2._
 
 class LeaderboardControllerSpec extends MutableScalatraSpec {
-  addServlet(classOf[LeaderboardController], "/*")
+  addServlet(classOf[LeaderboardController[Database]], "/*")
 
   "GET / on LeaderboardController" should {
     "return status 200" in {
