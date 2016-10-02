@@ -28,3 +28,6 @@ will stop the nginx server.
 
 
 By default, nginx will be running on port 1337.
+
+## API
+The [complete API](API.md) can be found in the repository.
