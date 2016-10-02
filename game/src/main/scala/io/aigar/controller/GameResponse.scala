@@ -14,7 +14,7 @@ case class Size(
 )
 case class Cell(
   id: Int,
-  masse: Int,
+  mass: Int,
   position: Position,
   direction: Direction
 )

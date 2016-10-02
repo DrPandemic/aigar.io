@@ -12,7 +12,7 @@ class GameControlleSpec extends MutableScalatraSpec with JsonMatchers {
   addServlet(classOf[GameController], "/*")
 
   "GET /:id on GameController" should {
-    "return the right data format" in {
+    "return a parsable GameStateResponse" in {
       get("/1") {
         status must_== 200
 
@@ -22,7 +22,7 @@ class GameControlleSpec extends MutableScalatraSpec with JsonMatchers {
   }
 
   "POST / on GameController" should {
-    "return the right data format" in {
+    "return an URL to watch the game" in {
       post("/") {
         status must_== 200
 
@@ -33,7 +33,7 @@ class GameControlleSpec extends MutableScalatraSpec with JsonMatchers {
   }
 
   "POST /:id/action on GameController" should {
-    "return the right data format" in {
+    "return a success" in {
       post("/123/action") {
         status must_== 200
 

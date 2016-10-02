@@ -22,8 +22,8 @@ class LeaderboardControllerSpec extends MutableScalatraSpec {
                           entry.score must be_>=(0)
                         })
 
-        val longerSize = entries.groupBy(_.team_id).foldLeft(0)(_ max _._2.size)
-        longerSize must_== 1
+        val team_ids = entries.map(_.team_id)
+        team_ids.distinct.size must be_==(team_ids.size)
       }
     }
   }
