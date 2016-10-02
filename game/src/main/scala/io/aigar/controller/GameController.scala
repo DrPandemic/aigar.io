@@ -1,7 +1,7 @@
 package io.aigar.controller
 
 import io.aigar.controller.response._
-import org.json4s.{DefaultFormats, Formats}
+import org.json4s.{DefaultFormats, Formats, MappingException}
 import org.scalatra.json._
 
 class GameController extends AigarStack with JacksonJsonSupport {
@@ -27,9 +27,6 @@ class GameController extends AigarStack with JacksonJsonSupport {
     )
   }
 
-  case class Failure(data: String)
-  case class Success(data: String)
-
   get("/:id") {
     GameStateResponse(
       GameStates.all find (_.id.toString() == params("id")) match {
@@ -44,6 +41,12 @@ class GameController extends AigarStack with JacksonJsonSupport {
   }
 
   post("/:id/action") {
+    val actions = try {
+      parse(request.body).extract[ActionQuery].actions
+    } catch {
+      case e: MappingException => halt(422)
+    }
+
     SuccessResponse("ok")
   }
 }

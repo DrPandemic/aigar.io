@@ -3,13 +3,42 @@ import io.aigar.controller.response._
 
 import org.json4s._
 import org.json4s.jackson.JsonMethods._
+import org.json4s.JsonDSL._
 
 import org.scalatra.test.specs2._
 import org.specs2.matcher._
 
 class GameControlleSpec extends MutableScalatraSpec with JsonMatchers {
-  protected implicit val jsonFormats: Formats = DefaultFormats
+  implicit val jsonFormats: Formats = DefaultFormats
+
   addServlet(classOf[GameController], "/*")
+
+  def postJson[A](uri: String, body: JValue, headers: Map[String, String] = Map())(f: => A): A =
+    post(
+      uri,
+      compact(render(body)).getBytes("utf-8"),
+      Map("Content-Type" -> "application/json") ++ headers
+    )(f)
+
+  val defaultActionJson =
+    ("team_secret" -> "so secret") ~
+    ("actions" ->
+      List(
+        ("cell_id" -> 123) ~
+        ("burst" -> false) ~
+        ("split" -> true) ~
+        ("feed" -> false) ~
+        ("trade" -> 0) ~
+        ("target" -> ("x" -> 10) ~ ("y" -> 10)),
+
+        ("cell_id" -> 1234) ~
+        ("burst" -> false) ~
+        ("split" -> true) ~
+        ("feed" -> false) ~
+        ("trade" -> 0) ~
+        ("target" -> ("x" -> 10) ~ ("y" -> 10))
+      )
+    )
 
   "GET /:id on GameController" should {
     "return a parsable GameStateResponse" in {
@@ -34,7 +63,7 @@ class GameControlleSpec extends MutableScalatraSpec with JsonMatchers {
 
   "POST /:id/action on GameController" should {
     "return a success" in {
-      post("/1/action") {
+      postJson("/1/action", defaultActionJson) {
         status must_== 200
 
         val result = parse(body).extract[SuccessResponse]
@@ -43,8 +72,8 @@ class GameControlleSpec extends MutableScalatraSpec with JsonMatchers {
     }
 
     "fails with bad arguments" in {
-      post("1/action", Map("something" -> "42")) {
-        status must_!= 200
+      postJson("1/action", ("something" -> "42")) {
+        status must_== 422
       }
     }
   }
