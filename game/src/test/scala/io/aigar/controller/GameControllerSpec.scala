@@ -1,9 +1,13 @@
 import io.aigar.controller._
 
 import org.scalatra.test.specs2._
+import slick.driver.H2Driver.api._
+import com.mchange.v2.c3p0.ComboPooledDataSource
 
 class GameControlleSpec extends MutableScalatraSpec {
-  addServlet(classOf[GameController[Database]], "/*")
+  val cpds = new ComboPooledDataSource
+  val db = Database.forDataSource(cpds) //Should be changed (in memory)
+  addServlet(new GameController(db), "/*")
 
   "GET / on GameController" should {
     "return status 200" in {
