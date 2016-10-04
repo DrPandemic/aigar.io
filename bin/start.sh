@@ -16,6 +16,8 @@ do
     shift
 done
 
+if [ -z "$PREFIX_PATH" ]; then PREFIX_PATH="$(pwd)/../api"; fi
+
 ./build.sh
 
 nginx -c "$PREFIX_PATH/conf" -p "$PREFIX_PATH"
