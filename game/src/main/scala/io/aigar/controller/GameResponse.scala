@@ -1,5 +1,7 @@
 package io.aigar.controller.response
 
+case class ErrorResponse(error: String)
+
 case class Position(
   x: Float,
   y: Float
@@ -56,3 +58,4 @@ case class Action(
   target: Position
 )
 case class ActionQuery(team_secret: String, actions: List[Action])
+
