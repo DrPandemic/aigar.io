@@ -23,7 +23,7 @@ To start the project you need to go in the `bin` folder
 will build the assets, start nginx and start the game server.
 The `-p` flag represents the absolute path of the `api` folder.
 
-`./stop.bat -p "C:\my_user\Projects\ai-competition\api"`
+`start stop.bat -p "C:\my_user\Projects\ai-competition\api"`
 will stop the nginx server.
 
 
