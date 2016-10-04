@@ -14,7 +14,6 @@ trait AigarStack extends ScalatraServlet with ScalateSupport with JacksonJsonSup
     contentType = formats("json")
   }
 
-
   trap(404) {
     returnError(404, "not found")
   }

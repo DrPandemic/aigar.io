@@ -8,8 +8,8 @@ import org.scalatra.test.specs2._
 import org.specs2.matcher._
 
 object ConcreteStack extends AigarStack {
-  get("/:id") {
-    halt(params("id").toInt)
+  get("/:status") {
+    halt(params("status").toInt)
   }
 }
 
