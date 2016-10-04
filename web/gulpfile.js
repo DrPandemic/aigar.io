@@ -32,7 +32,7 @@ gulp.task('vendor', function() {
 });
 
 gulp.task('html', ['javascript', 'vendor', 'sass'], function() {
-  var target = gulp.src('src/index.html');
+  var target = gulp.src('src/*.html');
   var sources = gulp.src([destination + 'javascript/**/*.js', destination + 'css/**/*.css'], {read: false});
 
   return target.pipe(inject(sources))
