@@ -5,8 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "node_modules/gulp/bin/gulp.js",
-    "clean": "node_modules/gulp/bin/gulp.js clean"
+    "build": "node node_modules/gulp/bin/gulp.js",
+    "clean": "node node_modules/gulp/bin/gulp.js clean"
   },
   "author": "",
   "license": "MIT",
