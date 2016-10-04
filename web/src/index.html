@@ -9,29 +9,14 @@
     <title>Aigar.io</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="../dist/web/vendor/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
+    <link href="vendor/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="scss/app.css" rel="stylesheet">   
+    <link href="css/app.css" rel="stylesheet">   
     
-    <script type="application/javascript">
-      /* Test du draw canvas */
-      function draw() {
-        var canvas = document.getElementById("gameCanvas");
-        if (canvas.getContext) {
-          var ctx = canvas.getContext("2d");
-
-          ctx.fillStyle = "rgb(200,0,0)";
-          ctx.fillRect (10, 10, 50, 50);
-
-          ctx.fillStyle = "rgba(0, 0, 200, 0.5)";
-          ctx.fillRect (30, 30, 50, 50);
-        }
-      }
-    </script>
   </head>
 
-  <body onload="draw();">
+  <body>
   
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
@@ -126,8 +111,8 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="../dist/web/vendor/jquery/dist/jquery.min.js"></script>
+    <script src="vendor/jquery/dist/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
-    <script src="../dist/web/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="vendor/bootstrap/dist/js/bootstrap.min.js"></script>
   </body>
 </html>
