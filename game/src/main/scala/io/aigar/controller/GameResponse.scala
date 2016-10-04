@@ -58,4 +58,3 @@ case class Action(
   target: Position
 )
 case class ActionQuery(team_secret: String, actions: List[Action])
-

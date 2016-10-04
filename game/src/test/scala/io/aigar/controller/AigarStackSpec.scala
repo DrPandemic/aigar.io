@@ -1,6 +1,7 @@
 import io.aigar.controller._
+import io.aigar.controller.response.{ErrorResponse}
 
-import org.json4s._
+import org.json4s.{DefaultFormats, Formats}
 import org.json4s.jackson.JsonMethods._
 
 import org.scalatra.test.specs2._
@@ -13,6 +14,10 @@ object ConcreteStack extends AigarStack {
 }
 
 class AigarStackSpec extends MutableScalatraSpec {
+  implicit val jsonFormats: Formats = DefaultFormats
+
+  addServlet(ConcreteStack, "/*")
+
   "errors" should {
     "404 should return a generic error" in {
       get("/404") {
