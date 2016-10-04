@@ -1,5 +1,6 @@
 package io.aigar.controller
 
+import io.aigar.controller.response._
 import org.json4s.{DefaultFormats, Formats}
 import org.scalatra.json._
 
@@ -10,29 +11,28 @@ class GameController extends AigarStack with JacksonJsonSupport {
     contentType = formats("json")
   }
 
-  case class Game(id: String, name: String)
-  object GameData {
+  object GameStates {
     var all = List(
-      Game("0", "360 no scope"),
-      Game("1", "that game")
+      GameState(
+        1,
+        5,
+        List(
+          Player(12, "such", 555, List(Cell(5, 5, Position(10,10), Direction(10, 10)))),
+          Player(13, "wow", 555, List[Cell]())
+        ),
+        Food(List(Position(5,5)), List[Position](), List[Position]()),
+        Size(10, 10),
+        List[Position]()
+      )
     )
   }
 
-  abstract class Response
-  case class Failure(message: String) extends Response
-  case class GameSuccesses(data: List[Game]) extends Response
-  case class GameSuccess(data: Game) extends Response
-  case class Success(data: String) extends Response
-
-  get("/") {
-    GameSuccesses(
-      GameData.all
-    )
-  }
+  case class Failure(data: String)
+  case class Success(data: String)
 
   get("/:id") {
-    GameSuccess(
-      GameData.all find (_.id == params("id")) match {
+    GameStateResponse(
+      GameStates.all find (_.id.toString() == params("id")) match {
         case Some(b) => b
         case None => halt(404)
       }
@@ -40,10 +40,10 @@ class GameController extends AigarStack with JacksonJsonSupport {
   }
 
   post("/") {
-    Success("Well done, the game was created")
+    GameCreationResponse(GameCreation(42, "http://somewherekindasafe.xyz"))
   }
 
   post("/:id/action") {
-    Success("Are you sure you want to do that?")
+    SuccessResponse("ok")
   }
 }
