@@ -1,0 +1,165 @@
+/* variables */
+/*
+ * Globals
+ */
+body {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  color: #555; }
+
+h1, .h1,
+h2, .h2,
+h3, .h3,
+h4, .h4,
+h5, .h5,
+h6, .h6 {
+  margin-top: 0;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: normal;
+  color: #333; }
+
+/*
+ * Override Bootstrap's default container.
+ */
+.container {
+  width: 1280px; }
+
+.leaderboard {
+  width: 900px;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto; }
+
+.header {
+  padding-top: 0px;
+  padding-bottom: 20px; }
+
+.title {
+  margin-top: 30px;
+  margin-bottom: 0;
+  font-size: 60px;
+  font-weight: normal; }
+
+/*
+ * Main column and sidebar layout
+ */
+.main {
+  font-size: 18px;
+  line-height: 1.5; }
+
+/* Sidebar modules for boxing content */
+.sidebar-module {
+  padding: 10px;
+  margin: 0 0px 0px; }
+
+.sidebar-module-inset {
+  padding: 0px;
+  border-radius: 4px; }
+
+.sidebar-module-inset p:last-child,
+.sidebar-module-inset ul:last-child,
+.sidebar-module-inset ol:last-child {
+  margin-bottom: 0; }
+
+/*
+ * game window
+ */
+.game {
+  margin-bottom: 0px; }
+
+body {
+  padding-top: 70px;
+  padding-bottom: 30px; }
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%; }
+
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px; }
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 30px;
+  background-color: #f5f5f5; }
+
+/* btn override */
+.btn-default {
+  color: #fff;
+  background-color: #333;
+  border-color: #ccc; }
+
+.btn-default:focus,
+.btn-default.focus {
+  color: #e6e6e6;
+  background-color: #333;
+  border-color: #adadad; }
+
+.btn-default:hover {
+  color: #e6e6e6;
+  background-color: #333;
+  border-color: #adadad; }
+
+.btn-default:active,
+.btn-default.active,
+.open > .dropdown-toggle.btn-default {
+  color: #e6e6e6;
+  background-color: #333;
+  border-color: #adadad; }
+
+.btn-default:active:hover,
+.btn-default.active:hover,
+.open > .dropdown-toggle.btn-default:hover,
+.btn-default:active:focus,
+.btn-default.active:focus,
+.open > .dropdown-toggle.btn-default:focus,
+.btn-default:active.focus,
+.btn-default.active.focus,
+.open > .dropdown-toggle.btn-default.focus {
+  color: #d4d4d4;
+  background-color: #333;
+  border-color: #adadad; }
+
+.btn-default.disabled:hover,
+.btn-default[disabled]:hover,
+fieldset[disabled] .btn-default:hover,
+.btn-default.disabled:focus,
+.btn-default[disabled]:focus,
+fieldset[disabled] .btn-default:focus,
+.btn-default.disabled.focus,
+.btn-default[disabled].focus,
+fieldset[disabled] .btn-default.focus {
+  background-color: #333;
+  border-color: #ccc; }
+
+/* Override Table */
+.table th {
+  width: 100%;
+  background-color: #3b3b3b;
+  color: #fff; }
+
+table {
+  width: 100%;
+  background-color: #3b3b3b;
+  color: #fff; }
+
+.table {
+  margin-bottom: 0px; }
+
+.table .table {
+  width: 100%;
+  background-color: #3b3b3b;
+  color: #fff; }
+
+.table-striped > tbody > tr:nth-of-type(odd) {
+  width: 100%;
+  background-color: #4a4a4a;
+  color: #fff; }
+
+/*# sourceMappingURL=app.css.map */
