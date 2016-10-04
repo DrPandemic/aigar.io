@@ -2,7 +2,7 @@ import io.aigar.controller._
 
 import org.scalatra.test.specs2._
 
-class LeaderboardControllerSpec extends MutableScalatraSpec{
+class LeaderboardControllerSpec extends MutableScalatraSpec {
   addServlet(classOf[LeaderboardController], "/*")
 
   "GET / on LeaderboardController" should {
