@@ -1,3 +1,4 @@
+import io.aigar.game._
 import io.aigar.controller._
 import io.aigar.controller.response._
 
@@ -11,7 +12,10 @@ import org.specs2.matcher._
 class GameControlleSpec extends MutableScalatraSpec with JsonMatchers {
   implicit val jsonFormats: Formats = DefaultFormats
 
-  addServlet(classOf[GameController], "/*")
+  val game = new GameThread
+  game.updateGames // run once to initialize the game states
+
+  addServlet(new GameController(game), "/*")
 
   def postJson[A](uri: String, body: JValue, headers: Map[String, String] = Map())(f: => A): A =
     post(
@@ -40,9 +44,9 @@ class GameControlleSpec extends MutableScalatraSpec with JsonMatchers {
       )
     )
 
-  "GET /:id on GameController" should {
+  "GET / on the ranked game on GameController" should {
     "return a parsable GameStateResponse" in {
-      get("/1") {
+      get("/" + Game.RankedGameId.toString) {
         status must_== 200
 
         parse(body).extract[GameStateResponse] must not(throwAn[MappingException])
