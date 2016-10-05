@@ -6,7 +6,33 @@ package io.aigar.game
  * of the players.
  */
 class GameThread extends Runnable {
+  val MillisecondsPerTick = 16
+
+  private var _states: Map[Int, GameState] = Map()
+  private var _games: List[Game] = List(createRankedGame)
+
+  /**
+   * Safe way to get the game state of a particular game from another thread.
+   */
+  def gameState(gameId: Int) = { _states get gameId }
+
+  def createRankedGame = {
+    new Game(Game.RankedGameId)
+  }
+
   def run {
-    println("TODO Game loop")
+    while (true) {
+      updateGames
+
+      Thread.sleep(MillisecondsPerTick)
+    }
+  }
+
+  def updateGames {
+    for (game <- _games) {
+      game.update
+
+      _states = _states + (game.id -> game.state)
+    }
   }
 }
