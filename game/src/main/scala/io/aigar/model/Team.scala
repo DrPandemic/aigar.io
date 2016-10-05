@@ -2,7 +2,7 @@ package io.aigar.model
 
 import slick.driver.H2Driver.api._
 
-case class Team(id:Option[Int], teamSecret:String, teamName:String, score:Int)
+case class Team(id:Int, teamSecret:String, teamName:String, score:Int)
 
 class Teams(tag: Tag) extends Table[(Int, String, String, Int)](tag, "TEAMS") {
   def id = column[Int]("ID", O.PrimaryKey)
@@ -11,5 +11,6 @@ class Teams(tag: Tag) extends Table[(Int, String, String, Int)](tag, "TEAMS") {
   def score = column[Int]("SCORE", O.Default(0))
   def * = (id, teamSecret, teamName, score)
 }
+
 
 
