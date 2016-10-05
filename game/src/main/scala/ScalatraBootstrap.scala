@@ -1,3 +1,4 @@
+import io.aigar.game.GameThread
 import io.aigar.controller._
 import org.scalatra._
 import javax.servlet.ServletContext
@@ -8,6 +9,8 @@ class ScalatraBootstrap extends LifeCycle {
   val cpds = new ComboPooledDataSource
 
   override def init(context: ServletContext): Unit = {
+    launchGameLoop
+
     val path = "/api/1"
     val db = Database.forDataSource(cpds)
     context.mount(new LeaderboardController, s"$path/leaderboard/*")
@@ -21,5 +24,9 @@ class ScalatraBootstrap extends LifeCycle {
   override def destroy(context: ServletContext) {
     super.destroy(context)
     closeDbConnection
+  }
+
+  def launchGameLoop {
+    new Thread(new GameThread).start
   }
 }
