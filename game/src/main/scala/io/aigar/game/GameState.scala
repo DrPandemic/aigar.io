@@ -3,7 +3,7 @@ package io.aigar.game
 /**
  * Serializable classes that represent the current state of a game. These are
  * the classes that will be sent over the network, so they should follow the
- * conventions in the API.
+ * conventions of the API.
  */
 
 case class Position(
