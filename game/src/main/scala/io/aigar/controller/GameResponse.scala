@@ -6,11 +6,7 @@ case class Position(
   x: Float,
   y: Float
 )
-case class Direction(
-  x: Float,
-  y: Float
-)
-case class Size(
+case class Dimensions(
   width: Int,
   height: Int
 )
@@ -18,7 +14,7 @@ case class Cell(
   id: Int,
   mass: Int,
   position: Position,
-  direction: Direction
+  target: Position
 )
 case class Player(
   id: Int,
@@ -36,7 +32,7 @@ case class GameState(
   tick: Int,
   players: List[Player],
   food: Food,
-  map: Size,
+  map: Dimensions,
   viruses: List[Position]
 )
 case class GameStateResponse(data: GameState)

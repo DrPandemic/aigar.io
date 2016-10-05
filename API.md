@@ -49,7 +49,7 @@ Every error will contain a root element named `error` with an error message.
 						"x": "float",
 						"y": "float"
 					},
-					"direction": {
+					"target": {
 						"x": "float",
 						"y": "float"
 					}
