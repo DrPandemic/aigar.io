@@ -1,3 +1,4 @@
+import io.aigar.game.GameThread
 import io.aigar.controller._
 import org.scalatra._
 import javax.servlet.ServletContext
