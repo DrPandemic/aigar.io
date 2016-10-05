@@ -1,18 +1,30 @@
 package io.aigar.controller
+import io.aigar.controller.response.{ErrorResponse}
 
 import org.scalatra._
 import scalate.ScalateSupport
 
-trait AigarStack extends ScalatraServlet with ScalateSupport {
+import org.json4s.{DefaultFormats, Formats}
+import org.scalatra.json._
 
-  notFound {
-    // remove content type in case it was set through an action
-    contentType = null
-    // Try to render a ScalateTemplate if no route matched
-    findTemplate(requestPath) map { path =>
-      contentType = "text/html"
-      layoutTemplate(path)
-    } orElse serveStaticResource() getOrElse resourceNotFound()
+trait AigarStack extends ScalatraServlet with ScalateSupport with JacksonJsonSupport {
+  protected implicit val jsonFormats: Formats = DefaultFormats
+
+  before() {
+    contentType = formats("json")
   }
 
+  trap(404) {
+    returnError(404, "not found")
+  }
+
+  trap(422) {
+    returnError(422, "unprocessable entity")
+  }
+
+  def returnError(statusCode: Int, message: String): ErrorResponse  = {
+    status = statusCode
+    contentType = formats("json")
+    ErrorResponse(message)
+  }
 }
