@@ -44,12 +44,28 @@ class GameControlleSpec extends MutableScalatraSpec with JsonMatchers {
       )
     )
 
-  "GET / on the ranked game on GameController" should {
+  "GET /{the ranked game} on GameController" should {
     "return a parsable GameStateResponse" in {
       get("/" + Game.RankedGameId.toString) {
         status must_== 200
 
         parse(body).extract[GameStateResponse] must not(throwAn[MappingException])
+      }
+    }
+  }
+
+  "GET /hello on GameController" should {
+    "fail with a bad request (invalid ID)" in {
+      get("/hello") {
+        status must_== 400
+      }
+    }
+  }
+
+  "GET /1337 (invalid ID) on GameController" should {
+    "fail with a not found error" in {
+      get("/1337") {
+        status must_== 404
       }
     }
   }

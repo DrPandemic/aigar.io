@@ -34,5 +34,13 @@ class AigarStackSpec extends MutableScalatraSpec {
         result must_==("unprocessable entity")
       }
     }
+
+    "400 should return a generic error" in {
+      get("/400") {
+        status must_== 400
+        val result = parse(body).extract[ErrorResponse].error
+        result must_==("invalid request")
+      }
+    }
   }
 }
