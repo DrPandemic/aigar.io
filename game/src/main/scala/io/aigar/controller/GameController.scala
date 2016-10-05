@@ -4,16 +4,20 @@ import io.aigar.game._
 import io.aigar.controller.response._
 import org.json4s.{DefaultFormats, Formats, MappingException}
 import org.scalatra.json._
+import scala.util.Try
 
-class GameController extends AigarStack with JacksonJsonSupport {
+class GameController(val game: GameThread)
+  extends AigarStack with JacksonJsonSupport {
+
   get("/:id") {
     GameStateResponse(
-      // TODO get from GameThread
-      halt(404)
-      // GameStates.all find (_.id.toString() == params("id")) match {
-      //   case Some(b) => b
-      //   case None => halt(404)
-      // }
+      Try(params("id").toInt).toOption match {
+        case Some(id) => game.gameState(id) match {
+          case Some(state) => state
+          case None => halt(404)
+        }
+        case None => halt(400)
+      }
     )
   }
 

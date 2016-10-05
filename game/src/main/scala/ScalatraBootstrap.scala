@@ -15,7 +15,7 @@ class ScalatraBootstrap extends LifeCycle {
     val path = "/api/1"
     val db = Database.forDataSource(cpds)
     context.mount(new LeaderboardController, s"$path/leaderboard/*")
-    context.mount(new GameController, s"$path/game/*")
+    context.mount(new GameController(game), s"$path/game/*")
   }
 
   private def closeDbConnection() {
