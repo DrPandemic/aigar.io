@@ -32,7 +32,10 @@ object AigarBuild extends Build {
         "org.eclipse.jetty" % "jetty-webapp" % "9.2.15.v20160210" % "container",
         "javax.servlet" % "javax.servlet-api" % "3.1.0" % "provided",
         "org.json4s" %% "json4s-jackson" % "3.3.0.RC2",
-        "org.scalatra" %% "scalatra-json" % "2.4.0-RC2-2"
+        "org.scalatra" %% "scalatra-json" % "2.4.0-RC2-2",
+        "com.typesafe.slick" %% "slick" % "3.1.1",
+        "com.h2database" % "h2" % "1.4.192",
+        "com.mchange" % "c3p0" % "0.9.5.1"
       ),
       scalateTemplateConfig in Compile <<= (sourceDirectory in Compile){ base =>
         Seq(
