@@ -5,6 +5,12 @@ import org.json4s.{DefaultFormats, Formats, MappingException}
 import org.scalatra.json._
 
 class GameController extends AigarStack with JacksonJsonSupport {
+  protected implicit val jsonFormats: Formats = DefaultFormats
+
+  before() {
+    contentType = formats("json")
+  }
+
   object GameStates {
     var all = List(
       GameState(

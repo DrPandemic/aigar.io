@@ -1,7 +1,5 @@
 package io.aigar.controller.response
 
-case class ErrorResponse(error: String)
-
 case class Position(
   x: Float,
   y: Float
