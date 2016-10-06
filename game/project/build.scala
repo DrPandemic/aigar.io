@@ -35,7 +35,9 @@ object AigarBuild extends Build {
         "org.scalatra" %% "scalatra-json" % "2.4.0-RC2-2",
         "com.typesafe.slick" %% "slick" % "3.1.1",
         "com.h2database" % "h2" % "1.4.192",
-        "com.mchange" % "c3p0" % "0.9.5.1"
+        "com.mchange" % "c3p0" % "0.9.5.1",
+        "org.scalactic" %% "scalactic" % "3.0.0",
+        "org.scalatest" %% "scalatest" % "3.0.0" % "test"
       ),
       scalateTemplateConfig in Compile <<= (sourceDirectory in Compile){ base =>
         Seq(
