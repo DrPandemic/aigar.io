@@ -11,8 +11,8 @@ import org.specs2.matcher._
 class ScalatraBootstrapSpec extends WholeAppTest {
   protected implicit val jsonFormats: Formats = DefaultFormats
 
-  "GET /{ranked game} on the API" should {
-    "successfully return a game state with the right ID" in {
+  "Launching the whole application" should {
+    "launch a game thread that sets the state of the ranked game" in {
       get("/api/1/game/" + Game.RankedGameId.toString) {
         status must be_==(200).eventually
 
