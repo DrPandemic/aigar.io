@@ -1,8 +1,7 @@
 /* Test du draw canvas */
 
 $(function() {
-    var points = [], 
-    const numPoints = 2, i, canvas, context, width, height;
+    var points = [], numPoints = 2, i, canvas, context, width, height;
     
     canvas = $("#gameCanvas")[0];
     width = canvas.width;
