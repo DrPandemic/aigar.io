@@ -6,4 +6,4 @@ scala:
 notifications:
   email: false
 
-script: cd game && sbt clean test
+script: cd game && sbt clean test it:test
