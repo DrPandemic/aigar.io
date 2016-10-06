@@ -23,6 +23,6 @@ class GameThreadSpec extends FlatSpec with Matchers {
   it should "create a ranked game with the right ID" in {
     val game = new GameThread
     val ranked = game.createRankedGame
-    ranked.id should equal Game.RankedGameId
+    ranked.id should equal (Game.RankedGameId)
   }
 }
