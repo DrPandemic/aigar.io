@@ -7,10 +7,15 @@ $(function() {
     width = canvas.width;
     height = canvas.height;
     context = canvas.getContext("2d");
+    const miniMapCanvas = document.createElement('canvas');
+    const contextMiniMap = miniMapCanvas.getContext('2d');
     
     function draw() {
         context.clearRect(0, 0, width, height);
+        contextMiniMap.clearRect(0, 0, width, height);
         drawCells();
+        drawMiniMap();
+        canvas.style.background = "#000";
     }
   
     function drawCells(){
@@ -19,10 +24,30 @@ $(function() {
             point = points[i];
             context.beginPath();
             context.arc(point.x, point.y, point.radius, 0, Math.PI * 2, false);
-            context.fillStyle = "#fff";
+            context.fillStyle = "#ed1515";
             context.fill();
         }
     }
+    
+    function drawMiniMap() {
+
+        //set dimensions
+        miniMapCanvas.width = canvas.width;
+        miniMapCanvas.height = canvas.height;
+
+        contextMiniMap.rect(0,0,200,150);
+        contextMiniMap.fillStyle = 'rgba(58, 58, 58, 0.85)';
+        contextMiniMap.fill();
+
+        //apply the old canvas to the new one
+        contextMiniMap.drawImage(canvas, 0,0, 200, 150);
+        
+        //code for rectangle to show which part of the map we are viewing
+        //...
+        
+        context.drawImage(miniMapCanvas, 700,0);
+    }
+
   
     function update() {
         var i, point, len = points.length;
@@ -64,5 +89,6 @@ $(function() {
         addPoint();
         update();
         draw();
-    }, 1000/15);
+
+    }, 1000/24);
 });
