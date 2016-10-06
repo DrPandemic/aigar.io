@@ -7,8 +7,8 @@ $(function() {
     width = canvas.width;
     height = canvas.height;
     context = canvas.getContext("2d");
-    var miniMapCanvas = document.createElement('canvas');
-    var contextMiniMap = miniMapCanvas.getContext('2d');
+    const miniMapCanvas = document.createElement('canvas');
+    const contextMiniMap = miniMapCanvas.getContext('2d');
     
     function draw() {
         context.clearRect(0, 0, width, height);
