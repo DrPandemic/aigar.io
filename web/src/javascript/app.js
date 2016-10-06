@@ -1,8 +1,9 @@
 /* Test du draw canvas */
 
 $(function() {
-    var points = [], numPoints = 50;
-
+    const points = [];
+    const numPoints = 50;
+    
     function draw() {
         drawCellsOnMap(points);
         drawMap();
