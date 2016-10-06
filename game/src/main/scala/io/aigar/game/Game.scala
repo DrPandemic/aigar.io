@@ -16,7 +16,7 @@ class Game(val id: Int) {
   def state = {
     //TODO really implement
     GameState(
-        1,
+        id,
         5,
         List(
           Player(12, "such", 555, List(Cell(5, 5, Position(10,10), Position(10, 10)))),
