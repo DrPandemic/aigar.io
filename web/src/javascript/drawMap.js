@@ -8,8 +8,8 @@ var yScreenPosOnMap = 200;
 
 const mapCanvas = document.createElement('canvas');
 const mapContext = mapCanvas.getContext('2d');
-const mapWidth = screenWidth*3;
-const mapHeight = screenHeight*3;
+export const mapWidth = screenWidth*3;
+export const mapHeight = screenHeight*3;
 
 const miniMapCanvas = document.createElement('canvas');
 const miniMapContext = miniMapCanvas.getContext('2d');
@@ -20,7 +20,7 @@ const miniMapPosX = screenWidth-miniMapWidth;
 const miniMapScreenPosWidth = miniMapWidth/3;
 const miniMapScreenPosHeight = miniMapHeight/3;
 
-function drawCellsOnMap(points){
+export function drawCellsOnMap(points){
   //set dimensions
   mapCanvas.width = mapWidth;
   mapCanvas.height = mapHeight;
@@ -37,11 +37,11 @@ function drawCellsOnMap(points){
 }
 
 
-function drawMap(){
+export function drawMap(){
   screenContext.clearRect(0, 0, screenWidth, screenHeight);
   screenContext.drawImage(mapCanvas, xScreenPosOnMap, yScreenPosOnMap, screenWidth, screenHeight, 0, 0, screenWidth, screenHeight);
 }
-function drawMiniMap() {
+export function drawMiniMap() {
   miniMapContext.clearRect(0, 0, screenWidth, screenHeight);
 
   //set dimensions
