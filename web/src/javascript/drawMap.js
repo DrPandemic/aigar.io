@@ -3,8 +3,8 @@ const screenContext = screenCanvas.getContext("2d");
 const screenWidth = screenCanvas.width;
 const screenHeight = screenCanvas.height; 
 //Static position for tests for the screen window on the mini-map
-let xScreenPosOnMap = 0;
-let yScreenPosOnMap = 0;    
+var xScreenPosOnMap = 200;
+var yScreenPosOnMap = 200;    
 
 const mapCanvas = document.createElement('canvas');
 const mapContext = mapCanvas.getContext('2d');
@@ -35,6 +35,7 @@ function drawCellsOnMap(points){
         mapContext.fill();
     }
 }
+
 
 function drawMap(){
     screenContext.clearRect(0, 0, screenWidth, screenHeight);
@@ -67,26 +68,3 @@ function drawMiniMapminiMapScreenPos(){
     var yMiniMapPos = miniMapHeight/mapHeight*yScreenPosOnMap;
     miniMapContext.strokeRect(xMiniMapPos,yMiniMapPos,miniMapScreenPosWidth,miniMapScreenPosHeight);
 }
-
-function changeScreenPos(mousePos){
-    var xMiniMapPos = ((mousePos.x-miniMapPosX)-(miniMapScreenPosWidth/2))*4;
-    var yMiniMapPos = (mousePos.y+(miniMapScreenPosHeight/2))*4;
-    xScreenPosOnMap = xMiniMapPos*3;
-    yScreenPosOnMap = yMiniMapPos*2;
-}
-
-function getMousePos(evt) {
-    var rect = screenCanvas.getBoundingClientRect();
-    return {
-        x: (evt.clientX-rect.left)/(rect.right-rect.left)*screenCanvas.width,
-        y: (evt.clientY-rect.top)/(rect.bottom-rect.top)*screenCanvas.height
-    };
-}
-
-screenCanvas.addEventListener('click', function(evt) {
-    var mousePos = getMousePos(evt);
-    if(mousePos.x> miniMapPosX && mousePos.y <  miniMapHeight){
-        changeScreenPos(mousePos);
-    }
-}, false);
-
