@@ -8,6 +8,7 @@ events {
 }
 
 http {
+  include    mime_types;
   index      index.html;
 
   default_type application/octet-stream;
