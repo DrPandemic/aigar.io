@@ -5,7 +5,7 @@ package io.aigar.game
  * (e.g. the ranked game or a private test game).
  */
 object Game {
-  val RankedGameId = 0
+  final val RankedGameId = 0
 }
 
 class Game(val id: Int) {
