@@ -6,7 +6,7 @@ import org.json4s.{DefaultFormats, Formats, MappingException}
 import org.scalatra.json._
 import scala.util.Try
 
-class GameController(val game: GameThread)
+class GameController(game: GameThread)
   extends AigarStack with JacksonJsonSupport {
 
   get("/:id") {
