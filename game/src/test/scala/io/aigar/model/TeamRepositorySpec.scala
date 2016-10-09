@@ -6,7 +6,6 @@ import org.specs2.Specification
 
 class TeamRepositorySpec extends Specification {def is = s2"""
 
- This is my first specification
    Team created must be returned                        $test1
    Should read existing team without error                     $test2
    Should read team 3 with error                        $test3
@@ -27,23 +26,24 @@ class TeamRepositorySpec extends Specification {def is = s2"""
   cpds.setMaxPoolSize(50)
 
   val db = Database.forDataSource(cpds)
+  val teamRepository = new TeamRepository(db)
 
-  val teamRepositoryMem = new TeamRepositoryMem(db)
+  val team1 = teamRepository.createTeam(Team(None, "EdgQWhJ!v&", "team1", 0))
+  val team2 = teamRepository.createTeam(Team(None, "not_that_secret", "team2", 50))
+  val team3 = teamRepository.createTeam(Team(None, "xx3ddfas3", "team3", 56))
 
+  teamRepository.dropSchema()
 
-  val team1 = Team(1, "EdgQWhJ!v&", "New Team", 0)
-  val team2 = Team(2,"not_that_secret", "your_team", 50)
+  def test1 = teamRepository.readTeam(team1.id.get) must_=== Some(team1)
+  def test2 = teamRepository.readTeam(team1.id.get) must_=== Some(team1)
+  def test3 = teamRepository.readTeam(585858) must_=== null
 
-  def test1 = teamRepositoryMem.createTeam(team1) must_=== team1
+  def test4 = teamRepository.updateTeam(1) must_=== true
+  def test5 = teamRepository.updateTeam(3) must_=== false
 
-  def test2 = teamRepositoryMem.readTeam(1) must_=== team1
-  def test3 = teamRepositoryMem.readTeam(3) must_=== null
+  def test6 = teamRepository.deleteTeam(team3.id.get) must_=== true
+  def test7 = teamRepository.deleteTeam(585858) must_=== false
 
-  def test4 = teamRepositoryMem.updateTeam(1) must_=== true
-  def test5 = teamRepositoryMem.updateTeam(3) must_=== false
+  def test8 =  teamRepository.getTeams() must_=== List(team1, team2)
 
-  def test6 = teamRepositoryMem.deleteTeam(1) must_=== true
-  def test7 = teamRepositoryMem.deleteTeam(3) must_=== false
-
-  def test8 =  teamRepositoryMem.getTeams() must_=== List(team1, team2)
 }

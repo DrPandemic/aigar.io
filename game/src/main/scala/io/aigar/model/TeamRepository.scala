@@ -1,9 +1,39 @@
 package io.aigar.model
 
-trait TeamRepository {
-  def createTeam(team: Team): Team
-  def readTeam(id: Int): Team
-  def updateTeam(id: Int): Boolean
-  def deleteTeam(id: Int): Boolean
-  def getTeams(): List[Team]
+import slick.driver.H2Driver.api._
+
+class TeamRepository(db: Database) {
+  createSchema()
+
+  def createTeam(team: Team): Team = {
+    TeamDAO.create(db, team)
+  }
+
+  def readTeam(id: Int): Option[Team] = {
+    TeamDAO.findById(db, id)
+  }
+
+  def updateTeam(id: Int): Boolean = {
+    if(id == 1) true
+    else false
+  }
+
+  def deleteTeam(id: Int): Boolean = {
+    if(id == 1) true
+    else false
+  }
+
+  def getTeams(): List[Team] = {
+    List(Team(None, "EdgQWhJ!v&", "New Team", 0), Team(None,"not_that_secret", "your_team", 50))
+  }
+
+  def createSchema(): Unit ={
+    TeamDAO.createSchema(db)
+    println("***schema created***")
+  }
+
+  def dropSchema(): Unit ={
+    TeamDAO.dropSchema(db)
+    println("***DROP SCHEMA***")
+  }
 }
