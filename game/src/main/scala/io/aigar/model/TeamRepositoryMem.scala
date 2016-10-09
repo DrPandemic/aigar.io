@@ -1,9 +1,6 @@
 package io.aigar.model
 
-import slick.driver.H2Driver.api._
-import slick.lifted.TableQuery
-
-class TeamRepositoryMem(db: Database) extends TeamRepository {
+class TeamRepositoryMem() extends TeamRepository {
 
   def createTeam(team: Team): Team = {
     Team(1, "EdgQWhJ!v&", "New Team", 0)
@@ -20,8 +17,6 @@ class TeamRepositoryMem(db: Database) extends TeamRepository {
   }
 
   def deleteTeam(id: Int): Boolean = {
-    /*if (TeamDAO.deleteById(db, id) == id) true
-    else false*/
     if(id == 1) true
     else false
   }

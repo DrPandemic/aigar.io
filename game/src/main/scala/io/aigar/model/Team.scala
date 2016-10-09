@@ -2,7 +2,7 @@ package io.aigar.model
 
 import slick.driver.H2Driver.api._
 import slick.lifted.TableQuery
-
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 case class Team(id: Int, teamSecret: String, teamName: String, score: Int)
