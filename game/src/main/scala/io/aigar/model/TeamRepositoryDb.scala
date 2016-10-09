@@ -2,12 +2,15 @@ package io.aigar.model
 import slick.driver.H2Driver.api._
 import slick.lifted.TableQuery
 
+import scala.concurrent.Await
+import scala.concurrent.duration.Duration
+
 class TeamRepositoryDb(db: Database) extends TeamRepository {
   val teamsTable = TableQuery[Teams]
   initSchema()
 
-  def createTeam(team: Team): Boolean = {
-    true
+  def createTeam(team: Team): Team = {
+    Team(1, "", "", 2)
     /*TeamDAO.create(db, team)*/
   }
 
@@ -21,7 +24,8 @@ class TeamRepositoryDb(db: Database) extends TeamRepository {
   }
 
   def deleteTeam(id: Int): Boolean = {
-    /*TeamDAO.deleteById(db, id)*/
+    /*if (TeamDAO.deleteById(db, id) == id) true
+    else false*/
     true
   }
 
@@ -30,6 +34,6 @@ class TeamRepositoryDb(db: Database) extends TeamRepository {
   }
 
   private def initSchema(): Unit ={
-    db.run(teamsTable.schema.create)
+    TeamDAO.initSchema(db)
   }
 }
