@@ -1,12 +1,7 @@
 package io.aigar.model
 import slick.driver.H2Driver.api._
-import slick.lifted.TableQuery
-
-import scala.concurrent.Await
-import scala.concurrent.duration.Duration
 
 class TeamRepositoryDb(db: Database) extends TeamRepository {
-  val teamsTable = TableQuery[Teams]
   initSchema()
 
   def createTeam(team: Team): Team = {

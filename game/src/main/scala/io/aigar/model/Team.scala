@@ -4,7 +4,6 @@ import slick.driver.H2Driver.api._
 import slick.lifted.TableQuery
 
 import scala.concurrent.Future
-import scala.concurrent.Await
 
 case class Team(id: Int, teamSecret: String, teamName: String, score: Int)
 
