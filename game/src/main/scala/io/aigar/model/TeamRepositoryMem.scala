@@ -1,6 +1,8 @@
 package io.aigar.model
 
-class TeamRepositoryMem() extends TeamRepository {
+import slick.driver.H2Driver.api._
+
+class TeamRepositoryMem(db: Database) extends TeamRepository {
 
   def createTeam(team: Team): Team = {
     Team(1, "EdgQWhJ!v&", "New Team", 0)
@@ -23,5 +25,9 @@ class TeamRepositoryMem() extends TeamRepository {
 
   def getTeams(): List[Team] = {
     List(Team(1, "EdgQWhJ!v&", "New Team", 0), Team(2,"not_that_secret", "your_team", 50))
+  }
+
+  def initSchema(): Unit ={
+    TeamDAO.initSchema(db)
   }
 }
