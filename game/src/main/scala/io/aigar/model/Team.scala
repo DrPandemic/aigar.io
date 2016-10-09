@@ -37,7 +37,6 @@ object TeamDAO extends TableQuery(new Teams(_)) {
 
   def createSchema(db: Database): Unit = {
     Await.result(db.run(teams.schema.create), Duration(1, "second"))
-    println("***CREATE SCHEMA***")
   }
 
   def dropSchema(db: Database): Unit = {

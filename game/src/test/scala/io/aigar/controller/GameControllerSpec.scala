@@ -6,7 +6,7 @@ import org.json4s._
 import org.json4s.jackson.JsonMethods._
 import org.json4s.JsonDSL._
 
-  import org.scalatra.test.specs2._
+import org.scalatra.test.specs2._
 import org.specs2.matcher._
 
 class GameControllerSpec extends MutableScalatraSpec with JsonMatchers {

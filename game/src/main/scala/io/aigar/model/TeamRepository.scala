@@ -29,11 +29,9 @@ class TeamRepository(db: Database) {
 
   def createSchema(): Unit ={
     TeamDAO.createSchema(db)
-    println("***schema created***")
   }
 
   def dropSchema(): Unit ={
     TeamDAO.dropSchema(db)
-    println("***DROP SCHEMA***")
   }
 }
