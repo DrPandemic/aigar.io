@@ -7,6 +7,7 @@ import slick.driver.H2Driver.api._
 
 class ScalatraBootstrap extends LifeCycle {
   val cpds = new ComboPooledDataSource
+  val game = new GameThread
 
   override def init(context: ServletContext): Unit = {
     launchGameLoop
@@ -14,7 +15,7 @@ class ScalatraBootstrap extends LifeCycle {
     val path = "/api/1"
     val db = Database.forDataSource(cpds)
     context.mount(new LeaderboardController, s"$path/leaderboard/*")
-    context.mount(new GameController, s"$path/game/*")
+    context.mount(new GameController(game), s"$path/game/*")
   }
 
   private def closeDbConnection() {
@@ -27,6 +28,6 @@ class ScalatraBootstrap extends LifeCycle {
   }
 
   def launchGameLoop {
-    new Thread(new GameThread).start
+    new Thread(game).start
   }
 }
