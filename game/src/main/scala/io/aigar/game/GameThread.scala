@@ -8,7 +8,7 @@ package io.aigar.game
 class GameThread extends Runnable {
   val MillisecondsPerTick = 16
 
-  private var states: Map[Int, GameState] = Map()
+  private var states: Map[Int, io.aigar.game.serializable.GameState] = Map()
   private var games: List[Game] = List(createRankedGame)
 
   /**
