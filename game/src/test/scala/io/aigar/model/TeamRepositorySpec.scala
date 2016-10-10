@@ -1,50 +1,39 @@
 package io.aigar.model
 
-import com.mchange.v2.c3p0.ComboPooledDataSource
-import slick.driver.H2Driver.api._
 import org.scalatest._
 
-class TeamRepositorySpec extends FlatSpec with Matchers with BeforeAndAfterEach {
+class TeamRepositorySpec extends FlatSpec {
 
-  private var teamRepository:TeamRepository = null
-  private var team1: Team = null
-  private var team2: Team = null
-  private var team3: Team = null
+  def withInMemDatabase(testCode: (TeamRepository, List[Team]) => Any) {
+    val teamRepository = new TeamRepository(true)
+    val team1 = teamRepository.createTeam(Team(None, "EdgQWhJ!v&", "team1", 0))
+    val team2 = teamRepository.createTeam(Team(None, "not_that_secret", "team2", 50))
+    val team3 = teamRepository.createTeam(Team(None, "xx3ddfas3", "team3", 56))
 
-  override def beforeEach: Unit = {
-    val cpds = new ComboPooledDataSource
-    cpds.setDriverClass("org.h2.Driver")
-    cpds.setJdbcUrl("jdbc:h2:mem:test")
-    cpds.setUser("root")
-    cpds.setPassword("")
-    cpds.setMinPoolSize(1)
-    cpds.setAcquireIncrement(1)
-    cpds.setMaxPoolSize(50)
+    val listTeams = List(team1, team2, team3)
 
-    val db = Database.forDataSource(cpds)
-    teamRepository = new TeamRepository(db)
-
-    team1 = teamRepository.createTeam(Team(None, "EdgQWhJ!v&", "team1", 0))
-    team2 = teamRepository.createTeam(Team(None, "not_that_secret", "team2", 50))
-    team3 = teamRepository.createTeam(Team(None, "xx3ddfas3", "team3", 56))
-    super.beforeEach()
+    try{
+      testCode(teamRepository, listTeams)
+    }
+    finally {
+      teamRepository.dropSchema
+      teamRepository.closeConnection
+    }
   }
 
-  override def afterEach: Unit = {
-    try super.afterEach()
-    teamRepository.dropSchema()
+  it should "create a new team object and return it" in withInMemDatabase { (teamRepository, listTeams) =>
+    val team4 = teamRepository.createTeam(Team(None, "EdgQWhJ!v&", "team4", 0))
+    assert(team4.teamSecret === "EdgQWhJ!v&")
+    assert(team4.teamName === "team4")
+    assert(team4.score === 0)
   }
 
-  it should "create a new team object and return it" in {
-    teamRepository.createTeam(Team(None, "EdgQWhJ!v&", "team4", 0)) should equal(Team(Some(4), "EdgQWhJ!v&", "team4", 0))
+  it should "read the team 2 by its id and equal it" in withInMemDatabase { (teamRepository, listTeams) =>
+    assert(teamRepository.readTeam(listTeams(2).id.get).get === listTeams(2))
   }
 
-  it should "read the team 2 by its id and equal it" in {
-    teamRepository.readTeam(team2.id.get).get should equal(team2)
-  }
-
-  it should "read a non-existing id and return nothing" in {
-    teamRepository.readTeam(258741) shouldBe None
+  it should "read a non-existing id and return nothing" in withInMemDatabase { (teamRepository, listTeams) =>
+    assert(teamRepository.readTeam(258741).isEmpty)
   }
   /*
 

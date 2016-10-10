@@ -2,24 +2,23 @@ import io.aigar.game.GameThread
 import io.aigar.controller._
 import org.scalatra._
 import javax.servlet.ServletContext
-import com.mchange.v2.c3p0.ComboPooledDataSource
-import slick.driver.H2Driver.api._
+
+import io.aigar.model.TeamRepository
 
 class ScalatraBootstrap extends LifeCycle {
-  val cpds = new ComboPooledDataSource
+  val teamRepository = new TeamRepository(false)
   val game = new GameThread
 
   override def init(context: ServletContext): Unit = {
     launchGameLoop
 
     val path = "/api/1"
-    val db = Database.forDataSource(cpds)
     context.mount(new LeaderboardController, s"$path/leaderboard/*")
     context.mount(new GameController(game), s"$path/game/*")
   }
 
-  private def closeDbConnection() {
-    cpds.close
+  private def closeDbConnection {
+    teamRepository.closeConnection
   }
 
   override def destroy(context: ServletContext) {
