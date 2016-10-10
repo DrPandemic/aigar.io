@@ -11,7 +11,7 @@ object Cell {
   /**
    * Default mass of a cell.
    */
-  final val DefaultMass = 1
+  final val DefaultMass = 1 // TODO determine this once we have visualization/etc.
 }
 
 class Cell {
