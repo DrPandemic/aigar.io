@@ -23,7 +23,8 @@ object TeamDAO extends TableQuery(new Teams(_)) {
     Await.result(
       db.run(
         teams returning teams.map(_.id) into ((t, id) => t.copy(id = Some(id))) += team
-      ), Duration(1, "second"))
+      ), Duration.Inf
+    )
   }
 
   def findById(db: Database, id: Int): Option[Team] = {
@@ -32,7 +33,7 @@ object TeamDAO extends TableQuery(new Teams(_)) {
         teams.filter(_.id === id)
           .result
         ).map(_.headOption
-      ), Duration(1, "second")
+      ), Duration.Inf
     )
   }
 
@@ -44,7 +45,7 @@ object TeamDAO extends TableQuery(new Teams(_)) {
           case 0 => None
           case _ => Some(team)
         }
-      ), Duration(1, "second")
+      ), Duration.Inf
     )
   }
 
@@ -53,7 +54,7 @@ object TeamDAO extends TableQuery(new Teams(_)) {
           db.run(
             teams.filter(_.id === id)
               .delete
-          ), Duration(1, "second")
+          ), Duration.Inf
         )
   }
 
@@ -61,7 +62,7 @@ object TeamDAO extends TableQuery(new Teams(_)) {
     Await.result(
       db.run(
         teams.result
-      ), Duration(1, "second")
+      ), Duration.Inf
     ).toList
   }
 
@@ -69,7 +70,7 @@ object TeamDAO extends TableQuery(new Teams(_)) {
     Await.result(
       db.run(
         teams.schema.create
-      ), Duration(1, "second")
+      ), Duration.Inf
     )
   }
 
@@ -77,7 +78,7 @@ object TeamDAO extends TableQuery(new Teams(_)) {
     Await.result(
       db.run(
         teams.schema.drop
-      ), Duration(1, "second")
+      ), Duration.Inf
     )
   }
 }
