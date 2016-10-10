@@ -20,7 +20,6 @@ object AigarBuild extends Build {
     .settings(Defaults.itSettings : _*)
     .settings(projectSettings)
     .enablePlugins(JettyPlugin)
-    .dependsOn(vector2Lib)
 
   lazy val projectSettings = Seq(
       organization := Organization,
@@ -46,7 +45,8 @@ object AigarBuild extends Build {
     "com.h2database" % "h2" % "1.4.192",
     "com.mchange" % "c3p0" % "0.9.5.1",
     "org.scalactic" %% "scalactic" % "3.0.0",
-    "org.scalatest" %% "scalatest" % "3.0.0" % "test,it"
+    "org.scalatest" %% "scalatest" % "3.0.0" % "test,it",
+    "com.github.jpbetz" % "subspace" % "0.1.0"
       )
   lazy val scalateTemplates =
     scalateTemplateConfig in Compile <<= (sourceDirectory in Compile){ base =>
@@ -61,6 +61,4 @@ object AigarBuild extends Build {
         )
       )
     }
-
-  lazy val vector2Lib = RootProject(uri(s"https://github.com/Villane/vecmath.git#9e3c722f70c412c05131c8ccc9118a6b2b91fbcc"))
 }
