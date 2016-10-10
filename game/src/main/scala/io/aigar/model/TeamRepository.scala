@@ -16,14 +16,12 @@ class TeamRepository(inMemory: Boolean) {
     TeamDAO.findById(db, id)
   }
 
-  def updateTeam(id: Int): Boolean = {
-    if(id == 1) true
-    else false
+  def updateTeam(team: Team): Option[Team] = {
+    TeamDAO.update(db, team)
   }
 
   def deleteTeam(id: Int): Boolean = {
-    if(id == 1) true
-    else false
+    TeamDAO.deleteById(db, id)
   }
 
   def getTeams(): List[Team] = {

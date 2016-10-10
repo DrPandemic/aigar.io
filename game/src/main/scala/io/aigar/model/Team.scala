@@ -20,15 +20,40 @@ object TeamDAO extends TableQuery(new Teams(_)) {
   lazy val teams = TableQuery[Teams]
 
   def create(db: Database, team: Team): Team = {
-    Await.result(db.run(teams returning teams.map(_.id) into ((t, id) => t.copy(id = Some(id))) += team), Duration(1, "second"))
+    Await.result(
+      db.run(
+        teams returning teams.map(_.id) into ((t, id) => t.copy(id = Some(id))) += team)
+      , Duration(1, "second"))
   }
 
   def findById(db: Database, id: Int): Option[Team] = {
-    Await.result(db.run(teams.filter(_.id === id).result).map(_.headOption), Duration(1, "second"))
+    Await.result(
+      db.run(
+        teams.filter(_.id === id).result
+      ).map(_.headOption)
+      , Duration(1, "second")
+    )
   }
 
-  def deleteById(db: Database, id:Int): Int = {
-    Await.result(db.run(teams.filter(_.id === id).delete), Duration(1, "second"))
+  def update(db: Database, team: Team): Option[Team] ={
+    Await.result(
+      db.run(
+        teams.filter(_.id === team.id)
+          .update(team).map {
+          case 0 => None
+          case _ => Some(team)
+        }
+      ), Duration(1, "second")
+    )
+  }
+
+  def deleteById(db: Database, id:Int): Boolean = {
+    1 == Await.result(
+          db.run(
+            teams.filter(_.id === id)
+              .delete
+          ), Duration(1, "second")
+        )
   }
 
   def getTeams(db: Database): List[Team] = {
