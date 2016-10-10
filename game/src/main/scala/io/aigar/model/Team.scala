@@ -22,16 +22,17 @@ object TeamDAO extends TableQuery(new Teams(_)) {
   def create(db: Database, team: Team): Team = {
     Await.result(
       db.run(
-        teams returning teams.map(_.id) into ((t, id) => t.copy(id = Some(id))) += team)
-      , Duration(1, "second"))
+        teams returning teams.map(_.id) into ((t, id) => t.copy(id = Some(id))) += team
+      ), Duration(1, "second"))
   }
 
   def findById(db: Database, id: Int): Option[Team] = {
     Await.result(
       db.run(
-        teams.filter(_.id === id).result
-      ).map(_.headOption)
-      , Duration(1, "second")
+        teams.filter(_.id === id)
+          .result
+        ).map(_.headOption
+      ), Duration(1, "second")
     )
   }
 
@@ -57,15 +58,27 @@ object TeamDAO extends TableQuery(new Teams(_)) {
   }
 
   def getTeams(db: Database): List[Team] = {
-    Await.result(db.run(teams.result), Duration(1, "second")).toList
+    Await.result(
+      db.run(
+        teams.result
+      ), Duration(1, "second")
+    ).toList
   }
 
   def createSchema(db: Database): Unit = {
-    Await.result(db.run(teams.schema.create), Duration(1, "second"))
+    Await.result(
+      db.run(
+        teams.schema.create
+      ), Duration(1, "second")
+    )
   }
 
   def dropSchema(db: Database): Unit = {
-    Await.result(db.run(teams.schema.drop), Duration(1, "second"))
+    Await.result(
+      db.run(
+        teams.schema.drop
+      ), Duration(1, "second")
+    )
   }
 }
 

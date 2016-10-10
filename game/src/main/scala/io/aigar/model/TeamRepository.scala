@@ -25,7 +25,7 @@ class TeamRepository(inMemory: Boolean) {
   }
 
   def getTeams(): List[Team] = {
-    List(Team(None, "EdgQWhJ!v&", "New Team", 0), Team(None,"not_that_secret", "your_team", 50))
+    TeamDAO.getTeams(db)
   }
 
   def createDatabase(inMemory: Boolean): Database ={

@@ -42,6 +42,7 @@ class TeamRepositorySpec extends FlatSpec {
     val teamUpdated = teamRepository.updateTeam(teamToUpdate).get
 
     assert(teamUpdated === teamToUpdate)
+    assert(teamRepository.readTeam(teamUpdated.id.get).get !== listTeams.head)
   }
 
   it should "try to update a non-existing team without success" in withInMemDatabase { (teamRepository, listTeams) =>
@@ -58,19 +59,7 @@ class TeamRepositorySpec extends FlatSpec {
     assert(teamRepository.getTeams().size === listTeams.size)
   }
 
-/*
-  it should "read a non-existing id and return nothing" in withInMemDatabase { (teamRepository, listTeams) =>
-    assert(teamRepository.readTeam(258741).isEmpty)
+  it should "return a list with all the teams" in withInMemDatabase { (teamRepository, listTeams) =>
+    assert(teamRepository.getTeams() === listTeams)
   }
-
-
-  def test4 = teamRepository.updateTeam(1) must_=== true
-  def test5 = teamRepository.updateTeam(3) must_=== false
-
-  def test6 = teamRepository.deleteTeam(team3.id.get) must_=== true
-  def test7 = teamRepository.deleteTeam(585858) must_=== false
-
-  def test8 = teamRepository.getTeams() must_=== List(team1, team2)
-  */
-
 }
