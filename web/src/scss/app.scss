@@ -26,8 +26,8 @@ h6, .h6 {
 /*
  * Override Bootstrap's default container.
  */
- 
- .container {
+
+.container {
   width: 1280px;
 }
 
@@ -172,13 +172,13 @@ $secondary-table-color: #4a4a4a;
   width:100%;
   background-color: $primary-table-color;
   color: $secondary-color;
-  
+
   &.leaderboardwidth {
     width:50px;
   }
 }
-  
- table {
+
+table {
   width:100%;
   background-color: $primary-table-color;
   color: $secondary-color;
@@ -191,12 +191,10 @@ $secondary-table-color: #4a4a4a;
   width:100%;
   background-color: $primary-table-color;
   color: $secondary-color;
-} 
+}
 
 .table-striped > tbody > tr:nth-of-type(odd) {
   width:100%;
   background-color: $secondary-table-color;
   color: $secondary-color;
-} 
-
-
+}

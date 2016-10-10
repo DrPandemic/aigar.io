@@ -8,6 +8,7 @@ events {
 }
 
 http {
+  include    mime_types;
   index      index.html;
 
   default_type application/octet-stream;
@@ -32,6 +33,10 @@ http {
 
     location /api {
       proxy_pass      http://127.0.0.1:8080;
+    }
+
+    location / {
+      return 301 /web/;
     }
   }
 }
