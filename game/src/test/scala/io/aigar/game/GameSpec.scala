@@ -7,4 +7,13 @@ class GameSpec extends FlatSpec with Matchers {
     val state1 = game.state
     game.state should not be theSameInstanceAs(state1)
   }
+
+  it should "update its tick count" in {
+    val game = new Game(42)
+    game.tick should equal(0)
+    
+    game.update
+
+    game.tick should equal(1)
+  }
 }

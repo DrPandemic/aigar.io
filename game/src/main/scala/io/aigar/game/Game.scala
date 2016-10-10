@@ -11,15 +11,18 @@ object Game {
 }
 
 class Game(val id: Int) {
+  var tick = 0
+
   def update {
     //TODO implement
+    tick += 1
   }
 
   def state = {
     //TODO really implement
     serializable.GameState(
         id,
-        5,
+        tick,
         List(
           serializable.Player(12, "such", 555, List(serializable.Cell(5, 5, serializable.Position(10,10), serializable.Position(10, 10)))),
           serializable.Player(13, "wow", 555, List[serializable.Cell]())
