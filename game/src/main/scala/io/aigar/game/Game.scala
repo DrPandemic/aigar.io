@@ -14,7 +14,7 @@ object Game {
 
 class Game(val id: Int, playersInGame: Int) {
   val grid = new Grid(playersInGame * Grid.WidthPerPlayer, playersInGame * Grid.HeightPerPlayer)
-  val players = initPlayers(playersInGame)
+  val players = createPlayers(playersInGame)
   var tick = 0
 
   def update(deltaSeconds: Float) {
@@ -35,7 +35,7 @@ class Game(val id: Int, playersInGame: Int) {
       )
   }
 
-  def initPlayers(playersInGame: Int) = {
+  def createPlayers(playersInGame: Int) = {
     val ids = 1 to playersInGame
 
     ids.map { new Player(_, spawnPosition) }
