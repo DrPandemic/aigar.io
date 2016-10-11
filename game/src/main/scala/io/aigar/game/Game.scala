@@ -24,7 +24,7 @@ class Game(val id: Int, playersInGame: Int) {
   }
 
   def state = {
-    //TODO really implement
+    //TODO really implement and update spec to add tests
     serializable.GameState(
         id,
         tick,

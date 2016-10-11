@@ -73,5 +73,6 @@ class GameSpec extends FlatSpec with Matchers {
     val state = game.state
 
     state.players should have size 10
+    //TODO add more tests as the rest gets implemented
   }
 }
