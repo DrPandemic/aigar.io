@@ -23,4 +23,17 @@ class PlayerSpec extends FlatSpec with Matchers {
      
      initialDistance should be > finalDistance
    }
+
+   it should "generate a state with the right info" in {
+     val player = new Player(1, new Vector2(0f, 0f))
+     player.cells = List(new Cell(1), new Cell(2))
+     player.cells(0).mass = 10
+     player.cells(1).mass = 25
+
+     val state = player.state
+
+     state.total_mass should equal(35)
+     state.id should equal(1)
+     state.cells should have size 2
+   }
 }

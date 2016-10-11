@@ -59,11 +59,11 @@ class GameSpec extends FlatSpec with Matchers {
     initialDistance should be > finalDistance
   }
 
-  it should "create a bigger map if there are more players" in {
+  it should "create a bigger grid if there are more players" in {
     val game1 = new Game(42, 1)
     val game2 = new Game(42, 10)
 
-    game2.map.width should be > game1.map.width
-    game2.map.height should be > game1.map.height
+    game2.grid.width should be > game1.grid.width
+    game2.grid.height should be > game1.grid.height
   }
 }

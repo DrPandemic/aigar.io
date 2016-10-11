@@ -1,5 +1,6 @@
 package io.aigar.game
 
+import io.aigar.game.Vector2Utils._
 import com.github.jpbetz.subspace._
 
 object Cell {
@@ -14,7 +15,7 @@ object Cell {
   final val MinMass = 1 // TODO determine this once we have visualization/etc.
 }
 
-class Cell(startPosition: Vector2 = new Vector2(0f, 0f)) {
+class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
   var position = startPosition
   var target = new Vector2(0f, 0f)
   var mass = Cell.MinMass
@@ -43,5 +44,12 @@ class Cell(startPosition: Vector2 = new Vector2(0f, 0f)) {
     val dir = target - position
     val value = Cell.MovementForce / mass
     return if (dir.magnitude > 0) dir.normalize * value else new Vector2(0f,0f)
+  }
+
+  def state = {
+    serializable.Cell(id,
+                      mass,
+                      position.state,
+                      target.state)
   }
 }

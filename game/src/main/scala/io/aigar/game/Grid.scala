@@ -15,4 +15,8 @@ class Grid(val width: Int, val height: Int) {
     val y = random.nextFloat() * height
     new Vector2(x, y)
   }
+
+  def state = {
+    serializable.Dimensions(width, height)
+  }
 }

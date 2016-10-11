@@ -13,7 +13,7 @@ object Game {
 }
 
 class Game(val id: Int, playersCount: Int = Game.PlayersInRankedGame) {
-  val map = new Grid(playersCount * Grid.WidthPerPlayer, playersCount * Grid.HeightPerPlayer)
+  val grid = new Grid(playersCount * Grid.WidthPerPlayer, playersCount * Grid.HeightPerPlayer)
   val players = initPlayers(playersCount)
   var tick = 0
 
@@ -28,12 +28,9 @@ class Game(val id: Int, playersCount: Int = Game.PlayersInRankedGame) {
     serializable.GameState(
         id,
         tick,
-        List(
-          serializable.Player(12, "such", 555, List(serializable.Cell(5, 5, serializable.Position(10,10), serializable.Position(10, 10)))),
-          serializable.Player(13, "wow", 555, List[serializable.Cell]())
-        ),
+        players.map(_.state).toList,
         serializable.Food(List(serializable.Position(5,5)), List[serializable.Position](), List[serializable.Position]()),
-        serializable.Dimensions(10, 10),
+        grid.state,
         List[serializable.Position]()
       )
   }
@@ -45,6 +42,6 @@ class Game(val id: Int, playersCount: Int = Game.PlayersInRankedGame) {
   }
 
   def spawnPosition = {
-    map.randomPosition
+    grid.randomPosition
   }
 }
