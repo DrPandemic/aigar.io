@@ -66,4 +66,12 @@ class GameSpec extends FlatSpec with Matchers {
     game2.grid.width should be > game1.grid.width
     game2.grid.height should be > game1.grid.height
   }
+
+  it should "create a state with the right info" in {
+    val game = new Game(42, 10)
+
+    val state = game.state
+
+    state.players should have size 10
+  }
 }
