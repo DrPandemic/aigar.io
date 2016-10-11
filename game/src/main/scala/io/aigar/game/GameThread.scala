@@ -15,6 +15,9 @@ class GameThread extends Runnable {
 
   final val actionQueue: BlockingQueue[ActionQueryWithId] = new LinkedBlockingQueue[ActionQueryWithId]()
 
+  var previousTime = 0f
+  var currentTime = MillisecondsPerTick / 1000f // avoid having an initial 0 delta time
+
   /**
    * Safe way to get the game state of a particular game from another thread.
    */
@@ -34,9 +37,20 @@ class GameThread extends Runnable {
 
   def updateGames {
     for (game <- games) {
-      game.update
+      val deltaTime = currentTime - previousTime
+      game.update(deltaTime)
 
       states = states + (game.id -> game.state)
+
+      previousTime = currentTime
+      currentTime = time
     }
+  }
+
+  /**
+   * Current time, in seconds.
+   */
+  def time: Float = {
+    System.currentTimeMillis / 1000f
   }
 }

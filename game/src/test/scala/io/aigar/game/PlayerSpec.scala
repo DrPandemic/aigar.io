@@ -5,13 +5,13 @@ import com.github.jpbetz.subspace._
 
 class PlayerSpec extends FlatSpec with Matchers {
   "A Player" should "start with a cell at its start position" in {
-    val player = new Player(new Vector2(42f, 42f))
+    val player = new Player(0, new Vector2(42f, 42f))
     
     player.cells.loneElement.position should equal(new Vector2(42f, 42f))
    }
 
    it should "move its cells on update" in {
-     val player = new Player(new Vector2(0f, 0f))
+     val player = new Player(0, new Vector2(0f, 0f))
      val target = new Vector2(100f, 100f)
      player.cells.head.target = target
 
