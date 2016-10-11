@@ -12,9 +12,9 @@ object Game {
   final val PlayersInRankedGame = 15
 }
 
-class Game(val id: Int, playersCount: Int = Game.PlayersInRankedGame) {
-  val grid = new Grid(playersCount * Grid.WidthPerPlayer, playersCount * Grid.HeightPerPlayer)
-  val players = initPlayers(playersCount)
+class Game(val id: Int, playersInGame: Int) {
+  val grid = new Grid(playersInGame * Grid.WidthPerPlayer, playersInGame * Grid.HeightPerPlayer)
+  val players = initPlayers(playersInGame)
   var tick = 0
 
   def update(deltaSeconds: Float) {
@@ -35,8 +35,8 @@ class Game(val id: Int, playersCount: Int = Game.PlayersInRankedGame) {
       )
   }
 
-  def initPlayers(playersCount: Int) = {
-    val ids = 1 to playersCount
+  def initPlayers(playersInGame: Int) = {
+    val ids = 1 to playersInGame
 
     ids.map { new Player(_, spawnPosition) }
   }

@@ -4,13 +4,13 @@ import com.github.jpbetz.subspace._
 
 class GameSpec extends FlatSpec with Matchers {
   "A Game" should "generate a new state object every time (thread-safety)" in {
-    val game = new Game(42)
+    val game = new Game(42, 10)
     val state1 = game.state
     game.state should not be theSameInstanceAs(state1)
   }
 
   it should "update its tick count" in {
-    val game = new Game(42)
+    val game = new Game(42, 10)
     game.tick should equal(0)
     
     game.update(1f)
@@ -37,7 +37,7 @@ class GameSpec extends FlatSpec with Matchers {
   }
 
   it should "create players with distinct IDs" in {
-    val game = new Game(42)
+    val game = new Game(42, 10)
 
     val ids = game.players.map { _.id }
 
@@ -45,7 +45,7 @@ class GameSpec extends FlatSpec with Matchers {
   }
 
   it should "update its players" in {
-    val game = new Game(42)
+    val game = new Game(42, 10)
     val player = game.players.head
     val cell = player.cells.head
     cell.target = new Vector2(100f, 100f)
