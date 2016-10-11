@@ -9,15 +9,15 @@ object Cell {
   final val MovementForce = 10f
 
   /**
-   * Default mass of a cell.
+   * Default mass of a cell (at spawn).
    */
-  final val DefaultMass = 1 // TODO determine this once we have visualization/etc.
+  final val MinMass = 1 // TODO determine this once we have visualization/etc.
 }
 
-class Cell {
-  var position = new Vector2(0f, 0f)
+class Cell(startPosition: Vector2 = new Vector2(0f, 0f)) {
+  var position = startPosition
   var target = new Vector2(0f, 0f)
-  var mass = Cell.DefaultMass
+  var mass = Cell.MinMass
   private var _velocity = new Vector2(0f, 0f)
 
   /**

@@ -3,9 +3,8 @@ import org.scalatest._
 import com.github.jpbetz.subspace._
 
 class CellSpec extends FlatSpec with Matchers {
-  "A Cell" should "not move when its target is on itself" in {
-    val cell = new Cell
-    cell.position = new Vector2(42f, 42f)
+  "A Cell" should "not initiate movement when its target is on itself" in {
+    val cell = new Cell(new Vector2(42f, 42f))
     cell.target = new Vector2(42f, 42f)
 
     cell.update(1f)
@@ -14,8 +13,7 @@ class CellSpec extends FlatSpec with Matchers {
   }
   
   it should "move towards its target when it is away from itself" in {
-    val cell = new Cell
-    cell.position = new Vector2(42f, 42f)
+    val cell = new Cell(new Vector2(42f, 42f))
     cell.target = new Vector2(1000f, 1000f)
 
     val initialDistance = cell.position.distanceTo(cell.target)
@@ -30,10 +28,10 @@ class CellSpec extends FlatSpec with Matchers {
   it should "have a maximal velocity" in {
     val cell = new Cell
 
-    val velocity = new Vector2(1000f, 1000f)
-    cell.velocity = velocity
+    val hugeVelocity = new Vector2(1000f, 1000f)
+    cell.velocity = hugeVelocity
 
-    cell.velocity should not equal(velocity)
+    cell.velocity.magnitude should be < hugeVelocity.magnitude
   }
 
   it should "move faster when it has a small mass" in {
