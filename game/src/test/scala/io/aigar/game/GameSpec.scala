@@ -30,9 +30,9 @@ class GameSpec extends FlatSpec with Matchers {
     val positions = game.players.map { _.cells.head.position }
 
     // This is a soft constraint. We're not enforcing distinct positions, but
-    // we assume here that it is unlikely enough to ignore the possibility. We
-    // are mainly checking that we're not spawning all the players at the same
-    // place.
+    // we assume here that it is unlikely enough to ignore the possibility of
+    // duplicates. We are mainly checking that we're not spawning all the
+    // players at the same place.
     positions.toSet should have size positions.length
   }
 
