@@ -101,14 +101,28 @@ class GameControllerSpec extends MutableScalatraSpec
       }
     }
 
+    "put the action in the game queue" in {
+      game.actionQueue.isEmpty() must be_==(true)
+      postJson("/1/action", defaultActionJson) {
+        status must_== 200
+
+        game.actionQueue.isEmpty() must be_==(false)
+        val action = game.actionQueue.take()
+        action.game_id must be_==(1)
+        action.query.team_secret must be_==("so secret")
+        action.query.actions.length must be_==(2)
+        action.query.actions(0).cell_id must be_==(123)
+      }
+    }
+
     "fails with bad arguments" in {
-      postJson("1/action", ("something" -> "42")) {
+      postJson("/1/action", ("something" -> "42")) {
         status must_== 422
       }
     }
 
     "fails with bad game's id" in {
-      postJson("nope/action", defaultActionJson) {
+      postJson("/nope/action", defaultActionJson) {
         status must_== 400
       }
     }
