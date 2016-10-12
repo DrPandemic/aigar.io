@@ -26,10 +26,13 @@ class GameController(game: GameThread)
   }
 
   post("/:id/action") {
-    val actions = try {
-      parse(request.body).extract[ActionQuery].actions
+    try {
+      val query = parse(request.body).extract[ActionQuery]
+      val actions = ActionQueryWithId(params("id").toInt, query)
+      game.actionQueue.put(actions)
     } catch {
       case e: MappingException => halt(422)
+      case e: java.lang.NumberFormatException => halt(400)
     }
 
     SuccessResponse("ok")

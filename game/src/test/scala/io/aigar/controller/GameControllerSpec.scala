@@ -8,14 +8,24 @@ import org.json4s.JsonDSL._
 
 import org.scalatra.test.specs2._
 import org.specs2.matcher._
+import org.specs2.specification.BeforeAfterEach
 
-class GameControlleSpec extends MutableScalatraSpec with JsonMatchers {
+class GameControllerSpec extends MutableScalatraSpec
+    with JsonMatchers
+    with BeforeAfterEach {
   implicit val jsonFormats: Formats = DefaultFormats
+  sequential
 
   val game = new GameThread
   game.updateGames // run once to initialize the game states
-
   addServlet(new GameController(game), "/*")
+
+  def cleanGame = {
+    game.actionQueue.clear()
+  }
+
+  def before = cleanGame
+  def after = cleanGame
 
   def postJson[A](uri: String, body: JValue, headers: Map[String, String] = Map())(f: => A): A =
     post(
@@ -94,6 +104,12 @@ class GameControlleSpec extends MutableScalatraSpec with JsonMatchers {
     "fails with bad arguments" in {
       postJson("1/action", ("something" -> "42")) {
         status must_== 422
+      }
+    }
+
+    "fails with bad game's id" in {
+      postJson("nope/action", defaultActionJson) {
+        status must_== 400
       }
     }
   }
