@@ -1,6 +1,7 @@
 package io.aigar.controller
 
 import io.aigar.game._
+import io.aigar.game.serializable._
 import io.aigar.controller.response._
 import org.json4s.{DefaultFormats, Formats, MappingException}
 import org.scalatra.json._

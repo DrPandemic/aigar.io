@@ -1,4 +1,4 @@
-package io.aigar.game
+package io.aigar.game.serializable
 
 /**
  * Serializable classes that represent the current state of a game. These are
