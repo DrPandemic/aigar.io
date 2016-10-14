@@ -72,10 +72,28 @@ function drawMiniMapminiMapScreenPos() {
 }
 
 function changeScreenPos(mousePos) {
-	var xMiniMapPos = ((mousePos.x - miniMapPosX) - (miniMapScreenPosWidth / 2)) * 4;
-	var yMiniMapPos = (mousePos.y + (miniMapScreenPosHeight / 2)) * 4;
-	xScreenPosOnMap = xMiniMapPos * 3;
-	yScreenPosOnMap = yMiniMapPos * 2;
+	var miniMapPos = {
+		x : (mousePos.x - miniMapPosX) - (miniMapScreenPosWidth / 2),
+		y : mousePos.y - (miniMapScreenPosHeight / 2)
+	}
+	miniMapPos = keepInsideMap(miniMapPos);
+
+	xScreenPosOnMap = miniMapPos.x * 12;
+	yScreenPosOnMap = miniMapPos.y * 12;
+}
+
+function keepInsideMap(pos) {
+	if (pos.x < 0) {
+		pos.x = 0;
+	} else if (pos.x > miniMapWidth - miniMapScreenPosWidth) {
+		pos.x = miniMapWidth - miniMapScreenPosWidth;
+	}
+	if (pos.y < 0) {
+		pos.y = 0;
+	} else if (pos.y > miniMapHeight - miniMapScreenPosHeight) {
+		pos.y = miniMapHeight - miniMapScreenPosHeight;
+	}
+	return pos
 }
 
 function getMousePos(evt) {
