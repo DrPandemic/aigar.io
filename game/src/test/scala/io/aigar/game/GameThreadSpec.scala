@@ -1,7 +1,6 @@
 import io.aigar.game._
 import org.scalatest._
 
-
 class GameThreadSpec extends FlatSpec with Matchers {
   "A GameThread" should "not have a ranked game state at first" in {
     val game = new GameThread
@@ -19,7 +18,7 @@ class GameThreadSpec extends FlatSpec with Matchers {
     game.updateGames
     game.gameState(1337) shouldBe empty
   }
-  
+
   it should "create a ranked game with the right ID" in {
     val game = new GameThread
     val ranked = game.createRankedGame
