@@ -22,91 +22,91 @@ const miniMapScreenPosWidth = miniMapWidth / 3;
 const miniMapScreenPosHeight = miniMapHeight / 3;
 
 export function drawCellsOnMap(points) {
-	//set dimensions
-	mapCanvas.width = mapWidth;
-	mapCanvas.height = mapHeight;
+  //set dimensions
+  mapCanvas.width = mapWidth;
+  mapCanvas.height = mapHeight;
 
-	var i,
-	point,
-	len = points.length;
-	for (i = 0; i < len; i += 1) {
-		point = points[i];
+  var i,
+  point,
+  len = points.length;
+  for (i = 0; i < len; i += 1) {
+    point = points[i];
 
-		mapContext.beginPath();
-		mapContext.arc(point.x, point.y, point.radius, 0, Math.PI * 2, false);
-		mapContext.fillStyle = "#ed1515";
-		mapContext.fill();
-	}
+    mapContext.beginPath();
+    mapContext.arc(point.x, point.y, point.radius, 0, Math.PI * 2, false);
+    mapContext.fillStyle = "#ed1515";
+    mapContext.fill();
+  }
 }
 
 export function drawMap() {
-	screenContext.clearRect(0, 0, screenWidth, screenHeight);
-	screenContext.drawImage(mapCanvas, xScreenPosOnMap, yScreenPosOnMap, screenWidth, screenHeight, 0, 0, screenWidth, screenHeight);
+  screenContext.clearRect(0, 0, screenWidth, screenHeight);
+  screenContext.drawImage(mapCanvas, xScreenPosOnMap, yScreenPosOnMap, screenWidth, screenHeight, 0, 0, screenWidth, screenHeight);
 }
 export function drawMiniMap() {
-	miniMapContext.clearRect(0, 0, screenWidth, screenHeight);
+  miniMapContext.clearRect(0, 0, screenWidth, screenHeight);
 
-	//set dimensions
-	miniMapCanvas.width = screenWidth;
-	miniMapCanvas.height = screenHeight;
+  //set dimensions
+  miniMapCanvas.width = screenWidth;
+  miniMapCanvas.height = screenHeight;
 
-	//MiniMap background
-	miniMapContext.rect(0, 0, miniMapWidth, miniMapHeight);
-	miniMapContext.fillStyle = 'rgba(58, 58, 58, 0.85)';
-	miniMapContext.fill();
+  //MiniMap background
+  miniMapContext.rect(0, 0, miniMapWidth, miniMapHeight);
+  miniMapContext.fillStyle = 'rgba(58, 58, 58, 0.85)';
+  miniMapContext.fill();
 
-	//apply the old canvas to the new one
-	miniMapContext.drawImage(mapCanvas, 0, 0, miniMapWidth, miniMapHeight);
+  //apply the old canvas to the new one
+  miniMapContext.drawImage(mapCanvas, 0, 0, miniMapWidth, miniMapHeight);
 
-	drawMiniMapminiMapScreenPos();
+  drawMiniMapminiMapScreenPos();
 
-	screenContext.drawImage(miniMapCanvas, miniMapPosX, 0);
-	screenCanvas.style.background = "#000";
+  screenContext.drawImage(miniMapCanvas, miniMapPosX, 0);
+  screenCanvas.style.background = "#000";
 }
 
 function drawMiniMapminiMapScreenPos() {
-	miniMapContext.strokeStyle = "#fff";
-	var xMiniMapPos = miniMapWidth / mapWidth * xScreenPosOnMap;
-	var yMiniMapPos = miniMapHeight / mapHeight * yScreenPosOnMap;
-	miniMapContext.strokeRect(xMiniMapPos, yMiniMapPos, miniMapScreenPosWidth, miniMapScreenPosHeight);
+  miniMapContext.strokeStyle = "#fff";
+  var xMiniMapPos = miniMapWidth / mapWidth * xScreenPosOnMap;
+  var yMiniMapPos = miniMapHeight / mapHeight * yScreenPosOnMap;
+  miniMapContext.strokeRect(xMiniMapPos, yMiniMapPos, miniMapScreenPosWidth, miniMapScreenPosHeight);
 }
 
 function changeScreenPos(mousePos) {
-	var miniMapPos = {
-		x : (mousePos.x - miniMapPosX) - (miniMapScreenPosWidth / 2),
-		y : mousePos.y - (miniMapScreenPosHeight / 2)
-	}
-	miniMapPos = keepInsideMap(miniMapPos);
+  var miniMapPos = {
+    x : (mousePos.x - miniMapPosX) - (miniMapScreenPosWidth / 2),
+    y : mousePos.y - (miniMapScreenPosHeight / 2)
+  }
+  miniMapPos = keepInsideMap(miniMapPos);
 
-	xScreenPosOnMap = miniMapPos.x * 12;
-	yScreenPosOnMap = miniMapPos.y * 12;
+  xScreenPosOnMap = miniMapPos.x * 12;
+  yScreenPosOnMap = miniMapPos.y * 12;
 }
 
 function keepInsideMap(pos) {
-	if (pos.x < 0) {
-		pos.x = 0;
-	} else if (pos.x > miniMapWidth - miniMapScreenPosWidth) {
-		pos.x = miniMapWidth - miniMapScreenPosWidth;
-	}
-	if (pos.y < 0) {
-		pos.y = 0;
-	} else if (pos.y > miniMapHeight - miniMapScreenPosHeight) {
-		pos.y = miniMapHeight - miniMapScreenPosHeight;
-	}
-	return pos
+  if (pos.x < 0) {
+    pos.x = 0;
+  } else if (pos.x > miniMapWidth - miniMapScreenPosWidth) {
+    pos.x = miniMapWidth - miniMapScreenPosWidth;
+  }
+  if (pos.y < 0) {
+    pos.y = 0;
+  } else if (pos.y > miniMapHeight - miniMapScreenPosHeight) {
+    pos.y = miniMapHeight - miniMapScreenPosHeight;
+  }
+  return pos
 }
 
 function getMousePos(evt) {
-	var rect = screenCanvas.getBoundingClientRect();
-	return {
-		x : (evt.clientX - rect.left) / (rect.right - rect.left) * screenCanvas.width,
-		y : (evt.clientY - rect.top) / (rect.bottom - rect.top) * screenCanvas.height
-	};
+  var rect = screenCanvas.getBoundingClientRect();
+  return {
+    x : (evt.clientX - rect.left) / (rect.right - rect.left) * screenCanvas.width,
+    y : (evt.clientY - rect.top) / (rect.bottom - rect.top) * screenCanvas.height
+  };
 }
 
 screenCanvas.addEventListener('click', function (evt) {
-	var mousePos = getMousePos(evt);
-	if (mousePos.x > miniMapPosX && mousePos.y < miniMapHeight) {
-		changeScreenPos(mousePos);
-	}
+  var mousePos = getMousePos(evt);
+  if (mousePos.x > miniMapPosX && mousePos.y < miniMapHeight) {
+    changeScreenPos(mousePos);
+  }
 }, false);
