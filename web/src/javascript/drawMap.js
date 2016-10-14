@@ -59,7 +59,7 @@ export function drawFoodOnMap(foods, canvas) {
   const context = canvas.getContext("2d");
   const drawFood = (foods, color) => {
     for(const food of foods) {
-      drawCircle(context, food.position, food.mass, color);
+      drawCircle(context, food, constants.foodMass, color);
     }
   };
 

@@ -32,7 +32,7 @@ gulp.task('javascript', function() {
               }))
              .pipe(sourcemaps.init())
              .pipe(babel({
-               plugins: ['transform-runtime'],
+               plugins: ['transform-runtime', 'syntax-async-functions', 'transform-regenerator'],
                presets: ['es2015']
              }))
              .pipe(sourcemaps.write('.'))
