@@ -1,7 +1,10 @@
 import fakeState from "./fakeState";
-import {draw as drawGame, update as updateGame} from "./game";
+import {draw as drawGame} from "./game";
+
+import {createGameCanvas} from "./drawMap";
+
+const gameCanvas = createGameCanvas();
 
 setInterval(function() {
-  //updateGame(fakeState);
-  drawGame(fakeState.data);
+  drawGame(fakeState.data, gameCanvas);
 }, 1000/24);

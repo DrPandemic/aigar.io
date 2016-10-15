@@ -8,6 +8,9 @@ module.exports = {
     "sourceType": "module"
   },
   "rules": {
+    "comma-dangle": [
+      "error", "only-multiline"
+    ],
     "no-console": [
       "error",
       {
