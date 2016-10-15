@@ -6,7 +6,7 @@ import javax.servlet.ServletContext
 import io.aigar.model.TeamRepository
 
 class ScalatraBootstrap extends LifeCycle {
-  val teamRepository = new TeamRepository(false)
+  val teamRepository = new TeamRepository()
   val game = new GameThread
 
   override def init(context: ServletContext): Unit = {
@@ -18,6 +18,7 @@ class ScalatraBootstrap extends LifeCycle {
   }
 
   private def closeDbConnection {
+    teamRepository.dropSchema
     teamRepository.closeConnection
   }
 

@@ -5,7 +5,7 @@ import org.scalatest._
 class TeamRepositorySpec extends FlatSpec {
 
   def withInMemDatabase(testCode: (TeamRepository, List[Team]) => Any) {
-    val teamRepository = new TeamRepository(true)
+    val teamRepository = new TeamRepository
     val team1 = teamRepository.createTeam(Team(None, "EdgQWhJ!v&", "team1", 0))
     val team2 = teamRepository.createTeam(Team(None, "not_that_secret", "team2", 50))
     val team3 = teamRepository.createTeam(Team(None, "xx3ddfas3", "team3", 56))
