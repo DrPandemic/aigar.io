@@ -8,14 +8,24 @@ import org.json4s.JsonDSL._
 
 import org.scalatra.test.specs2._
 import org.specs2.matcher._
+import org.specs2.specification.BeforeAfterEach
 
-class GameControllerSpec extends MutableScalatraSpec with JsonMatchers {
+class GameControllerSpec extends MutableScalatraSpec
+    with JsonMatchers
+    with BeforeAfterEach {
   implicit val jsonFormats: Formats = DefaultFormats
+  sequential
 
   val game = new GameThread
   game.updateGames // run once to initialize the game states
-
   addServlet(new GameController(game), "/*")
+
+  def cleanGame = {
+    game.actionQueue.clear()
+  }
+
+  def before = cleanGame
+  def after = cleanGame
 
   def postJson[A](uri: String, body: JValue, headers: Map[String, String] = Map())(f: => A): A =
     post(
@@ -91,9 +101,29 @@ class GameControllerSpec extends MutableScalatraSpec with JsonMatchers {
       }
     }
 
+    "put the action in the game queue" in {
+      game.actionQueue.isEmpty() must be_==(true)
+      postJson("/1/action", defaultActionJson) {
+        status must_== 200
+
+        game.actionQueue.isEmpty() must be_==(false)
+        val action = game.actionQueue.take()
+        action.game_id must be_==(1)
+        action.query.team_secret must be_==("so secret")
+        action.query.actions.length must be_==(2)
+        action.query.actions(0).cell_id must be_==(123)
+      }
+    }
+
     "fails with bad arguments" in {
-      postJson("1/action", ("something" -> "42")) {
+      postJson("/1/action", ("something" -> "42")) {
         status must_== 422
+      }
+    }
+
+    "fails with bad game's id" in {
+      postJson("/nope/action", defaultActionJson) {
+        status must_== 400
       }
     }
   }

@@ -1,5 +1,7 @@
 package io.aigar.game
 
+import io.aigar.game._
+
 /**
  * Game holds the logic for an individual game being played
  * (e.g. the ranked game or a private test game).
@@ -15,16 +17,16 @@ class Game(val id: Int) {
 
   def state = {
     //TODO really implement
-    GameState(
+    serializable.GameState(
         id,
         5,
         List(
-          Player(12, "such", 555, List(Cell(5, 5, Position(10,10), Position(10, 10)))),
-          Player(13, "wow", 555, List[Cell]())
+          serializable.Player(12, "such", 555, List(serializable.Cell(5, 5, serializable.Position(10,10), serializable.Position(10, 10)))),
+          serializable.Player(13, "wow", 555, List[serializable.Cell]())
         ),
-        Food(List(Position(5,5)), List[Position](), List[Position]()),
-        Dimensions(10, 10),
-        List[Position]()
+        serializable.Food(List(serializable.Position(5,5)), List[serializable.Position](), List[serializable.Position]()),
+        serializable.Dimensions(10, 10),
+        List[serializable.Position]()
       )
   }
 }

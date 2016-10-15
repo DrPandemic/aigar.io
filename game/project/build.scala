@@ -45,7 +45,8 @@ object AigarBuild extends Build {
     "com.h2database" % "h2" % "1.4.192",
     "com.mchange" % "c3p0" % "0.9.5.1",
     "org.scalactic" %% "scalactic" % "3.0.0",
-    "org.scalatest" %% "scalatest" % "3.0.0" % "test,it"
+    "org.scalatest" %% "scalatest" % "3.0.0" % "test,it",
+    "com.github.jpbetz" % "subspace" % "0.1.0"
       )
   lazy val scalateTemplates =
     scalateTemplateConfig in Compile <<= (sourceDirectory in Compile){ base =>
