@@ -1,5 +1,6 @@
 var gulp = require('gulp');
 const sourcemaps = require('gulp-sourcemaps');
+var plumber = require('gulp-plumber');
 const babel = require('gulp-babel');
 var sass = require('gulp-sass');
 var inject = require('gulp-inject');
@@ -13,6 +14,10 @@ var destination = 'dist/web/';
 
 gulp.task('sass', function () {
   return gulp.src('src/scss/**/*.scss')
+              .pipe(plumber(function (error) {
+                  gutil.log(error.message);
+                  this.emit('end');
+              }))
              .pipe(sourcemaps.init())
              .pipe(sass().on('error', sass.logError))
              .pipe(sourcemaps.write())
@@ -21,6 +26,10 @@ gulp.task('sass', function () {
 
 gulp.task('javascript', function() {
   return gulp.src('src/javascript/**/*.js')
+              .pipe(plumber(function (error) {
+                  gutil.log(error.message);
+                  this.emit('end');
+              }))
              .pipe(sourcemaps.init())
              .pipe(babel({
                plugins: ['transform-runtime'],
@@ -52,7 +61,12 @@ gulp.task('html', ['webpack', 'vendor', 'sass'], function() {
     var target = gulp.src('src/*.html');
     var sources = gulp.src([destination + 'javascript/**/*.js', destination + 'css/**/*.css'], {read: false});
 
-    return target.pipe(inject(sources))
+    return target
+        .pipe(plumber(function (error) {
+            gutil.log(error.message);
+            this.emit('end');
+        }))
+        .pipe(inject(sources))
         .pipe(gulp.dest(destination));
 });
 

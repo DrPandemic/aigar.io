@@ -1,3 +1,5 @@
+import $ from "jquery";
+
 const screenCanvas = $("#screenCanvas")[0];
 const screenContext = screenCanvas.getContext("2d");
 const screenWidth = screenCanvas.width;
@@ -6,13 +8,13 @@ const screenHeight = screenCanvas.height;
 var xScreenPosOnMap = 200;
 var yScreenPosOnMap = 200;
 
-const mapCanvas = document.createElement('canvas');
-const mapContext = mapCanvas.getContext('2d');
+const mapCanvas = document.createElement("canvas");
+const mapContext = mapCanvas.getContext("2d");
 export const mapWidth = screenWidth*3;
 export const mapHeight = screenHeight*3;
 
-const miniMapCanvas = document.createElement('canvas');
-const miniMapContext = miniMapCanvas.getContext('2d');
+const miniMapCanvas = document.createElement("canvas");
+const miniMapContext = miniMapCanvas.getContext("2d");
 const miniMapWidth = screenWidth/4;
 const miniMapHeight = screenHeight/4;
 const miniMapPosX = screenWidth-miniMapWidth;
@@ -20,17 +22,16 @@ const miniMapPosX = screenWidth-miniMapWidth;
 const miniMapScreenPosWidth = miniMapWidth/3;
 const miniMapScreenPosHeight = miniMapHeight/3;
 
-export function drawCellsOnMap(points){
+export function drawCellsOnMap(cells){
   //set dimensions
   mapCanvas.width = mapWidth;
   mapCanvas.height = mapHeight;
 
-  var i, point, len = points.length;
-  for(i = 0; i < len; i += 1) {
-    point = points[i];
+  for(let i = 0; i < cells.length; i += 1) {
+    const cell = cells[i];
 
     mapContext.beginPath();
-    mapContext.arc(point.x, point.y, point.radius, 0, Math.PI * 2, false);
+    mapContext.arc(cell.position.x, cell.position.y, cell.mass, 0, Math.PI * 2, false);
     mapContext.fillStyle = "#ed1515";
     mapContext.fill();
   }
@@ -50,7 +51,7 @@ export function drawMiniMap() {
 
   //MiniMap background
   miniMapContext.rect(0,0,miniMapWidth,miniMapHeight);
-  miniMapContext.fillStyle = 'rgba(58, 58, 58, 0.85)';
+  miniMapContext.fillStyle = "rgba(58, 58, 58, 0.85)";
   miniMapContext.fill();
 
   //apply the old canvas to the new one
