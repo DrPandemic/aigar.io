@@ -26,18 +26,34 @@ export function createGameCanvas() {
 }
 
 export function initMap(canvas) {
-  //set dimensions
   canvas.width = mapWidth;
   canvas.height = mapHeight;
 }
 
-export function drawCellsOnMap(cells, canvas) {
+// http://stackoverflow.com/a/16348977
+export function stringToColour(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  let colour = "#";
+  for (let i = 0; i < 3; i++) {
+    const value = (hash >> (i * 8)) & 0xFF;
+    colour += ("00" + value.toString(16)).substr(-2);
+  }
+  return colour;
+}
+
+export function drawPlayersOnMap(players, canvas) {
   const context = canvas.getContext("2d");
-  for(const cell of cells) {
-    context.beginPath();
-    context.arc(cell.position.x, cell.position.y, cell.mass, 0, Math.PI * 2, false);
-    context.fillStyle = "#ed1515";
-    context.fill();
+  for(const player of players) {
+    const color = stringToColour(player.name);
+    for(const cell of player.cells) {
+      context.beginPath();
+      context.arc(cell.position.x, cell.position.y, cell.mass, 0, Math.PI * 2, false);
+      context.fillStyle = color;
+      context.fill();
+    }
   }
 }
 

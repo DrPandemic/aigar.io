@@ -12,8 +12,8 @@ export default {
             "id": 5,
             "mass": 50,
             "position": {
-              "x": 10.0,
-              "y": 10.0
+              "x": 300.0,
+              "y": 550.0
             },
             "target": {
               "x": 10.0,
