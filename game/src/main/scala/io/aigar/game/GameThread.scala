@@ -50,7 +50,10 @@ class GameThread extends Runnable {
   /**
    * Current time, in seconds.
    */
+  final val NanoSecondsPerMillisecond = 1000000f
+  final val MillisecondsPerSecond = 1000f
+  final val NanoSecondsPerSecond = NanoSecondsPerMillisecond * MillisecondsPerSecond
   def time: Float = {
-    System.currentTimeMillis / 1000f
+    System.nanoTime / NanoSecondsPerSecond
   }
 }
