@@ -18,7 +18,6 @@ class ScalatraBootstrap extends LifeCycle {
   }
 
   private def closeDbConnection {
-    teamRepository.dropSchema
     teamRepository.closeConnection
   }
 

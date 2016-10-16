@@ -19,7 +19,11 @@ class Teams(tag: Tag) extends Table[Team](tag, "TEAMS") {
 object TeamDAO extends TableQuery(new Teams(_)) {
   lazy val teams = TableQuery[Teams]
 
-  def create(db: Database, team: Team): Team = {
+  /**
+   * This function uses the TableQuery[Teams] to access all the teams and find the one
+   * we just added (with no id) and returns it from the database with the auto-generated id.
+   */
+  def createTeam(db: Database, team: Team): Team = {
     Await.result(
       db.run(
         teams returning teams.map(_.id) into ((t, id) => t.copy(id = Some(id))) += team
@@ -27,7 +31,7 @@ object TeamDAO extends TableQuery(new Teams(_)) {
     )
   }
 
-  def findById(db: Database, id: Int): Option[Team] = {
+  def findTeamById(db: Database, id: Int): Option[Team] = {
     Await.result(
       db.run(
         teams.filter(_.id === id)
@@ -37,7 +41,7 @@ object TeamDAO extends TableQuery(new Teams(_)) {
     )
   }
 
-  def update(db: Database, team: Team): Option[Team] ={
+  def updateTeam(db: Database, team: Team): Option[Team] ={
     Await.result(
       db.run(
         teams.filter(_.id === team.id)
@@ -49,7 +53,7 @@ object TeamDAO extends TableQuery(new Teams(_)) {
     )
   }
 
-  def deleteById(db: Database, id:Int): Boolean = {
+  def deleteTeamById(db: Database, id:Int): Boolean = {
     1 == Await.result(
           db.run(
             teams.filter(_.id === id)

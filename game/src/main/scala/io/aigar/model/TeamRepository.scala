@@ -9,19 +9,19 @@ class TeamRepository() {
   createSchema
 
   def createTeam(team: Team): Team = {
-    TeamDAO.create(db, team)
+    TeamDAO.createTeam(db, team)
   }
 
   def readTeam(id: Int): Option[Team] = {
-    TeamDAO.findById(db, id)
+    TeamDAO.findTeamById(db, id)
   }
 
   def updateTeam(team: Team): Option[Team] = {
-    TeamDAO.update(db, team)
+    TeamDAO.updateTeam(db, team)
   }
 
   def deleteTeam(id: Int): Boolean = {
-    TeamDAO.deleteById(db, id)
+    TeamDAO.deleteTeamById(db, id)
   }
 
   def getTeams(): List[Team] = {
