@@ -1,3 +1,5 @@
+import $ from "jquery";
+
 const screenCanvas = $("#screenCanvas")[0];
 const screenContext = screenCanvas.getContext("2d");
 const screenWidth = screenCanvas.width;
@@ -7,13 +9,13 @@ const screenHeight = screenCanvas.height;
 let xScreenPosOnMap = 0;
 let yScreenPosOnMap = 0;
 
-const mapCanvas = document.createElement('canvas');
-const mapContext = mapCanvas.getContext('2d');
+const mapCanvas = document.createElement("canvas");
+const mapContext = mapCanvas.getContext("2d");
 export const mapWidth = screenWidth * 3;
 export const mapHeight = screenHeight * 3;
 
-const miniMapCanvas = document.createElement('canvas');
-const miniMapContext = miniMapCanvas.getContext('2d');
+const miniMapCanvas = document.createElement("canvas");
+const miniMapContext = miniMapCanvas.getContext("2d");
 const miniMapWidth = screenWidth / 4;
 const miniMapHeight = screenHeight / 4;
 const miniMapPosX = screenWidth - miniMapWidth;
@@ -26,12 +28,7 @@ export function drawCellsOnMap(points) {
   mapCanvas.width = mapWidth;
   mapCanvas.height = mapHeight;
 
-  var i,
-  point,
-  len = points.length;
-  for (i = 0; i < len; i += 1) {
-    point = points[i];
-
+  for(const point of points) {
     mapContext.beginPath();
     mapContext.arc(point.x, point.y, point.radius, 0, Math.PI * 2, false);
     mapContext.fillStyle = "#ed1515";
@@ -52,30 +49,30 @@ export function drawMiniMap() {
 
   //MiniMap background
   miniMapContext.rect(0, 0, miniMapWidth, miniMapHeight);
-  miniMapContext.fillStyle = 'rgba(58, 58, 58, 0.85)';
+  miniMapContext.fillStyle = "rgba(58, 58, 58, 0.85)";
   miniMapContext.fill();
 
   //apply the old canvas to the new one
   miniMapContext.drawImage(mapCanvas, 0, 0, miniMapWidth, miniMapHeight);
 
-  drawMiniMapminiMapScreenPos();
+  drawMiniMapScreenPos();
 
   screenContext.drawImage(miniMapCanvas, miniMapPosX, 0);
   screenCanvas.style.background = "#000";
 }
 
-function drawMiniMapminiMapScreenPos() {
+function drawMiniMapScreenPos() {
   miniMapContext.strokeStyle = "#fff";
-  var xMiniMapPos = miniMapWidth / mapWidth * xScreenPosOnMap;
-  var yMiniMapPos = miniMapHeight / mapHeight * yScreenPosOnMap;
+  const xMiniMapPos = miniMapWidth / mapWidth * xScreenPosOnMap;
+  const yMiniMapPos = miniMapHeight / mapHeight * yScreenPosOnMap;
   miniMapContext.strokeRect(xMiniMapPos, yMiniMapPos, miniMapScreenPosWidth, miniMapScreenPosHeight);
 }
 
 function changeScreenPos(mousePos) {
-  var miniMapPos = {
+  let miniMapPos = {
     x : (mousePos.x - miniMapPosX) - (miniMapScreenPosWidth / 2),
     y : mousePos.y - (miniMapScreenPosHeight / 2)
-  }
+  };
   miniMapPos = keepInsideMap(miniMapPos);
 
   xScreenPosOnMap = miniMapPos.x * 12;
@@ -93,19 +90,19 @@ function keepInsideMap(pos) {
   } else if (pos.y > miniMapHeight - miniMapScreenPosHeight) {
     pos.y = miniMapHeight - miniMapScreenPosHeight;
   }
-  return pos
+  return pos;
 }
 
 function getMousePos(evt) {
-  var rect = screenCanvas.getBoundingClientRect();
+  const rect = screenCanvas.getBoundingClientRect();
   return {
     x : (evt.clientX - rect.left) / (rect.right - rect.left) * screenCanvas.width,
     y : (evt.clientY - rect.top) / (rect.bottom - rect.top) * screenCanvas.height
   };
 }
 
-screenCanvas.addEventListener('click', function (evt) {
-  var mousePos = getMousePos(evt);
+screenCanvas.addEventListener("click", function (evt) {
+  const mousePos = getMousePos(evt);
   if (mousePos.x > miniMapPosX && mousePos.y < miniMapHeight) {
     changeScreenPos(mousePos);
   }
