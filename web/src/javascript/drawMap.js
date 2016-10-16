@@ -23,14 +23,14 @@ const miniMapPosX = screenWidth - miniMapWidth;
 const miniMapScreenPosWidth = miniMapWidth / 3;
 const miniMapScreenPosHeight = miniMapHeight / 3;
 
-export function drawCellsOnMap(points) {
+export function drawCellsOnMap(cells){
   //set dimensions
   mapCanvas.width = mapWidth;
   mapCanvas.height = mapHeight;
 
-  for(const point of points) {
+  for(const cell of cells) {
     mapContext.beginPath();
-    mapContext.arc(point.x, point.y, point.radius, 0, Math.PI * 2, false);
+    mapContext.arc(cell.position.x, cell.position.y, cell.mass, 0, Math.PI * 2, false);
     mapContext.fillStyle = "#ed1515";
     mapContext.fill();
   }
