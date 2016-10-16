@@ -12,8 +12,8 @@ export default {
             "id": 5,
             "mass": 50,
             "position": {
-              "x": 10.0,
-              "y": 10.0
+              "x": 300.0,
+              "y": 550.0
             },
             "target": {
               "x": 10.0,
@@ -37,7 +37,7 @@ export default {
       {
         "id": 13,
         "name": "wow",
-        "total_mass": 555,
+        "total_mass": 455,
         "cells": [
           {
             "id": 7,
@@ -52,7 +52,26 @@ export default {
             }
           }
         ]
-      }
+      },
+      {
+        "id": 42,
+        "name": "hmm",
+        "total_mass": 555,
+        "cells": [
+          {
+            "id": 7,
+            "mass": 60,
+            "position": {
+              "x": 1100.0,
+              "y": 600.0
+            },
+            "target": {
+              "x": 10.0,
+              "y": 10.0
+            }
+          }
+        ]
+      },
     ],
     "food": {
       "regular": [

@@ -26,18 +26,27 @@ export function createGameCanvas() {
 }
 
 export function initMap(canvas) {
-  //set dimensions
   canvas.width = mapWidth;
   canvas.height = mapHeight;
 }
 
-export function drawCellsOnMap(cells, canvas) {
+export function getPlayerColor(players, currentPlayer) {
+  const playerPosition = players
+    .sort((a, b) => a.id - b.id)
+    .findIndex(player => player.id === currentPlayer.id);
+  return constants.playerColors[playerPosition];
+}
+
+export function drawPlayersOnMap(players, canvas) {
   const context = canvas.getContext("2d");
-  for(const cell of cells) {
-    context.beginPath();
-    context.arc(cell.position.x, cell.position.y, cell.mass, 0, Math.PI * 2, false);
-    context.fillStyle = "#ed1515";
-    context.fill();
+  for(const player of players) {
+    const color = getPlayerColor(players, player);
+    for(const cell of player.cells) {
+      context.beginPath();
+      context.arc(cell.position.x, cell.position.y, cell.mass, 0, Math.PI * 2, false);
+      context.fillStyle = color;
+      context.fill();
+    }
   }
 }
 
