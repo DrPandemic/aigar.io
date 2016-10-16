@@ -5,7 +5,11 @@ import slick.driver.H2Driver.api._
 
 class TeamRepository() {
   val cpds = new ComboPooledDataSource
-  val db = createDatabase(sys.props.get("testing").get == "true")
+  val dev = sys.props.get("testing") match {
+    case Some(value) => value == "true"
+    case None => false
+  }
+  val db = createDatabase(dev)
   createSchema
 
   def createTeam(team: Team): Team = {
@@ -28,7 +32,7 @@ class TeamRepository() {
     TeamDAO.getTeams(db)
   }
 
-  def createDatabase(inMemory: Boolean): Database ={
+  def createDatabase(inMemory: Boolean): Database = {
     if(inMemory){
       cpds.setDriverClass("org.h2.Driver")
       cpds.setJdbcUrl("jdbc:h2:mem:test"+ new scala.util.Random(new java.security.SecureRandom()))
@@ -41,15 +45,15 @@ class TeamRepository() {
     Database.forDataSource(cpds)
   }
 
-  def createSchema: Unit ={
+  def createSchema: Unit = {
     TeamDAO.createSchema(db)
   }
 
-  def dropSchema: Unit ={
+  def dropSchema: Unit = {
     TeamDAO.dropSchema(db)
   }
 
-  def closeConnection: Unit ={
+  def closeConnection: Unit = {
     cpds.close()
   }
 }
