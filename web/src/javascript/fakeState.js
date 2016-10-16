@@ -37,7 +37,7 @@ export default {
       {
         "id": 13,
         "name": "wow",
-        "total_mass": 555,
+        "total_mass": 455,
         "cells": [
           {
             "id": 7,
