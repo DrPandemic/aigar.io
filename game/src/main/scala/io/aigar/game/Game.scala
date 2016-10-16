@@ -1,6 +1,7 @@
 package io.aigar.game
 
 import io.aigar.game._
+import com.github.jpbetz.subspace._
 
 /**
  * Game holds the logic for an individual game being played
@@ -8,25 +9,39 @@ import io.aigar.game._
  */
 object Game {
   final val RankedGameId = 0
+  final val PlayersInRankedGame = 15
 }
 
-class Game(val id: Int) {
-  def update {
-    //TODO implement
+class Game(val id: Int, playersInGame: Int) {
+  val grid = new Grid(playersInGame * Grid.WidthPerPlayer, playersInGame * Grid.HeightPerPlayer)
+  val players = createPlayers
+  var tick = 0
+
+  def update(deltaSeconds: Float) {
+    players.foreach { _.update(deltaSeconds) }
+
+    tick += 1
   }
 
   def state = {
-    //TODO really implement
+    //TODO really implement and update spec to add tests
     serializable.GameState(
         id,
-        5,
-        List(
-          serializable.Player(12, "such", 555, List(serializable.Cell(5, 5, serializable.Position(10,10), serializable.Position(10, 10)))),
-          serializable.Player(13, "wow", 555, List[serializable.Cell]())
-        ),
+        tick,
+        players.map(_.state).toList,
         serializable.Food(List(serializable.Position(5,5)), List[serializable.Position](), List[serializable.Position]()),
-        serializable.Dimensions(10, 10),
+        grid.state,
         List[serializable.Position]()
       )
+  }
+
+  def createPlayers = {
+    val ids = 1 to playersInGame
+
+    ids.map { new Player(_, spawnPosition) }
+  }
+
+  def spawnPosition = {
+    grid.randomPosition
   }
 }
