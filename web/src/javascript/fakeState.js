@@ -52,7 +52,26 @@ export default {
             }
           }
         ]
-      }
+      },
+      {
+        "id": 42,
+        "name": "hmm",
+        "total_mass": 555,
+        "cells": [
+          {
+            "id": 7,
+            "mass": 60,
+            "position": {
+              "x": 1100.0,
+              "y": 600.0
+            },
+            "target": {
+              "x": 10.0,
+              "y": 10.0
+            }
+          }
+        ]
+      },
     ],
     "food": {
       "regular": [

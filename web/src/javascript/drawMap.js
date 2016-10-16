@@ -30,24 +30,17 @@ export function initMap(canvas) {
   canvas.height = mapHeight;
 }
 
-// http://stackoverflow.com/a/16348977
-export function stringToColour(str) {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  let colour = "#";
-  for (let i = 0; i < 3; i++) {
-    const value = (hash >> (i * 8)) & 0xFF;
-    colour += ("00" + value.toString(16)).substr(-2);
-  }
-  return colour;
+export function getPlayerColor(players, currentPlayer) {
+  const playerPosition = players
+    .sort((a, b) => a.id - b.id)
+    .findIndex(player => player.id === currentPlayer.id);
+  return constants.playerColors[playerPosition];
 }
 
 export function drawPlayersOnMap(players, canvas) {
   const context = canvas.getContext("2d");
   for(const player of players) {
-    const color = stringToColour(player.name);
+    const color = getPlayerColor(players, player);
     for(const cell of player.cells) {
       context.beginPath();
       context.arc(cell.position.x, cell.position.y, cell.mass, 0, Math.PI * 2, false);
