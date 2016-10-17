@@ -6,8 +6,8 @@ import com.github.jpbetz.subspace._
 class Player(val id: Int, startPosition: Vector2) {
   var cells = List(new Cell(0, startPosition))
 
-  def update(deltaSeconds: Float) {
-    cells.foreach { _.update(deltaSeconds) }
+  def update(deltaSeconds: Float, grid: Grid) {
+    cells.foreach { _.update(deltaSeconds, grid) }
   }
 
   def state = {

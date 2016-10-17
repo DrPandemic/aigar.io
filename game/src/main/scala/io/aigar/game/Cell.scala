@@ -47,13 +47,17 @@ class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
   }
 
 
-  def update(deltaSeconds: Float) {
+  def update(deltaSeconds: Float, grid: Grid) {
     mass = decayedMass(deltaSeconds)
 
     target = behavior.update(deltaSeconds)
 
     velocity += acceleration * deltaSeconds
-    position += velocity * deltaSeconds
+    val tmp = position + velocity * deltaSeconds
+    position = new Vector2(
+      Math.max(0, Math.min(grid.width, tmp.x)),
+      Math.max(0, Math.min(grid.height, tmp.y))
+    );
   }
 
   def decayedMass(deltaSeconds: Float) = {

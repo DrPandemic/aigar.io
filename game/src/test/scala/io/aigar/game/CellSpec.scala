@@ -6,22 +6,24 @@ class CellSpec extends FlatSpec with Matchers {
   "A Cell" should "not initiate movement when its target is on itself" in {
     val cell = new Cell(1, new Vector2(42f, 42f))
     cell.target = new Vector2(42f, 42f)
+    val grid = new Grid(100, 100);
 
-    cell.update(1f)
+    cell.update(1f, grid)
 
     cell.position should equal(new Vector2(42f, 42f))
   }
-  
+
   it should "move towards its target when it is away from itself" in {
     val cell = new Cell(1, new Vector2(42f, 42f))
     cell.target = new Vector2(1000f, 1000f)
+    val grid = new Grid(100, 100);
 
     val initialDistance = cell.position.distanceTo(cell.target)
 
-    cell.update(1f)
+    cell.update(1f, grid)
 
     val finalDistance = cell.position.distanceTo(cell.target)
-    
+
     initialDistance should be > finalDistance
   }
 
@@ -55,6 +57,7 @@ class CellSpec extends FlatSpec with Matchers {
     state.id should equal(1)
     state.mass should equal(100)
   }
+<<<<<<< HEAD
 
   it should "not move without setting its target" in {
     val cell = new Cell(1, new Vector2(42f, 42f))
@@ -101,5 +104,65 @@ class CellSpec extends FlatSpec with Matchers {
     cell.update(1f)
 
     cell.behavior shouldBe 'updated
+  }
+
+  it should "not go below 0 x" in {
+    val cell = new Cell(1, new Vector2(-5, 5))
+    val grid = new Grid(10, 10);
+
+    cell.update(1f, grid)
+
+    cell.position.x should be >= 0f
+    cell.position.x should be <= 10f
+    cell.position.y should be >= 0f
+    cell.position.y should be <= 10f
+  }
+
+  it should "not go below 0 y" in {
+    val cell = new Cell(1, new Vector2(10, -5))
+    val grid = new Grid(10, 10);
+
+    cell.update(1f, grid)
+
+    cell.position.x should be >= 0f
+    cell.position.x should be <= 10f
+    cell.position.y should be >= 0f
+    cell.position.y should be <= 10f
+  }
+
+  it should "not go outside grid x boundary" in {
+    val cell = new Cell(1, new Vector2(12, 5))
+    val grid = new Grid(10, 10);
+
+    cell.update(1f, grid)
+
+    cell.position.x should be >= 0f
+    cell.position.x should be <= 10f
+    cell.position.y should be >= 0f
+    cell.position.y should be <= 10f
+  }
+
+  it should "not go outside grid y boundary" in {
+    val cell = new Cell(1, new Vector2(5, 12))
+    val grid = new Grid(10, 10);
+
+    cell.update(1f, grid)
+
+    cell.position.x should be >= 0f
+    cell.position.x should be <= 10f
+    cell.position.y should be >= 0f
+    cell.position.y should be <= 10f
+  }
+
+  it should "not go outside two grid boundaries at the same time" in {
+    val cell = new Cell(1, new Vector2(12, 12))
+    val grid = new Grid(10, 10);
+
+    cell.update(1f, grid)
+
+    cell.position.x should be >= 0f
+    cell.position.x should be <= 10f
+    cell.position.y should be >= 0f
+    cell.position.y should be <= 10f
   }
 }
