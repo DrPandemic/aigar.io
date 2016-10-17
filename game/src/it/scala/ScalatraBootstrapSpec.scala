@@ -1,4 +1,5 @@
-import io.aigar.controller._
+package io.aigar.it
+
 import io.aigar.controller.response._
 import io.aigar.game._
 

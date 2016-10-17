@@ -3,7 +3,7 @@ package io.aigar.model
 import com.mchange.v2.c3p0.ComboPooledDataSource
 import slick.driver.H2Driver.api._
 
-class TeamRepository() {
+class TeamRepository(databaseName: String = "") {
   val cpds = new ComboPooledDataSource
   val dev = sys.props.get("testing") match {
     case Some(value) => value == "true"
@@ -33,9 +33,9 @@ class TeamRepository() {
   }
 
   def createDatabase(inMemory: Boolean): Database = {
-    if(inMemory){
+    if(inMemory) {
       cpds.setDriverClass("org.h2.Driver")
-      cpds.setJdbcUrl("jdbc:h2:mem:test"+ new scala.util.Random(new java.security.SecureRandom()))
+      cpds.setJdbcUrl("jdbc:h2:mem:" + databaseName)
       cpds.setUser("root")
       cpds.setPassword("")
       cpds.setMinPoolSize(1)

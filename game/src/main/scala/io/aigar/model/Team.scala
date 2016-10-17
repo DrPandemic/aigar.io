@@ -1,10 +1,12 @@
 package io.aigar.model
 
 import slick.driver.H2Driver.api._
+import slick.jdbc.meta.MTable
 import slick.lifted.TableQuery
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.Await
+import scala.concurrent.{Await, Future}
 
 case class Team(id: Option[Int], teamSecret: String, teamName: String, score: Int)
 
@@ -71,11 +73,17 @@ object TeamDAO extends TableQuery(new Teams(_)) {
   }
 
   def createSchema(db: Database): Unit = {
-    Await.result(
-      db.run(
-        teams.schema.create
-      ), Duration.Inf
-    )
+    def createTableIfNotInTables(tables: Vector[MTable]): Future[Unit] = {
+      if (!tables.exists(_.name.name == teams.baseTableRow.tableName)) {
+        db.run(teams.schema.create)
+      } else {
+        Future()
+      }
+    }
+
+    val createTableIfNotExist: Future[Unit] = db.run(MTable.getTables).flatMap(createTableIfNotInTables)
+
+    Await.result(createTableIfNotExist, Duration.Inf)
   }
 
   def dropSchema(db: Database): Unit = {

@@ -2,7 +2,7 @@ package io.aigar.model
 
 import org.scalatest._
 
-class TeamRepositorySpec extends FlatSpec {
+class TeamRepositorySpec extends FlatSpec with Matchers {
 
   def withInMemDatabase(testCode: (TeamRepository, List[Team]) => Any) {
     val teamRepository = new TeamRepository
@@ -61,5 +61,10 @@ class TeamRepositorySpec extends FlatSpec {
 
   it should "return a list with all the teams" in withInMemDatabase { (teamRepository, listTeams) =>
     assert(teamRepository.getTeams() === listTeams)
+  }
+
+  it should "be possible to create two repo using the same DB" in {
+    new TeamRepository("something")
+    noException should be thrownBy new TeamRepository("something")
   }
 }
