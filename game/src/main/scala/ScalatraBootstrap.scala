@@ -9,7 +9,7 @@ import io.aigar.model.TeamRepository
 class ScalatraBootstrap extends LifeCycle {
   val teamRepository = new TeamRepository(None)
   val scoreThread = new ScoreThread
-  val game = new GameThread(scoreThread)
+  val game = new GameThread(scoreThread, fetchTeamIDs)
 
   override def init(context: ServletContext): Unit = {
     launchThreads
@@ -33,5 +33,17 @@ class ScalatraBootstrap extends LifeCycle {
   def launchThreads {
     new Thread(scoreThread).start
     new Thread(game).start
+  }
+
+  def fetchTeamIDs: List[Int] = {
+    val teams = teamRepository.getTeams()
+    
+    // TODO remove this once we have seeding
+    // No teams in the DB? Provide two fake teams to have something to look at
+    if (teams.isEmpty) {
+      return List(1,2)
+    }
+
+    teams.map(_.id).flatten  // only keep teams with ID != NULL
   }
 }
