@@ -55,5 +55,13 @@ class CellSpec extends FlatSpec with Matchers {
     state.id should equal(1)
     state.mass should equal(100)
   }
+
+  it should "not move without setting its target" in {
+    val cell = new Cell(1, new Vector2(42f, 42f))
+    
+    cell.update(1f)
+
+    cell.position should equal(new Vector2(42f, 42f))
+  }
 }
 

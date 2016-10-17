@@ -17,7 +17,7 @@ object Cell {
 
 class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
   var position = startPosition
-  var target = new Vector2(0f, 0f)
+  var target = startPosition
   var mass = Cell.MinMass
   private var _velocity = new Vector2(0f, 0f)
 
