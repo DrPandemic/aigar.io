@@ -15,7 +15,7 @@ object Game {
 class Game(val id: Int, playersInGame: Int) {
   val grid = new Grid(playersInGame * Grid.WidthPerPlayer, playersInGame * Grid.HeightPerPlayer)
   val players = createPlayers
-  val food = new Resources
+  val resources = new Resources
   var tick = 0
 
   def update(deltaSeconds: Float) {
@@ -30,7 +30,7 @@ class Game(val id: Int, playersInGame: Int) {
         id,
         tick,
         players.map(_.state).toList,
-        food.state,
+        resources.state,
         grid.state,
         List[serializable.Position]()
       )
