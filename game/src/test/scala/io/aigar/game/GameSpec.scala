@@ -4,13 +4,13 @@ import com.github.jpbetz.subspace._
 
 class GameSpec extends FlatSpec with Matchers {
   "A Game" should "generate a new state object every time (thread-safety)" in {
-    val game = new Game(42, 10)
+    val game = new Game(42, List())
     val state1 = game.state
     game.state should not be theSameInstanceAs(state1)
   }
 
   it should "update its tick count" in {
-    val game = new Game(42, 10)
+    val game = new Game(42, List())
     game.tick should equal(0)
 
     game.update(1f)
@@ -19,13 +19,13 @@ class GameSpec extends FlatSpec with Matchers {
   }
 
   it should "create just enough players" in {
-    val game = new Game(42, 10)
+    val game = new Game(42, 1 to 10 toList)
 
     game.players should have size 10
   }
 
   it should "spawn players at distinct positions at creation" in {
-    val game = new Game(42, 10)
+    val game = new Game(42, 1 to 10 toList)
 
     val positions = game.players.map { _.cells.head.position }
 
@@ -36,16 +36,8 @@ class GameSpec extends FlatSpec with Matchers {
     positions.toSet should have size positions.length
   }
 
-  it should "create players with distinct IDs" in {
-    val game = new Game(42, 10)
-
-    val ids = game.players.map { _.id }
-
-    ids.toSet should have size ids.length
-  }
-
   it should "update its players" in {
-    val game = new Game(42, 10)
+    val game = new Game(42, List(1))
     val player = game.players.head
     val cell = player.cells.head
     cell.position = Vector2(0, 0)
@@ -61,15 +53,15 @@ class GameSpec extends FlatSpec with Matchers {
   }
 
   it should "create a bigger grid if there are more players" in {
-    val game1 = new Game(42, 1)
-    val game2 = new Game(42, 10)
+    val game1 = new Game(42, List(1))
+    val game2 = new Game(42, 1 to 10 toList)
 
     game2.grid.width should be > game1.grid.width
     game2.grid.height should be > game1.grid.height
   }
 
   it should "create a state with the right info" in {
-    val game = new Game(42, 10)
+    val game = new Game(42, 1 to 10 toList)
 
     val state = game.state
 

@@ -6,11 +6,10 @@ package io.aigar.game
  */
 object Game {
   final val RankedGameId = 0
-  final val PlayersInRankedGame = 15
 }
 
-class Game(val id: Int, playersInGame: Int) {
-  val grid = new Grid(playersInGame * Grid.WidthPerPlayer, playersInGame * Grid.HeightPerPlayer)
+class Game(val id: Int, playerIDs: List[Int]) {
+  val grid = new Grid(playerIDs.length * Grid.WidthPerPlayer, playerIDs.length * Grid.HeightPerPlayer)
   val players = createPlayers
   val resources = new Resources(grid)
   var tick = 0
@@ -35,9 +34,7 @@ class Game(val id: Int, playersInGame: Int) {
   }
 
   def createPlayers = {
-    val ids = 1 to playersInGame
-
-    ids.map { new Player(_, spawnPosition) }
+    playerIDs.map { new Player(_, spawnPosition) }
   }
 
   def spawnPosition = {

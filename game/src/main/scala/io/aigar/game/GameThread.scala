@@ -25,7 +25,7 @@ class GameThread(scoreThread: ScoreThread) extends Runnable {
   def gameState(gameId: Int) = { states get gameId }
 
   def createRankedGame = {
-    new Game(Game.RankedGameId, Game.PlayersInRankedGame)
+    new Game(Game.RankedGameId, List())
   }
 
   def run {
