@@ -43,6 +43,6 @@ class ScalatraBootstrap(teamRepository: TeamRepository = new TeamRepository(None
       return List(1,2)
     }
 
-    teams.map(_.id).flatten  // only keep teams with ID != NULL
+    teams.map(_.id).flatten  // only keep IDs that are not None
   }
 }

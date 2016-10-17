@@ -19,7 +19,7 @@ class ScalatraBootstrapSpec extends FlatSpec with Matchers {
     }
   }
 
-  "Creating the application" should "create a game with the players from the teams repository" in withInMemDatabase { (teamRepository) =>
+  "Creating the application" should "create a game with the players from the team repository" in withInMemDatabase { (teamRepository) =>
     val bootstrap = new ScalatraBootstrap(teamRepository)
     val expectedIds = teamRepository.getTeams.map(_.id).flatten
 
@@ -28,7 +28,6 @@ class ScalatraBootstrapSpec extends FlatSpec with Matchers {
     val state = bootstrap.game.gameState(Game.RankedGameId)
 
     state should not be(None)
-
     state.get.players.map(_.id) should contain theSameElementsAs(expectedIds)
   }
 }
