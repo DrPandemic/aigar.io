@@ -21,8 +21,7 @@ object Cell {
   final val MassDecayPerSecond = 0.005f
 }
 
-class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
-  var position = startPosition
+class Cell(id: Int, grid: Grid, startPosition: Vector2 = new Vector2(0f, 0f)) {
   var target = startPosition
   var behavior: SteeringBehavior = new NoBehavior(this)
   var _mass = Cell.MinMass
@@ -45,6 +44,15 @@ class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
     _mass = max(m, Cell.MinMass)
   }
 
+  private var _position = new Vector2(0, 0)
+  position = startPosition
+  def position = _position
+  def position_=(pos:Vector2) {
+    _position = new Vector2(
+      Math.max(0, Math.min(grid.width, pos.x)),
+      Math.max(0, Math.min(grid.height, pos.y))
+    );
+  }
 
   def update(deltaSeconds: Float) {
     mass = decayedMass(deltaSeconds)
