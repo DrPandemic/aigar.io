@@ -22,6 +22,13 @@ const miniMapPosX = screenWidth - miniMapWidth;
 const miniMapScreenPosWidth = miniMapWidth / 3;
 const miniMapScreenPosHeight = miniMapHeight / 3;
 
+function drawCircle(context, position, radius, color) {
+  context.beginPath();
+  context.arc(position.x, position.y, radius, 0, Math.PI * 2, false);
+  context.fillStyle = color;
+  context.fill();
+}
+
 export function createGameCanvas() {
   return document.createElement("canvas");
 }
@@ -43,10 +50,7 @@ export function drawPlayersOnMap(players, canvas) {
   for(const player of players) {
     const color = getPlayerColor(players, player);
     for(const cell of player.cells) {
-      context.beginPath();
-      context.arc(cell.position.x, cell.position.y, cell.mass, 0, Math.PI * 2, false);
-      context.fillStyle = color;
-      context.fill();
+      drawCircle(context, cell.position, cell.mass, color);
     }
   }
 }
@@ -55,10 +59,7 @@ export function drawFoodOnMap(foods, canvas) {
   const context = canvas.getContext("2d");
   const drawFood = (foods, color) => {
     for(const food of foods) {
-      context.beginPath();
-      context.arc(food.x, food.y, constants.foodMass, 0, Math.PI * 2, false);
-      context.fillStyle = color;
-      context.fill();
+      drawCircle(context, food.position, food.mass, color);
     }
   };
 
