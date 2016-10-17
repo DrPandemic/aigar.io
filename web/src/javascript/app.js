@@ -1,13 +1,15 @@
 import fakeState from "./fakeState";
-import {draw as drawGame} from "./game";
+import {draw as drawGame, fetchState} from "./game";
 import {drawLeaderboard} from "./gameLeaderboard";
 import {createGameCanvas} from "./drawMap";
 
 const gameCanvas = createGameCanvas();
+let currentState = fakeState.data;
 
-function updateLoop() {
-  drawGame(fakeState.data, gameCanvas);
-  drawLeaderboard(fakeState.data);
+async function updateLoop() {
+  currentState = await fetchState(0);
+  drawGame(currentState, gameCanvas);
+  drawLeaderboard(currentState);
 }
 
 setInterval(updateLoop, 1000/24);
