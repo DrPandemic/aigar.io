@@ -182,8 +182,6 @@ table {
   width:100%;
   background-color: $primary-table-color;
   color: $secondary-color;
-}
-.table {
   margin-bottom: 0px;
 }
 
@@ -197,4 +195,13 @@ table {
   width:100%;
   background-color: $secondary-table-color;
   color: $secondary-color;
+}
+
+.leaderboard-table > tbody > tr > td {
+  vertical-align: middle;
+}
+
+.color-box {
+  width: 10px;
+  height: 10px;
 }

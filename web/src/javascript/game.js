@@ -1,18 +1,15 @@
 import {
-  drawCellsOnMap,
+  drawFoodOnMap,
   drawMap,
   drawMiniMap,
+  drawPlayersOnMap,
+  initMap,
 } from "./drawMap";
 
-function extractPointsFromState(gameState) {
-  return [].concat.apply(...gameState.players.map((p) => p.cells));
-}
-
-export function draw(gameState) {
-  drawCellsOnMap(extractPointsFromState(gameState));
-  drawMap();
-  drawMiniMap();
-}
-
-export function update(gameState) {
+export function draw(gameState, canvas) {
+  initMap(canvas);
+  drawFoodOnMap(gameState.food, canvas);
+  drawPlayersOnMap(gameState.players, canvas);
+  drawMap(canvas);
+  drawMiniMap(canvas);
 }
