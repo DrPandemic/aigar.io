@@ -2,6 +2,7 @@ package io.aigar.model
 
 import com.mchange.v2.c3p0.ComboPooledDataSource
 import slick.driver.H2Driver.api._
+import java.util.logging.{Level, Logger}
 
 class TeamRepository(databaseName: String = "") {
   val cpds = new ComboPooledDataSource
@@ -34,6 +35,7 @@ class TeamRepository(databaseName: String = "") {
 
   def createDatabase(inMemory: Boolean): Database = {
     if(inMemory) {
+      Logger.getLogger("com.mchange.v2.c3p0").setLevel(Level.OFF)
       cpds.setDriverClass("org.h2.Driver")
       cpds.setJdbcUrl("jdbc:h2:mem:" + databaseName)
       cpds.setUser("root")

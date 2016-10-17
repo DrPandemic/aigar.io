@@ -63,7 +63,7 @@ class TeamRepositorySpec extends FlatSpec with Matchers {
     assert(teamRepository.getTeams() === listTeams)
   }
 
-  it should "be possible to create two repo using the same DB" in {
+  it should "be possible to create two repos using the same DB" in {
     new TeamRepository("something")
     noException should be thrownBy new TeamRepository("something")
   }
