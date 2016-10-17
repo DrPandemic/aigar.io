@@ -2,10 +2,15 @@ package io.aigar.model
 
 import com.mchange.v2.c3p0.ComboPooledDataSource
 import slick.driver.H2Driver.api._
+import java.util.logging.{Level, Logger}
 
-class TeamRepository() {
+class TeamRepository(databaseName: String = "") {
   val cpds = new ComboPooledDataSource
-  val db = createDatabase(sys.props.get("testing").get == "true")
+  val dev = sys.props.get("testing") match {
+    case Some(value) => value == "true"
+    case None => false
+  }
+  val db = createDatabase(dev)
   createSchema
 
   def createTeam(team: Team): Team = {
@@ -28,10 +33,11 @@ class TeamRepository() {
     TeamDAO.getTeams(db)
   }
 
-  def createDatabase(inMemory: Boolean): Database ={
-    if(inMemory){
+  def createDatabase(inMemory: Boolean): Database = {
+    if(inMemory) {
+      Logger.getLogger("com.mchange.v2.c3p0").setLevel(Level.OFF)
       cpds.setDriverClass("org.h2.Driver")
-      cpds.setJdbcUrl("jdbc:h2:mem:test"+ new scala.util.Random(new java.security.SecureRandom()))
+      cpds.setJdbcUrl("jdbc:h2:mem:" + databaseName)
       cpds.setUser("root")
       cpds.setPassword("")
       cpds.setMinPoolSize(1)
@@ -41,15 +47,15 @@ class TeamRepository() {
     Database.forDataSource(cpds)
   }
 
-  def createSchema: Unit ={
+  def createSchema: Unit = {
     TeamDAO.createSchema(db)
   }
 
-  def dropSchema: Unit ={
+  def dropSchema: Unit = {
     TeamDAO.dropSchema(db)
   }
 
-  def closeConnection: Unit ={
+  def closeConnection: Unit = {
     cpds.close()
   }
 }

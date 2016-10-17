@@ -1,3 +1,5 @@
+package io.aigar.it
+
 import org.scalatra.test.specs2._
 import org.scalatra.servlet._
 import org.eclipse.jetty.servlet._
