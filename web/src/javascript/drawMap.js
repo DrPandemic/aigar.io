@@ -57,7 +57,7 @@ export function drawFoodOnMap(foods, canvas) {
   drawFood(foods.gold, constants.goldColor);
 }
 
-export function drawMap(canvas){
+export function drawMap(canvas) {
   screenContext.clearRect(0, 0, screenWidth, screenHeight);
   screenContext.drawImage(canvas, xScreenPosOnMap, yScreenPosOnMap, screenWidth, screenHeight, 0, 0, screenWidth, screenHeight);
 }
