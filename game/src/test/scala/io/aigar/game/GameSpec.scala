@@ -12,7 +12,7 @@ class GameSpec extends FlatSpec with Matchers {
   it should "update its tick count" in {
     val game = new Game(42, 10)
     game.tick should equal(0)
-
+    
     game.update(1f)
 
     game.tick should equal(1)

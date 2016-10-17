@@ -1,5 +1,8 @@
 package io.aigar.game
 
+import io.aigar.game._
+import com.github.jpbetz.subspace._
+
 /**
  * Game holds the logic for an individual game being played
  * (e.g. the ranked game or a private test game).
@@ -36,7 +39,7 @@ class Game(val id: Int, playersInGame: Int) {
   def createPlayers = {
     val ids = 1 to playersInGame
 
-    ids.map { new Player(_, spawnPosition, grid) }
+    ids.map { new Player(_, spawnPosition) }
   }
 
   def spawnPosition = {

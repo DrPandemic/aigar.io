@@ -7,7 +7,6 @@ object Grid {
   final val WidthPerPlayer = 100
   final val HeightPerPlayer = 100
 }
-
 class Grid(val width: Int, val height: Int) {
   val random = new Random()
 
