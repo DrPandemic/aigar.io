@@ -26,7 +26,7 @@ case class Player(
   total_mass: Integer,
   cells: List[Cell]
 )
-case class Food(
+case class Resources(
   regular: List[Position],
   silver: List[Position],
   gold: List[Position]
@@ -35,7 +35,7 @@ case class GameState(
   id: Int,
   tick: Int,
   players: List[Player],
-  food: Food,
+  food: Resources,
   map: Dimensions,
   viruses: List[Position]
 )
