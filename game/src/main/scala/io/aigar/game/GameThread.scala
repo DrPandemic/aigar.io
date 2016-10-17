@@ -1,5 +1,7 @@
 package io.aigar.game
 
+import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
+
 /**
  * GameThread is the thread that runs continuously through the competition that
  * takes care of updating the individual games and processing the queued inputs
@@ -11,13 +13,18 @@ class GameThread extends Runnable {
   private var states: Map[Int, io.aigar.game.serializable.GameState] = Map()
   private var games: List[Game] = List(createRankedGame)
 
+  final val actionQueue: BlockingQueue[ActionQueryWithId] = new LinkedBlockingQueue[ActionQueryWithId]()
+
+  var previousTime = 0f
+  var currentTime = MillisecondsPerTick / 1000f // avoid having an initial 0 delta time
+
   /**
    * Safe way to get the game state of a particular game from another thread.
    */
   def gameState(gameId: Int) = { states get gameId }
 
   def createRankedGame = {
-    new Game(Game.RankedGameId)
+    new Game(Game.RankedGameId, Game.PlayersInRankedGame)
   }
 
   def run {
@@ -30,9 +37,23 @@ class GameThread extends Runnable {
 
   def updateGames {
     for (game <- games) {
-      game.update
+      val deltaTime = currentTime - previousTime
+      game.update(deltaTime)
 
       states = states + (game.id -> game.state)
+
+      previousTime = currentTime
+      currentTime = time
     }
+  }
+
+  /**
+   * Current time, in seconds.
+   */
+  final val NanoSecondsPerMillisecond = 1000000f
+  final val MillisecondsPerSecond = 1000f
+  final val NanoSecondsPerSecond = NanoSecondsPerMillisecond * MillisecondsPerSecond
+  def time: Float = {
+    System.nanoTime / NanoSecondsPerSecond
   }
 }

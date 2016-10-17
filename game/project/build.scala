@@ -29,6 +29,7 @@ object AigarBuild extends Build {
       resolvers += Classpaths.typesafeReleases,
       resolvers += "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
       libraryDependencies ++= deps,
+      testOptions += Tests.Setup(_ => sys.props("testing") = "true"),
       scalateTemplates)
 
   lazy val deps = Seq(
