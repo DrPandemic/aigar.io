@@ -47,7 +47,7 @@ class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
 
 
   def update(deltaSeconds: Float) {
-    mass -= massDecay(deltaSeconds)
+    mass = decayedMass(deltaSeconds)
 
     target = behavior.update(deltaSeconds)
 
@@ -55,8 +55,8 @@ class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
     position += velocity * deltaSeconds
   }
 
-  def massDecay(deltaSeconds: Float) = {
-    mass * pow(Cell.MassDecayPerSecond, deltaSeconds).toFloat
+  def decayedMass(deltaSeconds: Float) = {
+    mass * pow(1f - Cell.MassDecayPerSecond, deltaSeconds).toFloat
   }
 
   def acceleration: Vector2 = {

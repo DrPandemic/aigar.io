@@ -81,6 +81,19 @@ class CellSpec extends FlatSpec with Matchers {
     cell.mass should equal(1000f * (1f - Cell.MassDecayPerSecond))
   }
 
+  it should "lose the same mass regardless of time increments" in {
+    val cell1 = new Cell(1, new Vector2(0f, 0f))
+    val cell2 = new Cell(2, new Vector2(0f, 0f))
+    cell1.mass = 1000f
+    cell2.mass = 1000f
+
+    cell1.update(0.5f)
+    cell2.update(0.25f)
+    cell2.update(0.25f)
+
+    cell1.mass should equal(cell2.mass)
+  }
+
   it should "update its behavior on update" in {
     val cell = new Cell(1, new Vector2(0f, 0f))
     cell.behavior = new TestBehavior
