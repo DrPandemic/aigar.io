@@ -68,7 +68,7 @@ class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
   }
 
   def contains(pos: Vector2): Boolean = {
-    if ( mass >= sqrt(exp(position.x - pos.x) + exp(position.y - pos.y))){
+    if ( mass >= sqrt(pow(position.x - pos.x,2) + pow(position.y - pos.y,2))){
       return true
     }
     return false

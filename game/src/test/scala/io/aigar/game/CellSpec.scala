@@ -96,7 +96,7 @@ class CellSpec extends FlatSpec with Matchers {
     cell.mass = 3
 
     val vec = new Vector2(42f, 42f)
-    cell.contains(vec) should equal(true)
+    cell.contains(vec) should equal(false)
   }
 
   it should "enforce a minimum mass" in {
