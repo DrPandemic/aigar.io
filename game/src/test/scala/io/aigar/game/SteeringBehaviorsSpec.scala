@@ -1,4 +1,5 @@
 import io.aigar.game._
+import scala.math._
 import org.scalatest._
 import com.github.jpbetz.subspace._
 
@@ -40,6 +41,25 @@ class SteeringBehaviorSpec extends FlatSpec with Matchers {
     // Specific to wandering behavior: target should be within the circle ahead
     // of our cell
     distance should be <= 2 * WanderingBehavior.CircleRadius
+  }
+
+  it should "return a circle center ahead of the cell" in {
+    val cell = new Cell(1, Vector2(0f, 0f))
+    cell.target = Vector2(5f, 0f)
+    val behavior = new WanderingBehavior(cell)
+
+    behavior.circleCenter should equal(Vector2(WanderingBehavior.CircleDistance, 0f))
+  }
+
+  it should "return a displacement along the circle based on wander angle" in {
+    val cell = new Cell(1, Vector2(0f, 0f))
+    val behavior = new WanderingBehavior(cell)
+    behavior.wanderAngle = Pi.toFloat
+
+    val displacement = behavior.displacementOnCircle
+
+    displacement.x should equal(-WanderingBehavior.CircleRadius +- 1e-5f)
+    displacement.y should equal(0f +- 1e-5f)
   }
 }
 
