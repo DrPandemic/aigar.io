@@ -1,5 +1,6 @@
 package io.aigar.game
 
+import scala.math.{max, round, pow}
 import io.aigar.game.Vector2Utils._
 import com.github.jpbetz.subspace._
 
@@ -12,14 +13,19 @@ object Cell {
   /**
    * Default mass of a cell (at spawn).
    */
-  final val MinMass = 1 // TODO determine this once we have visualization/etc.
+  final val MinMass = 10f
+
+  /**
+   * Ratio of mass lost per second.
+   */
+  final val MassDecayPerSecond = 0.005f
 }
 
 class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
   var position = startPosition
   var target = startPosition
-  var mass = Cell.MinMass
   var behavior: SteeringBehavior = new NoBehavior(this)
+  var _mass = Cell.MinMass
   private var _velocity = new Vector2(0f, 0f)
 
   /**
@@ -34,13 +40,23 @@ class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
   def velocity_=(vel:Vector2) {
     _velocity = if (vel.magnitude < maxSpeed) vel else vel.normalize * maxSpeed
   }
+  def mass = _mass
+  def mass_=(m: Float) {
+    _mass = max(m, Cell.MinMass)
+  }
 
 
   def update(deltaSeconds: Float) {
+    mass = decayedMass(deltaSeconds)
+
     target = behavior.update(deltaSeconds)
 
     velocity += acceleration * deltaSeconds
     position += velocity * deltaSeconds
+  }
+
+  def decayedMass(deltaSeconds: Float) = {
+    mass * pow(1f - Cell.MassDecayPerSecond, deltaSeconds).toFloat
   }
 
   def acceleration: Vector2 = {
@@ -51,7 +67,7 @@ class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
 
   def state = {
     serializable.Cell(id,
-                      mass,
+                      round(mass).toInt,
                       position.state,
                       target.state)
   }

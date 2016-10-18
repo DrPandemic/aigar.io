@@ -1,5 +1,6 @@
 package io.aigar.game
 
+import scala.math.round
 import com.github.jpbetz.subspace._
 
 class Player(val id: Int, startPosition: Vector2) {
@@ -10,7 +11,7 @@ class Player(val id: Int, startPosition: Vector2) {
   }
 
   def state = {
-    val mass = cells.map(_.mass).sum
+    val mass = round(cells.map(_.mass).sum).toInt
     serializable.Player(id,
                         id.toString,
                         mass,
