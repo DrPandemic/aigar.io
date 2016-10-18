@@ -57,12 +57,12 @@ class CellSpec extends FlatSpec with Matchers {
     state.id should equal(1)
     state.mass should equal(100)
   }
-<<<<<<< HEAD
 
   it should "not move without setting its target" in {
     val cell = new Cell(1, new Vector2(42f, 42f))
+    val grid = new Grid(200, 200)
     
-    cell.update(1f)
+    cell.update(1f, grid)
 
     cell.position should equal(new Vector2(42f, 42f))
   }
@@ -79,7 +79,7 @@ class CellSpec extends FlatSpec with Matchers {
     val cell = new Cell(1, new Vector2(0f, 0f))
     cell.mass = 1000f
 
-    cell.update(1f)
+    cell.update(1f, new Grid(0, 0))
 
     cell.mass should equal(1000f * (1f - Cell.MassDecayPerSecond))
   }
@@ -87,12 +87,13 @@ class CellSpec extends FlatSpec with Matchers {
   it should "lose the same mass regardless of time increments" in {
     val cell1 = new Cell(1, new Vector2(0f, 0f))
     val cell2 = new Cell(2, new Vector2(0f, 0f))
+    val grid = new Grid(0, 0)
     cell1.mass = 1000f
     cell2.mass = 1000f
 
-    cell1.update(0.5f)
-    cell2.update(0.25f)
-    cell2.update(0.25f)
+    cell1.update(0.5f, grid)
+    cell2.update(0.25f, grid)
+    cell2.update(0.25f, grid)
 
     cell1.mass should equal(cell2.mass)
   }
@@ -101,7 +102,7 @@ class CellSpec extends FlatSpec with Matchers {
     val cell = new Cell(1, new Vector2(0f, 0f))
     cell.behavior = new TestBehavior
 
-    cell.update(1f)
+    cell.update(1f, new Grid(0, 0))
 
     cell.behavior shouldBe 'updated
   }

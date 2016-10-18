@@ -26,7 +26,6 @@ class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
   var target = startPosition
   var behavior: SteeringBehavior = new NoBehavior(this)
   var _mass = Cell.MinMass
-  var mass = Cell.MinMass
   private var _velocity = new Vector2(0f, 0f)
 
   /**
