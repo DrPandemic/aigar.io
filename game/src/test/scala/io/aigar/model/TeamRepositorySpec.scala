@@ -5,7 +5,7 @@ import org.scalatest._
 class TeamRepositorySpec extends FlatSpec with Matchers {
 
   def withInMemDatabase(testCode: (TeamRepository, List[Team]) => Any) {
-    val teamRepository = new TeamRepository(new scala.util.Random(new java.security.SecureRandom()).toString)
+    val teamRepository = new TeamRepository(None)
     val team1 = teamRepository.createTeam(Team(None, "EdgQWhJ!v&", "team1", 0))
     val team2 = teamRepository.createTeam(Team(None, "not_that_secret", "team2", 50))
     val team3 = teamRepository.createTeam(Team(None, "xx3ddfas3", "team3", 56))
@@ -64,7 +64,7 @@ class TeamRepositorySpec extends FlatSpec with Matchers {
   }
 
   it should "be possible to create two repos using the same DB" in {
-    new TeamRepository("something")
-    noException should be thrownBy new TeamRepository("something")
+    new TeamRepository(Some("something"))
+    noException should be thrownBy new TeamRepository(Some("something"))
   }
 }
