@@ -54,7 +54,7 @@ object WanderingBehavior {
   final val CircleRadius = 10f
 
   // how much (radians) the wandering angle can shift per second
-  final val AngleChange = Pi.toFloat / 2f
+  final val AngleChange = Pi.toFloat / 4f
 }
 
 /**
