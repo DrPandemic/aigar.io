@@ -63,5 +63,17 @@ object WanderingBehavior {
  * Use this when an entity is not controlled by the server.
  */
 class NoBehavior(cell: Cell) extends SteeringBehavior {
-  def update(deltaSeconds: Float) = cell.target
+  var inactivityTimeLeft = NoBehavior.MaxInactivitySeconds
+
+  def update(deltaSeconds: Float) = {
+    inactivityTimeLeft -= deltaSeconds
+    if (inactivityTimeLeft < 0f) {
+      cell.behavior = new WanderingBehavior(cell)
+    }
+
+    cell.target 
+  }
+}
+object NoBehavior {
+  final val MaxInactivitySeconds = 2f
 }
