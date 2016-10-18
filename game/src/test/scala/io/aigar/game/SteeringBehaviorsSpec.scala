@@ -86,4 +86,13 @@ class SteeringBehaviorSpec extends FlatSpec with Matchers {
     displacement.x should equal(-WanderingBehavior.CircleRadius +- 1e-5f)
     displacement.y should equal(0f +- 1e-5f)
   }
+
+  it should "change to no behavior on player activity" in {
+    val cell = new Cell(1, Vector2(5f, 5f))
+    cell.behavior = new WanderingBehavior(cell)
+
+    cell.behavior.onPlayerActivity
+
+    cell.behavior shouldBe a [NoBehavior]
+  }
 }

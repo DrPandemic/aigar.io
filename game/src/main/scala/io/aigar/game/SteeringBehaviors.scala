@@ -38,6 +38,7 @@ class WanderingBehavior(cell: Cell) extends SteeringBehavior {
   }
 
   def onPlayerActivity {
+    cell.behavior = new NoBehavior(cell)
   }
 
   def circleCenter = {
