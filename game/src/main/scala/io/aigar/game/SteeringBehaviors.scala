@@ -13,6 +13,7 @@ trait SteeringBehavior {
    * Determines what the next target of a cell should be.
    */
   def update(deltaSeconds: Float): Vector2
+  def onPlayerActivity
 }
 
 class WanderingBehavior(cell: Cell) extends SteeringBehavior {
@@ -34,6 +35,9 @@ class WanderingBehavior(cell: Cell) extends SteeringBehavior {
     wanderAngle += multiplier * WanderingBehavior.AngleChange * deltaSeconds
 
     target
+  }
+
+  def onPlayerActivity {
   }
 
   def circleCenter = {
@@ -73,7 +77,27 @@ class NoBehavior(cell: Cell) extends SteeringBehavior {
 
     cell.target 
   }
+
+  def onPlayerActivity = {
+    inactivityTimeLeft = NoBehavior.MaxInactivitySeconds
+  }
 }
 object NoBehavior {
   final val MaxInactivitySeconds = 2f
+}
+
+
+/**
+ * Spy behavior used for testing purposes.
+ */
+class TestBehavior extends SteeringBehavior {
+  var updated = false
+  var activity = false
+  def update(deltaSeconds: Float) = {
+    updated = true
+    new Vector2(0f, 0f)
+  }
+  def onPlayerActivity {
+    activity = true
+  }
 }

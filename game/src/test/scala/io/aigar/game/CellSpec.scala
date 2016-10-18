@@ -66,18 +66,10 @@ class CellSpec extends FlatSpec with Matchers {
 
   it should "update its behavior on update" in {
     val cell = new Cell(1, new Vector2(0f, 0f))
-    cell.behavior = new SpyBehavior
+    cell.behavior = new TestBehavior
 
     cell.update(1f)
 
     cell.behavior shouldBe 'updated
-  }
-}
-
-class SpyBehavior extends SteeringBehavior {
-  var updated = false
-  def update(deltaSeconds: Float) = {
-    updated = true
-    new Vector2(0f, 0f)
   }
 }
