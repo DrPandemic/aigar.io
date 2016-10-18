@@ -7,8 +7,10 @@ import javax.servlet.ServletContext
 import io.aigar.model.TeamRepository
 
 object ScalatraBootstrap {
-  // Scalatra fails to init if we add a ctor param to our ScalatraBootstrap.
-  // This allows us to pass a team repo while testing (instead of creating one).
+  // Scalatra finds "ScalatraBootstrap" by itself on init.
+  // However, it fails to find it if we add constructor parameters to our ScalatraBootstrap.
+  // Using class variables like this allows us to pass a custom team repo (instead of creating one)
+  // while testing the constructor.
   var fixedTeamRepository: Option[TeamRepository] = None
 }
 class ScalatraBootstrap extends LifeCycle {
