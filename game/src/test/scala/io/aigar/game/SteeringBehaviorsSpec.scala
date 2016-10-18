@@ -44,11 +44,11 @@ class SteeringBehaviorSpec extends FlatSpec with Matchers {
   }
 
   it should "return a circle center ahead of the cell" in {
-    val cell = new Cell(1, Vector2(0f, 0f))
-    cell.target = Vector2(5f, 0f)
+    val cell = new Cell(1, Vector2(5f, 5f))
+    cell.target = Vector2(10f, 5f)
     val behavior = new WanderingBehavior(cell)
 
-    behavior.circleCenter should equal(Vector2(WanderingBehavior.CircleDistance, 0f))
+    behavior.circleCenter should equal(Vector2(5f + WanderingBehavior.CircleDistance, 5f))
   }
 
   it should "return a displacement along the circle based on wander angle" in {

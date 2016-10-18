@@ -39,7 +39,7 @@ class WanderingBehavior(cell: Cell) extends SteeringBehavior {
   def circleCenter = {
     val diff = cell.target - cell.position
     val dir = if (diff.magnitude > 0) diff.normalize else Vector2(0f, -1f)
-    dir * WanderingBehavior.CircleDistance
+    cell.position + dir * WanderingBehavior.CircleDistance
   }
 
   def displacementOnCircle = {
