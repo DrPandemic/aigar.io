@@ -19,6 +19,7 @@ class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
   var position = startPosition
   var target = startPosition
   var mass = Cell.MinMass
+  var behavior: SteeringBehavior = new NoBehavior(this)
   private var _velocity = new Vector2(0f, 0f)
 
   /**
@@ -36,6 +37,8 @@ class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
 
 
   def update(deltaSeconds: Float) {
+    target = behavior.update(deltaSeconds)
+
     velocity += acceleration * deltaSeconds
     position += velocity * deltaSeconds
   }
