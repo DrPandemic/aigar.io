@@ -1,8 +1,5 @@
 package io.aigar.game
 
-import io.aigar.game._
-import com.github.jpbetz.subspace._
-
 /**
  * Game holds the logic for an individual game being played
  * (e.g. the ranked game or a private test game).
@@ -19,7 +16,7 @@ class Game(val id: Int, playersInGame: Int) {
   var tick = 0
 
   def update(deltaSeconds: Float) {
-    players.foreach { _.update(deltaSeconds) }
+    players.foreach { _.update(deltaSeconds, grid) }
 
     tick += 1
   }
