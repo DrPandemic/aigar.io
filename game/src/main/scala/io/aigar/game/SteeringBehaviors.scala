@@ -93,12 +93,12 @@ object NoBehavior {
  */
 class TestBehavior extends SteeringBehavior {
   var updated = false
-  var activity = false
+  var active = false
   def update(deltaSeconds: Float) = {
     updated = true
     new Vector2(0f, 0f)
   }
   def onPlayerActivity {
-    activity = true
+    active = true
   }
 }

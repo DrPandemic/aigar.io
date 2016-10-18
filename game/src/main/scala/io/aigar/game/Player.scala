@@ -16,4 +16,12 @@ class Player(val id: Int, startPosition: Vector2) {
                         mass,
                         cells.map(_.state).toList)
   }
+
+  /**
+   * Should be called whenever an external action occurs (e.g. we receive a
+   * command coming from the AI of a team).
+   */
+  def onExternalAction = {
+    cells.foreach { _.behavior.onPlayerActivity }
+  }
 }
