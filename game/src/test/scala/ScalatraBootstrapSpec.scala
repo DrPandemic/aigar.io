@@ -5,7 +5,7 @@ import io.aigar.game._
 
 class ScalatraBootstrapSpec extends FlatSpec with Matchers {
   def withInMemDatabase(testCode: (TeamRepository) => Any) {
-    val teamRepository = new TeamRepository
+    val teamRepository = new TeamRepository(None)
     val team1 = teamRepository.createTeam(Team(None, "secret",  "team1", 20))
     val team2 = teamRepository.createTeam(Team(None, "secret?", "team2", 10))
     val team3 = teamRepository.createTeam(Team(None, "secret!", "team3", 30))
