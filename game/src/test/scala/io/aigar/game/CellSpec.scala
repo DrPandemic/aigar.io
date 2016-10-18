@@ -64,6 +64,14 @@ class CellSpec extends FlatSpec with Matchers {
     cell.position should equal(new Vector2(42f, 42f))
   }
 
+  it should "enforce a minimum mass" in {
+    var cell = new Cell(1, new Vector2(0f, 0f))
+
+    cell.mass = 0f
+
+    cell.mass should equal(Cell.MinMass)
+  }
+
   it should "update its behavior on update" in {
     val cell = new Cell(1, new Vector2(0f, 0f))
     cell.behavior = new TestBehavior
