@@ -18,7 +18,7 @@ object Cell {
   /**
    * Ratio of mass lost per second.
    */
-  final val MassDecayPerSecond = 0.5f
+  final val MassDecayPerSecond = 0.005f
 }
 
 class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
