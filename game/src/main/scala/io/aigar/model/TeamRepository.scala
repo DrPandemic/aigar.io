@@ -4,7 +4,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource
 import slick.driver.H2Driver.api._
 import java.util.logging.{Level, Logger}
 
-class TeamRepository(databaseName: String = "") {
+class TeamRepository(databaseName: Option[String]) {
   val cpds = new ComboPooledDataSource
   val dev = sys.props.get("testing") match {
     case Some(value) => value == "true"
@@ -34,10 +34,15 @@ class TeamRepository(databaseName: String = "") {
   }
 
   def createDatabase(inMemory: Boolean): Database = {
+    val dbName = databaseName match {
+      case Some(value) => value
+      case None => new scala.util.Random(new java.security.SecureRandom()).toString
+    }
+
     if(inMemory) {
       Logger.getLogger("com.mchange.v2.c3p0").setLevel(Level.OFF)
       cpds.setDriverClass("org.h2.Driver")
-      cpds.setJdbcUrl("jdbc:h2:mem:" + databaseName)
+      cpds.setJdbcUrl("jdbc:h2:mem:" + dbName)
       cpds.setUser("root")
       cpds.setPassword("")
       cpds.setMinPoolSize(1)

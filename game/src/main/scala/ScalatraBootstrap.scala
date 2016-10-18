@@ -6,7 +6,7 @@ import javax.servlet.ServletContext
 import io.aigar.model.TeamRepository
 
 class ScalatraBootstrap extends LifeCycle {
-  val teamRepository = new TeamRepository()
+  val teamRepository = new TeamRepository(None)
   val game = new GameThread
 
   override def init(context: ServletContext): Unit = {
