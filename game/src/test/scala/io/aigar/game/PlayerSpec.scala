@@ -36,4 +36,15 @@ class PlayerSpec extends FlatSpec with Matchers {
      state.id should equal(1)
      state.cells should have size 2
    }
+
+   it should "execute behavior callbacks when calling the external action callback" in {
+     val player = new Player(1, new Vector2(0f, 0f))
+     player.cells = List(new Cell(1), new Cell(2))
+     player.cells.foreach { _.behavior = new TestBehavior }
+
+     player.onExternalAction
+
+     val behaviors = player.cells.map(_.behavior.asInstanceOf[TestBehavior])
+     all(behaviors) shouldBe 'active
+   }
 }
