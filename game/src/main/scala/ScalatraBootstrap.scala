@@ -6,7 +6,13 @@ import javax.servlet.ServletContext
 
 import io.aigar.model.TeamRepository
 
-class ScalatraBootstrap(teamRepository: TeamRepository = new TeamRepository(None)) extends LifeCycle {
+object ScalatraBootstrap {
+  // Scalatra fails to init if we add a ctor param to our ScalatraBootstrap.
+  // This allows us to pass a team repo while testing (instead of creating one).
+  var fixedTeamRepository: Option[TeamRepository] = None
+}
+class ScalatraBootstrap extends LifeCycle {
+  val teamRepository = ScalatraBootstrap.fixedTeamRepository.getOrElse(new TeamRepository(None))
   val scoreThread = new ScoreThread
   val game = new GameThread(scoreThread, fetchTeamIDs)
 

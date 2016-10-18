@@ -20,7 +20,8 @@ class ScalatraBootstrapSpec extends FlatSpec with Matchers {
   }
 
   "Creating the application" should "create a game with the players from the team repository" in withInMemDatabase { (teamRepository) =>
-    val bootstrap = new ScalatraBootstrap(teamRepository)
+    ScalatraBootstrap.fixedTeamRepository = Some(teamRepository)
+    val bootstrap = new ScalatraBootstrap
     val expectedIds = teamRepository.getTeams.map(_.id).flatten
 
     // let the game update once to set the state of the ranked game
