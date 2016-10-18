@@ -1,6 +1,6 @@
 package io.aigar.game
 
-import scala.math.{max, round}
+import scala.math.{max, round, pow}
 import io.aigar.game.Vector2Utils._
 import com.github.jpbetz.subspace._
 
@@ -14,6 +14,11 @@ object Cell {
    * Default mass of a cell (at spawn).
    */
   final val MinMass = 10f
+
+  /**
+   * Ratio of mass lost per second.
+   */
+  final val MassDecayPerSecond = 0.5f
 }
 
 class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
@@ -42,10 +47,16 @@ class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
 
 
   def update(deltaSeconds: Float) {
+    mass -= massDecay(deltaSeconds)
+
     target = behavior.update(deltaSeconds)
 
     velocity += acceleration * deltaSeconds
     position += velocity * deltaSeconds
+  }
+
+  def massDecay(deltaSeconds: Float) = {
+    mass * pow(Cell.MassDecayPerSecond, deltaSeconds).toFloat
   }
 
   def acceleration: Vector2 = {
