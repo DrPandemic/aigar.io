@@ -6,45 +6,46 @@ import com.github.jpbetz.subspace._
 class PlayerSpec extends FlatSpec with Matchers {
   "A Player" should "start with a cell at its start position" in {
     val player = new Player(0, new Vector2(42f, 42f))
-    
+
     player.cells.loneElement.position should equal(new Vector2(42f, 42f))
-   }
+  }
 
-   it should "move its cells on update" in {
-     val player = new Player(0, new Vector2(0f, 0f))
-     val target = new Vector2(100f, 100f)
-     player.cells.head.target = target
+  it should "move its cells on update" in {
+    val player = new Player(0, new Vector2(0f, 0f))
+    val target = new Vector2(100f, 100f)
+    player.cells.head.target = target
+    val grid = new Grid(100, 100)
 
-     val initialDistance = player.cells.head.position.distanceTo(target)
+    val initialDistance = player.cells.head.position.distanceTo(target)
 
-     player.update(1f)
+    player.update(1f, grid)
 
-     val finalDistance = player.cells.head.position.distanceTo(target)
-     
-     initialDistance should be > finalDistance
-   }
+    val finalDistance = player.cells.head.position.distanceTo(target)
 
-   it should "generate a state with the right info" in {
-     val player = new Player(1, new Vector2(0f, 0f))
-     player.cells = List(new Cell(1), new Cell(2))
-     player.cells(0).mass = 10
-     player.cells(1).mass = 25
+    initialDistance should be > finalDistance
+  }
 
-     val state = player.state
+  it should "generate a state with the right info" in {
+    val player = new Player(1, new Vector2(0f, 0f))
+    player.cells = List(new Cell(1), new Cell(2))
+    player.cells(0).mass = 10
+    player.cells(1).mass = 25
 
-     state.total_mass should equal(35)
-     state.id should equal(1)
-     state.cells should have size 2
-   }
+    val state = player.state
 
-   it should "execute behavior callbacks when calling the external action callback" in {
-     val player = new Player(1, new Vector2(0f, 0f))
-     player.cells = List(new Cell(1), new Cell(2))
-     player.cells.foreach { _.behavior = new TestBehavior }
+    state.total_mass should equal(35)
+    state.id should equal(1)
+    state.cells should have size 2
+  }
 
-     player.onExternalAction
+  it should "execute behavior callbacks when calling the external action callback" in {
+    val player = new Player(1, new Vector2(0f, 0f))
+    player.cells = List(new Cell(1), new Cell(2))
+    player.cells.foreach { _.behavior = new TestBehavior }
 
-     val behaviors = player.cells.map(_.behavior.asInstanceOf[TestBehavior])
-     all(behaviors) shouldBe 'active
-   }
+    player.onExternalAction
+
+    val behaviors = player.cells.map(_.behavior.asInstanceOf[TestBehavior])
+    all(behaviors) shouldBe 'active
+  }
 }
