@@ -63,7 +63,7 @@ class CellSpec extends FlatSpec with Matchers {
 
     cell.position should equal(new Vector2(42f, 42f))
   }
-  
+
   it should "Be in the cell" in {
     val cell = new Cell(1)
     cell.mass = 100
@@ -71,7 +71,6 @@ class CellSpec extends FlatSpec with Matchers {
     val vec = new Vector2(42f, 42f)
     cell.contains(vec) should equal(true)
   }
-  
   it should "Not be in the cell" in {
     val cell = new Cell(1)
     cell.mass = 3
