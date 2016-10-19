@@ -1,7 +1,7 @@
 package io.aigar.game
 
 import scala.util.Random
-import scala.math.{cos, sin, atan2, Pi}
+import scala.math.{cos, sin, Pi}
 import com.github.jpbetz.subspace._
 
 /**
@@ -13,7 +13,7 @@ trait SteeringBehavior {
    * Determines what the next target of a cell should be.
    */
   def update(deltaSeconds: Float): Vector2
-  def onPlayerActivity
+  def onPlayerActivity: Unit
 }
 
 class WanderingBehavior(cell: Cell) extends SteeringBehavior {
@@ -76,7 +76,7 @@ class NoBehavior(cell: Cell) extends SteeringBehavior {
       cell.behavior = new WanderingBehavior(cell)
     }
 
-    cell.target 
+    cell.target
   }
 
   def onPlayerActivity = {

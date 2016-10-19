@@ -5,6 +5,7 @@ import com.github.jpbetz.subspace._
 
 class Player(val id: Int, startPosition: Vector2) {
   var cells = List(new Cell(0, startPosition))
+  var active = true;
 
   def update(deltaSeconds: Float, grid: Grid) {
     cells.foreach { _.update(deltaSeconds, grid) }
@@ -15,6 +16,7 @@ class Player(val id: Int, startPosition: Vector2) {
     serializable.Player(id,
                         id.toString,
                         mass,
+                        active,
                         cells.map(_.state).toList)
   }
 
