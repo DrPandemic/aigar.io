@@ -9,7 +9,7 @@ object Cell {
   /**
    * Force (in Newtons) applied when moving.
    */
-  final val MovementForce = 10f
+  final val MovementForce = 350f
 
   /**
    * Default mass of a cell (at spawn).
@@ -34,7 +34,7 @@ class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
    * second.
    */
   def maxSpeed = {
-    15f //TODO depend on mass?
+    50f //TODO depend on mass?
   }
 
   def velocity = _velocity
@@ -50,7 +50,7 @@ class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
   def update(deltaSeconds: Float, grid: Grid) {
     mass = decayedMass(deltaSeconds)
 
-    target = behavior.update(deltaSeconds)
+    target = behavior.update(deltaSeconds, grid)
 
     velocity += acceleration * deltaSeconds
     position += velocity * deltaSeconds
