@@ -24,7 +24,7 @@ case class Player(
   id: Int,
   name: String,
   total_mass: Integer,
-  active: Boolean,
+  isActive: Boolean,
   cells: List[Cell]
 )
 case class Resources(

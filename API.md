@@ -41,7 +41,7 @@ Every error will contain a root element named `error` with an error message.
 			"id": "string",
 			"name": "string",
 			"total_mass": "int",
-            "active": "boolean",
+            "isActive": "boolean",
 			"cells": [
 				{
 					"id": "int",
