@@ -48,4 +48,22 @@ class PlayerSpec extends FlatSpec with Matchers {
     val behaviors = player.cells.map(_.behavior.asInstanceOf[TestBehavior])
     all(behaviors) shouldBe 'active
   }
+
+  it should "be active when any number of cells are not wandering" in {
+    val player = new Player(1, new Vector2(0f, 0f))
+    player.cells = List(new Cell(1), new Cell(2))
+    player.cells(0).behavior = new WanderingBehavior(player.cells(0))
+    player.cells(1).behavior = new NoBehavior(player.cells(1))
+
+    player.isActive should equal(true)
+  }
+
+  it should "not be active when all cells are wandering" in {
+    val player = new Player(1, new Vector2(0f, 0f))
+    player.cells = List(new Cell(1), new Cell(2))
+    player.cells(0).behavior = new WanderingBehavior(player.cells(0))
+    player.cells(1).behavior = new WanderingBehavior(player.cells(1))
+
+    player.isActive should equal(false)
+  }
 }

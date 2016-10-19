@@ -28,9 +28,9 @@ class Player(val id: Int, startPosition: Vector2) {
   }
 
   /**
-    * The player is active when any of its cell is not wandering.
+    * The player is active when there is an active cell.
     */
   def isActive():Boolean = {
-    !cells.exists(_.behavior.isInstanceOf[WanderingBehavior])
+    cells.exists(_.behavior.isInstanceOf[NoBehavior])
   }
 }
