@@ -31,6 +31,6 @@ class Player(val id: Int, startPosition: Vector2) {
     * The player is active when there is an active cell.
     */
   def isActive():Boolean = {
-    cells.exists(_.behavior.isInstanceOf[NoBehavior])
+    cells.exists(_.behavior.isActive)
   }
 }

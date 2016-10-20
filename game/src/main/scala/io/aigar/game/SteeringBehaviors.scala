@@ -14,11 +14,14 @@ trait SteeringBehavior {
    */
   def update(deltaSeconds: Float): Vector2
   def onPlayerActivity: Unit
+  def isActive: Boolean
 }
 
 class WanderingBehavior(cell: Cell) extends SteeringBehavior {
   val random = new Random
   var wanderAngle = 0f
+
+  def isActive = false
 
   /**
    * Picks a target that gives an illusion of "wandering around".
@@ -70,6 +73,8 @@ object WanderingBehavior {
 class NoBehavior(cell: Cell) extends SteeringBehavior {
   var inactivityTimeLeft = NoBehavior.MaxInactivitySeconds
 
+  def isActive = true
+
   def update(deltaSeconds: Float) = {
     inactivityTimeLeft -= deltaSeconds
     if (inactivityTimeLeft < 0f) {
@@ -94,6 +99,7 @@ object NoBehavior {
 class TestBehavior extends SteeringBehavior {
   var updated = false
   var active = false
+  def isActive = false
   def update(deltaSeconds: Float) = {
     updated = true
     new Vector2(0f, 0f)
