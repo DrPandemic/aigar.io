@@ -1,6 +1,6 @@
 package io.aigar.game
 
-import io.aigar.game.serializable.Position
+import com.github.jpbetz.subspace.Vector2
 
 object Resources {
   final val MaxRegular = 200
@@ -8,21 +8,21 @@ object Resources {
   final val MaxGold = 50
 }
 
-class Resources {
+class Resources(grid: Grid) {
   var regular = initRegular
   var silver = initSilver
   var gold = initGold
 
-  def initRegular: List[Position] ={
-    List.fill(Resources.MaxRegular)(Position(scala.util.Random.nextInt(900*3), scala.util.Random.nextInt(700*3)))
+  def initRegular: List[Vector2] ={
+    List.fill(Resources.MaxRegular)(grid.randomPosition)
   }
 
-  def initSilver: List[Position] ={
-    List.fill(Resources.MaxSilver)(Position(scala.util.Random.nextInt(900*3), scala.util.Random.nextInt(700*3)))
+  def initSilver: List[Vector2] ={
+    List.fill(Resources.MaxSilver)(grid.randomPosition)
   }
 
-  def initGold: List[Position] ={
-    List.fill(Resources.MaxGold)(Position(scala.util.Random.nextInt(900*3), scala.util.Random.nextInt(700*3)))
+  def initGold: List[Vector2] ={
+    List.fill(Resources.MaxGold)(grid.randomPosition)
   }
 
   def state = {

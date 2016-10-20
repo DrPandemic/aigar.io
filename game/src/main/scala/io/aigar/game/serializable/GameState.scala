@@ -1,5 +1,7 @@
 package io.aigar.game.serializable
 
+import com.github.jpbetz.subspace.Vector2
+
 /**
  * Serializable classes that represent the current state of a game. These are
  * the classes that will be sent over the network, so they should follow the
@@ -27,9 +29,9 @@ case class Player(
   cells: List[Cell]
 )
 case class Resources(
-  regular: List[Position],
-  silver: List[Position],
-  gold: List[Position]
+  regular: List[Vector2],
+  silver: List[Vector2],
+  gold: List[Vector2]
 )
 case class GameState(
   id: Int,

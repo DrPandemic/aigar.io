@@ -4,12 +4,13 @@ import org.scalatest._
 
 class ResourcesSpec extends FlatSpec with Matchers {
   "Resources" should "spawn at the right quantity" in {
-    val resources = new Resources
+    val game = new Game(1, 15)
+    val resources = new Resources(game.grid)
 
     val state = resources.state
 
-    state.regular.size should equal(Resources.MaxRegular)
-    state.silver.size should equal(Resources.MaxSilver)
-    state.gold.size should equal(Resources.MaxGold)
+    state.regular should have size Resources.MaxRegular
+    state.silver should have size Resources.MaxSilver
+    state.gold should have size Resources.MaxGold
   }
 }
