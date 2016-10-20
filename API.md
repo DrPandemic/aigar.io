@@ -34,62 +34,59 @@ Every error will contain a root element named `error` with an error message.
 `GET /game/:game_id`
 ```json
 {
-  "id": "int",
-	"tick": "int",
-	"players": [
-		{
-			"id": "string",
-			"name": "string",
-			"total_mass": "int",
-            "isActive": "boolean",
-			"cells": [
-				{
-					"id": "int",
-					"mass": "int",
-					"position": {
-						"x": "float",
-						"y": "float"
-					},
-					"target": {
-						"x": "float",
-						"y": "float"
-					}
-				}
-			]
-		}
-	],
-	"food": {
-		"regular": {
-			"position": {
-				"x": "float",
-				"y": "float"
-			}
-		},
-		"silver": {
-			"position": {
-				"x": "float",
-				"y": "float"
-			}
-		},
-		"gold": {
-			"position": {
-				"x": "float",
-				"y": "float"
-			}
-		}
-	},
-	"map": {
-		"width": "int",
-		"height": "int"
-	},
-	"viruses": [
-		{
-			"position": {
-				"x": "float",
-				"y": "float"
-			}
-		}
-	]
+    "id": "int",
+    "tick": "int",
+    "players": [
+    {
+        "id": "string",
+        "name": "string",
+        "total_mass": "int",
+        "isActive": "boolean",
+        "cells": [
+        {
+            "id": "int",
+            "mass": "int",
+            "position": {
+                "x": "float",
+                "y": "float"
+            },
+            "target": {
+                "x": "float",
+                "y": "float"
+            }
+        }]
+    }],
+    "food": {
+        "regular": {
+            "position": {
+                "x": "float",
+                "y": "float"
+            }
+        },
+        "silver": {
+            "position": {
+                "x": "float",
+                "y": "float"
+            }
+        },
+        "gold": {
+            "position": {
+                "x": "float",
+              "y": "float"
+            }
+        }
+    },
+    "map": {
+        "width": "int",
+        "height": "int"
+    },
+    "viruses": [
+    {
+        "position": {
+            "x": "float",
+            "y": "float"
+        }
+    }]
 }
 ```
 
@@ -97,8 +94,8 @@ Every error will contain a root element named `error` with an error message.
 `POST /game` <- `{"team_secret" : "string"}`
 ```json
 {
-  "game_id": "int",
-  "url": "string"
+    "game_id": "int",
+    "url": "string"
 }
 ```
 
@@ -106,25 +103,24 @@ Every error will contain a root element named `error` with an error message.
 `POST/game/:game_id/action` <-
 ```json
 {
-	"team_secret": "string",
-	"actions": [
-		{
-			"cell_id": "int",
-			"burst": "bool",
-			"split": "bool",
-			"feed": "bool",
-			"trade": "int",
-			"target": {
-				"x": "float",
-				"y": "float"
-			}
-		}
-	]
+    "team_secret": "string",
+    "actions": [
+    {
+        "cell_id": "int",
+        "burst": "bool",
+        "split": "bool",
+        "feed": "bool",
+        "trade": "int",
+        "target": {
+            "x": "float",
+            "y": "float"
+        }
+    }]
 }
 ```
 
 ```json
 {
-  "data": "ok"
+    "data": "ok"
 }
 ```
