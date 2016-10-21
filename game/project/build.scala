@@ -49,6 +49,7 @@ object AigarBuild extends Build {
     "org.scalatest" %% "scalatest" % "3.0.0" % "test,it",
     "com.github.jpbetz" % "subspace" % "0.1.0"
   )
+
   lazy val scalateTemplates =
     scalateTemplateConfig in Compile <<= (sourceDirectory in Compile){ base =>
       Seq(
