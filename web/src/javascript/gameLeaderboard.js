@@ -10,7 +10,7 @@ export function drawLeaderboard(state) {
   for(const player of players) {
     const color = getPlayerColor(state.players, player);
     const row = new_tbody.insertRow(0);
-    if(!player.isActie) {
+    if(!player.isActive) {
       row.className = "inactive-player";
     }
     row.insertCell(0).innerHTML = `<div class="color-box" style="background-color: ${color};"></div>`;
