@@ -1,6 +1,7 @@
 import io.aigar.game._
 import io.aigar.controller._
 import io.aigar.controller.response._
+import io.aigar.model._
 
 import org.json4s._
 import org.json4s.jackson.JsonMethods._
@@ -17,15 +18,20 @@ class GameControllerSpec extends MutableScalatraSpec
   sequential
 
   val game = new GameThread
+  val teamRepository = new TeamRepository(None)
   game.updateGames // run once to initialize the game states
-  addServlet(new GameController(game), "/*")
+  addServlet(new GameController(game, teamRepository), "/*")
 
-  def cleanGame = {
+  def cleanState = {
     game.actionQueue.clear()
+    teamRepository.dropSchema
+    teamRepository.createSchema
+
+    teamRepository.createTeam(Team(None, "EdgQWhJ!v&", "team1", 0))
   }
 
-  def before = cleanGame
-  def after = cleanGame
+  def before = cleanState
+  def after = cleanState
 
   def postJson[A](uri: String, body: JValue, headers: Map[String, String] = Map())(f: => A): A =
     post(
@@ -35,7 +41,7 @@ class GameControllerSpec extends MutableScalatraSpec
     )(f)
 
   val defaultActionJson =
-    ("team_secret" -> "so secret") ~
+    ("team_secret" -> "EdgQWhJ!v&") ~
     ("actions" ->
       List(
         ("cell_id" -> 123) ~
@@ -109,7 +115,7 @@ class GameControllerSpec extends MutableScalatraSpec
         game.actionQueue.isEmpty() must be_==(false)
         val action = game.actionQueue.take()
         action.game_id must be_==(1)
-        action.query.team_secret must be_==("so secret")
+        action.query.team_secret must be_==("EdgQWhJ!v&")
         action.query.actions.length must be_==(2)
         action.query.actions(0).cell_id must be_==(123)
       }
@@ -122,6 +128,12 @@ class GameControllerSpec extends MutableScalatraSpec
     }
 
     "fails with bad game's id" in {
+      postJson("/nope/action", defaultActionJson) {
+        status must_== 400
+      }
+    }
+
+    "403 when the team secret doesn't match" in {
       postJson("/nope/action", defaultActionJson) {
         status must_== 400
       }

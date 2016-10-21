@@ -43,6 +43,16 @@ object TeamDAO extends TableQuery(new Teams(_)) {
     )
   }
 
+  def findTeamBySecret(db: Database, teamSecret: String): Option[Team] = {
+    Await.result(
+      db.run(
+        teams.filter(_.teamSecret === teamSecret)
+          .result
+      ).map(_.headOption
+      ), Duration.Inf
+    )
+  }
+
   def updateTeam(db: Database, team: Team): Option[Team] ={
     Await.result(
       db.run(

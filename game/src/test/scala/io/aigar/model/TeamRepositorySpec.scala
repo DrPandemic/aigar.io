@@ -67,4 +67,8 @@ class TeamRepositorySpec extends FlatSpec with Matchers {
     new TeamRepository(Some("something"))
     noException should be thrownBy new TeamRepository(Some("something"))
   }
+
+  it should "get a team by its secret" in withInMemDatabase { (teamRepository, listTeams) =>
+    assert(!teamRepository.readTeamBySecret("EdgQWhJ!v&").isEmpty)
+  }
 }

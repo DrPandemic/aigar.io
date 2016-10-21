@@ -1,13 +1,13 @@
 package io.aigar.controller
 
 import io.aigar.game._
-import io.aigar.game.serializable._
+import io.aigar.model.TeamRepository
 import io.aigar.controller.response._
-import org.json4s.{DefaultFormats, Formats, MappingException}
+import org.json4s.MappingException
 import org.scalatra.json._
 import scala.util.Try
 
-class GameController(game: GameThread)
+class GameController(game: GameThread, teamRepository: TeamRepository)
   extends AigarStack with JacksonJsonSupport {
 
   get("/:id") {
@@ -29,8 +29,13 @@ class GameController(game: GameThread)
   post("/:id/action") {
     try {
       val query = parse(request.body).extract[ActionQuery]
-      val actions = ActionQueryWithId(params("id").toInt, query)
-      game.actionQueue.put(actions)
+      teamRepository.readTeamBySecret(query.team_secret) match {
+        case Some(team) => {
+          val actions = ActionQueryWithId(params("id").toInt, team.id.get, query)
+          game.actionQueue.put(actions)
+        }
+        case None => halt(403)
+      }
     } catch {
       case e: MappingException => halt(422)
       case e: java.lang.NumberFormatException => halt(400)

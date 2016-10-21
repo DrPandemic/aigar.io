@@ -21,6 +21,10 @@ class TeamRepository(databaseName: Option[String]) {
     TeamDAO.findTeamById(db, id)
   }
 
+  def readTeamBySecret(teamSecret: String): Option[Team] = {
+    TeamDAO.findTeamBySecret(db, teamSecret)
+  }
+
   def updateTeam(team: Team): Option[Team] = {
     TeamDAO.updateTeam(db, team)
   }
