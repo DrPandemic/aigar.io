@@ -3,6 +3,7 @@ package io.aigar.game
 import scala.math.{max, round, pow}
 import io.aigar.game.Vector2Utils._
 import com.github.jpbetz.subspace._
+import scala.math._
 
 object Cell {
   /**
@@ -65,6 +66,11 @@ class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
     val value = Cell.MovementForce / mass
     return if (dir.magnitude > 0) dir.normalize * value else new Vector2(0f,0f)
   }
+
+  def contains(pos: Vector2): Boolean = {
+    return position.distanceTo(pos) <= mass
+  }
+
 
   def state = {
     serializable.Cell(id,
