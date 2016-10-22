@@ -9,7 +9,7 @@ class SteeringBehaviorSpec extends FlatSpec with Matchers {
     cell.target = Vector2(10f, 10f)
     cell.behavior = new NoBehavior(cell)
 
-    val target = cell.behavior.update(1f)
+    val target = cell.behavior.update(1f, new Grid(0, 0))
 
     target should be theSameInstanceAs(cell.target)
   }
@@ -18,7 +18,7 @@ class SteeringBehaviorSpec extends FlatSpec with Matchers {
     val cell = new Cell(1, Vector2(0f, 0f))
     cell.behavior = new NoBehavior(cell)
 
-    cell.behavior.update(NoBehavior.MaxInactivitySeconds + 1e-2f)
+    cell.behavior.update(NoBehavior.MaxInactivitySeconds + 1e-2f, new Grid(0, 0))
 
     cell.behavior shouldBe a [WanderingBehavior]
   }
@@ -27,9 +27,9 @@ class SteeringBehaviorSpec extends FlatSpec with Matchers {
     val cell = new Cell(1, Vector2(0f, 0f))
     cell.behavior = new NoBehavior(cell)
 
-    cell.behavior.update(NoBehavior.MaxInactivitySeconds - 1e-2f)
+    cell.behavior.update(NoBehavior.MaxInactivitySeconds - 1e-2f, new Grid(0, 0))
     cell.behavior.onPlayerActivity
-    cell.behavior.update(NoBehavior.MaxInactivitySeconds - 1e-2f)
+    cell.behavior.update(NoBehavior.MaxInactivitySeconds - 1e-2f, new Grid(0, 0))
 
     cell.behavior shouldBe a [NoBehavior]
   }
@@ -42,7 +42,7 @@ class SteeringBehaviorSpec extends FlatSpec with Matchers {
     cell.target = Vector2(10f, 10f)
     cell.behavior = new WanderingBehavior(cell)
 
-    val target = cell.behavior.update(1f)
+    val target = cell.behavior.update(1f, new Grid(0, 0))
 
     target should be theSameInstanceAs(cell.target)
   }
@@ -52,7 +52,7 @@ class SteeringBehaviorSpec extends FlatSpec with Matchers {
     cell.target = Vector2(10f, 10f)
     cell.behavior = new WanderingBehavior(cell)
     
-    val target = cell.behavior.update(1f)
+    val target = cell.behavior.update(1f, new Grid(0, 0))
 
     target should not be theSameInstanceAs(cell.target)
   }
