@@ -1,7 +1,6 @@
 $primary-color: #333;
 $secondary-color: #fff;
 
-
 /*
  * Globals
  */
@@ -204,4 +203,8 @@ table {
 .color-box {
   width: 10px;
   height: 10px;
+}
+
+.inactive-player {
+  color: red !important;
 }

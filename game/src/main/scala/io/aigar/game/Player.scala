@@ -15,6 +15,7 @@ class Player(val id: Int, startPosition: Vector2) {
     serializable.Player(id,
                         id.toString,
                         mass,
+                        isActive,
                         cells.map(_.state).toList)
   }
 
@@ -24,5 +25,12 @@ class Player(val id: Int, startPosition: Vector2) {
    */
   def onExternalAction = {
     cells.foreach { _.behavior.onPlayerActivity }
+  }
+
+  /**
+    * The player is active when there is an active cell.
+    */
+  def isActive():Boolean = {
+    cells.exists(_.behavior.isActive)
   }
 }

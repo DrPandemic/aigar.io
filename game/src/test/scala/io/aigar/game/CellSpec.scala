@@ -76,7 +76,7 @@ class CellSpec extends FlatSpec with Matchers {
   it should "not move without setting its target" in {
     val cell = new Cell(1, new Vector2(42f, 42f))
     val grid = new Grid(200, 200)
-    
+
     cell.update(1f, grid)
 
     cell.position should equal(new Vector2(42f, 42f))
