@@ -6,13 +6,6 @@ import javax.servlet.ServletContext
 
 import io.aigar.model.TeamRepository
 
-object ScalatraBootstrap {
-  // Scalatra finds "ScalatraBootstrap" by itself on init.
-  // However, it fails to find it if we add constructor parameters to our ScalatraBootstrap.
-  // Using class variables like this allows us to pass a custom team repo (instead of creating one)
-  // while testing the constructor.
-  var fixedTeamRepository: Option[TeamRepository] = None
-}
 class ScalatraBootstrap extends LifeCycle {
   val teamRepository = ScalatraBootstrap.fixedTeamRepository.getOrElse(new TeamRepository(None))
   val scoreThread = new ScoreThread
@@ -53,4 +46,13 @@ class ScalatraBootstrap extends LifeCycle {
 
     teams.map(_.id).flatten  // only keep IDs that are not None
   }
+}
+object ScalatraBootstrap {
+  // USED BY ScalatraBootstrapSpec TEST ONLY
+  //
+  // Scalatra finds "ScalatraBootstrap" by itself on init.
+  // However, it fails to find it if we add constructor parameters to our ScalatraBootstrap.
+  // Using class variables like this allows us to pass a custom team repo (instead of creating one)
+  // while testing the constructor.
+  var fixedTeamRepository: Option[TeamRepository] = None
 }
