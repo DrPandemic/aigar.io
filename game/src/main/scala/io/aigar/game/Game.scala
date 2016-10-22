@@ -12,7 +12,7 @@ object Game {
 class Game(val id: Int, playersInGame: Int) {
   val grid = new Grid(playersInGame * Grid.WidthPerPlayer, playersInGame * Grid.HeightPerPlayer)
   val players = createPlayers
-  val resources = new Resources
+  val resources = new Resources(grid)
   var tick = 0
 
   def update(deltaSeconds: Float) {
