@@ -1,5 +1,6 @@
 package io.aigar.game
 
+import io.aigar.score.ScoreThread
 import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
 
 /**
@@ -7,7 +8,7 @@ import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
  * takes care of updating the individual games and processing the queued inputs
  * of the players.
  */
-class GameThread extends Runnable {
+class GameThread(scoreThread: ScoreThread) extends Runnable {
   val MillisecondsPerTick = 16
 
   private var states: Map[Int, io.aigar.game.serializable.GameState] = Map()

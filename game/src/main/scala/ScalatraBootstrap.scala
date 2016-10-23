@@ -1,5 +1,6 @@
 import io.aigar.game.GameThread
 import io.aigar.controller._
+import io.aigar.score.ScoreThread
 import org.scalatra._
 import javax.servlet.ServletContext
 
@@ -7,10 +8,11 @@ import io.aigar.model.TeamRepository
 
 class ScalatraBootstrap extends LifeCycle {
   val teamRepository = new TeamRepository(None)
-  val game = new GameThread
+  val scoreThread = new ScoreThread
+  val game = new GameThread(scoreThread)
 
   override def init(context: ServletContext): Unit = {
-    launchGameLoop
+    launchThreads
 
     val path = "/api/1"
     context.mount(new LeaderboardController, s"$path/leaderboard/*")
@@ -26,7 +28,8 @@ class ScalatraBootstrap extends LifeCycle {
     closeDbConnection
   }
 
-  def launchGameLoop {
+  def launchThreads {
+    new Thread(scoreThread).start
     new Thread(game).start
   }
 }
