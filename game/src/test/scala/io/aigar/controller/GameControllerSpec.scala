@@ -1,4 +1,5 @@
 import io.aigar.game._
+import io.aigar.score.ScoreThread
 import io.aigar.controller._
 import io.aigar.controller.response._
 import io.aigar.model._
@@ -17,7 +18,8 @@ class GameControllerSpec extends MutableScalatraSpec
   implicit val jsonFormats: Formats = DefaultFormats
   sequential
 
-  val game = new GameThread
+  val scoreThread = new ScoreThread
+  val game = new GameThread(scoreThread)
   val teamRepository = new TeamRepository(None)
   game.updateGames // run once to initialize the game states
   addServlet(new GameController(game, teamRepository), "/*")
