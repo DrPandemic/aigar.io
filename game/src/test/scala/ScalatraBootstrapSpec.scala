@@ -4,29 +4,31 @@ import io.aigar.model._
 import io.aigar.game._
 
 class ScalatraBootstrapSpec extends FlatSpec with Matchers {
-  def withInMemDatabase(testCode: (TeamRepository) => Any) {
-    val teamRepository = new TeamRepository(None)
-    val team1 = teamRepository.createTeam(Team(None, "secret",  "team1", 20))
-    val team2 = teamRepository.createTeam(Team(None, "secret?", "team2", 10))
-    val team3 = teamRepository.createTeam(Team(None, "secret!", "team3", 30))
+  "ScalatraBootstrap" should "use a fixed team repository on init when passed as a parameter" in {
+    val repo = new TeamRepository(None)
+    val bootstrap = new ScalatraBootstrap
 
-    try{
-      testCode(teamRepository)
-    }
-    finally {
-      teamRepository.dropSchema
-      teamRepository.closeConnection
-    }
+    bootstrap.appInit(Some(repo))
+    val teams = bootstrap.teamRepository
+    bootstrap.destroy(null)
+
+    teams should be theSameInstanceAs(repo)
   }
 
-  "Creating the application" should "create a game with the players from the team repository" in withInMemDatabase { (teamRepository) =>
-    ScalatraBootstrap.fixedTeamRepository = Some(teamRepository)
+  it should "create a game with the players from the team repository on init" in {
+    val repo = new TeamRepository(None)
+    val team1 = repo.createTeam(Team(None, "secret",  "team1", 20))
+    val team2 = repo.createTeam(Team(None, "secret?", "team2", 10))
+    val team3 = repo.createTeam(Team(None, "secret!", "team3", 30))
     val bootstrap = new ScalatraBootstrap
-    val expectedIds = teamRepository.getTeams.map(_.id).flatten
+
+    bootstrap.appInit(Some(repo))
+    val expectedIds = repo.getTeams.map(_.id).flatten
 
     // let the game update once to set the state of the ranked game
     bootstrap.game.updateGames
     val state = bootstrap.game.gameState(Game.RankedGameId)
+    bootstrap.destroy(null)
 
     state should not be(None)
     state.get.players.map(_.id) should contain theSameElementsAs(expectedIds)

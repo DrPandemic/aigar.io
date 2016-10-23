@@ -7,16 +7,27 @@ import javax.servlet.ServletContext
 import io.aigar.model.TeamRepository
 
 class ScalatraBootstrap extends LifeCycle {
-  val teamRepository = ScalatraBootstrap.fixedTeamRepository.getOrElse(new TeamRepository(None))
-  val scoreThread = new ScoreThread
-  val game = new GameThread(scoreThread, fetchTeamIDs)
+  var teamRepository: TeamRepository = null
+  var game: GameThread = null
+  var scoreThread: ScoreThread
 
   override def init(context: ServletContext): Unit = {
-    launchThreads
+    appInit()
 
     val path = "/api/1"
     context.mount(new LeaderboardController, s"$path/leaderboard/*")
     context.mount(new GameController(game, teamRepository), s"$path/game/*")
+  }
+
+  /*
+   * Separated method for testing purposes.
+   */
+  def appInit(teams: Option[TeamRepository] = None): Unit = {
+    teamRepository = teams.getOrElse(new TeamRepository(None))
+    scoreThread = new ScoreThread
+    game = new GameThread(scoreThread, fetchTeamIDs)
+
+    launchThreads
   }
 
   private def closeDbConnection {
@@ -25,6 +36,7 @@ class ScalatraBootstrap extends LifeCycle {
 
   override def destroy(context: ServletContext) {
     super.destroy(context)
+    game.running = false
     closeDbConnection
 
     scoreThread.running = false
@@ -37,22 +49,7 @@ class ScalatraBootstrap extends LifeCycle {
 
   def fetchTeamIDs: List[Int] = {
     val teams = teamRepository.getTeams()
-    
-    // TODO remove this once we have seeding
-    // No teams in the DB? Provide two fake teams to have something to look at
-    if (teams.isEmpty) {
-      return List(1,2)
-    }
 
     teams.map(_.id).flatten  // only keep IDs that are not None
   }
-}
-object ScalatraBootstrap {
-  // USED BY ScalatraBootstrapSpec TEST ONLY
-  //
-  // Scalatra finds "ScalatraBootstrap" by itself on init.
-  // However, it fails to find it if we add constructor parameters to our ScalatraBootstrap.
-  // Using class variables like this allows us to pass a custom team repo (instead of creating one)
-  // while testing the constructor.
-  var fixedTeamRepository: Option[TeamRepository] = None
 }

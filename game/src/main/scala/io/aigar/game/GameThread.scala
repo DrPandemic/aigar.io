@@ -16,6 +16,8 @@ class GameThread(scoreThread: ScoreThread, teamIDs: List[Int]) extends Runnable 
 
   final val actionQueue: BlockingQueue[ActionQueryWithId] = new LinkedBlockingQueue[ActionQueryWithId]()
 
+  var running = true
+
   var previousTime = 0f
   var currentTime = MillisecondsPerTick / 1000f // avoid having an initial 0 delta time
 
@@ -29,7 +31,7 @@ class GameThread(scoreThread: ScoreThread, teamIDs: List[Int]) extends Runnable 
   }
 
   def run {
-    while (true) {
+    while (running) {
       updateGames
 
       Thread.sleep(MillisecondsPerTick)
