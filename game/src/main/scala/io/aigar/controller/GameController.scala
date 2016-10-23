@@ -14,12 +14,26 @@ class GameController(game: GameThread, teamRepository: TeamRepository)
     GameStateResponse(
       Try(params("id").toInt).toOption match {
         case Some(id) => game.gameState(id) match {
-          case Some(state) => state
+          case Some(state) => {
+            fillPlayerName(state)
+          }
           case None => halt(404)
         }
         case None => halt(400)
       }
     )
+  }
+
+  def fillPlayerName(state: serializable.gameState): serializable.gameState = {
+    val teams = teamRepository.getTeams
+    state.copy(players = state.players.map(
+                 (player) => {
+                   val name = teams.find(_.id.get == player.id) match {
+                     case Some(team) => team.teamName
+                     case None => halt(500)
+                   }
+                   player.copy(name = name)
+                 }))
   }
 
   post("/") {

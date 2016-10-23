@@ -68,6 +68,9 @@ class GameControllerSpec extends MutableScalatraSpec
         status must_== 200
 
         parse(body).extract[GameStateResponse] must not(throwAn[MappingException])
+
+        val parsedResponse = parse(body).extract[GameStateResponse]
+        parsedResponse.data.players(0).name must_== "team1"
       }
     }
   }

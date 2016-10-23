@@ -11,7 +11,7 @@ import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
 class GameThread(scoreThread: ScoreThread, teamIDs: List[Int]) extends Runnable {
   val MillisecondsPerTick = 16
 
-  private var states: Map[Int, io.aigar.game.serializable.GameState] = Map()
+  private var states: Map[Int, serializable.GameState] = Map()
   private var games: List[Game] = List(createRankedGame)
 
   final val actionQueue: BlockingQueue[ActionQueryWithId] = new LinkedBlockingQueue[ActionQueryWithId]()
@@ -24,7 +24,9 @@ class GameThread(scoreThread: ScoreThread, teamIDs: List[Int]) extends Runnable 
   /**
    * Safe way to get the game state of a particular game from another thread.
    */
-  def gameState(gameId: Int) = { states get gameId }
+  def gameState(gameId: Int): Option[serializable.GameState] = {
+    states get gameId
+  }
 
   def createRankedGame = {
     new Game(Game.RankedGameId, teamIDs)
