@@ -73,7 +73,7 @@ export function drawMap(canvas) {
   screenContext.drawImage(canvas, xScreenPosOnMap, yScreenPosOnMap, screenWidth, screenHeight, 0, 0, screenWidth, screenHeight);
 }
 
-export function drawMiniMap(canvas) {
+export function initMiniMap(canvas) {
   miniMapContext.clearRect(0, 0, screenWidth, screenHeight);
 
   //set dimensions
@@ -87,9 +87,10 @@ export function drawMiniMap(canvas) {
 
   //apply the old canvas to the new one
   miniMapContext.drawImage(canvas, 0, 0, miniMapWidth, miniMapHeight);
+}
 
+export function drawMiniMap() {
   drawMiniMapScreenPos();
-
   screenContext.drawImage(miniMapCanvas, miniMapPosX, 0);
   screenCanvas.style.background = "#000";
 }
