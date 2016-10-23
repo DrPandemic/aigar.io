@@ -10,15 +10,15 @@ object Regular {
 }
 
 object Silver {
-  final val Max = 100
-  final val Min = 50
+  final val Max = 25
+  final val Min = 12
   final val Mass = 3
   final val Score = 0
 }
 
 object Gold {
-  final val Max = 50
-  final val Min = 25
+  final val Max = 10
+  final val Min = 5
   final val Mass = 0
   final val Score = 3
 }
