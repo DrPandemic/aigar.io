@@ -57,15 +57,18 @@ export function drawPlayersOnMap(players, canvas) {
 
 export function drawFoodOnMap(foods, canvas) {
   const context = canvas.getContext("2d");
-  const drawFood = (foods, color) => {
+  const drawFood = (foods, color, rgba, mass) => {
     for(const food of foods) {
-      drawCircle(context, food, constants.foodMass, color);
+      var grd=context.createRadialGradient(food.x,food.y, .5, food.x, constants.foodMass);
+      grd.addColorStop(0,color);
+      grd.addColorStop(1, rgba);
+      drawCircle(context, food, mass, grd);
     }
   };
-
-  drawFood(foods.regular, constants.regularColor);
-  drawFood(foods.silver, constants.silverColor);
-  drawFood(foods.gold, constants.goldColor);
+  
+  drawFood(foods.regular, constants.regularColor, constants.regularRGBColor, constants.regFoodMass);
+  drawFood(foods.silver, constants.silverColor, constants.silverRGBColor, constants.foodMass);
+  drawFood(foods.gold, constants.goldColor, constants.goldRGBColor,  constants.foodMass);
 }
 
 export function drawMap(canvas) {

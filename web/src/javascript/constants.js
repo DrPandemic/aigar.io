@@ -1,7 +1,11 @@
 export const regularColor = "#00B200";
+export const regularRGBColor = "rgba(0, 70, 0, 0.3)"
 export const silverColor = "#ACACAC";
-export const goldColor = " #FFD700";
-export const foodMass = 10;
+export const silverRGBColor = "rgba(67, 67, 67, 0.1)"
+export const goldColor = "#FFD700";
+export const goldRGBColor = "rgba(100, 84, 0, 0.1)"
+export const foodMass = 9;
+export const regFoodMass = 6;
 
 export const playerColors = [
   "#F44336",
