@@ -26,6 +26,8 @@ class ScalatraBootstrap extends LifeCycle {
   override def destroy(context: ServletContext) {
     super.destroy(context)
     closeDbConnection
+
+    scoreThread.running = false
   }
 
   def launchThreads {

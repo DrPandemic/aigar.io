@@ -1,18 +1,22 @@
 package io.aigar.score
 
-import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
+import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue, TimeUnit}
 
 /**
  * ScoreThread is running all the time. The game thread sends score update
- * messages and this thread persiste them to the DB.
+ * messages and this thread persists them to the DB.
  */
 
 class ScoreThread extends Runnable {
-  final val messageQueue: BlockingQueue[ScoreMessage] = new LinkedBlockingQueue[ScoreMessage]()
+  final val messageQueue: BlockingQueue[ScoreMessage] = new LinkedBlockingQueue[ScoreMessage]
+  var running: Boolean = true;
 
   def run: Unit = {
-    while (true) {
-      val message = messageQueue.take()
+    while (!running) {
+      val message = messageQueue.poll(1, TimeUnit.SECONDS)
+      if(message != null) {
+        println("Some magic here")
+      }
     }
   }
 }
