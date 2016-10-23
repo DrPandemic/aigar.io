@@ -17,7 +17,8 @@ class Game(val id: Int, playersInGame: Int) {
 
   def update(deltaSeconds: Float) {
     players.foreach { _.update(deltaSeconds, grid) }
-
+    resources.update
+    
     tick += 1
   }
 
