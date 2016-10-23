@@ -1,6 +1,7 @@
 import {
   drawFoodOnMap,
   drawMap,
+  initMiniMap,
   drawMiniMap,
   drawPlayersOnMap,
   initMap,
@@ -10,10 +11,12 @@ const apiURL = "http://localhost:1337/api/1/game/";
 
 export function draw(gameState, canvas) {
   initMap(canvas);
-  drawFoodOnMap(gameState.food, canvas);
   drawPlayersOnMap(gameState.players, canvas);
+  initMiniMap(canvas);
+  drawFoodOnMap(gameState.food, canvas);
   drawMap(canvas);
-  drawMiniMap(canvas);
+  drawMiniMap();
+  
 }
 
 export function fetchState(gameId) {
