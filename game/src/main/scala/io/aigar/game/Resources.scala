@@ -1,49 +1,52 @@
 package io.aigar.game
 
-import com.github.jpbetz.subspace.Vector2
+object Regular {
+  final val Max = 250
+  final val Min = 100
+  final val Mass = 1
+  final val Score = 0
+}
 
-object Resources {
-  final val MaxRegular = 250
-  final val MinRegular = 100
-  final val MaxSilver = 100
-  final val MinSilver = 50
-  final val MaxGold = 50
-  final val MinGold = 25
+object Silver {
+  final val Max = 100
+  final val Min = 50
+  final val Mass = 3
+  final val Score = 0
+}
+
+object Gold {
+  final val Max = 50
+  final val Min = 25
+  final val Mass = 0
+  final val Score = 3
 }
 
 class Resources(grid: Grid) {
-  var listRegular = initRegular
-  var listSilver = initSilver
-  var listGold = initGold
-
-  def initRegular: List[Vector2] = {
-    List.fill(Resources.MaxRegular)(grid.randomPosition)
-  }
-
-  def initSilver: List[Vector2] = {
-    List.fill(Resources.MaxSilver)(grid.randomPosition)
-  }
-
-  def initGold: List[Vector2] = {
-    List.fill(Resources.MaxGold)(grid.randomPosition)
-  }
+  val regular = new ResourceType(grid, Regular.Min, Regular.Max, Regular.Mass, Regular.Score)
+  val silver = new ResourceType(grid, Silver.Min, Silver.Max, Silver.Mass, Silver.Score)
+  val gold = new ResourceType(grid, Gold.Min, Gold.Max, Gold.Mass, Gold.Score)
+  var resourceTypes = List(regular, silver, gold)
 
   def update: Unit = {
-    listRegular = updateResources(listRegular, Resources.MinRegular, Resources.MaxRegular)
-    listSilver = updateResources(listSilver, Resources.MinSilver, Resources.MaxSilver)
-    listGold = updateResources(listGold, Resources.MinGold, Resources.MaxGold)
-  }
-
-  def updateResources(list: List[Vector2], min: Int, max: Int) = {
-    val ratio = (list.length - min).toFloat / (max - min)
-    if (scala.util.Random.nextFloat >= ratio) list ++ List(grid.randomPosition) else list
+    resourceTypes.foreach(_.spawnResources)
   }
 
   def state = {
     serializable.Resources(
-      listRegular,
-      listSilver,
-      listGold
+      regular.positions,
+      silver.positions,
+      gold.positions
     )
+  }
+}
+
+class ResourceType(grid:Grid, val min: Int, val max: Int, mass: Int, score: Int) {
+  var positions = List.fill(max)(grid.randomPosition)
+
+  def spawnResources: Unit = {
+    val ratio = (positions.length - min).toFloat / (max - min)
+    if (scala.util.Random.nextFloat >= ratio) {
+      positions :::= List(grid.randomPosition)
+    }
   }
 }
