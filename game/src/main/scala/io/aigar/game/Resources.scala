@@ -40,7 +40,7 @@ class Resources(grid: Grid) {
   }
 }
 
-class ResourceType(grid:Grid, min: Int, max: Int, mass: Int, score: Int) {
+class ResourceType(grid:Grid, val min: Int, val max: Int, mass: Int, score: Int) {
   var positions = List.fill(max)(grid.randomPosition)
 
   def spawnResources: Unit = {
