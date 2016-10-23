@@ -1,5 +1,7 @@
 package io.aigar.game
 
+import com.github.jpbetz.subspace.Vector2
+
 object Regular {
   final val Max = 250
   final val Min = 100
@@ -27,7 +29,8 @@ class Resources(grid: Grid) {
   val gold = new ResourceType(grid, Gold.Min, Gold.Max, Gold.Mass, Gold.Score)
   var resourceTypes = List(regular, silver, gold)
 
-  def update: Unit = {
+  def update(players: List[Player]): Unit = {
+    resourceTypes.foreach(_.detectCollision(players))
     resourceTypes.foreach(_.spawnResources)
   }
 
@@ -48,5 +51,23 @@ class ResourceType(grid:Grid, val min: Int, val max: Int, mass: Int, score: Int)
     if (scala.util.Random.nextFloat >= ratio) {
       positions :::= List(grid.randomPosition)
     }
+  }
+
+  def detectCollision(players: List[Player]): Unit = {
+    for(player <- players) {
+      for(cell <- player.cells) {
+        for(position <- positions){
+          if(cell.contains(position)){
+            reward(player, cell, mass, score)
+            positions = positions.filterNot(a => a == position)
+          }
+        }
+      }
+    }
+  }
+
+  def reward(player: Player, cell: Cell, mass: Int, score: Int): Unit = {
+    cell.mass += mass
+    /*player.score += score*/
   }
 }
