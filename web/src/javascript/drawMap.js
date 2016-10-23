@@ -89,12 +89,10 @@ export function initMiniMap(canvas) {
   miniMapContext.drawImage(canvas, 0, 0, miniMapWidth, miniMapHeight);
 }
 
-export function drawMiniMap(){
+export function drawMiniMap() {
   drawMiniMapScreenPos();
-
   screenContext.drawImage(miniMapCanvas, miniMapPosX, 0);
   screenCanvas.style.background = "#000";
-  
 }
 
 function drawMiniMapScreenPos() {

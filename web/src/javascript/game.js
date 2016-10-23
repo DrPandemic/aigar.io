@@ -16,7 +16,6 @@ export function draw(gameState, canvas) {
   drawFoodOnMap(gameState.food, canvas);
   drawMap(canvas);
   drawMiniMap();
-  
 }
 
 export function fetchState(gameId) {
