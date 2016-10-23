@@ -48,6 +48,7 @@ class GameSpec extends FlatSpec with Matchers {
     val game = new Game(42, 10)
     val player = game.players.head
     val cell = player.cells.head
+    cell.position = Vector2(0, 0)
     cell.target = new Vector2(100f, 100f)
 
     val initialDistance = cell.position.distanceTo(cell.target)
