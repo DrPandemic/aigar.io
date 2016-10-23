@@ -1,10 +1,9 @@
-import fakeState from "./fakeState";
 import {draw as drawGame, fetchState} from "./game";
 import {drawLeaderboard} from "./gameLeaderboard";
 import {createGameCanvas} from "./drawMap";
 
 const gameCanvas = createGameCanvas();
-let currentState = fakeState.data;
+let currentState;
 
 async function updateLoop() {
   currentState = await fetchState(0);

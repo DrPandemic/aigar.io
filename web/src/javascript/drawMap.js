@@ -1,5 +1,6 @@
 import $ from "jquery";
 import * as constants from "./constants";
+import sort from "immutable-sort";
 
 const screenCanvas = $("#screenCanvas")[0];
 const screenContext = screenCanvas.getContext("2d");
@@ -39,8 +40,7 @@ export function initMap(canvas) {
 }
 
 export function getPlayerColor(players, currentPlayer) {
-  const playerPosition = players
-    .sort((a, b) => a.id - b.id)
+  const playerPosition = sort(players, (a, b) => a.id - b.id)
     .findIndex(player => player.id === currentPlayer.id);
   return constants.playerColors[playerPosition];
 }
