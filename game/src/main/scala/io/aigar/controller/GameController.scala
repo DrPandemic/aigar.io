@@ -24,7 +24,7 @@ class GameController(game: GameThread, teamRepository: TeamRepository)
     )
   }
 
-  def fillPlayerName(state: serializable.gameState): serializable.gameState = {
+  def fillPlayerName(state: serializable.GameState): serializable.GameState = {
     val teams = teamRepository.getTeams
     state.copy(players = state.players.map(
                  (player) => {
