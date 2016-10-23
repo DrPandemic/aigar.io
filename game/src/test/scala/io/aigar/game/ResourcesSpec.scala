@@ -54,16 +54,4 @@ class ResourcesSpec extends FlatSpec with Matchers {
 
     cell.mass should be > initialMass
   }
-
-  /*"Player" should "increase its score when eating gold resources" in {
-    val game = new Game(0, 15)
-    val resources = new Resources(game.grid)
-    val player = game.players.head
-    val cell = game.players.head.cells.head
-    val initialMass = cell.mass
-
-    resources.resourceTypes.head.reward(player, cell, 0, 1)
-
-    cell.mass should be > initialMass
-  }*/
 }

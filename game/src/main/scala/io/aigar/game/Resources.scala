@@ -68,6 +68,5 @@ class ResourceType(grid:Grid, val min: Int, val max: Int, mass: Int, score: Int)
 
   def reward(player: Player, cell: Cell, mass: Int, score: Int): Unit = {
     cell.mass += mass
-    /*player.score += score*/
   }
 }
