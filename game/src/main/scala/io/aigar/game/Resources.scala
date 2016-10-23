@@ -1,7 +1,5 @@
 package io.aigar.game
 
-import com.github.jpbetz.subspace.Vector2
-
 object Regular {
   final val Max = 250
   final val Min = 100
@@ -53,12 +51,14 @@ class ResourceType(grid:Grid, val min: Int, val max: Int, mass: Int, score: Int)
     }
   }
 
+  /** Small loop to detect if a cell can eat a resource **/
   def detectCollision(players: List[Player]): Unit = {
     for(player <- players) {
       for(cell <- player.cells) {
         for(position <- positions){
           if(cell.contains(position)){
             reward(player, cell, mass, score)
+            /** Returns a new list without the resource that has been consumed **/
             positions = positions.filterNot(a => a == position)
           }
         }

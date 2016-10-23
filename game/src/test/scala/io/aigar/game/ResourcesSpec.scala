@@ -14,13 +14,14 @@ class ResourcesSpec extends FlatSpec with Matchers {
   }
 
   it should "respawn resources when the quantity is minimal" in {
-    val resources = new Resources(new Grid(0, 0))
+    val game = new Game(0, 15)
+    val resources = new Resources(game.grid)
 
     for(resourceType <- resources.resourceTypes){
       resourceType.positions = resourceType.positions.take(resourceType.min)
     }
 
-    resources.update
+    resources.update(game.players)
 
     for(resourceType <- resources.resourceTypes){
       resourceType.positions.length should be > resourceType.min
@@ -28,16 +29,41 @@ class ResourcesSpec extends FlatSpec with Matchers {
   }
 
   it should "not respawn resources when the quantity is maximal" in {
-    val resources = new Resources(new Grid(0, 0))
+    val game = new Game(0, 15)
+    val resources = new Resources(game.grid)
 
     for(resourceType <- resources.resourceTypes){
       resourceType.positions = List.fill(resourceType.max)(new Grid(0, 0).randomPosition)
     }
 
-    resources.update
+    resources.update(game.players)
 
     for(resourceType <- resources.resourceTypes){
       resourceType.positions.length should equal(resourceType.max)
     }
   }
+
+  "Cell" should "increase its mass when eating regular or silver resources" in {
+    val game = new Game(0, 15)
+    val resources = new Resources(game.grid)
+    val player = game.players.head
+    val cell = game.players.head.cells.head
+    val initialMass = cell.mass
+
+    resources.resourceTypes.head.reward(player, cell, 1, 0)
+
+    cell.mass should be > initialMass
+  }
+
+  /*"Player" should "increase its score when eating gold resources" in {
+    val game = new Game(0, 15)
+    val resources = new Resources(game.grid)
+    val player = game.players.head
+    val cell = game.players.head.cells.head
+    val initialMass = cell.mass
+
+    resources.resourceTypes.head.reward(player, cell, 0, 1)
+
+    cell.mass should be > initialMass
+  }*/
 }
