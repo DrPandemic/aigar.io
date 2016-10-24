@@ -14,7 +14,7 @@ class ResourcesSpec extends FlatSpec with Matchers {
   }
 
   it should "respawn resources when the quantity is minimal" in {
-    val game = new Game(0, 15)
+    val game = new Game(0, 1 to 15 toList)
     val resources = new Resources(game.grid)
 
     for(resourceType <- resources.resourceTypes){
@@ -29,7 +29,7 @@ class ResourcesSpec extends FlatSpec with Matchers {
   }
 
   it should "not respawn resources when the quantity is maximal" in {
-    val game = new Game(0, 15)
+    val game = new Game(0, 1 to 15 toList)
     val resources = new Resources(game.grid)
 
     for(resourceType <- resources.resourceTypes){
@@ -44,7 +44,7 @@ class ResourcesSpec extends FlatSpec with Matchers {
   }
 
   "Cell" should "increase its mass when eating regular or silver resources" in {
-    val game = new Game(0, 15)
+    val game = new Game(0, 1 to 15 toList)
     val resources = new Resources(game.grid)
     val player = game.players.head
     val cell = game.players.head.cells.head
