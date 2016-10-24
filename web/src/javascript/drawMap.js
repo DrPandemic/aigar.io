@@ -59,7 +59,7 @@ export function drawFoodOnMap(foods, canvas) {
   const context = canvas.getContext("2d");
   const drawFood = (foods, color, rgba, mass) => {
     for(const food of foods) {
-      var grd=context.createRadialGradient(food.x,food.y, .5, food.x, constants.foodMass);
+      var grd=context.createRadialGradient(food.x,food.y, .5, food.x, food.y,constants.foodMass);
       grd.addColorStop(0,color);
       grd.addColorStop(1, rgba);
       drawCircle(context, food, mass, grd);
