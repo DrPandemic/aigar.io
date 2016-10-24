@@ -46,7 +46,9 @@ class ResourceType(grid:Grid, val min: Int, val max: Int, mass: Int, score: Int)
 
   def spawnResources: Unit = {
     val ratio = (positions.length - min).toFloat / (max - min)
-    if ((scala.util.Random.nextFloat + 0.000001) >= ratio) positions :::= List(grid.randomPosition)
+    if ((scala.util.Random.nextFloat + 0.000001) >= ratio) {
+      positions :::= List(grid.randomPosition)
+    }
   }
 
   /** Small loop to detect if a cell can eat a resource **/
