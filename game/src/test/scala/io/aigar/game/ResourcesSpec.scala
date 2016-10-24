@@ -1,5 +1,6 @@
 package io.aigar.game
 
+import com.github.jpbetz.subspace.Vector2
 import org.scalatest._
 
 class ResourcesSpec extends FlatSpec with Matchers {
@@ -13,7 +14,7 @@ class ResourcesSpec extends FlatSpec with Matchers {
     state.gold should have size Gold.Max
   }
 
-  it should "respawn resources when the quantity is minimal" in {
+  it should "respawn when the quantity is minimal" in {
     val resources = new Resources(new Grid(0, 0))
 
     for(resourceType <- resources.resourceTypes){
@@ -27,7 +28,7 @@ class ResourcesSpec extends FlatSpec with Matchers {
     }
   }
 
-  it should "not respawn resources when the quantity is maximal" in {
+  it should "not respawn when the quantity is maximal" in {
     val resources = new Resources(new Grid(0, 0))
 
     for(resourceType <- resources.resourceTypes){
@@ -41,14 +42,27 @@ class ResourcesSpec extends FlatSpec with Matchers {
     }
   }
 
-  "Cell" should "increase its mass when eating regular or silver resources" in {
-    val game = new Game(0, 1 to 15 toList)
-    val resources = new Resources(game.grid)
-    val cell = game.players.head.cells.head
-    val initialMass = cell.mass
+  "Resource" should "be consumed on collision" in {
+    val resource = new ResourceType(new Grid(0, 0), 0,0,5,10)
+    val far = Vector2(1000f, 1000f)
+    resource.positions = List(Vector2(10f,10f), far)
+    val cell = new Cell(1)
+    cell.position = Vector2(10f, 10f)
+    val player = new Player(1, Vector2(10f, 10f))
+    player.cells = List(cell)
 
-    resources.resourceTypes.head.reward(cell)
+    resource.detectCollisions(List(player))
 
-    cell.mass should be > initialMass
+    resource.positions should contain only far
+  }
+
+  it should "reward the cell and player accordingly" in {
+    val resource = new ResourceType(new Grid(0, 0), 0, 0, 5, 10)
+    val cell = new Cell(1)
+    cell.mass = 1
+
+    resource.reward(cell)
+
+    cell.mass should equal(6)
   }
 }
