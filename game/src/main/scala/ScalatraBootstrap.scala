@@ -9,7 +9,7 @@ import io.aigar.model.TeamRepository
 class ScalatraBootstrap extends LifeCycle {
   var teamRepository: TeamRepository = null
   var game: GameThread = null
-  var scoreThread: ScoreThread
+  var scoreThread: ScoreThread = null
 
   override def init(context: ServletContext): Unit = {
     appInit()
@@ -36,10 +36,10 @@ class ScalatraBootstrap extends LifeCycle {
 
   override def destroy(context: ServletContext) {
     super.destroy(context)
-    game.running = false
     closeDbConnection
 
     scoreThread.running = false
+    game.running = false
   }
 
   def launchThreads {
