@@ -20,11 +20,16 @@ trait SteeringBehavior {
 class WanderingBehavior(cell: Cell) extends SteeringBehavior {
   def isActive = false
 
+  var nextTargetTimeLeft = WanderingBehavior.NewTargetDelay
+
   /**
    * Picks a random target. Picks a new one once the previous one is reached.
    */
   def update(deltaSeconds: Float, grid: Grid) = {
-    if (cell.position.distanceTo(cell.target) <= WanderingBehavior.NewTargetDistance) {
+    nextTargetTimeLeft -= deltaSeconds
+
+    if (cell.contains(cell.target) || nextTargetTimeLeft <= 0f) {
+      nextTargetTimeLeft = WanderingBehavior.NewTargetDelay
       grid.randomPosition
     } else {
       cell.target
@@ -36,8 +41,8 @@ class WanderingBehavior(cell: Cell) extends SteeringBehavior {
   }
 }
 object WanderingBehavior {
-  // how close we have to be to our target to pick a new one
-  final val NewTargetDistance = 10f
+  // how long we have to wait to pick a new target (seconds)
+  final val NewTargetDelay = 10f
 }
 
 /**
