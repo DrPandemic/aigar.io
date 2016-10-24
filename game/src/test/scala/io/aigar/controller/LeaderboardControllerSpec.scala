@@ -1,5 +1,6 @@
 import io.aigar.controller._
 import io.aigar.controller.response._
+import io.aigar.model.TeamRepository
 
 import org.json4s._
 import org.json4s.jackson.JsonMethods._
@@ -9,7 +10,8 @@ import org.specs2.matcher._
 
 class LeaderboardControllerSpec extends MutableScalatraSpec {
   protected implicit val jsonFormats: Formats = DefaultFormats
-  addServlet(classOf[LeaderboardController], "/*")
+  val teamRepository = new TeamRepository(None)
+  addServlet(new LeaderboardController(teamRepository), "/*")
 
   "GET / on LeaderboardController" should {
     "return the right data format" in {

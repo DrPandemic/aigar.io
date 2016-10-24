@@ -15,7 +15,7 @@ class ScalatraBootstrap extends LifeCycle {
     appInit()
 
     val path = "/api/1"
-    context.mount(new LeaderboardController, s"$path/leaderboard/*")
+    context.mount(new LeaderboardController(teamRepository), s"$path/leaderboard/*")
     context.mount(new GameController(game, teamRepository), s"$path/game/*")
   }
 
