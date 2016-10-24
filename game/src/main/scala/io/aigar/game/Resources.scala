@@ -46,19 +46,21 @@ class ResourceType(grid:Grid, val min: Int, val max: Int, mass: Int, score: Int)
 
   def spawnResources: Unit = {
     val ratio = (positions.length - min).toFloat / (max - min)
-    if ((scala.util.Random.nextFloat + 0.000001) >= ratio) {
+
+    // Add MinPositiveValue to prevent obtaining zero since ratio can be 0
+    if ((scala.util.Random.nextFloat + scala.Float.MinPositiveValue) >= ratio) {
       positions :::= List(grid.randomPosition)
     }
   }
 
-  /** Small loop to detect if a cell can eat a resource **/
+  // Small loop to detect if a cell can eat a resource
   def detectCollision(players: List[Player]): Unit = {
     for(player <- players) {
       for(cell <- player.cells) {
         for(position <- positions){
           if(cell.contains(position)){
-            reward(player, cell, mass, score)
-            /** Returns a new list without the resource that has been consumed **/
+            reward(cell, mass, score)
+            // Returns a new list without the resource that has been consumed
             positions = positions.filterNot(a => a == position)
           }
         }
@@ -66,7 +68,7 @@ class ResourceType(grid:Grid, val min: Int, val max: Int, mass: Int, score: Int)
     }
   }
 
-  def reward(player: Player, cell: Cell, mass: Int, score: Int): Unit = {
+  def reward(cell: Cell, mass: Int, score: Int): Unit = {
     cell.mass += mass
   }
 }
