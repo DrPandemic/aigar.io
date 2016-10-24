@@ -25,6 +25,13 @@ class TeamRepository(databaseName: Option[String]) {
     TeamDAO.findTeamBySecret(db, teamSecret)
   }
 
+  //Should we throw an error if we didn't update score successfully?
+  def updateScore(id: Int, value: Int): Unit ={
+    val team = readTeam(id).get
+    team.score += value
+    updateTeam(team)
+  }
+
   def updateTeam(team: Team): Option[Team] = {
     TeamDAO.updateTeam(db, team)
   }
