@@ -7,11 +7,10 @@ import org.scalatra.json._
 
 class LeaderboardController(teamRepository: TeamRepository) extends AigarStack with JacksonJsonSupport {
   get("/") {
-    LeaderboardResponse(
-      List(
-        LeaderboardEntry(465, "asd", 132),
-        LeaderboardEntry(745, "wow", 2),
-        LeaderboardEntry(7, "such score", 22)
-      ))
+    val teams = teamRepository.getTeams
+      .map(team => {
+             LeaderboardEntry(team.id.get, team.teamName, team.score)
+           })
+    LeaderboardResponse(teams)
   }
 }
