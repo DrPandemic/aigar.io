@@ -7,16 +7,27 @@ import javax.servlet.ServletContext
 import io.aigar.model.TeamRepository
 
 class ScalatraBootstrap extends LifeCycle {
-  val teamRepository = new TeamRepository(None)
-  val scoreThread = new ScoreThread
-  val game = new GameThread(scoreThread)
+  var teamRepository: TeamRepository = null
+  var game: GameThread = null
+  var scoreThread: ScoreThread = null
 
   override def init(context: ServletContext): Unit = {
-    launchThreads
+    appInit()
 
     val path = "/api/1"
     context.mount(new LeaderboardController, s"$path/leaderboard/*")
     context.mount(new GameController(game, teamRepository), s"$path/game/*")
+  }
+
+  /*
+   * Separated method for testing purposes.
+   */
+  def appInit(teams: Option[TeamRepository] = None): Unit = {
+    teamRepository = teams.getOrElse(new TeamRepository(None))
+    scoreThread = new ScoreThread
+    game = new GameThread(scoreThread, fetchTeamIDs)
+
+    launchThreads
   }
 
   private def closeDbConnection {
@@ -28,10 +39,17 @@ class ScalatraBootstrap extends LifeCycle {
     closeDbConnection
 
     scoreThread.running = false
+    game.running = false
   }
 
   def launchThreads {
     new Thread(scoreThread).start
     new Thread(game).start
+  }
+
+  def fetchTeamIDs: List[Int] = {
+    val teams = teamRepository.getTeams()
+
+    teams.map(_.id).flatten  // only keep IDs that are not None
   }
 }

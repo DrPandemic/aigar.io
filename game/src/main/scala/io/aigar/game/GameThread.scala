@@ -8,13 +8,15 @@ import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
  * takes care of updating the individual games and processing the queued inputs
  * of the players.
  */
-class GameThread(scoreThread: ScoreThread) extends Runnable {
+class GameThread(scoreThread: ScoreThread, teamIDs: List[Int]) extends Runnable {
   val MillisecondsPerTick = 16
 
   private var states: Map[Int, io.aigar.game.serializable.GameState] = Map()
   private var games: List[Game] = List(createRankedGame)
 
   final val actionQueue: BlockingQueue[ActionQueryWithId] = new LinkedBlockingQueue[ActionQueryWithId]()
+
+  var running = true
 
   var previousTime = 0f
   var currentTime = MillisecondsPerTick / 1000f // avoid having an initial 0 delta time
@@ -25,11 +27,11 @@ class GameThread(scoreThread: ScoreThread) extends Runnable {
   def gameState(gameId: Int) = { states get gameId }
 
   def createRankedGame = {
-    new Game(Game.RankedGameId, Game.PlayersInRankedGame)
+    new Game(Game.RankedGameId, teamIDs)
   }
 
   def run {
-    while (true) {
+    while (running) {
       updateGames
 
       Thread.sleep(MillisecondsPerTick)
