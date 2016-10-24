@@ -14,14 +14,13 @@ class ResourcesSpec extends FlatSpec with Matchers {
   }
 
   it should "respawn resources when the quantity is minimal" in {
-    val game = new Game(0, 1 to 15 toList)
-    val resources = new Resources(game.grid)
+    val resources = new Resources(new Grid(0, 0))
 
     for(resourceType <- resources.resourceTypes){
       resourceType.positions = resourceType.positions.take(resourceType.min)
     }
 
-    resources.update(game.players)
+    resources.update(List())
 
     for(resourceType <- resources.resourceTypes){
       resourceType.positions.length should be > resourceType.min
@@ -29,14 +28,13 @@ class ResourcesSpec extends FlatSpec with Matchers {
   }
 
   it should "not respawn resources when the quantity is maximal" in {
-    val game = new Game(0, 1 to 15 toList)
-    val resources = new Resources(game.grid)
+    val resources = new Resources(new Grid(0, 0))
 
     for(resourceType <- resources.resourceTypes){
       resourceType.positions = List.fill(resourceType.max)(new Grid(0, 0).randomPosition)
     }
 
-    resources.update(game.players)
+    resources.update(List())
 
     for(resourceType <- resources.resourceTypes){
       resourceType.positions.length should equal(resourceType.max)
@@ -49,7 +47,7 @@ class ResourcesSpec extends FlatSpec with Matchers {
     val cell = game.players.head.cells.head
     val initialMass = cell.mass
 
-    resources.resourceTypes.head.reward(cell, 1, 0)
+    resources.resourceTypes.head.reward(cell)
 
     cell.mass should be > initialMass
   }

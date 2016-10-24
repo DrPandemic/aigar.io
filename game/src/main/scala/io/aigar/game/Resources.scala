@@ -4,14 +4,14 @@ object Regular {
   final val Max = 250
   final val Min = 100
   final val Mass = 1
-  final val Score = 0
+  final val Score = 1
 }
 
 object Silver {
   final val Max = 25
   final val Min = 12
   final val Mass = 3
-  final val Score = 0
+  final val Score = 3
 }
 
 object Gold {
@@ -28,7 +28,7 @@ class Resources(grid: Grid) {
   var resourceTypes = List(regular, silver, gold)
 
   def update(players: List[Player]): Unit = {
-    resourceTypes.foreach(_.detectCollision(players))
+    resourceTypes.foreach(_.detectCollisions(players))
     resourceTypes.foreach(_.spawnResources)
   }
 
@@ -53,13 +53,16 @@ class ResourceType(grid:Grid, val min: Int, val max: Int, mass: Int, score: Int)
     }
   }
 
-  // Small loop to detect if a cell can eat a resource
-  def detectCollision(players: List[Player]): Unit = {
+  /*
+  * Checks if any of the cells from the players should consume a resource.
+  * If it is the case, reward the colliding player/cell.
+  */
+  def detectCollisions(players: List[Player]): Unit = {
     for(player <- players) {
       for(cell <- player.cells) {
         for(position <- positions){
           if(cell.contains(position)){
-            reward(cell, mass, score)
+            reward(cell)
             // Returns a new list without the resource that has been consumed
             positions = positions.filterNot(a => a == position)
           }
@@ -68,7 +71,7 @@ class ResourceType(grid:Grid, val min: Int, val max: Int, mass: Int, score: Int)
     }
   }
 
-  def reward(cell: Cell, mass: Int, score: Int): Unit = {
+  def reward(cell: Cell): Unit = {
     cell.mass += mass
   }
 }
