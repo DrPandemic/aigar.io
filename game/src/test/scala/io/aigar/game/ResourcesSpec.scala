@@ -42,7 +42,7 @@ class ResourcesSpec extends FlatSpec with Matchers {
     }
   }
 
-  "Resource" should "be consumed on collision" in {
+  "A Resource" should "be consumed on collision" in {
     val resource = new ResourceType(new Grid(0, 0), 0,0,5,10)
     val far = Vector2(1000f, 1000f)
     resource.positions = List(Vector2(10f,10f), far)
@@ -56,13 +56,13 @@ class ResourcesSpec extends FlatSpec with Matchers {
     resource.positions should contain only far
   }
 
-  it should "reward the cell and player accordingly" in {
+  it should "reward the cell accordingly" in {
     val resource = new ResourceType(new Grid(0, 0), 0, 0, 5, 10)
     val cell = new Cell(1)
-    cell.mass = 1
+    cell.mass = 25
 
     resource.reward(cell)
 
-    cell.mass should equal(6)
+    cell.mass should equal(30)
   }
 }
