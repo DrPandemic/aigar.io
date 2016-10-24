@@ -18,10 +18,11 @@ class GameControllerSpec extends MutableScalatraSpec
   implicit val jsonFormats: Formats = DefaultFormats
   sequential
 
-  val teamRepository = new TeamRepository(None)
   val scoreThread = new ScoreThread
-  val game = new GameThread(scoreThread, teamRepository.getTeams.map(_.id.get).toList)
+  val teamRepository = new TeamRepository(None)
+  val game = new GameThread(scoreThread, List(1))
   game.updateGames // run once to initialize the game states
+
   addServlet(new GameController(game, teamRepository), "/*")
 
   def cleanState = {
@@ -29,7 +30,7 @@ class GameControllerSpec extends MutableScalatraSpec
     teamRepository.dropSchema
     teamRepository.createSchema
 
-    teamRepository.createTeam(Team(None, "EdgQWhJ!v&", "team1", 0))
+    teamRepository.createTeam(Team(Some(1), "EdgQWhJ!v&", "team1", 0))
   }
 
   def before = cleanState
@@ -68,6 +69,9 @@ class GameControllerSpec extends MutableScalatraSpec
         status must_== 200
 
         parse(body).extract[GameStateResponse] must not(throwAn[MappingException])
+
+        val parsedResponse = parse(body).extract[GameStateResponse]
+        parsedResponse.data.players(0).name must_== "team1"
       }
     }
   }
