@@ -1,7 +1,9 @@
 package io.aigar.game
 
 import io.aigar.score.ScoreThread
-import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
+import io.aigar.controller.response.Action
+import java.util.concurrent.LinkedBlockingQueue
+import scala.collection.mutable.HashMap
 
 /**
  * GameThread is the thread that runs continuously through the competition that
@@ -14,7 +16,8 @@ class GameThread(scoreThread: ScoreThread, teamIDs: List[Int]) extends Runnable 
   private var states: Map[Int, serializable.GameState] = Map()
   private var games: List[Game] = List(createRankedGame)
 
-  final val actionQueue: BlockingQueue[ActionQueryWithId] = new LinkedBlockingQueue[ActionQueryWithId]()
+  final val actionQueue = new LinkedBlockingQueue[ActionQueryWithId]()
+  final val actionMap = new HashMap[Int, HashMap[Int, List[Action]]]()
 
   var running = true
 
@@ -28,11 +31,12 @@ class GameThread(scoreThread: ScoreThread, teamIDs: List[Int]) extends Runnable 
     states get gameId
   }
 
-  def createRankedGame = {
+  def createRankedGame: Game = {
+   // actionMap(Game.RankedGameId) = new HashMap()
     new Game(Game.RankedGameId, teamIDs)
   }
 
-  def run {
+  def run: Unit = {
     while (running) {
       updateGames
 
@@ -40,7 +44,11 @@ class GameThread(scoreThread: ScoreThread, teamIDs: List[Int]) extends Runnable 
     }
   }
 
-  def updateGames {
+  def transferActions: Unit = {
+
+  }
+
+  def updateGames: Unit = {
     for (game <- games) {
       val deltaTime = currentTime - previousTime
       game.update(deltaTime)

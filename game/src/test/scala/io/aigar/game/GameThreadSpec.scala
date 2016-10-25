@@ -1,5 +1,7 @@
 import io.aigar.game._
 import io.aigar.score.ScoreThread
+import io.aigar.controller.response.Action
+import io.aigar.game.serializable.Position
 import org.scalatest._
 
 class GameThreadSpec extends FlatSpec with Matchers {
@@ -28,5 +30,39 @@ class GameThreadSpec extends FlatSpec with Matchers {
     val game = new GameThread(scoreThread, List())
     val ranked = game.createRankedGame
     ranked.id should equal (Game.RankedGameId)
+  }
+
+  "createRankedGame" should "create its action map" in {
+    val scoreThread = new ScoreThread
+    val game = new GameThread(scoreThread, List())
+    val ranked = game.createRankedGame
+    game.actionMap should contain key ranked.id
+  }
+
+  it should "empty the actionQueue" in {
+    val scoreThread = new ScoreThread
+    val game = new GameThread(scoreThread, List())
+    game.actionQueue.put(ActionQueryWithId(1, 1, List()))
+
+    game.transferActions
+
+    game.actionQueue shouldBe empty
+  }
+
+  it should "fill actionMap" in {
+    val scoreThread = new ScoreThread
+    val game = new GameThread(scoreThread, List())
+    game.actionQueue.put(ActionQueryWithId(1, 1, List(
+                                             Action(1, false, false, false, 0, Position(0f, 0f)),
+                                             Action(2, false, false, false, 0, Position(10f, 10f)))))
+    game.actionQueue.put(ActionQueryWithId(1, 2, List(
+                                             Action(1, false, false, false, 0, Position(20f, 0f)),
+                                             Action(2, false, false, false, 0, Position(30f, 0f)))))
+    game.transferActions
+
+    game.actionMap.get(1) should contain (1 -> Action(1, false, false, false, 0, Position(0f, 0f)))
+    game.actionMap.get(1) should contain (1 -> Action(2, false, false, false, 0, Position(10f, 10f)))
+    game.actionMap.get(1) should contain (2 -> Action(1, false, false, false, 0, Position(20f, 0f)))
+    game.actionMap.get(1) should contain (2 -> Action(2, false, false, false, 0, Position(30f, 0f)))
   }
 }
