@@ -53,6 +53,18 @@ object TeamDAO extends TableQuery(new Teams(_)) {
     )
   }
 
+  def updateScore(db: Database, team_id: Int, value: Int): Unit ={
+    val sql = sqlu"""update TEAMS
+                     set score = score + ${value}
+                     where id = ${team_id}"""
+    Await.result(
+      db.run(
+        sql
+      )
+      , Duration.Inf
+    )
+  }
+
   def updateTeam(db: Database, team: Team): Option[Team] ={
     Await.result(
       db.run(

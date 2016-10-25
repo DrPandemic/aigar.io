@@ -26,10 +26,8 @@ class TeamRepository(databaseName: Option[String]) {
     TeamDAO.findTeamBySecret(db, teamSecret)
   }
 
-  def updateScore(scoreMessage: ScoreMessage): Unit ={
-    val team = readTeam(scoreMessage.team_id).get
-    team.score += scoreMessage.value
-    updateTeam(team)
+  def updateScore(team_id: Int, value: Int): Unit ={
+    TeamDAO.updateScore(db, team_id, value)
   }
 
   def updateTeam(team: Team): Option[Team] = {
