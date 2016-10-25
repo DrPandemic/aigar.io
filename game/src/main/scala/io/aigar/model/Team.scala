@@ -57,6 +57,7 @@ object TeamDAO extends TableQuery(new Teams(_)) {
     val sql = sqlu"""update TEAMS
                      set score = score + ${value}
                      where id = ${team_id}"""
+    // TODO Log errors if there's any
     Await.result(
       db.run(
         sql
