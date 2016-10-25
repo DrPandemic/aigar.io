@@ -47,7 +47,6 @@ class ResourceType(grid:Grid, val min: Int, val max: Int, mass: Int, score: Int)
   def spawnResources: Unit = {
     val ratio = (positions.length - min).toFloat / (max - min)
 
-    // Add MinPositiveValue to prevent obtaining zero since ratio can be 0
     if (scala.util.Random.nextFloat >= ratio) {
       positions :::= List(grid.randomPosition)
     }
