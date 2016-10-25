@@ -4,6 +4,8 @@ import com.mchange.v2.c3p0.ComboPooledDataSource
 import slick.driver.H2Driver.api._
 import java.util.logging.{Level, Logger}
 
+import io.aigar.score.ScoreMessage
+
 class TeamRepository(databaseName: Option[String]) {
   val cpds = new ComboPooledDataSource
   val dev = sys.props.get("testing") match {
@@ -26,9 +28,9 @@ class TeamRepository(databaseName: Option[String]) {
   }
 
   //Should we throw an error if we didn't update score successfully?
-  def updateScore(id: Int, value: Int): Unit ={
-    val team = readTeam(id).get
-    team.score += value
+  def updateScore(scoreMessage: ScoreMessage): Unit ={
+    val team = readTeam(scoreMessage.team_id).get
+    team.score += scoreMessage.value
     updateTeam(team)
   }
 
