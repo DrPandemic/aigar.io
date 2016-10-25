@@ -17,13 +17,13 @@ class ResourcesSpec extends FlatSpec with Matchers {
   it should "respawn when the quantity is minimal" in {
     val resources = new Resources(new Grid(0, 0))
 
-    for(resourceType <- resources.resourceTypes){
+    for(resourceType <- resources.resourceTypes) {
       resourceType.positions = resourceType.positions.take(resourceType.min)
     }
 
     resources.update(List())
 
-    for(resourceType <- resources.resourceTypes){
+    for(resourceType <- resources.resourceTypes) {
       resourceType.positions.length should be > resourceType.min
     }
   }
@@ -31,19 +31,19 @@ class ResourcesSpec extends FlatSpec with Matchers {
   it should "not respawn when the quantity is maximal" in {
     val resources = new Resources(new Grid(0, 0))
 
-    for(resourceType <- resources.resourceTypes){
+    for(resourceType <- resources.resourceTypes) {
       resourceType.positions = List.fill(resourceType.max)(new Grid(0, 0).randomPosition)
     }
 
     resources.update(List())
 
-    for(resourceType <- resources.resourceTypes){
+    for(resourceType <- resources.resourceTypes) {
       resourceType.positions.length should equal(resourceType.max)
     }
   }
 
   "A Resource" should "be consumed on collision" in {
-    val resource = new ResourceType(new Grid(0, 0), 0,0,5,10)
+    val resource = new ResourceType(new Grid(0, 0), 0, 0, 5, 10)
     val far = Vector2(1000f, 1000f)
     val cell = new Cell(1)
     val player = new Player(1, Vector2(10f, 10f))
@@ -65,5 +65,21 @@ class ResourcesSpec extends FlatSpec with Matchers {
     resource.reward(cell)
 
     cell.mass should equal(30)
+  }
+
+  it should "returns a list of scoreMessages from multiple positions and players" in {
+    val resource = new ResourceType(new Grid(0, 0), 0, 0, 5, 10)
+    val r1 = Vector2(10f, 10f)
+    val r2 = Vector2(50f, 50f)
+    val cell = new Cell(1)
+    val player = new Player(1, Vector2(10f, 10f))
+
+    resource.positions = List(r1, r2)
+    cell.position = Vector2(10f, 10f)
+    player.cells = List(cell)
+
+    resource.detectCollisions(List(player))
+
+    resource.positions should contain only far
   }
 }
