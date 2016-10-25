@@ -8,10 +8,10 @@ const screenWidth = screenCanvas.width;
 const screenHeight = screenCanvas.height;
 //Static position for tests for the screen window on the mini-map
 
-let xScreenPosOnMap = 0;
-let yScreenPosOnMap = 0;
+let xScreenPosOnMap;
+let yScreenPosOnMap;
 
-let screenToMapRatio = 0;
+let screenToMapRatio;
 
 const miniMapCanvas = document.createElement("canvas");
 const miniMapContext = miniMapCanvas.getContext("2d");
@@ -19,8 +19,8 @@ const miniMapWidth = screenWidth / 4;
 const miniMapHeight = screenHeight / 4;
 const miniMapPosX = screenWidth - miniMapWidth;
 
-let miniMapScreenPosWidth = 0;
-let miniMapScreenPosHeight = 0;
+let miniMapScreenPosWidth;
+let miniMapScreenPosHeight;
 
 function drawCircle(context, position, radius, color) {
   context.beginPath();
@@ -33,9 +33,9 @@ export function createGameCanvas() {
   return document.createElement("canvas");
 }
 
-export function initMap(canvas, numPlayers) {
-  canvas.width = constants.mapWidth*numPlayers;
-  canvas.height = constants.mapHeight*numPlayers;
+export function initMap(canvas, map) {
+  canvas.width = map.width;
+  canvas.height = map.height;
   
   screenToMapRatio = canvas.width/ screenCanvas.width;
   miniMapScreenPosWidth = miniMapWidth/screenToMapRatio;
