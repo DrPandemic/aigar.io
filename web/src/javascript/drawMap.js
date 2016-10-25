@@ -23,7 +23,7 @@ const miniMapPosX = screenWidth - miniMapWidth;
 const miniMapScreenPosWidth = miniMapWidth / 3;
 const miniMapScreenPosHeight = miniMapHeight / 3;
 
-var mouseIsDown = false;
+let mouseIsDown = false;
 
 function drawCircle(context, position, radius, color) {
   context.beginPath();
@@ -147,16 +147,20 @@ function mouseClick(e) {
   }
 }
 
-screenCanvas.onmousedown = function(e){
-    mouseIsDown = true;
+screenCanvas.onmousedown = function(e) {
+  mouseIsDown = true;
+  const mousePos = getMousePos(e);
+  if (mousePos.x > miniMapPosX && mousePos.y < miniMapHeight) {
+    changeScreenPos(mousePos);
+  }
 }
-screenCanvas.onmouseup = function(e){
+screenCanvas.onmouseup = function(e) {
   if(mouseIsDown) mouseClick(e);
     mouseIsDown = false;
 }
 
-screenCanvas.onmousemove = function(e){
-    if(!mouseIsDown) return;
+screenCanvas.onmousemove = function(e) {
+  if(!mouseIsDown) return;
 
   const mousePos = getMousePos(e);
   if (mousePos.x > miniMapPosX && mousePos.y < miniMapHeight) {
