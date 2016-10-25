@@ -1,5 +1,6 @@
 package io.aigar.game
 
+import io.aigar.score._
 import com.github.jpbetz.subspace.Vector2
 import org.scalatest._
 
@@ -42,6 +43,27 @@ class ResourcesSpec extends FlatSpec with Matchers {
     }
   }
 
+  "Resources update" should "returns a listof ScoreMessage" in {
+    val resources = new Resources(new Grid(100, 100))
+
+    resources.regular.positions = List(Vector2(0, 0), Vector2(40, 40))
+    resources.silver.positions = List(Vector2(20, 20))
+    resources.gold.positions = List(Vector2(40, 40))
+
+    val p1 = new Player(1, resources.regular.positions.head)
+    val p2 = new Player(2, resources.silver.positions.head)
+    val p3 = new Player(3, resources.gold.positions.head)
+
+    val resourceMessages = resources.update(List(p1, p2, p3))
+
+    resourceMessages should contain allOf (
+      ScoreMessage(p1.id, Regular.Score),
+      ScoreMessage(p2.id, Silver.Score),
+      ScoreMessage(p3.id, Gold.Score),
+      ScoreMessage(p3.id, Regular.Score)
+    )
+  }
+
   "A Resource" should "be consumed on collision" in {
     val resource = new ResourceType(new Grid(0, 0), 0, 0, 5, 10)
     val far = Vector2(1000f, 1000f)
@@ -71,15 +93,26 @@ class ResourcesSpec extends FlatSpec with Matchers {
     val resource = new ResourceType(new Grid(0, 0), 0, 0, 5, 10)
     val r1 = Vector2(10f, 10f)
     val r2 = Vector2(50f, 50f)
-    val cell = new Cell(1)
-    val player = new Player(1, Vector2(10f, 10f))
-
     resource.positions = List(r1, r2)
-    cell.position = Vector2(10f, 10f)
-    player.cells = List(cell)
 
-    resource.detectCollisions(List(player))
+    val p1 = new Player(1, Vector2(10f, 10f))
+    val p2 = new Player(2, Vector2(50f, 50f))
 
-    resource.positions should contain only far
+    val resourceMessages = resource.detectCollisions(List(p1, p2))
+
+    resourceMessages should contain only (ScoreMessage(p1.id, 10), ScoreMessage(p2.id, 10))
+  }
+
+  it should "returns an empty list of scoreMessages" in {
+    val resource = new ResourceType(new Grid(0, 0), 0, 0, 5, 10)
+    val r1 = Vector2(10f, 10f)
+    val r2 = Vector2(50f, 50f)
+    resource.positions = List(r1, r2)
+
+    val p1 = new Player(1, Vector2(100f, 100f))
+
+    val resourceMessages = resource.detectCollisions(List(p1))
+
+    resourceMessages shouldBe empty
   }
 }
