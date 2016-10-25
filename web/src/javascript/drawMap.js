@@ -8,8 +8,8 @@ const screenWidth = screenCanvas.width;
 const screenHeight = screenCanvas.height;
 //Static position for tests for the screen window on the mini-map
 
-let xScreenPosOnMap;
-let yScreenPosOnMap;
+let xScreenPosOnMap = 0;
+let yScreenPosOnMap = 0;
 
 let screenToMapRatio;
 

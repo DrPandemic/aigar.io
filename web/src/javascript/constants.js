@@ -7,9 +7,6 @@ export const goldRGBColor = "rgba(100, 84, 0, 0.1)"
 export const foodMass = 9;
 export const regFoodMass = 6;
 
-export const mapWidth = 300;
-export const mapHeight = 200;
-
 export const playerColors = [
   "#F44336",
   "#9C27B0",
