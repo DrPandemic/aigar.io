@@ -11,8 +11,7 @@ const screenHeight = screenCanvas.height;
 let xScreenPosOnMap = 0;
 let yScreenPosOnMap = 0;
 
-export const mapWidth = screenWidth * 3;
-export const mapHeight = screenHeight * 3;
+let screenToMapRatio = 0;
 
 const miniMapCanvas = document.createElement("canvas");
 const miniMapContext = miniMapCanvas.getContext("2d");
@@ -20,8 +19,8 @@ const miniMapWidth = screenWidth / 4;
 const miniMapHeight = screenHeight / 4;
 const miniMapPosX = screenWidth - miniMapWidth;
 
-const miniMapScreenPosWidth = miniMapWidth / 3;
-const miniMapScreenPosHeight = miniMapHeight / 3;
+let miniMapScreenPosWidth = 0;
+let miniMapScreenPosHeight = 0;
 
 function drawCircle(context, position, radius, color) {
   context.beginPath();
@@ -34,9 +33,13 @@ export function createGameCanvas() {
   return document.createElement("canvas");
 }
 
-export function initMap(canvas) {
-  canvas.width = mapWidth;
-  canvas.height = mapHeight;
+export function initMap(canvas, numPlayers) {
+  canvas.width = constants.mapWidth*numPlayers;
+  canvas.height = constants.mapHeight*numPlayers;
+  
+  screenToMapRatio = canvas.width/ screenCanvas.width;
+  miniMapScreenPosWidth = miniMapWidth/screenToMapRatio;
+  miniMapScreenPosHeight = miniMapHeight/screenToMapRatio;
 }
 
 export function getPlayerColor(players, currentPlayer) {
@@ -92,16 +95,16 @@ export function initMiniMap(canvas) {
   miniMapContext.drawImage(canvas, 0, 0, miniMapWidth, miniMapHeight);
 }
 
-export function drawMiniMap() {
-  drawMiniMapScreenPos();
+export function drawMiniMap(canvas) {
+  drawMiniMapScreenPos(canvas);
   screenContext.drawImage(miniMapCanvas, miniMapPosX, 0);
   screenCanvas.style.background = "#000";
 }
 
-function drawMiniMapScreenPos() {
+function drawMiniMapScreenPos(canvas) {
   miniMapContext.strokeStyle = "#fff";
-  const xMiniMapPos = miniMapWidth / mapWidth * xScreenPosOnMap;
-  const yMiniMapPos = miniMapHeight / mapHeight * yScreenPosOnMap;
+  const xMiniMapPos = miniMapWidth / canvas.width * xScreenPosOnMap;
+  const yMiniMapPos = miniMapHeight / canvas.height * yScreenPosOnMap;
   miniMapContext.strokeRect(xMiniMapPos, yMiniMapPos, miniMapScreenPosWidth, miniMapScreenPosHeight);
 }
 
