@@ -8,7 +8,7 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.Await
 import scala.concurrent.{Await, Future}
 
-case class Team(id: Option[Int], teamSecret: String, teamName: String, score: Int)
+case class Team(id: Option[Int], teamSecret: String, teamName: String, var score: Int)
 
 class Teams(tag: Tag) extends Table[Team](tag, "TEAMS") {
   def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
