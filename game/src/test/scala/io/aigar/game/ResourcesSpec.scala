@@ -45,10 +45,11 @@ class ResourcesSpec extends FlatSpec with Matchers {
   "A Resource" should "be consumed on collision" in {
     val resource = new ResourceType(new Grid(0, 0), 0,0,5,10)
     val far = Vector2(1000f, 1000f)
-    resource.positions = List(Vector2(10f,10f), far)
     val cell = new Cell(1)
-    cell.position = Vector2(10f, 10f)
     val player = new Player(1, Vector2(10f, 10f))
+
+    resource.positions = List(Vector2(10f,10f), far)
+    cell.position = Vector2(10f, 10f)
     player.cells = List(cell)
 
     resource.detectCollisions(List(player))

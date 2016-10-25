@@ -48,7 +48,7 @@ class ResourceType(grid:Grid, val min: Int, val max: Int, mass: Int, score: Int)
     val ratio = (positions.length - min).toFloat / (max - min)
 
     // Add MinPositiveValue to prevent obtaining zero since ratio can be 0
-    if ((scala.util.Random.nextFloat + scala.Float.MinPositiveValue) >= ratio) {
+    if (scala.util.Random.nextFloat >= ratio) {
       positions :::= List(grid.randomPosition)
     }
   }
