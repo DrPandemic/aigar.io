@@ -36,10 +36,10 @@ class GameThreadSpec extends FlatSpec with Matchers {
     val scoreThread = new ScoreThread
     val game = new GameThread(scoreThread, List())
     val ranked = game.createRankedGame
-    game.actionMap should contain key ranked.id
+    game.gameActions should contain key ranked.id
   }
 
-  it should "empty the actionQueue" in {
+  "transferActions" should "empty the actionQueue" in {
     val scoreThread = new ScoreThread
     val game = new GameThread(scoreThread, List())
     game.actionQueue.put(ActionQueryWithId(1, 1, List()))
@@ -49,7 +49,7 @@ class GameThreadSpec extends FlatSpec with Matchers {
     game.actionQueue shouldBe empty
   }
 
-  it should "fill actionMap" in {
+  it should "fill gameActions" in {
     val scoreThread = new ScoreThread
     val game = new GameThread(scoreThread, List())
     game.actionQueue.put(ActionQueryWithId(0, 1, List(
@@ -60,10 +60,10 @@ class GameThreadSpec extends FlatSpec with Matchers {
                                              Action(2, false, false, false, 0, Position(30f, 0f)))))
     game.transferActions
 
-    game.actionMap.get(0).get should contain (1 -> List(
+    game.gameActions.get(0).get should contain (1 -> List(
                                                 Action(1, false, false, false, 0, Position(0f, 0f)),
                                                 Action(2, false, false, false, 0, Position(10f, 10f))))
-    game.actionMap.get(0).get should contain (2 -> List(
+    game.gameActions.get(0).get should contain (2 -> List(
                                                 Action(1, false, false, false, 0, Position(20f, 0f)),
                                                 Action(2, false, false, false, 0, Position(30f, 0f))))
   }

@@ -14,7 +14,12 @@ class GameThread(scoreThread: ScoreThread, teamIDs: List[Int]) extends Runnable 
   val MillisecondsPerTick = 16
 
   final val actionQueue = new LinkedBlockingQueue[ActionQueryWithId]()
-  final val actionMap = new HashMap[Int, HashMap[Int, List[Action]]]()
+  /**
+    * Maps game ids' to another HashMap, which is mapping player ids'
+    * to a list of actions to perform in the game.
+    * So, it gives the actions for each player for each game.
+    */
+  final val gameActions = new HashMap[Int, HashMap[Int, List[Action]]]()
 
   private var states: Map[Int, serializable.GameState] = Map()
   private var games: List[Game] = List(createRankedGame)
@@ -32,12 +37,13 @@ class GameThread(scoreThread: ScoreThread, teamIDs: List[Int]) extends Runnable 
   }
 
   def createRankedGame: Game = {
-    actionMap.put(Game.RankedGameId, new HashMap())
+    gameActions.put(Game.RankedGameId, new HashMap())
     new Game(Game.RankedGameId, teamIDs)
   }
 
   def run: Unit = {
     while (running) {
+      transferActions
       updateGames
 
       Thread.sleep(MillisecondsPerTick)
@@ -47,7 +53,7 @@ class GameThread(scoreThread: ScoreThread, teamIDs: List[Int]) extends Runnable 
   def transferActions: Unit = {
     while(!actionQueue.isEmpty) {
       val action = actionQueue.take
-      actionMap.get(action.game_id) match {
+      gameActions.get(action.game_id) match {
         case Some(map) => map.put(action.team_id, action.actions)
         case None => {}
       }
