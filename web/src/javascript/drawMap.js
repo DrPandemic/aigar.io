@@ -69,7 +69,7 @@ export function drawFoodOnMap(foods, canvas) {
       var grd=context.createRadialGradient(food.x,food.y, .5, food.x, food.y,constants.foodMass);
       grd.addColorStop(0,color);
       grd.addColorStop(1, rgba);
-      drawCircle(context, food, mass, grd);
+      drawCircle(context, food, sqrt(mass / Math.PI), grd);
     }
   };
   
