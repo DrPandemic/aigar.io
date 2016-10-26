@@ -33,4 +33,11 @@ class Player(val id: Int, startPosition: Vector2) {
   def isActive():Boolean = {
     cells.exists(_.behavior.isActive)
   }
+
+  /**
+    * Removes dead cell from the player's cell list
+    */
+  def removeCell(cell: Cell): Unit ={
+    cells = cells diff List(cell)
+  }
 }
