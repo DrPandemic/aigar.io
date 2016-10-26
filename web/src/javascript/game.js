@@ -10,12 +10,12 @@ import {
 const apiURL = "http://localhost:1337/api/1/game/";
 
 export function draw(gameState, canvas) {
-  initMap(canvas);
+  initMap(canvas, gameState.map);
   drawPlayersOnMap(gameState.players, canvas);
   initMiniMap(canvas);
   drawFoodOnMap(gameState.food, canvas);
   drawMap(canvas);
-  drawMiniMap();
+  drawMiniMap(canvas);
 }
 
 export function fetchState(gameId) {

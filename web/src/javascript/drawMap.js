@@ -11,17 +11,17 @@ const screenHeight = screenCanvas.height;
 let xScreenPosOnMap = 0;
 let yScreenPosOnMap = 0;
 
-export const mapWidth = screenWidth * 3;
-export const mapHeight = screenHeight * 3;
+let screenToMapRatioWidth;
+let screenToMapRatioHeight;
 
 const miniMapCanvas = document.createElement("canvas");
 const miniMapContext = miniMapCanvas.getContext("2d");
 const miniMapWidth = screenWidth / 4;
-const miniMapHeight = screenHeight / 4;
+let miniMapHeight;
 const miniMapPosX = screenWidth - miniMapWidth;
 
-const miniMapScreenPosWidth = miniMapWidth / 3;
-const miniMapScreenPosHeight = miniMapHeight / 3;
+let miniMapScreenPosWidth;
+let miniMapScreenPosHeight;
 
 function drawCircle(context, position, radius, color) {
   context.beginPath();
@@ -34,9 +34,14 @@ export function createGameCanvas() {
   return document.createElement("canvas");
 }
 
-export function initMap(canvas) {
-  canvas.width = mapWidth;
-  canvas.height = mapHeight;
+export function initMap(canvas, map) {
+  canvas.width = map.width;
+  canvas.height = map.height;
+  
+  screenToMapRatioWidth = canvas.width/ screenCanvas.width;
+  screenToMapRatioHeight = canvas.height/ screenCanvas.height;
+  miniMapScreenPosWidth = miniMapWidth/screenToMapRatioWidth;
+  miniMapScreenPosHeight = miniMapHeight/screenToMapRatioHeight;
 }
 
 export function getPlayerColor(players, currentPlayer) {
@@ -78,6 +83,7 @@ export function drawMap(canvas) {
 
 export function initMiniMap(canvas) {
   miniMapContext.clearRect(0, 0, screenWidth, screenHeight);
+  miniMapHeight = miniMapWidth*canvas.height/canvas.width;
 
   //set dimensions
   miniMapCanvas.width = screenWidth;
@@ -92,16 +98,16 @@ export function initMiniMap(canvas) {
   miniMapContext.drawImage(canvas, 0, 0, miniMapWidth, miniMapHeight);
 }
 
-export function drawMiniMap() {
-  drawMiniMapScreenPos();
+export function drawMiniMap(canvas) {
+  drawMiniMapScreenPos(canvas);
   screenContext.drawImage(miniMapCanvas, miniMapPosX, 0);
   screenCanvas.style.background = "#000";
 }
 
-function drawMiniMapScreenPos() {
+function drawMiniMapScreenPos(canvas) {
   miniMapContext.strokeStyle = "#fff";
-  const xMiniMapPos = miniMapWidth / mapWidth * xScreenPosOnMap;
-  const yMiniMapPos = miniMapHeight / mapHeight * yScreenPosOnMap;
+  const xMiniMapPos = miniMapWidth / canvas.width * xScreenPosOnMap;
+  const yMiniMapPos = miniMapHeight / canvas.height * yScreenPosOnMap;
   miniMapContext.strokeRect(xMiniMapPos, yMiniMapPos, miniMapScreenPosWidth, miniMapScreenPosHeight);
 }
 
@@ -112,8 +118,8 @@ function changeScreenPos(mousePos) {
   };
   miniMapPos = keepInsideMap(miniMapPos);
 
-  xScreenPosOnMap = miniMapPos.x * 12;
-  yScreenPosOnMap = miniMapPos.y * 12;
+  xScreenPosOnMap = miniMapPos.x * screenToMapRatioWidth * (screenWidth/miniMapWidth);
+  yScreenPosOnMap = miniMapPos.y * screenToMapRatioHeight * (screenHeight/miniMapHeight);
 }
 
 function keepInsideMap(pos) {
