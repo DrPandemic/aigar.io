@@ -67,7 +67,7 @@ class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
   }
 
   def contains(pos: Vector2): Boolean = {
-    return position.distanceTo(pos) <= mass
+    return position.distanceTo(pos) <= sqrt(mass / Pi)
   }
 
   def eats(opponents: List[Player]): Unit ={
