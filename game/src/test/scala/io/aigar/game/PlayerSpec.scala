@@ -66,4 +66,16 @@ class PlayerSpec extends FlatSpec with Matchers {
 
     player.isActive should equal(false)
   }
+
+  it should "remove a cell from its list when it is dead" in {
+    val player = new Player(1, new Vector2(0f, 0f))
+    val cell1 = new Cell(1)
+    val cell2 = new Cell(2)
+
+    player.cells = List(cell1, cell2)
+
+    player.removeCell(cell1)
+
+    player.cells should contain only cell2
+  }
 }
