@@ -53,7 +53,7 @@ object TeamDAO extends TableQuery(new Teams(_)) {
     )
   }
 
-  def updateScore(db: Database, team_id: Int, value: Int): Unit ={
+  def addScore(db: Database, team_id: Int, value: Int): Unit ={
     val sql = sqlu"""update TEAMS
                      set score = score + ${value}
                      where id = ${team_id}"""

@@ -26,8 +26,8 @@ class TeamRepository(databaseName: Option[String]) {
     TeamDAO.findTeamBySecret(db, teamSecret)
   }
 
-  def updateScore(team_id: Int, value: Int): Unit ={
-    TeamDAO.updateScore(db, team_id, value)
+  def addScore(team_id: Int, value: Int): Unit ={
+    TeamDAO.addScore(db, team_id, value)
   }
 
   def updateTeam(team: Team): Option[Team] = {
