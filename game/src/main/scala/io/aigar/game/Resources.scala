@@ -31,7 +31,7 @@ class Resources(grid: Grid) {
 
   def update(players: List[Player]): List[ScoreMessage] = {
     val scoreMessages = resourceTypes.map(_.detectCollisions(players))
-      .reduceLeft(_ ::: _)
+      .flatten
     resourceTypes.foreach(_.spawnResources)
 
     scoreMessages
