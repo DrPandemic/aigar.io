@@ -149,10 +149,7 @@ function mouseClick(e) {
 
 screenCanvas.onmousedown = function(e) {
   mouseIsDown = true;
-  const mousePos = getMousePos(e);
-  if (mousePos.x > miniMapPosX && mousePos.y < miniMapHeight) {
-    changeScreenPos(mousePos);
-  }
+  mouseClick(e);
 }
 screenCanvas.onmouseup = function(e) {
   if(mouseIsDown) mouseClick(e);
@@ -161,10 +158,8 @@ screenCanvas.onmouseup = function(e) {
 
 screenCanvas.onmousemove = function(e) {
   if(!mouseIsDown) return;
-
-  const mousePos = getMousePos(e);
-  if (mousePos.x > miniMapPosX && mousePos.y < miniMapHeight) {
-    changeScreenPos(mousePos);
-  }
-    return false;
+  mouseClick(e);
+  return false;
 }
+
+
