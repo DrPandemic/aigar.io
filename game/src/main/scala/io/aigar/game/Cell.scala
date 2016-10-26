@@ -46,7 +46,6 @@ class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
     _mass = max(m, Cell.MinMass)
   }
 
-
   def update(deltaSeconds: Float, grid: Grid) {
     mass = decayedMass(deltaSeconds)
 
@@ -71,6 +70,16 @@ class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
     return position.distanceTo(pos) <= mass
   }
 
+  def eats(opponents: List[Player]): Unit ={
+    for(opponent <- opponents) {
+      for(cell <- opponent.cells) {
+        if (contains(cell.position)) {
+          mass = mass + cell.mass
+          opponent.removeCell(cell)
+        }
+      }
+    }
+  }
 
   def state = {
     serializable.Cell(id,
