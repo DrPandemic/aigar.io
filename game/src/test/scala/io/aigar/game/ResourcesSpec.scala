@@ -43,7 +43,7 @@ class ResourcesSpec extends FlatSpec with Matchers {
     }
   }
 
-  "Resources update" should "returns a listof ScoreMessage" in {
+  "Resources update" should "returns a list of ScoreMessage" in {
     val resources = new Resources(new Grid(100, 100))
 
     resources.regular.positions = List(Vector2(0, 0), Vector2(40, 40))
