@@ -13,11 +13,11 @@ import scala.collection.mutable.HashMap
 class GameThread(scoreThread: ScoreThread, teamIDs: List[Int]) extends Runnable {
   val MillisecondsPerTick = 16
 
-  private var states: Map[Int, serializable.GameState] = Map()
-  private var games: List[Game] = List(createRankedGame)
-
   final val actionQueue = new LinkedBlockingQueue[ActionQueryWithId]()
   final val actionMap = new HashMap[Int, HashMap[Int, List[Action]]]()
+
+  private var states: Map[Int, serializable.GameState] = Map()
+  private var games: List[Game] = List(createRankedGame)
 
   var running = true
 
@@ -32,7 +32,7 @@ class GameThread(scoreThread: ScoreThread, teamIDs: List[Int]) extends Runnable 
   }
 
   def createRankedGame: Game = {
-   // actionMap(Game.RankedGameId) = new HashMap()
+    actionMap.put(Game.RankedGameId, new HashMap())
     new Game(Game.RankedGameId, teamIDs)
   }
 
@@ -45,7 +45,13 @@ class GameThread(scoreThread: ScoreThread, teamIDs: List[Int]) extends Runnable 
   }
 
   def transferActions: Unit = {
-
+    while(!actionQueue.isEmpty) {
+      val action = actionQueue.take
+      actionMap.get(action.game_id) match {
+        case Some(map) => map.put(action.team_id, action.actions)
+        case None => {}
+      }
+    }
   }
 
   def updateGames: Unit = {
