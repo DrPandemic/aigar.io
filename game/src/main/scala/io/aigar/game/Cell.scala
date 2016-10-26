@@ -73,7 +73,7 @@ class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
   def eats(opponents: List[Player]): Unit ={
     for(opponent <- opponents) {
       for(cell <- opponent.cells) {
-        if (contains(cell.position)) {
+        if (contains(cell.position) && mass >= 1.1 * cell.mass) { //Cell must be 10% larger to eat it
           mass = mass + cell.mass
           opponent.removeCell(cell)
         }

@@ -181,4 +181,48 @@ class CellSpec extends FlatSpec with Matchers {
     cell.position.y should be >= 0f
     cell.position.y should be <= 10f
   }
+
+  it should "eat a 10% or more smaller cell when contained in itself" in {
+    val largeCell = new Cell(1, new Vector2(10, 10))
+    val smallCell = new Cell(2, new Vector2(10, 10))
+    val opponent = new Player(2, Vector2(10, 10))
+
+    largeCell.mass = 30
+    smallCell.mass = 27
+    opponent.cells = List(smallCell)
+
+    largeCell.eats(List(opponent))
+
+    opponent.cells shouldBe empty
+  }
+
+  it should "not eat less than 10% smaller cell when contained in itself" in {
+    val largeCell = new Cell(1, new Vector2(10, 10))
+    val smallCell = new Cell(2, new Vector2(10, 10))
+    val opponent = new Player(2, Vector2(10, 10))
+
+    largeCell.mass = 21
+    smallCell.mass = 20
+    opponent.cells = List(smallCell)
+
+    smallCell.eats(List(opponent))
+
+    opponent.cells should contain only smallCell
+  }
+
+  it should "not eat a larger cell when into it" in {
+    val largeCell = new Cell(1, new Vector2(10, 10))
+    val smallCell = new Cell(2, new Vector2(10, 10))
+    val opponent = new Player(2, Vector2(10, 10))
+
+    largeCell.mass = 21
+    smallCell.mass = 20
+    opponent.cells = List(largeCell)
+
+    smallCell.eats(List(opponent))
+
+    opponent.cells should contain only largeCell
+  }
+
+
 }
