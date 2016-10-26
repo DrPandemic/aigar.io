@@ -3,6 +3,7 @@ package io.aigar.model
 import com.mchange.v2.c3p0.ComboPooledDataSource
 import slick.driver.H2Driver.api._
 import java.util.logging.{Level, Logger}
+import io.aigar.score.ScoreMessage
 
 class TeamRepository(databaseName: Option[String]) {
   val cpds = new ComboPooledDataSource
@@ -23,6 +24,10 @@ class TeamRepository(databaseName: Option[String]) {
 
   def readTeamBySecret(teamSecret: String): Option[Team] = {
     TeamDAO.findTeamBySecret(db, teamSecret)
+  }
+
+  def addScore(team_id: Int, value: Int): Unit ={
+    TeamDAO.addScore(db, team_id, value)
   }
 
   def updateTeam(team: Team): Option[Team] = {

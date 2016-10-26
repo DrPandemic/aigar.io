@@ -8,7 +8,7 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.Await
 import scala.concurrent.{Await, Future}
 
-case class Team(id: Option[Int], teamSecret: String, teamName: String, score: Int)
+case class Team(id: Option[Int], teamSecret: String, teamName: String, var score: Int)
 
 class Teams(tag: Tag) extends Table[Team](tag, "TEAMS") {
   def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
@@ -50,6 +50,19 @@ object TeamDAO extends TableQuery(new Teams(_)) {
           .result
       ).map(_.headOption
       ), Duration.Inf
+    )
+  }
+
+  def addScore(db: Database, team_id: Int, value: Int): Unit ={
+    val sql = sqlu"""update TEAMS
+                     set score = score + ${value}
+                     where id = ${team_id}"""
+    // TODO Log errors if there's any
+    Await.result(
+      db.run(
+        sql
+      )
+      , Duration.Inf
     )
   }
 
