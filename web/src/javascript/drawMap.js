@@ -57,7 +57,7 @@ export function drawPlayersOnMap(players, canvas) {
   for(const player of players) {
     const color = getPlayerColor(players, player);
     for(const cell of player.cells) {
-      drawCircle(context, cell.position, cell.mass, color);
+      drawCircle(context, cell.position, Math.sqrt(cell.mass * Math.PI), color);
     }
   }
 }
@@ -69,7 +69,7 @@ export function drawFoodOnMap(foods, canvas) {
       var grd=context.createRadialGradient(food.x,food.y, .5, food.x, food.y,constants.foodMass);
       grd.addColorStop(0,color);
       grd.addColorStop(1, rgba);
-      drawCircle(context, food, sqrt(mass / Math.PI), grd);
+      drawCircle(context, food, mass, grd);
     }
   };
   

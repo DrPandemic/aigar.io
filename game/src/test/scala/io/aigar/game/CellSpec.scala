@@ -1,6 +1,7 @@
 import io.aigar.game._
 import org.scalatest._
 import com.github.jpbetz.subspace._
+import scala.math._
 
 class CellSpec extends FlatSpec with Matchers {
   "A Cell" should "not initiate movement when its target is on itself" in {
@@ -60,7 +61,7 @@ class CellSpec extends FlatSpec with Matchers {
 
   it should "Be in the cell" in {
     val cell = new Cell(1)
-    cell.mass = 100
+    cell.mass = (pow(100f, 2) / Pi).toFloat
 
     val vec = new Vector2(42f, 42f)
     cell.contains(vec) should equal(true)
