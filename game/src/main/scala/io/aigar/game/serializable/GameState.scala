@@ -18,6 +18,7 @@ case class Dimensions(
 )
 case class Cell(
   id: Int,
+  radius: Int,
   mass: Int,
   position: Position,
   target: Position
