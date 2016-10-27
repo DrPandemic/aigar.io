@@ -4,8 +4,8 @@ export const silverColor = "#ACACAC";
 export const silverRGBColor = "rgba(67, 67, 67, 0.1)"
 export const goldColor = "#FFD700";
 export const goldRGBColor = "rgba(100, 84, 0, 0.1)"
-export const foodradius = 9;
-export const regFoodradius = 6;
+export const foodRadius = 9;
+export const regFoodRadius = 6;
 
 export const textColor = "#fff";
 export const textBorderColor = "#000 1px solid";
