@@ -63,8 +63,7 @@ class GameThread(scoreThread: ScoreThread, teamIDs: List[Int]) extends Runnable 
   def updateGames: Unit = {
     for (game <- games) {
       val deltaTime = currentTime - previousTime
-      game.update(deltaTime)
-
+      game.update(deltaTime, gameActions.get(game.id).getOrElse(HashMap[Int, List[Action]]() ))
       states = states + (game.id -> game.state)
 
       previousTime = currentTime

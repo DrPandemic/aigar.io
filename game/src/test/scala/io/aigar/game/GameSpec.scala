@@ -1,6 +1,8 @@
+import io.aigar.controller.response.Action
 import io.aigar.game._
 import org.scalatest._
 import com.github.jpbetz.subspace._
+import scala.collection.mutable.HashMap
 
 class GameSpec extends FlatSpec with Matchers {
   "A Game" should "generate a new state object every time (thread-safety)" in {
@@ -13,7 +15,7 @@ class GameSpec extends FlatSpec with Matchers {
     val game = new Game(42, List())
     game.tick should equal(0)
 
-    game.update(1f)
+    game.update(1f, HashMap[Int, List[Action]]())
 
     game.tick should equal(1)
   }
@@ -45,7 +47,7 @@ class GameSpec extends FlatSpec with Matchers {
 
     val initialDistance = cell.position.distanceTo(cell.target)
 
-    game.update(1f)
+    game.update(1f, HashMap[Int, List[Action]]())
 
     val finalDistance = cell.position.distanceTo(cell.target)
 
