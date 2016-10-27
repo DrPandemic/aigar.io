@@ -33,13 +33,14 @@ function drawCircle(context, position, radius, color) {
 }
 
 function writeCellTeamName(playerName, context, position){
-  context.fillStyle = "white";
-  context.font = "25px Arial";
+  context.fillStyle = constants.textColor;
+  context.font = constants.textStyle;
   context.textAlign="center"; 
   context.textBaseline = "middle";
-  var x = position.x;
-  var y = position.y;
-  context.fillText(playerName, x, y);
+  context.strokeStyle = constants.textBorderColor;
+
+  context.fillText(playerName, position.x, position.y);
+  context.strokeText(playerName, position.x, position.y);
 }
 
 export function createGameCanvas() {
