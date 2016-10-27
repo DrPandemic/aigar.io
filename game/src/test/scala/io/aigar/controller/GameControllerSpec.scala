@@ -121,9 +121,8 @@ class GameControllerSpec extends MutableScalatraSpec
         game.actionQueue.isEmpty() must be_==(false)
         val action = game.actionQueue.take()
         action.game_id must be_==(1)
-        action.query.team_secret must be_==("EdgQWhJ!v&")
-        action.query.actions.length must be_==(2)
-        action.query.actions(0).cell_id must be_==(123)
+        action.actions.length must be_==(2)
+        action.actions(0).cell_id must be_==(123)
       }
     }
 

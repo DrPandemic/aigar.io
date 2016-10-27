@@ -1,5 +1,7 @@
 import io.aigar.game._
 import io.aigar.score.ScoreThread
+import io.aigar.controller.response.Action
+import io.aigar.game.serializable.Position
 import org.scalatest._
 
 class GameThreadSpec extends FlatSpec with Matchers {
@@ -28,5 +30,41 @@ class GameThreadSpec extends FlatSpec with Matchers {
     val game = new GameThread(scoreThread, List())
     val ranked = game.createRankedGame
     ranked.id should equal (Game.RankedGameId)
+  }
+
+  "createRankedGame" should "create its action map" in {
+    val scoreThread = new ScoreThread
+    val game = new GameThread(scoreThread, List())
+    val ranked = game.createRankedGame
+    game.gameActions should contain key ranked.id
+  }
+
+  "transferActions" should "empty the actionQueue" in {
+    val scoreThread = new ScoreThread
+    val game = new GameThread(scoreThread, List())
+    game.actionQueue.put(ActionQueryWithId(1, 1, List()))
+
+    game.transferActions
+
+    game.actionQueue shouldBe empty
+  }
+
+  it should "fill gameActions" in {
+    val scoreThread = new ScoreThread
+    val game = new GameThread(scoreThread, List())
+    game.actionQueue.put(ActionQueryWithId(0, 1, List(
+                                             Action(1, false, false, false, 0, Position(0f, 0f)),
+                                             Action(2, false, false, false, 0, Position(10f, 10f)))))
+    game.actionQueue.put(ActionQueryWithId(0, 2, List(
+                                             Action(1, false, false, false, 0, Position(20f, 0f)),
+                                             Action(2, false, false, false, 0, Position(30f, 0f)))))
+    game.transferActions
+
+    game.gameActions.get(0).get should contain (1 -> List(
+                                                Action(1, false, false, false, 0, Position(0f, 0f)),
+                                                Action(2, false, false, false, 0, Position(10f, 10f))))
+    game.gameActions.get(0).get should contain (2 -> List(
+                                                Action(1, false, false, false, 0, Position(20f, 0f)),
+                                                Action(2, false, false, false, 0, Position(30f, 0f))))
   }
 }
