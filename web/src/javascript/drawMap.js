@@ -32,6 +32,16 @@ function drawCircle(context, position, radius, color) {
   context.fill();
 }
 
+function writeCellTeamName(playerName, context, position){
+  context.fillStyle = "white";
+  context.font = "25px Arial";
+  context.textAlign="center"; 
+  context.textBaseline = "middle";
+  var x = position.x;
+  var y = position.y;
+  context.fillText(playerName, x, y);
+}
+
 export function createGameCanvas() {
   return document.createElement("canvas");
 }
@@ -58,6 +68,7 @@ export function drawPlayersOnMap(players, canvas) {
     const color = getPlayerColor(players, player);
     for(const cell of player.cells) {
       drawCircle(context, cell.position, Math.sqrt(cell.mass * Math.PI), color);
+      writeCellTeamName(player.name, context, cell.position)
     }
   }
 }
