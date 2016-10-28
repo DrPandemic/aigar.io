@@ -8,4 +8,4 @@ notifications:
 
 script:
     - pushd game && sbt clean test it:test && popd
-    - pushd clients/python && python -m unittest discover -p "*_test.py" && popd
+    - pushd clients/python && pip install -r requirements.txt && python -m unittest discover -p "*_test.py" && popd
