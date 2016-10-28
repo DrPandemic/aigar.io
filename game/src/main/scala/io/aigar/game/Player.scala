@@ -6,8 +6,10 @@ import com.github.jpbetz.subspace._
 class Player(val id: Int, startPosition: Vector2) {
   var cells = List(new Cell(0, startPosition))
 
-  def update(deltaSeconds: Float, grid: Grid) {
+  def update(deltaSeconds: Float, grid: Grid, players: List[Player]) {
+    val opponents = players.filterNot(_ == this)
     cells.foreach { _.update(deltaSeconds, grid) }
+    cells.foreach { _.eats(opponents)}
   }
 
   def state = {
@@ -32,5 +34,12 @@ class Player(val id: Int, startPosition: Vector2) {
     */
   def isActive():Boolean = {
     cells.exists(_.behavior.isActive)
+  }
+
+  /**
+    * Removes dead cell from the player's cell list
+    */
+  def removeCell(cell: Cell): Unit ={
+    cells = cells.filterNot(_ == cell)
   }
 }

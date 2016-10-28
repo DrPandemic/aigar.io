@@ -18,7 +18,7 @@ class PlayerSpec extends FlatSpec with Matchers {
 
     val initialDistance = player.cells.head.position.distanceTo(target)
 
-    player.update(1f, grid)
+    player.update(1f, grid, List(new Player(0, new Vector2(0, 0))))
 
     val finalDistance = player.cells.head.position.distanceTo(target)
 
@@ -65,5 +65,17 @@ class PlayerSpec extends FlatSpec with Matchers {
     player.cells(1).behavior = new WanderingBehavior(player.cells(1))
 
     player.isActive should equal(false)
+  }
+
+  it should "remove a cell from its list when it is dead" in {
+    val player = new Player(1, new Vector2(0f, 0f))
+    val cell1 = new Cell(1)
+    val cell2 = new Cell(2)
+
+    player.cells = List(cell1, cell2)
+
+    player.removeCell(cell1)
+
+    player.cells should contain only cell2
   }
 }

@@ -15,7 +15,7 @@ class Game(val id: Int, playerIDs: List[Int]) {
   var tick = 0
 
   def update(deltaSeconds: Float) {
-    players.foreach { _.update(deltaSeconds, grid) }
+    players.foreach { _.update(deltaSeconds, grid, players)}
     resources.update(players)
 
     tick += 1
