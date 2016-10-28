@@ -8,6 +8,9 @@
 ## Joining the Ranked Game
 `python play.py`
 
+## Running the Tests (developers of the game)
+`python -m unittest discover -p "*_test.py"`
+
 ## Documentation
 ### Game
 State of a game.
