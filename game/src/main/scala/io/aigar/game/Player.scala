@@ -9,8 +9,12 @@ class Player(val id: Int, startPosition: Vector2) {
 
   def update(deltaSeconds: Float, grid: Grid, players: List[Player], actions: List[Action]) {
     val opponents = players.filterNot(_ == this)
-    cells.foreach { _.update(deltaSeconds, grid) }
-    cells.foreach { _.eats(opponents)}
+    cells.foreach { cell => cell.update(
+                     deltaSeconds,
+                     grid,
+                     actions.find(action => action.cell_id == cell.id))
+      cells.foreach { _.eats(opponents)}
+    }
   }
 
   def state = {

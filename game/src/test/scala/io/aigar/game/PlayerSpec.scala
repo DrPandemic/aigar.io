@@ -20,7 +20,7 @@ class PlayerSpec extends FlatSpec with Matchers {
 
     val initialDistance = player.cells.head.position.distanceTo(target)
 
-    player.update(1f, grid, List(new Player(0, new Vector2(0, 0))))
+    player.update(1f, grid, List(new Player(0, new Vector2(0, 0))), List())
 
     val finalDistance = player.cells.head.position.distanceTo(target)
 
@@ -84,7 +84,7 @@ class PlayerSpec extends FlatSpec with Matchers {
   "update" should "update cell's targets" in {
     val player = new Player(1, new Vector2(0f, 0f))
     player.cells = List(new Cell(0), new Cell(1))
-    player.update(1, new Grid(100, 100), List(
+    player.update(1, new Grid(100, 100), List(), List(
                     Action(0, false, false, false, 0, Position(0f, 10f)),
                     Action(1, false, false, false, 0, Position(10f, 15f))))
 

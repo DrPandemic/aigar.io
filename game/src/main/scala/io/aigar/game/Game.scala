@@ -18,7 +18,11 @@ class Game(val id: Int, playerIDs: List[Int]) {
   var tick = 0
 
   def update(deltaSeconds: Float, actions: HashMap[Int, List[Action]]): Unit = {
-    players.foreach { _.update(deltaSeconds, grid, players)}
+    players.foreach { player => player.update(
+                       deltaSeconds,
+                       grid,
+                       players,
+                       actions.get(player.id).getOrElse(List()) )}
     resources.update(players)
 
     tick += 1

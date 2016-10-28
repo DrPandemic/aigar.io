@@ -1,7 +1,7 @@
 package io.aigar.game
 
-import scala.util.Random
-import scala.math.{cos, sin, Pi}
+import io.aigar.controller.response.Action
+import io.aigar.game.Position2Utils._
 import com.github.jpbetz.subspace._
 
 /**
@@ -12,7 +12,7 @@ trait SteeringBehavior {
   /**
    * Determines what the next target of a cell should be.
    */
-  def update(deltaSeconds: Float, grid: Grid): Vector2
+  def update(deltaSeconds: Float, grid: Grid, action: Option[Action]): Vector2
   def onPlayerActivity: Unit
   def isActive: Boolean
 }
@@ -25,7 +25,7 @@ class WanderingBehavior(cell: Cell) extends SteeringBehavior {
   /**
    * Picks a random target. Picks a new one once the previous one is reached.
    */
-  def update(deltaSeconds: Float, grid: Grid) = {
+  def update(deltaSeconds: Float, grid: Grid, action: Option[Action]) = {
     nextTargetTimeLeft -= deltaSeconds
 
     if (cell.contains(cell.target) || nextTargetTimeLeft <= 0f) {
@@ -55,13 +55,22 @@ class NoBehavior(cell: Cell) extends SteeringBehavior {
 
   def isActive = true
 
-  def update(deltaSeconds: Float, grid: Grid) = {
+  def update(deltaSeconds: Float, grid: Grid, action: Option[Action]) = {
     inactivityTimeLeft -= deltaSeconds
     if (inactivityTimeLeft < 0f) {
       cell.behavior = new WanderingBehavior(cell)
     }
 
+    applyAction(action)
+
     cell.target
+  }
+
+  def applyAction(action: Option[Action]): Unit = {
+    action match {
+      case Some(action) => cell.target = action.target.toVector
+      case None => {}
+    }
   }
 
   def onPlayerActivity = {
@@ -80,7 +89,7 @@ class TestBehavior extends SteeringBehavior {
   var updated = false
   var active = false
 
-  def update(deltaSeconds: Float, grid: Grid) = {
+  def update(deltaSeconds: Float, grid: Grid, action: Option[Action]) = {
     updated = true
     new Vector2(0f, 0f)
   }
