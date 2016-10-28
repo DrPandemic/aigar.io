@@ -13,14 +13,14 @@
 State of a game.
 
 Attributes:
-- id: Identifier of the game
+- `id`: Identifier of the game
 
-- tick: How many updates the game has gone through so far
+- `tick`: How many updates the game has gone through so far
 
-- players: List of players in the game
+- `players`: List of players in the game
 
-- resources: Resources in the game that can be collected to gain mass/points
+- `resources`: Resources in the game that can be collected to gain mass/points
 
-- map: Dimensions of the map
+- `map`: Dimensions of the map
 
-- viruses: List of viruses that split a cell when consumed
+- `viruses`: List of viruses that split a cell when consumed
