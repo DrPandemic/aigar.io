@@ -3,7 +3,7 @@ package io.aigar.game
 import io.aigar.score.ScoreThread
 import io.aigar.controller.response.Action
 import java.util.concurrent.LinkedBlockingQueue
-import scala.collection.mutable.HashMap
+import scala.collection.immutable.HashMap
 
 /**
  * GameThread is the thread that runs continuously through the competition that
@@ -14,12 +14,6 @@ class GameThread(scoreThread: ScoreThread, teamIDs: List[Int]) extends Runnable 
   val MillisecondsPerTick = 16
 
   final val actionQueue = new LinkedBlockingQueue[ActionQueryWithId]()
-  /**
-    * Maps game ids' to another HashMap, which is mapping player ids'
-    * to a list of actions to perform in the game.
-    * So, it gives the actions for each player for each game.
-    */
-  final val gameActions = new HashMap[Int, HashMap[Int, List[Action]]]()
 
   private var states: Map[Int, serializable.GameState] = Map()
   private var games: List[Game] = List(createRankedGame)
@@ -37,7 +31,6 @@ class GameThread(scoreThread: ScoreThread, teamIDs: List[Int]) extends Runnable 
   }
 
   def createRankedGame: Game = {
-    gameActions.put(Game.RankedGameId, new HashMap())
     new Game(Game.RankedGameId, teamIDs)
   }
 
@@ -53,8 +46,8 @@ class GameThread(scoreThread: ScoreThread, teamIDs: List[Int]) extends Runnable 
   def transferActions: Unit = {
     while(!actionQueue.isEmpty) {
       val action = actionQueue.take
-      gameActions.get(action.game_id) match {
-        case Some(map) => map.put(action.team_id, action.actions)
+      games.find(_.id == action.game_id) match {
+        case Some(game) => game.performAction(action.team_id, action.actions)
         case None => {}
       }
     }
@@ -63,7 +56,7 @@ class GameThread(scoreThread: ScoreThread, teamIDs: List[Int]) extends Runnable 
   def updateGames: Unit = {
     for (game <- games) {
       val deltaTime = currentTime - previousTime
-      game.update(deltaTime, gameActions.get(game.id).getOrElse(HashMap[Int, List[Action]]() ))
+      game.update(deltaTime)
       states = states + (game.id -> game.state)
 
       previousTime = currentTime

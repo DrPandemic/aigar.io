@@ -16,7 +16,7 @@ class GameSpec extends FlatSpec with Matchers {
     val game = new Game(42, List())
     game.tick should equal(0)
 
-    game.update(1f, HashMap[Int, List[Action]]())
+    game.update(1f)
 
     game.tick should equal(1)
   }
@@ -48,7 +48,7 @@ class GameSpec extends FlatSpec with Matchers {
 
     val initialDistance = cell.position.distanceTo(cell.target)
 
-    game.update(1f, HashMap[Int, List[Action]]())
+    game.update(1f)
 
     val finalDistance = cell.position.distanceTo(cell.target)
 
@@ -72,12 +72,11 @@ class GameSpec extends FlatSpec with Matchers {
     //TODO add more tests as the rest gets implemented
   }
 
-  "update" should "update cell's targets" in {
+  "performAction" should "update cell's targets" in {
     val game = new Game(0, List(1, 2, 3))
-    game.update(1f, HashMap(
-                  1 -> List(Action(0, false, false, false, 0, Position(0f, 10f))),
-                  2 -> List(Action(0, false, false, false, 0, Position(20f, 10f))),
-                  3 -> List(Action(0, false, false, false, 0, Position(50f, 1f)))))
+    game.performAction(1, List(Action(0, false, false, false, 0, Position(0f, 10f))))
+    game.performAction(2, List(Action(0, false, false, false, 0, Position(20f, 10f))))
+    game.performAction(3, List(Action(0, false, false, false, 0, Position(50f, 1f))))
 
     val state = game.state
     val p1 = state.players.find(_.id == 1).get

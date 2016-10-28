@@ -12,7 +12,7 @@ class CellSpec extends FlatSpec with Matchers {
     cell.target = new Vector2(42f, 42f)
     val grid = new Grid(100, 100);
 
-    cell.update(1f, grid, None)
+    cell.update(1f, grid)
 
     cell.position should equal(new Vector2(42f, 42f))
   }
@@ -24,7 +24,7 @@ class CellSpec extends FlatSpec with Matchers {
 
     val initialDistance = cell.position.distanceTo(cell.target)
 
-    cell.update(1f, grid, None)
+    cell.update(1f, grid)
 
     val finalDistance = cell.position.distanceTo(cell.target)
 
@@ -81,7 +81,7 @@ class CellSpec extends FlatSpec with Matchers {
     val cell = new Cell(1, new Vector2(42f, 42f))
     val grid = new Grid(200, 200)
 
-    cell.update(1f, grid, None)
+    cell.update(1f, grid)
 
     cell.position should equal(new Vector2(42f, 42f))
   }
@@ -98,7 +98,7 @@ class CellSpec extends FlatSpec with Matchers {
     val cell = new Cell(1, new Vector2(0f, 0f))
     cell.mass = 1000f
 
-    cell.update(1f, new Grid(0, 0), None)
+    cell.update(1f, new Grid(0, 0))
 
     cell.mass should equal(1000f * (1f - Cell.MassDecayPerSecond))
   }
@@ -110,9 +110,9 @@ class CellSpec extends FlatSpec with Matchers {
     cell1.mass = 1000f
     cell2.mass = 1000f
 
-    cell1.update(0.5f, grid, None)
-    cell2.update(0.25f, grid, None)
-    cell2.update(0.25f, grid, None)
+    cell1.update(0.5f, grid)
+    cell2.update(0.25f, grid)
+    cell2.update(0.25f, grid)
 
     cell1.mass should equal(cell2.mass)
   }
@@ -121,7 +121,7 @@ class CellSpec extends FlatSpec with Matchers {
     val cell = new Cell(1, new Vector2(0f, 0f))
     cell.behavior = new TestBehavior
 
-    cell.update(1f, new Grid(0, 0), None)
+    cell.update(1f, new Grid(0, 0))
 
     cell.behavior shouldBe 'updated
   }
@@ -130,7 +130,7 @@ class CellSpec extends FlatSpec with Matchers {
     val cell = new Cell(1, new Vector2(-5, 5))
     val grid = new Grid(10, 10)
 
-    cell.update(1f, grid, None)
+    cell.update(1f, grid)
 
     cell.position.x should be >= 0f
     cell.position.x should be <= 10f
@@ -142,7 +142,7 @@ class CellSpec extends FlatSpec with Matchers {
     val cell = new Cell(1, new Vector2(10, -5))
     val grid = new Grid(10, 10);
 
-    cell.update(1f, grid, None)
+    cell.update(1f, grid)
 
     cell.position.x should be >= 0f
     cell.position.x should be <= 10f
@@ -154,7 +154,7 @@ class CellSpec extends FlatSpec with Matchers {
     val cell = new Cell(1, new Vector2(12, 5))
     val grid = new Grid(10, 10);
 
-    cell.update(1f, grid, None)
+    cell.update(1f, grid)
 
     cell.position.x should be >= 0f
     cell.position.x should be <= 10f
@@ -166,7 +166,7 @@ class CellSpec extends FlatSpec with Matchers {
     val cell = new Cell(1, new Vector2(5, 12))
     val grid = new Grid(10, 10);
 
-    cell.update(1f, grid, None)
+    cell.update(1f, grid)
 
     cell.position.x should be >= 0f
     cell.position.x should be <= 10f
@@ -178,7 +178,7 @@ class CellSpec extends FlatSpec with Matchers {
     val cell = new Cell(1, new Vector2(12, 12))
     val grid = new Grid(10, 10);
 
-    cell.update(1f, grid, None)
+    cell.update(1f, grid)
 
     cell.position.x should be >= 0f
     cell.position.x should be <= 10f
@@ -228,11 +228,11 @@ class CellSpec extends FlatSpec with Matchers {
     opponent.cells should contain only largeCell
   }
 
-  "update" should "change target with the right action" in {
+  "performAction" should "change target with the right action" in {
     val cell = new Cell(1, new Vector2(12, 12))
     val grid = new Grid(100, 100);
 
-    cell.update(1f, grid, Some(Action(0, false, false, false, 0, Position(0f, 10f))))
+    cell.performAction(Action(0, false, false, false, 0, Position(0f, 10f)))
 
     cell.target.state should equal(Position(0f, 10f))
   }

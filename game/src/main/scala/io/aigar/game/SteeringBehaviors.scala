@@ -12,7 +12,7 @@ trait SteeringBehavior {
   /**
    * Determines what the next target of a cell should be.
    */
-  def update(deltaSeconds: Float, grid: Grid, action: Option[Action]): Vector2
+  def update(deltaSeconds: Float, grid: Grid): Vector2
   def onPlayerActivity: Unit
   def isActive: Boolean
 }
@@ -25,7 +25,7 @@ class WanderingBehavior(cell: Cell) extends SteeringBehavior {
   /**
    * Picks a random target. Picks a new one once the previous one is reached.
    */
-  def update(deltaSeconds: Float, grid: Grid, action: Option[Action]) = {
+  def update(deltaSeconds: Float, grid: Grid) = {
     nextTargetTimeLeft -= deltaSeconds
 
     if (cell.contains(cell.target) || nextTargetTimeLeft <= 0f) {
@@ -55,7 +55,7 @@ class NoBehavior(cell: Cell) extends SteeringBehavior {
 
   def isActive = true
 
-  def update(deltaSeconds: Float, grid: Grid, action: Option[Action]) = {
+  def update(deltaSeconds: Float, grid: Grid) = {
     inactivityTimeLeft -= deltaSeconds
     if (inactivityTimeLeft < 0f) {
       cell.behavior = new WanderingBehavior(cell)
@@ -80,7 +80,7 @@ class TestBehavior extends SteeringBehavior {
   var updated = false
   var active = false
 
-  def update(deltaSeconds: Float, grid: Grid, action: Option[Action]) = {
+  def update(deltaSeconds: Float, grid: Grid) = {
     updated = true
     new Vector2(0f, 0f)
   }

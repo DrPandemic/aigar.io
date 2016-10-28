@@ -3,6 +3,7 @@ package io.aigar.game
 import io.aigar.controller.response.Action
 import scala.math.{max, round, pow}
 import io.aigar.game.Vector2Utils._
+import io.aigar.game.Position2Utils._
 import com.github.jpbetz.subspace._
 import scala.math._
 
@@ -47,10 +48,10 @@ class Cell(val id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
     _mass = max(m, Cell.MinMass)
   }
 
-  def update(deltaSeconds: Float, grid: Grid, action: Option[Action]): Unit = {
+  def update(deltaSeconds: Float, grid: Grid): Unit = {
     mass = decayedMass(deltaSeconds)
 
-    target = behavior.update(deltaSeconds, grid, action)
+    target = behavior.update(deltaSeconds, grid)
 
     velocity += acceleration * deltaSeconds
     position += velocity * deltaSeconds
@@ -81,14 +82,11 @@ class Cell(val id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
       }
     }
   }
-/*
-  def performAction(action: Option[Action]): Unit = {
-    action match {
-      case Some(action) => cell.target = action.target.toVector
-      case None => {}
-    }
+
+  def performAction(action: Action): Unit = {
+    target = action.target.toVector
   }
- */
+
   def state = {
     serializable.Cell(id,
                       round(mass).toInt,

@@ -7,14 +7,10 @@ import com.github.jpbetz.subspace._
 class Player(val id: Int, startPosition: Vector2) {
   var cells = List(new Cell(0, startPosition))
 
-  def update(deltaSeconds: Float, grid: Grid, players: List[Player], actions: List[Action]) {
+  def update(deltaSeconds: Float, grid: Grid, players: List[Player]) {
     val opponents = players.filterNot(_ == this)
-    cells.foreach { cell => cell.update(
-                     deltaSeconds,
-                     grid,
-                     actions.find(action => action.cell_id == cell.id))
-      cells.foreach { _.eats(opponents)}
-    }
+    cells.foreach { cell => cell.update(deltaSeconds, grid) }
+    cells.foreach { _.eats(opponents)}
   }
 
   def state = {
@@ -24,6 +20,17 @@ class Player(val id: Int, startPosition: Vector2) {
                         mass,
                         isActive,
                         cells.map(_.state).toList)
+  }
+
+  def performAction(actions: List[Action]): Unit = {
+    onExternalAction
+
+    actions.foreach {
+      action => cells.find(_.id == action.cell_id) match {
+        case Some(cell) => cell.performAction(action)
+        case None => {}
+      }
+    }
   }
 
   /**
