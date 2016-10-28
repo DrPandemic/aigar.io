@@ -1,5 +1,6 @@
 from requests import get
-from models import Game
+
+from .models import Game
 
 
 class API:

@@ -9,10 +9,10 @@ class Game:
 
     def parse(obj):
         return Game(
-                int(obj["id"]),
-                int(obj["tick"]),
-                [],    # TODO Player.parse(obj["players"])
-                [],    # TODO Resources.parse(obj["resources"])
-                None,  # TODO Map.parse(obj["map"])
-                []     # TODO Viruses.parse(obj["viruses"])
+                obj["id"],
+                obj["tick"],
+                [],    # TODO Player.parse
+                [],    # TODO Resources.parse
+                None,  # TODO Map.parse
+                []     # TODO Virus.parse
                 )
