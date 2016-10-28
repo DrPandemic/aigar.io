@@ -67,4 +67,21 @@ class GameThreadSpec extends FlatSpec with Matchers {
                                                 Action(1, false, false, false, 0, Position(20f, 0f)),
                                                 Action(2, false, false, false, 0, Position(30f, 0f))))
   }
+
+  "updateGames" should "update cell's targets" in {
+    val scoreThread = new ScoreThread
+    val game = new GameThread(scoreThread, List(1, 2))
+
+    game.actionQueue.put(ActionQueryWithId(0, 1, List(Action(0, false, false, false, 0, Position(0f, 10f)))))
+    game.actionQueue.put(ActionQueryWithId(0, 2, List(Action(0, false, false, false, 0, Position(20f, 0f)))))
+    game.transferActions
+    game.updateGames
+
+    val state = game.gameState(0).get
+    val p1 = state.players.find(_.id == 1).get
+    val p2 = state.players.find(_.id == 2).get
+
+    p1.cells.find(_.id == 0).get.target should equal(Position(0f, 10f))
+    p2.cells.find(_.id == 0).get.target should equal(Position(20f, 0f))
+  }
 }

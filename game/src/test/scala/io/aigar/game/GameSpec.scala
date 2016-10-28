@@ -1,5 +1,6 @@
 import io.aigar.controller.response.Action
 import io.aigar.game._
+import io.aigar.game.serializable.Position
 import org.scalatest._
 import com.github.jpbetz.subspace._
 import scala.collection.mutable.HashMap
@@ -69,5 +70,22 @@ class GameSpec extends FlatSpec with Matchers {
 
     state.players should have size 10
     //TODO add more tests as the rest gets implemented
+  }
+
+  "update" should "update cell's targets" in {
+    val game = new Game(0, List(1, 2, 3))
+    game.update(1f, HashMap(
+                  1 -> List(Action(0, false, false, false, 0, Position(0f, 10f))),
+                  2 -> List(Action(0, false, false, false, 0, Position(20f, 10f))),
+                  3 -> List(Action(0, false, false, false, 0, Position(50f, 1f)))))
+
+    val state = game.state
+    val p1 = state.players.find(_.id == 1).get
+    val p2 = state.players.find(_.id == 2).get
+    val p3 = state.players.find(_.id == 3).get
+
+    p1.cells.find(_.id == 0).get.target should equal(Position(0f, 10f))
+    p2.cells.find(_.id == 0).get.target should equal(Position(20f, 10f))
+    p3.cells.find(_.id == 0).get.target should equal(Position(50f, 1f))
   }
 }

@@ -1,12 +1,13 @@
 package io.aigar.game
 
+import io.aigar.controller.response.Action
 import scala.math.round
 import com.github.jpbetz.subspace._
 
 class Player(val id: Int, startPosition: Vector2) {
   var cells = List(new Cell(0, startPosition))
 
-  def update(deltaSeconds: Float, grid: Grid, players: List[Player]) {
+  def update(deltaSeconds: Float, grid: Grid, players: List[Player], actions: List[Action]) {
     val opponents = players.filterNot(_ == this)
     cells.foreach { _.update(deltaSeconds, grid) }
     cells.foreach { _.eats(opponents)}

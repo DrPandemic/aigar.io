@@ -1,4 +1,6 @@
 import io.aigar.game._
+import io.aigar.controller.response.Action
+import io.aigar.game.serializable.Position
 import org.scalatest._
 import com.github.jpbetz.subspace._
 import scala.math._
@@ -223,5 +225,14 @@ class CellSpec extends FlatSpec with Matchers {
     smallCell.eats(List(opponent))
 
     opponent.cells should contain only largeCell
+  }
+
+  "update" should "change target" in {
+    val cell = new Cell(1, new Vector2(12, 12))
+    val grid = new Grid(100, 100);
+
+    cell.update(1f, grid, Action(0, false, false, false, 0, Position(0f, 10f)))
+
+    cell.target should equal(Position(0f, 10f))
   }
 }
