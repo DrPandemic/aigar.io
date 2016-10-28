@@ -61,16 +61,7 @@ class NoBehavior(cell: Cell) extends SteeringBehavior {
       cell.behavior = new WanderingBehavior(cell)
     }
 
-    applyAction(action)
-
     cell.target
-  }
-
-  def applyAction(action: Option[Action]): Unit = {
-    action match {
-      case Some(action) => cell.target = action.target.toVector
-      case None => {}
-    }
   }
 
   def onPlayerActivity = {

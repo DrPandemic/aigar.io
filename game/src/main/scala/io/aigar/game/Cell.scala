@@ -81,7 +81,14 @@ class Cell(val id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
       }
     }
   }
-
+/*
+  def performAction(action: Option[Action]): Unit = {
+    action match {
+      case Some(action) => cell.target = action.target.toVector
+      case None => {}
+    }
+  }
+ */
   def state = {
     serializable.Cell(id,
                       round(mass).toInt,

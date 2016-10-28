@@ -16,16 +16,6 @@ class SteeringBehaviorSpec extends FlatSpec with Matchers {
     target should be theSameInstanceAs(cell.target)
   }
 
-  "NoBehavior" should "return an updated target" in {
-    val cell = new Cell(1, Vector2(0f, 0f))
-    cell.target = Vector2(10f, 10f)
-    cell.behavior = new NoBehavior(cell)
-
-    cell.behavior.update(1f, new Grid(0, 0), Some(Action(1, false, false, false, 0, Position(42f, 42f))))
-
-    cell.target.state should equal(Position(42f, 42f))
-  }
-
   it should "switch to a wandering behavior after inactivity for too long" in {
     val cell = new Cell(1, Vector2(0f, 0f))
     cell.behavior = new NoBehavior(cell)
