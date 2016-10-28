@@ -6,4 +6,6 @@ scala:
 notifications:
   email: false
 
-script: cd game && sbt clean test it:test
+script:
+    - pushd game && sbt clean test it:test && popd
+    - pushd clients/python && python -m unittest discover -p "*_test.py" && popd
