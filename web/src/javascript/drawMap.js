@@ -57,7 +57,7 @@ export function drawPlayersOnMap(players, canvas) {
   for(const player of players) {
     const color = getPlayerColor(players, player);
     for(const cell of player.cells) {
-      drawCircle(context, cell.position, cell.mass, color);
+      drawCircle(context, cell.position, Math.sqrt(cell.mass * Math.PI), color);
     }
   }
 }

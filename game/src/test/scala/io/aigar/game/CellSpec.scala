@@ -1,6 +1,7 @@
 import io.aigar.game._
 import org.scalatest._
 import com.github.jpbetz.subspace._
+import scala.math._
 
 class CellSpec extends FlatSpec with Matchers {
   "A Cell" should "not initiate movement when its target is on itself" in {
@@ -42,8 +43,8 @@ class CellSpec extends FlatSpec with Matchers {
     val big = new Cell(2)
     big.target = new Vector2(100f, 100f)
 
-    small.mass = 1
-    big.mass = 1000
+    small.mass = Cell.MinMass
+    big.mass = 100 * Cell.MinMass
 
     small.acceleration.magnitude should be > big.acceleration.magnitude
   }
@@ -60,14 +61,14 @@ class CellSpec extends FlatSpec with Matchers {
 
   it should "Be in the cell" in {
     val cell = new Cell(1)
-    cell.mass = 100
+    cell.mass = (pow(100f, 2) / Pi).toFloat
 
     val vec = new Vector2(42f, 42f)
     cell.contains(vec) should equal(true)
   }
   it should "Not be in the cell" in {
     val cell = new Cell(1)
-    cell.mass = 3
+    cell.mass = Cell.MinMass
 
     val vec = new Vector2(42f, 42f)
     cell.contains(vec) should equal(false)
@@ -83,7 +84,7 @@ class CellSpec extends FlatSpec with Matchers {
   }
 
   it should "enforce a minimum mass" in {
-    var cell = new Cell(1, new Vector2(0f, 0f))
+    val cell = new Cell(1, new Vector2(0f, 0f))
 
     cell.mass = 0f
 
@@ -124,7 +125,7 @@ class CellSpec extends FlatSpec with Matchers {
 
   it should "not go below 0 x" in {
     val cell = new Cell(1, new Vector2(-5, 5))
-    val grid = new Grid(10, 10);
+    val grid = new Grid(10, 10)
 
     cell.update(1f, grid)
 
@@ -201,8 +202,8 @@ class CellSpec extends FlatSpec with Matchers {
     val smallCell = new Cell(2, new Vector2(10, 10))
     val opponent = new Player(2, Vector2(10, 10))
 
-    largeCell.mass = 21
-    smallCell.mass = 20
+    largeCell.mass = Cell.MinMass + 1
+    smallCell.mass = Cell.MinMass
     opponent.cells = List(smallCell)
 
     smallCell.eats(List(opponent))
@@ -215,8 +216,8 @@ class CellSpec extends FlatSpec with Matchers {
     val smallCell = new Cell(2, new Vector2(10, 10))
     val opponent = new Player(2, Vector2(10, 10))
 
-    largeCell.mass = 21
-    smallCell.mass = 20
+    largeCell.mass = Cell.MinMass + 1
+    smallCell.mass = Cell.MinMass
     opponent.cells = List(largeCell)
 
     smallCell.eats(List(opponent))
