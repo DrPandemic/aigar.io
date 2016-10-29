@@ -7,9 +7,14 @@ class Player(val id: Int, startPosition: Vector2) {
   var cells = List(new Cell(0, startPosition))
 
   def update(deltaSeconds: Float, grid: Grid, players: List[Player]) {
-    val opponents = players.filterNot(_ == this)
-    cells.foreach { _.update(deltaSeconds, grid) }
-    cells.foreach { _.eats(opponents)}
+    if ( cells.isEmpty ) {
+      cells = List(new Cell(0, grid.randomPosition))
+    }
+    else {
+      val opponents = players.filterNot(_ == this)
+      cells.foreach { _.update(deltaSeconds, grid) }
+      cells.foreach { _.eats(opponents) }
+    }
   }
 
   def state = {
@@ -18,7 +23,8 @@ class Player(val id: Int, startPosition: Vector2) {
                         id.toString,
                         mass,
                         isActive,
-                        cells.map(_.state).toList)
+                        cells.map(_.state)
+    )
   }
 
   /**
