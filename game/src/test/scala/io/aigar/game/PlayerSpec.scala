@@ -78,4 +78,21 @@ class PlayerSpec extends FlatSpec with Matchers {
 
     player.cells should contain only cell2
   }
+
+  it should "respawn one cell for itself if it has no mo' cell" in {
+    val player = new Player(1, new Vector2(0f, 0f))
+    val cell1 = new Cell(1)
+    val cell2 = new Cell(2)
+    cell2.mass = 2 * Cell.MinMass
+
+    player.cells = List(cell1)
+
+    cell2.eats(List(player))
+
+    player.cells shouldBe empty
+
+    player.update(1f, new Grid(0, 0), List(new Player(2, new Vector2(1f, 1f))))
+
+    player.cells.size should equal(1)
+  }
 }
