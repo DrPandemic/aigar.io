@@ -56,7 +56,7 @@ Every error will contain a root element named `error` with an error message.
             }
         }]
     }],
-    "food": {
+    "resources": {
         "regular": {
             "position": {
                 "x": "float",
