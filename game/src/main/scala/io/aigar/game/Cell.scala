@@ -46,6 +46,10 @@ class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
     _mass = max(m, Cell.MinMass)
   }
 
+  def radius: Double = {
+    sqrt(mass * Pi)
+  }
+
   def update(deltaSeconds: Float, grid: Grid) {
     mass = decayedMass(deltaSeconds)
 
@@ -67,7 +71,7 @@ class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
   }
 
   def contains(pos: Vector2): Boolean = {
-    return position.distanceTo(pos) <= sqrt(mass * Pi)
+    return position.distanceTo(pos) <= radius
   }
 
   def eats(opponents: List[Player]): Unit ={
@@ -83,7 +87,7 @@ class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
 
   def state = {
     serializable.Cell(id,
-                      round(mass).toInt,
+                      round(radius).toInt,
                       position.state,
                       target.state)
   }

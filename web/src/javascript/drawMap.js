@@ -68,7 +68,7 @@ export function drawPlayersOnMap(players, canvas) {
   for(const player of players) {
     const color = getPlayerColor(players, player);
     for(const cell of player.cells) {
-      drawCircle(context, cell.position, Math.sqrt(cell.mass * Math.PI), color);
+      drawCircle(context, cell.position, cell.radius, color);
       writeCellTeamName(player.name, context, cell.position)
     }
   }
@@ -78,16 +78,16 @@ export function drawFoodOnMap(foods, canvas) {
   const context = canvas.getContext("2d");
   const drawFood = (foods, color, rgba, mass) => {
     for(const food of foods) {
-      var grd=context.createRadialGradient(food.x,food.y, .5, food.x, food.y,constants.foodMass);
+      var grd=context.createRadialGradient(food.x,food.y, .5, food.x, food.y,constants.foodRadius);
       grd.addColorStop(0,color);
       grd.addColorStop(1, rgba);
       drawCircle(context, food, mass, grd);
     }
   };
   
-  drawFood(foods.regular, constants.regularColor, constants.regularRGBColor, constants.regFoodMass);
-  drawFood(foods.silver, constants.silverColor, constants.silverRGBColor, constants.foodMass);
-  drawFood(foods.gold, constants.goldColor, constants.goldRGBColor,  constants.foodMass);
+  drawFood(foods.regular, constants.regularColor, constants.regularRGBColor, constants.regFoodRadius);
+  drawFood(foods.silver, constants.silverColor, constants.silverRGBColor, constants.foodRadius);
+  drawFood(foods.gold, constants.goldColor, constants.goldRGBColor,  constants.foodRadius);
 }
 
 export function drawMap(canvas) {
