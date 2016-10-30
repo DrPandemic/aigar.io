@@ -93,6 +93,15 @@ class PlayerSpec extends FlatSpec with Matchers {
   }
 
   it should "prevent behavior from going wandering" in {
-    assert(false)
+    val player = new Player(1, new Vector2(0f, 0f))
+    player.cells = List(new Cell(1), new Cell(2))
+    player.cells.foreach { _.behavior = new TestBehavior }
+
+    player.update(NoBehavior.MaxInactivitySeconds * 0.9f, new Grid(0, 0), List(player))
+    player.performAction(List(Action(0, false, false, false, 0, Position(0f, 10f))))
+    player.update(NoBehavior.MaxInactivitySeconds * 0.9f, new Grid(0, 0), List(player))
+
+    val behaviors = player.cells.map(_.behavior.asInstanceOf[TestBehavior])
+    all(behaviors) shouldBe 'active
   }
 }

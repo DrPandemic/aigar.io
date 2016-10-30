@@ -49,6 +49,7 @@ class GameThreadSpec extends FlatSpec with Matchers {
     game.actionQueue.put(ActionQueryWithId(0, 1, List(Action(0, false, false, false, 0, Position(0f, 10f)))))
     game.actionQueue.put(ActionQueryWithId(0, 2, List(Action(0, false, false, false, 0, Position(20f, 0f)))))
     game.transferActions
+    game.updateGames
 
     val state = game.gameState(0).get
     val p1 = state.players.find(_.id == 1).get
