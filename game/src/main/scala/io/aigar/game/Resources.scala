@@ -1,6 +1,7 @@
 package io.aigar.game
 
 import io.aigar.score.ScoreModification
+import scala.util.control._
 
 object Regular {
   final val Max = 250
@@ -32,7 +33,7 @@ class Resources(grid: Grid) {
   def update(players: List[Player]): List[ScoreModification] = {
     val scoreModifications = resourceTypes.map(_.detectCollisions(players))
       .flatten
-    resourceTypes.foreach(_.spawnResources)
+    resourceTypes.foreach(_.spawnResources(players))
 
     scoreModifications
   }
@@ -49,11 +50,32 @@ class Resources(grid: Grid) {
 class ResourceType(grid: Grid, val min: Int, val max: Int, mass: Int, score: Int) {
   var positions = List.fill(max)(grid.randomPosition)
 
-  def spawnResources: Unit = {
+  def spawnResources(players: List[Player]): Unit = {
     val ratio = (positions.length - min).toFloat / (max - min)
 
     if (scala.util.Random.nextFloat >= ratio) {
-      positions :::= List(grid.randomPosition)
+      val loop = new Breaks
+      var inCell = true
+      var position = grid.randomPosition
+      var count =0
+      while (inCell && (count < 10)) {
+        position = grid.randomPosition
+        inCell = false
+        loop.breakable {
+          for (player <- players) {
+            for (cell <- player.cells) {
+              for (position <- positions) {
+                if (cell.contains(position)) {
+                  inCell = true;
+                  loop.break;
+                }
+              }
+            }
+          }
+        }
+        count += 1
+      }
+      positions :::= List(position)
     }
   }
 
