@@ -43,7 +43,7 @@ class ResourcesSpec extends FlatSpec with Matchers {
     }
   }
 
-  "Resources update" should "return a list of ScoreMessage" in {
+  "Resources update" should "return a list of ScoreModification" in {
     val resources = new Resources(new Grid(100, 100))
 
     resources.regular.positions = List(Vector2(0, 0), Vector2(40, 40))
@@ -57,10 +57,10 @@ class ResourcesSpec extends FlatSpec with Matchers {
     val resourceMessages = resources.update(List(p1, p2, p3))
 
     resourceMessages should contain allOf (
-      ScoreMessage(p1.id, Regular.Score),
-      ScoreMessage(p2.id, Silver.Score),
-      ScoreMessage(p3.id, Gold.Score),
-      ScoreMessage(p3.id, Regular.Score)
+      ScoreModification(p1.id, Regular.Score),
+      ScoreModification(p2.id, Silver.Score),
+      ScoreModification(p3.id, Gold.Score),
+      ScoreModification(p3.id, Regular.Score)
     )
   }
 
@@ -100,7 +100,7 @@ class ResourcesSpec extends FlatSpec with Matchers {
 
     val resourceMessages = resource.detectCollisions(List(p1, p2))
 
-    resourceMessages should contain only (ScoreMessage(p1.id, 10), ScoreMessage(p2.id, 10))
+    resourceMessages should contain only (ScoreModification(p1.id, 10), ScoreModification(p2.id, 10))
   }
 
   it should "return an empty list of ScoreMessages when no collision occurs" in {

@@ -8,15 +8,12 @@ import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue, TimeUnit}
  */
 
 class ScoreThread extends Runnable {
-  final val messageQueue: BlockingQueue[ScoreMessage] = new LinkedBlockingQueue[ScoreMessage]
+  final val messageQueue: BlockingQueue[ScoreModification] = new LinkedBlockingQueue[ScoreModification]
   var running: Boolean = true;
 
   def run: Unit = {
     while (!running) {
-      val message = messageQueue.poll(1, TimeUnit.SECONDS)
-      if(message != null) {
-        println("Some magic here")
-      }
+      val message = messageQueue.take
     }
   }
 }
