@@ -29,7 +29,7 @@ class Player(val id: Int, startPosition: Vector2) {
 
   /**
    * Should be called whenever an external action occurs (e.g. we receive a
-   * command coming from the AI of a team).
+   * command coming from the AI of a player).
    */
   def onExternalAction = {
     cells.foreach { _.behavior.onPlayerActivity }

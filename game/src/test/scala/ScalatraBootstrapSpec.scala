@@ -4,26 +4,26 @@ import io.aigar.model._
 import io.aigar.game._
 
 class ScalatraBootstrapSpec extends FlatSpec with Matchers {
-  "ScalatraBootstrap" should "use a fixed team repository on init when passed as a parameter" in {
-    val repo = new TeamRepository(None)
+  "ScalatraBootstrap" should "use a fixed player repository on init when passed as a parameter" in {
+    val repo = new PlayerRepository(None)
     val bootstrap = new ScalatraBootstrap
 
     bootstrap.appInit(Some(repo))
-    val teams = bootstrap.teamRepository
+    val players = bootstrap.playerRepository
     bootstrap.destroy(null)
 
-    teams should be theSameInstanceAs(repo)
+    players should be theSameInstanceAs(repo)
   }
 
-  it should "create a game with the players from the team repository on init" in {
-    val repo = new TeamRepository(None)
-    val team1 = repo.createTeam(Team(None, "secret",  "team1", 20))
-    val team2 = repo.createTeam(Team(None, "secret?", "team2", 10))
-    val team3 = repo.createTeam(Team(None, "secret!", "team3", 30))
+  it should "create a game with the players from the player repository on init" in {
+    val repo = new PlayerRepository(None)
+    val player1 = repo.createPlayer(PlayerModel(None, "secret",  "player1", 20))
+    val player2 = repo.createPlayer(PlayerModel(None, "secret?", "player2", 10))
+    val player3 = repo.createPlayer(PlayerModel(None, "secret!", "player3", 30))
     val bootstrap = new ScalatraBootstrap
 
     bootstrap.appInit(Some(repo))
-    val expectedIds = repo.getTeams.map(_.id).flatten
+    val expectedIds = repo.getPlayers.map(_.id).flatten
 
     // let the game update once to set the state of the ranked game
     bootstrap.game.updateGames

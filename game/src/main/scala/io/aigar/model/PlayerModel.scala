@@ -8,55 +8,55 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.Await
 import scala.concurrent.{Await, Future}
 
-case class Team(id: Option[Int], teamSecret: String, teamName: String, var score: Int)
+case class PlayerModel(id: Option[Int], playerSecret: String, playerName: String, var score: Int)
 
-class Teams(tag: Tag) extends Table[Team](tag, "TEAMS") {
+class Players(tag: Tag) extends Table[PlayerModel](tag, "PLAYERS") {
   def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
-  def teamSecret = column[String]("TEAM_SECRET")
-  def teamName = column[String]("TEAM_NAME")
+  def playerSecret = column[String]("PLAYER_SECRET")
+  def playerName = column[String]("PLAYER_NAME")
   def score = column[Int]("SCORE", O.Default(0))
-  def * = (id.?, teamSecret, teamName, score) <> (Team.tupled, Team.unapply)
+  def * = (id.?, playerSecret, playerName, score) <> (PlayerModel.tupled, PlayerModel.unapply)
 }
 
-object TeamDAO extends TableQuery(new Teams(_)) {
-  lazy val teams = TableQuery[Teams]
+object PlayerDAO extends TableQuery(new Players(_)) {
+  lazy val players = TableQuery[Players]
 
   /**
-   * This function uses the TableQuery[Teams] to access all the teams and find the one
+   * This function uses the TableQuery[Players] to access all the players and find the one
    * we just added (with no id) and returns it from the database with the auto-generated id.
    */
-  def createTeam(db: Database, team: Team): Team = {
+  def createPlayer(db: Database, player: PlayerModel): PlayerModel = {
     Await.result(
       db.run(
-        teams returning teams.map(_.id) into ((t, id) => t.copy(id = Some(id))) += team
+        players returning players.map(_.id) into ((p, id) => p.copy(id = Some(id))) += player
       ), Duration.Inf
     )
   }
 
-  def findTeamById(db: Database, id: Int): Option[Team] = {
+  def findPlayerById(db: Database, id: Int): Option[PlayerModel] = {
     Await.result(
       db.run(
-        teams.filter(_.id === id)
+        players.filter(_.id === id)
           .result
         ).map(_.headOption
       ), Duration.Inf
     )
   }
 
-  def findTeamBySecret(db: Database, teamSecret: String): Option[Team] = {
+  def findPlayerBySecret(db: Database, playerSecret: String): Option[PlayerModel] = {
     Await.result(
       db.run(
-        teams.filter(_.teamSecret === teamSecret)
+        players.filter(_.playerSecret === playerSecret)
           .result
       ).map(_.headOption
       ), Duration.Inf
     )
   }
 
-  def addScore(db: Database, team_id: Int, value: Int): Unit ={
-    val sql = sqlu"""update TEAMS
+  def addScore(db: Database, player_id: Int, value: Int): Unit ={
+    val sql = sqlu"""update PLAYERS
                      set score = score + ${value}
-                     where id = ${team_id}"""
+                     where id = ${player_id}"""
     // TODO Log errors if there's any
     Await.result(
       db.run(
@@ -66,39 +66,39 @@ object TeamDAO extends TableQuery(new Teams(_)) {
     )
   }
 
-  def updateTeam(db: Database, team: Team): Option[Team] ={
+  def updatePlayer(db: Database, player: PlayerModel): Option[PlayerModel] ={
     Await.result(
       db.run(
-        teams.filter(_.id === team.id)
-          .update(team).map {
+        players.filter(_.id === player.id)
+          .update(player).map {
           case 0 => None
-          case _ => Some(team)
+          case _ => Some(player)
         }
       ), Duration.Inf
     )
   }
 
-  def deleteTeamById(db: Database, id:Int): Boolean = {
+  def deletePlayerById(db: Database, id:Int): Boolean = {
     1 == Await.result(
           db.run(
-            teams.filter(_.id === id)
+            players.filter(_.id === id)
               .delete
           ), Duration.Inf
         )
   }
 
-  def getTeams(db: Database): List[Team] = {
+  def getPlayers(db: Database): List[PlayerModel] = {
     Await.result(
       db.run(
-        teams.result
+        players.result
       ), Duration.Inf
     ).toList
   }
 
   def createSchema(db: Database): Unit = {
     def createTableIfNotInTables(tables: Vector[MTable]): Future[Unit] = {
-      if (!tables.exists(_.name.name == teams.baseTableRow.tableName)) {
-        db.run(teams.schema.create)
+      if (!tables.exists(_.name.name == players.baseTableRow.tableName)) {
+        db.run(players.schema.create)
       } else {
         Future()
       }
@@ -112,7 +112,7 @@ object TeamDAO extends TableQuery(new Teams(_)) {
   def dropSchema(db: Database): Unit = {
     Await.result(
       db.run(
-        teams.schema.drop
+        players.schema.drop
       ), Duration.Inf
     )
   }

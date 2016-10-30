@@ -10,7 +10,7 @@ import scala.collection.mutable.HashMap
  * takes care of updating the individual games and processing the queued inputs
  * of the players.
  */
-class GameThread(scoreThread: ScoreThread, teamIDs: List[Int]) extends Runnable {
+class GameThread(scoreThread: ScoreThread, playerIDs: List[Int]) extends Runnable {
   val MillisecondsPerTick = 16
 
   final val actionQueue = new LinkedBlockingQueue[ActionQueryWithId]()
@@ -38,7 +38,7 @@ class GameThread(scoreThread: ScoreThread, teamIDs: List[Int]) extends Runnable 
 
   def createRankedGame: Game = {
     gameActions.put(Game.RankedGameId, new HashMap())
-    new Game(Game.RankedGameId, teamIDs)
+    new Game(Game.RankedGameId, playerIDs)
   }
 
   def run: Unit = {
@@ -54,7 +54,7 @@ class GameThread(scoreThread: ScoreThread, teamIDs: List[Int]) extends Runnable 
     while(!actionQueue.isEmpty) {
       val action = actionQueue.take
       gameActions.get(action.game_id) match {
-        case Some(map) => map.put(action.team_id, action.actions)
+        case Some(map) => map.put(action.player_id, action.actions)
         case None => {}
       }
     }
