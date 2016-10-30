@@ -73,7 +73,7 @@ export function drawResourcesOnMap(resources, canvas) {
     }
   };
   
-  drawResources(resources.regular, constants.regularColor, constants.regularRGBColor, constants.regResourceMass);
+  drawResources(resources.regular, constants.regularColor, constants.regularRGBColor, constants.regularResourceMass);
   drawResources(resources.silver, constants.silverColor, constants.silverRGBColor, constants.resourceMass);
   drawResources(resources.gold, constants.goldColor, constants.goldRGBColor,  constants.resourceMass);
 }

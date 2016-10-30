@@ -5,7 +5,7 @@ export const silverRGBColor = "rgba(67, 67, 67, 0.1)"
 export const goldColor = "#FFD700";
 export const goldRGBColor = "rgba(100, 84, 0, 0.1)"
 export const resourceMass = 9;
-export const regResourceMass = 6;
+export const regularResourceMass = 6;
 
 export const playerColors = [
   "#F44336",
