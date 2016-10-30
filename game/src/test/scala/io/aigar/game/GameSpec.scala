@@ -1,4 +1,5 @@
 import io.aigar.game._
+import io.aigar.score.ScoreModification
 import org.scalatest._
 import com.github.jpbetz.subspace._
 
@@ -67,5 +68,15 @@ class GameSpec extends FlatSpec with Matchers {
 
     state.players should have size 10
     //TODO add more tests as the rest gets implemented
+  }
+
+  "update" should "return a list of ScoreModification" in {
+    val game = new Game(42, List(0))
+    game.resources.regular.positions = List(Vector2(40, 0))
+    val player = new Player(0, game.resources.regular.positions.head)
+
+    val resourceModifications = game.update(1f)
+
+    resourceModifications should contain only ScoreModification(player.id, Regular.Score)
   }
 }

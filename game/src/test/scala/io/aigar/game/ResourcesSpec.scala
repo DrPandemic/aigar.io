@@ -45,7 +45,6 @@ class ResourcesSpec extends FlatSpec with Matchers {
 
   "Resources update" should "return a list of ScoreModification" in {
     val resources = new Resources(new Grid(100, 100))
-
     resources.regular.positions = List(Vector2(0, 0), Vector2(40, 40))
     resources.silver.positions = List(Vector2(20, 20))
     resources.gold.positions = List(Vector2(40, 40))
@@ -89,7 +88,7 @@ class ResourcesSpec extends FlatSpec with Matchers {
     cell.mass should equal(30)
   }
 
-  it should "return a list of ScoreMessages for players that collided" in {
+  it should "return a list of ScoreModifications for players that collided" in {
     val resource = new ResourceType(new Grid(0, 0), 0, 0, 5, 10)
     val r1 = Vector2(10f, 10f)
     val r2 = Vector2(50f, 50f)
@@ -103,7 +102,7 @@ class ResourcesSpec extends FlatSpec with Matchers {
     resourceMessages should contain only (ScoreModification(p1.id, 10), ScoreModification(p2.id, 10))
   }
 
-  it should "return an empty list of ScoreMessages when no collision occurs" in {
+  it should "return an empty list of ScoreModifications when no collision occurs" in {
     val resource = new ResourceType(new Grid(0, 0), 0, 0, 5, 10)
     val r1 = Vector2(10f, 10f)
     val r2 = Vector2(50f, 50f)
@@ -111,8 +110,8 @@ class ResourcesSpec extends FlatSpec with Matchers {
 
     val p1 = new Player(1, Vector2(100f, 100f))
 
-    val resourceMessages = resource.detectCollisions(List(p1))
+    val resourceModification = resource.detectCollisions(List(p1))
 
-    resourceMessages shouldBe empty
+    resourceModification shouldBe empty
   }
 }

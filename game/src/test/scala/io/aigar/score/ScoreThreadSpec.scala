@@ -14,4 +14,12 @@ class ScoreThreadSpec extends FlatSpec with Matchers with MockitoSugar {
 
     verify(repo).addScore(0, 42)
   }
+
+  "addScoreModification" should "add a ScoreModification to the modificationQueue" in {
+    val score = new ScoreThread(null)
+
+    score.addScoreModification(ScoreModification(0, 42))
+
+    score.modificationQueue should contain only ScoreModification(0, 42)
+  }
 }

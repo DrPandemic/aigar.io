@@ -30,11 +30,11 @@ class Resources(grid: Grid) {
   var resourceTypes = List(regular, silver, gold)
 
   def update(players: List[Player]): List[ScoreModification] = {
-    val scoreMessages = resourceTypes.map(_.detectCollisions(players))
+    val scoreModifications = resourceTypes.map(_.detectCollisions(players))
       .flatten
     resourceTypes.foreach(_.spawnResources)
 
-    scoreMessages
+    scoreModifications
   }
 
   def state = {
@@ -62,13 +62,13 @@ class ResourceType(grid: Grid, val min: Int, val max: Int, mass: Int, score: Int
   * If it is the case, reward the colliding player/cell.
   */
   def detectCollisions(players: List[Player]): List[ScoreModification] = {
-    var scoreMessages = List[ScoreModification]()
+    var scoreModifications = List[ScoreModification]()
     for(player <- players) {
       for(cell <- player.cells) {
         for(position <- positions){
           if(cell.contains(position)){
             reward(cell)
-            scoreMessages = ScoreModification(player.id, score) :: scoreMessages
+            scoreModifications = ScoreModification(player.id, score) :: scoreModifications
 
             // Returns a new list without the resource that has been consumed
             positions = positions.filterNot(a => a == position)
@@ -76,7 +76,7 @@ class ResourceType(grid: Grid, val min: Int, val max: Int, mass: Int, score: Int
         }
       }
     }
-    scoreMessages
+    scoreModifications
   }
 
   def reward(cell: Cell): Unit = {
