@@ -7,6 +7,10 @@ export const goldRGBColor = "rgba(100, 84, 0, 0.1)"
 export const foodMass = 9;
 export const regFoodMass = 6;
 
+export const textColor = "#fff";
+export const textBorderColor = "#000 1px solid";
+export const textStyle = "25px Arial";
+
 export const playerColors = [
   "#F44336",
   "#9C27B0",
