@@ -68,7 +68,7 @@ class ResourceType(grid: Grid, val min: Int, val max: Int, mass: Int, score: Int
         for(position <- positions){
           if(cell.contains(position)){
             reward(cell)
-            scoreModifications = ScoreModification(player.id, score) :: scoreModifications
+            scoreModifications ::= ScoreModification(player.id, score)
 
             // Returns a new list without the resource that has been consumed
             positions = positions.filterNot(a => a == position)

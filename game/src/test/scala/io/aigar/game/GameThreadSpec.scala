@@ -76,10 +76,13 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
     val game = new GameThread(scoreThread, List(0))
     val ranked = game.createRankedGame
     ranked.resources.regular.positions = List(Vector2(40, 0))
-    val player = new Player(0, ranked.resources.regular.positions.head)
+    val player = ranked.players.head
+    player.cells.head.position = Vector2(40, 0)
+    player.cells.head.target = Vector2(40, 0)
+    player.cells.foreach { cell => cell.behavior = new NoBehavior(cell) }
 
     game.updateGames
 
-    verify(scoreThread).addScoreModification(ScoreModification(0, Regular.Score))
+    verify(scoreThread, atLeastOnce()).addScoreModification(ScoreModification(0, Regular.Score))
   }
 }

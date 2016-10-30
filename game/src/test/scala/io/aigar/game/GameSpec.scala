@@ -73,10 +73,13 @@ class GameSpec extends FlatSpec with Matchers {
   "update" should "return a list of ScoreModification" in {
     val game = new Game(42, List(0))
     game.resources.regular.positions = List(Vector2(40, 0))
-    val player = new Player(0, game.resources.regular.positions.head)
+    val player = game.players.head
+    player.cells.head.position = Vector2(40, 0)
+    player.cells.head.target = Vector2(40, 0)
+    player.cells.foreach { cell => cell.behavior = new NoBehavior(cell) }
 
-    val resourceModifications = game.update(1f)
+    val resourceModifications = game.update(0f)
 
-    resourceModifications should contain only ScoreModification(player.id, Regular.Score)
+    resourceModifications should contain (ScoreModification(player.id, Regular.Score))
   }
 }

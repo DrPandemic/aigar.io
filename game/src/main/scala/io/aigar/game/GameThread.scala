@@ -63,7 +63,7 @@ class GameThread(scoreThread: ScoreThread, teamIDs: List[Int]) extends Runnable 
   def updateGames: Unit = {
     for (game <- games) {
       val deltaTime = currentTime - previousTime
-      game.update(deltaTime)
+      game.update(deltaTime).foreach {scoreThread.addScoreModification(_)}
 
       states = states + (game.id -> game.state)
 

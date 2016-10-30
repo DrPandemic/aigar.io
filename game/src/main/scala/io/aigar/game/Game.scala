@@ -1,5 +1,7 @@
 package io.aigar.game
 
+import io.aigar.score.ScoreModification
+
 /**
  * Game holds the logic for an individual game being played
  * (e.g. the ranked game or a private test game).
@@ -14,11 +16,12 @@ class Game(val id: Int, playerIDs: List[Int]) {
   val resources = new Resources(grid)
   var tick = 0
 
-  def update(deltaSeconds: Float) {
+  def update(deltaSeconds: Float): List[ScoreModification] = {
     players.foreach { _.update(deltaSeconds, grid, players)}
-    resources.update(players)
-
+    val scoreModifications = resources.update(players)
     tick += 1
+
+    scoreModifications
   }
 
   def state = {

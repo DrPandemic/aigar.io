@@ -46,7 +46,7 @@ class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
     _mass = max(m, Cell.MinMass)
   }
 
-  def update(deltaSeconds: Float, grid: Grid) {
+  def update(deltaSeconds: Float, grid: Grid): Unit = {
     mass = decayedMass(deltaSeconds)
 
     target = behavior.update(deltaSeconds, grid)

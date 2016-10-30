@@ -79,15 +79,4 @@ class PlayerSpec extends FlatSpec with Matchers {
 
     player.cells should contain only cell2
   }
-
-  "update" should "return a list of ScoreModification" in {
-    val resources = new Resources(new Grid(100, 100))
-    resources.regular.positions = List(Vector2(40, 0))
-
-    val player = new Player(0, resources.regular.positions.head)
-
-    val resourceModifications = player.update(1f, new Grid(100, 100), List(player))
-
-    resourceModifications should contain only ScoreModification(player.id, Regular.Score)
-  }
 }
