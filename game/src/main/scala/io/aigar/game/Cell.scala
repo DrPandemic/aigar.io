@@ -88,7 +88,6 @@ class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
   def state = {
     serializable.Cell(id,
                       round(radius).toInt,
-                      round(mass).toInt,
                       position.state,
                       target.state)
   }
