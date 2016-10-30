@@ -38,7 +38,7 @@ case class GameState(
   id: Int,
   tick: Int,
   players: List[Player],
-  food: Resources,
+  resources: Resources,
   map: Dimensions,
   viruses: List[Position]
 )

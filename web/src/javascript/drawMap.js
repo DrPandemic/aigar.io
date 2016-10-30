@@ -74,20 +74,20 @@ export function drawPlayersOnMap(players, canvas) {
   }
 }
 
-export function drawFoodOnMap(foods, canvas) {
+export function drawResourcesOnMap(resources, canvas) {
   const context = canvas.getContext("2d");
-  const drawFood = (foods, color, rgba, mass) => {
-    for(const food of foods) {
-      var grd=context.createRadialGradient(food.x,food.y, .5, food.x, food.y,constants.foodRadius);
+  const drawResources = (resources, color, rgba, mass) => {
+    for(const resource of resources) {
+      var grd=context.createRadialGradient(resource.x,resource.y, .5, resource.x, resource.y,constants.resourceMass);
       grd.addColorStop(0,color);
       grd.addColorStop(1, rgba);
-      drawCircle(context, food, mass, grd);
+      drawCircle(context, resource, mass, grd);
     }
   };
   
-  drawFood(foods.regular, constants.regularColor, constants.regularRGBColor, constants.regFoodRadius);
-  drawFood(foods.silver, constants.silverColor, constants.silverRGBColor, constants.foodRadius);
-  drawFood(foods.gold, constants.goldColor, constants.goldRGBColor,  constants.foodRadius);
+  drawResources(resources.regular, constants.regularColor, constants.regularRGBColor, constants.regularResourceMass);
+  drawResources(resources.silver, constants.silverColor, constants.silverRGBColor, constants.resourceMass);
+  drawResources(resources.gold, constants.goldColor, constants.goldRGBColor,  constants.resourceMass);
 }
 
 export function drawMap(canvas) {
