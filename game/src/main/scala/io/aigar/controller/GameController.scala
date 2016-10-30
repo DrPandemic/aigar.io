@@ -45,7 +45,7 @@ class GameController(game: GameThread, teamRepository: TeamRepository)
       val query = parse(request.body).extract[ActionQuery]
       teamRepository.readTeamBySecret(query.team_secret) match {
         case Some(team) => {
-          val actions = ActionQueryWithId(params("id").toInt, team.id.get, query.actions)
+          val actions = ActionQueryWithId(params("id").toInt, team.id.get, query)
           game.actionQueue.put(actions)
         }
         case None => halt(403)
