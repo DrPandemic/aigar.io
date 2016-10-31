@@ -54,26 +54,11 @@ class ResourceType(grid: Grid, val min: Int, val max: Int, mass: Int, score: Int
     val ratio = (positions.length - min).toFloat / (max - min)
 
     if (scala.util.Random.nextFloat >= ratio) {
-      val loop = new Breaks
-      var inCell = true
       var position = grid.randomPosition
-      var count =0
-      while (inCell && (count < 10)) {
-        position = grid.randomPosition
-        inCell = false
-        loop.breakable {
-          for (player <- players) {
-            for (cell <- player.cells) {
-              for (position <- positions) {
-                if (cell.contains(position)) {
-                  inCell = true;
-                  loop.break;
-                }
-              }
-            }
-          }
+      for (player <- players) {
+        for (cell <- player.cells) {
+          if (cell.contains(position)) return
         }
-        count += 1
       }
       positions :::= List(position)
     }
