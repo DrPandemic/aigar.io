@@ -20,6 +20,6 @@ class ScoreThreadSpec extends FlatSpec with Matchers with MockitoSugar {
 
     score.addScoreModification(ScoreModification(0, 42))
 
-    score.modificationQueue should contain only ScoreModification(0, 42)
+    score.modificationQueue should contain theSameElementsAs List(ScoreModification(0, 42))
   }
 }
