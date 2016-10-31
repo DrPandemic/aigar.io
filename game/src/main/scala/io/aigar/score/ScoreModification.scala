@@ -1,6 +1,6 @@
 package io.aigar.score
 
-case class ScoreMessage(
+case class ScoreModification(
   player_id: Int,
   value: Int
 )

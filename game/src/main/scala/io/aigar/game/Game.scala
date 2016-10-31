@@ -1,5 +1,8 @@
 package io.aigar.game
 
+import io.aigar.controller.response.Action
+import scala.collection.immutable.HashMap
+
 /**
  * Game holds the logic for an individual game being played
  * (e.g. the ranked game or a private test game).
@@ -14,11 +17,18 @@ class Game(val id: Int, playerIDs: List[Int]) {
   val resources = new Resources(grid)
   var tick = 0
 
-  def update(deltaSeconds: Float) {
-    players.foreach { _.update(deltaSeconds, grid, players)}
+  def update(deltaSeconds: Float): Unit = {
+    players.foreach { player => player.update(deltaSeconds, grid, players) }
     resources.update(players)
 
     tick += 1
+  }
+
+  def performAction(player_id: Int, actions: List[Action]): Unit = {
+    players.find(_.id == player_id) match {
+      case Some(player) => player.performAction(actions)
+      case None => {}
+    }
   }
 
   def state = {

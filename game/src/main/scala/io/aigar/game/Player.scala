@@ -1,5 +1,6 @@
 package io.aigar.game
 
+import io.aigar.controller.response.Action
 import scala.math.round
 import com.github.jpbetz.subspace._
 
@@ -25,6 +26,17 @@ class Player(val id: Int, startPosition: Vector2) {
                         isActive,
                         cells.map(_.state)
     )
+  }
+
+  def performAction(actions: List[Action]): Unit = {
+    onExternalAction
+
+    actions.foreach {
+      action => cells.find(_.id == action.cell_id) match {
+        case Some(cell) => cell.performAction(action)
+        case None => {}
+      }
+    }
   }
 
   /**

@@ -1,6 +1,6 @@
 package io.aigar.game
 
-import io.aigar.score.ScoreMessage
+import io.aigar.score.ScoreModification
 
 object Regular {
   final val Max = 250
@@ -29,7 +29,7 @@ class Resources(grid: Grid) {
   val gold = new ResourceType(grid, Gold.Min, Gold.Max, Gold.Mass, Gold.Score)
   var resourceTypes = List(regular, silver, gold)
 
-  def update(players: List[Player]): List[ScoreMessage] = {
+  def update(players: List[Player]): List[ScoreModification] = {
     val scoreMessages = resourceTypes.map(_.detectCollisions(players))
       .flatten
     resourceTypes.foreach(_.spawnResources)
@@ -61,14 +61,14 @@ class ResourceType(grid: Grid, val min: Int, val max: Int, mass: Int, score: Int
   * Checks if any of the cells from the players should consume a resource.
   * If it is the case, reward the colliding player/cell.
   */
-  def detectCollisions(players: List[Player]): List[ScoreMessage] = {
-    var scoreMessages = List[ScoreMessage]()
+  def detectCollisions(players: List[Player]): List[ScoreModification] = {
+    var scoreMessages = List[ScoreModification]()
     for(player <- players) {
       for(cell <- player.cells) {
         for(position <- positions){
           if(cell.contains(position)){
             reward(cell)
-            scoreMessages = ScoreMessage(player.id, score) :: scoreMessages
+            scoreMessages = ScoreModification(player.id, score) :: scoreMessages
 
             // Returns a new list without the resource that has been consumed
             positions = positions.filterNot(a => a == position)

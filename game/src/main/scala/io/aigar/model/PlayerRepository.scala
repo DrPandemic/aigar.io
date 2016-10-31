@@ -3,7 +3,6 @@ package io.aigar.model
 import com.mchange.v2.c3p0.ComboPooledDataSource
 import slick.driver.H2Driver.api._
 import java.util.logging.{Level, Logger}
-import io.aigar.score.ScoreMessage
 
 class PlayerRepository(databaseName: Option[String]) {
   val cpds = new ComboPooledDataSource

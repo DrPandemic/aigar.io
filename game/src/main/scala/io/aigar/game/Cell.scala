@@ -1,7 +1,9 @@
 package io.aigar.game
 
+import io.aigar.controller.response.Action
 import scala.math.{max, round, pow}
 import io.aigar.game.Vector2Utils._
+import io.aigar.game.Position2Utils._
 import com.github.jpbetz.subspace._
 import scala.math._
 
@@ -22,7 +24,7 @@ object Cell {
   final val MassDecayPerSecond = 0.005f
 }
 
-class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
+class Cell(val id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
   var position = startPosition
   var target = startPosition
   var behavior: SteeringBehavior = new NoBehavior(this)
@@ -50,7 +52,7 @@ class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
     sqrt(mass * Pi)
   }
 
-  def update(deltaSeconds: Float, grid: Grid) {
+  def update(deltaSeconds: Float, grid: Grid): Unit = {
     mass = decayedMass(deltaSeconds)
 
     target = behavior.update(deltaSeconds, grid)
@@ -83,6 +85,10 @@ class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
         }
       }
     }
+  }
+
+  def performAction(action: Action): Unit = {
+    target = action.target.toVector
   }
 
   def state = {

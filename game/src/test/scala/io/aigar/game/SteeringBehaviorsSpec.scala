@@ -1,5 +1,7 @@
 import io.aigar.game._
-import scala.math._
+import io.aigar.game.serializable.Position
+import io.aigar.game.Vector2Utils._
+import io.aigar.controller.response.Action
 import org.scalatest._
 import com.github.jpbetz.subspace._
 
@@ -33,9 +35,6 @@ class SteeringBehaviorSpec extends FlatSpec with Matchers {
 
     cell.behavior shouldBe a [NoBehavior]
   }
-
-
-
 
   "WanderingBehavior" should "keep the current cell's target on creation" in {
     val cell = new Cell(1, Vector2(0f, 0f))
