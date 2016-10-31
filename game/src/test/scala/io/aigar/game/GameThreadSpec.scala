@@ -6,34 +6,34 @@ import org.scalatest._
 
 class GameThreadSpec extends FlatSpec with Matchers {
   "A GameThread" should "not have a ranked game state at first" in {
-    val scoreThread = new ScoreThread
+    val scoreThread = new ScoreThread(null)
     val game = new GameThread(scoreThread, List())
     game.gameState(Game.RankedGameId) shouldBe None
   }
 
   it should "have a ranked game state after a game update" in {
-    val scoreThread = new ScoreThread
+    val scoreThread = new ScoreThread(null)
     val game = new GameThread(scoreThread, List())
     game.updateGames
     game.gameState(Game.RankedGameId) shouldBe defined
   }
 
   it should "not have a game with a bad ID" in {
-    val scoreThread = new ScoreThread
+    val scoreThread = new ScoreThread(null)
     val game = new GameThread(scoreThread, List())
     game.updateGames
     game.gameState(1337) shouldBe empty
   }
 
   it should "create a ranked game with the right ID" in {
-    val scoreThread = new ScoreThread
+    val scoreThread = new ScoreThread(null)
     val game = new GameThread(scoreThread, List())
     val ranked = game.createRankedGame
     ranked.id should equal (Game.RankedGameId)
   }
 
   "transferActions" should "empty the actionQueue" in {
-    val scoreThread = new ScoreThread
+    val scoreThread = new ScoreThread(null)
     val game = new GameThread(scoreThread, List())
     game.actionQueue.put(ActionQueryWithId(1, 1, List()))
 
@@ -43,7 +43,7 @@ class GameThreadSpec extends FlatSpec with Matchers {
   }
 
   it should "update cell's targets" in {
-    val scoreThread = new ScoreThread
+    val scoreThread = new ScoreThread(null)
     val game = new GameThread(scoreThread, List(1, 2))
 
     game.actionQueue.put(ActionQueryWithId(0, 1, List(Action(0, false, false, false, 0, Position(0f, 10f)))))

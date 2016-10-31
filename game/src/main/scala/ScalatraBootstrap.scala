@@ -24,17 +24,17 @@ class ScalatraBootstrap extends LifeCycle {
    */
   def appInit(players: Option[PlayerRepository] = None): Unit = {
     playerRepository = players.getOrElse(new PlayerRepository(None))
-    scoreThread = new ScoreThread
+    scoreThread = new ScoreThread(playerRepository)
     game = new GameThread(scoreThread, fetchPlayerIDs)
 
     launchThreads
   }
 
-  private def closeDbConnection {
+  private def closeDbConnection: Unit = {
     playerRepository.closeConnection
   }
 
-  override def destroy(context: ServletContext) {
+  override def destroy(context: ServletContext): Unit = {
     super.destroy(context)
     closeDbConnection
 
@@ -42,7 +42,7 @@ class ScalatraBootstrap extends LifeCycle {
     game.running = false
   }
 
-  def launchThreads {
+  def launchThreads: Unit = {
     new Thread(scoreThread).start
     new Thread(game).start
   }
