@@ -23,7 +23,7 @@ Every error will contain a root element named `error` with an error message.
 `GET /leaderboard`
 ```json
 [{
-	"team_id": "string", 
+	"player_id": "string", 
 	"name": "string",
 	"score": "int"
 }]
@@ -56,7 +56,7 @@ Every error will contain a root element named `error` with an error message.
             }
         }]
     }],
-    "food": {
+    "resources": {
         "regular": {
             "position": {
                 "x": "float",
@@ -91,7 +91,7 @@ Every error will contain a root element named `error` with an error message.
 ```
 
 ### Create a game
-`POST /game` <- `{"team_secret" : "string"}`
+`POST /game` <- `{"player_secret" : "string"}`
 ```json
 {
     "game_id": "int",
@@ -103,7 +103,7 @@ Every error will contain a root element named `error` with an error message.
 `POST/game/:game_id/action` <-
 ```json
 {
-    "team_secret": "string",
+    "player_secret": "string",
     "actions": [
     {
         "cell_id": "int",

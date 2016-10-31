@@ -1,6 +1,7 @@
 package io.aigar.game
 
 import io.aigar.score.ScoreModification
+import io.aigar.controller.response.Action
 
 /**
  * Game holds the logic for an individual game being played
@@ -17,11 +18,18 @@ class Game(val id: Int, playerIDs: List[Int]) {
   var tick = 0
 
   def update(deltaSeconds: Float): List[ScoreModification] = {
-    players.foreach { _.update(deltaSeconds, grid, players)}
+    players.foreach { player => player.update(deltaSeconds, grid, players) }
     val scoreModifications = resources.update(players)
     tick += 1
 
     scoreModifications
+  }
+
+  def performAction(player_id: Int, actions: List[Action]): Unit = {
+    players.find(_.id == player_id) match {
+      case Some(player) => player.performAction(actions)
+      case None => {}
+    }
   }
 
   def state = {

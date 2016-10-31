@@ -18,19 +18,19 @@ class GameControllerSpec extends MutableScalatraSpec
   implicit val jsonFormats: Formats = DefaultFormats
   sequential
 
-  val teamRepository = new TeamRepository(None)
-  val scoreThread = new ScoreThread(teamRepository)
+  val playerRepository = new PlayerRepository(None)
+  val scoreThread = new ScoreThread(playerRepository)
   val game = new GameThread(scoreThread, List(1))
   game.updateGames // run once to initialize the game states
 
-  addServlet(new GameController(game, teamRepository), "/*")
+  addServlet(new GameController(game, playerRepository), "/*")
 
   def cleanState = {
     game.actionQueue.clear()
-    teamRepository.dropSchema
-    teamRepository.createSchema
+    playerRepository.dropSchema
+    playerRepository.createSchema
 
-    teamRepository.createTeam(Team(Some(1), "EdgQWhJ!v&", "team1", 0))
+    playerRepository.createPlayer(PlayerModel(Some(1), "EdgQWhJ!v&", "player1", 0))
   }
 
   def before = cleanState
@@ -44,7 +44,7 @@ class GameControllerSpec extends MutableScalatraSpec
     )(f)
 
   val defaultActionJson =
-    ("team_secret" -> "EdgQWhJ!v&") ~
+    ("player_secret" -> "EdgQWhJ!v&") ~
     ("actions" ->
       List(
         ("cell_id" -> 123) ~
@@ -71,7 +71,7 @@ class GameControllerSpec extends MutableScalatraSpec
         parse(body).extract[GameStateResponse] must not(throwAn[MappingException])
 
         val parsedResponse = parse(body).extract[GameStateResponse]
-        parsedResponse.data.players(0).name must_== "team1"
+        parsedResponse.data.players(0).name must_== "player1"
       }
     }
   }
@@ -138,7 +138,7 @@ class GameControllerSpec extends MutableScalatraSpec
       }
     }
 
-    "403 when the team secret doesn't match" in {
+    "403 when the player secret doesn't match" in {
       postJson("/nope/action", defaultActionJson) {
         status must_== 400
       }

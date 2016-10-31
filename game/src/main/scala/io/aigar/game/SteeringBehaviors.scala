@@ -1,7 +1,7 @@
 package io.aigar.game
 
-import scala.util.Random
-import scala.math.{cos, sin, Pi}
+import io.aigar.controller.response.Action
+import io.aigar.game.Position2Utils._
 import com.github.jpbetz.subspace._
 
 /**

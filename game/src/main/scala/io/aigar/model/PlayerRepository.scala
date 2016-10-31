@@ -4,7 +4,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource
 import slick.driver.H2Driver.api._
 import java.util.logging.{Level, Logger}
 
-class TeamRepository(databaseName: Option[String]) {
+class PlayerRepository(databaseName: Option[String]) {
   val cpds = new ComboPooledDataSource
   val dev = sys.props.get("testing") match {
     case Some(value) => value == "true"
@@ -13,32 +13,32 @@ class TeamRepository(databaseName: Option[String]) {
   val db = createDatabase(dev)
   createSchema
 
-  def createTeam(team: Team): Team = {
-    TeamDAO.createTeam(db, team)
+  def createPlayer(player: PlayerModel): PlayerModel = {
+    PlayerDAO.createPlayer(db, player)
   }
 
-  def readTeam(id: Int): Option[Team] = {
-    TeamDAO.findTeamById(db, id)
+  def readPlayer(id: Int): Option[PlayerModel] = {
+    PlayerDAO.findPlayerById(db, id)
   }
 
-  def readTeamBySecret(teamSecret: String): Option[Team] = {
-    TeamDAO.findTeamBySecret(db, teamSecret)
+  def readPlayerBySecret(playerSecret: String): Option[PlayerModel] = {
+    PlayerDAO.findPlayerBySecret(db, playerSecret)
   }
 
-  def addScore(team_id: Int, value: Int): Unit ={
-    TeamDAO.addScore(db, team_id, value)
+  def addScore(player_id: Int, value: Int): Unit ={
+    PlayerDAO.addScore(db, player_id, value)
   }
 
-  def updateTeam(team: Team): Option[Team] = {
-    TeamDAO.updateTeam(db, team)
+  def updatePlayer(player: PlayerModel): Option[PlayerModel] = {
+    PlayerDAO.updatePlayer(db, player)
   }
 
-  def deleteTeam(id: Int): Boolean = {
-    TeamDAO.deleteTeamById(db, id)
+  def deletePlayer(id: Int): Boolean = {
+    PlayerDAO.deletePlayerById(db, id)
   }
 
-  def getTeams(): List[Team] = {
-    TeamDAO.getTeams(db)
+  def getPlayers(): List[PlayerModel] = {
+    PlayerDAO.getPlayers(db)
   }
 
   def createDatabase(inMemory: Boolean): Database = {
@@ -61,11 +61,11 @@ class TeamRepository(databaseName: Option[String]) {
   }
 
   def createSchema: Unit = {
-    TeamDAO.createSchema(db)
+    PlayerDAO.createSchema(db)
   }
 
   def dropSchema: Unit = {
-    TeamDAO.dropSchema(db)
+    PlayerDAO.dropSchema(db)
   }
 
   def closeConnection: Unit = {

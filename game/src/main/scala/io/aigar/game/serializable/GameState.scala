@@ -18,7 +18,7 @@ case class Dimensions(
 )
 case class Cell(
   id: Int,
-  mass: Int,
+  radius: Int,
   position: Position,
   target: Position
 )
@@ -38,7 +38,7 @@ case class GameState(
   id: Int,
   tick: Int,
   players: List[Player],
-  food: Resources,
+  resources: Resources,
   map: Dimensions,
   viruses: List[Position]
 )

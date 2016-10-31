@@ -1,16 +1,16 @@
 package io.aigar.controller
 
 import io.aigar.controller.response._
-import io.aigar.model.TeamRepository
+import io.aigar.model.PlayerRepository
 
 import org.scalatra.json._
 
-class LeaderboardController(teamRepository: TeamRepository) extends AigarStack with JacksonJsonSupport {
+class LeaderboardController(playerRepository: PlayerRepository) extends AigarStack with JacksonJsonSupport {
   get("/") {
-    val teams = teamRepository.getTeams
-      .map(team => {
-             LeaderboardEntry(team.id.get, team.teamName, team.score)
+    val players = playerRepository.getPlayers
+      .map(player => {
+             LeaderboardEntry(player.id.get, player.playerName, player.score)
            })
-    LeaderboardResponse(teams)
+    LeaderboardResponse(players)
   }
 }
