@@ -1,7 +1,14 @@
+# see https://github.com/travis-ci/travis-ci/issues/1528#issuecomment-184808978
+sudo: required
+dist: trusty
+
 language: scala
 
 scala:
   - 2.11.8
+    
+python:
+  - 3.4
 
 notifications:
   email: false
@@ -10,7 +17,7 @@ before_install:  # see http://stackoverflow.com/a/30496307/395386
     - sudo apt-get update
     - sudo apt-get install python3 python3-pip
 
-install: pip3 install -r clients/python/requirements.txt
+install: sudo pip3 install -r clients/python/requirements.txt
 
 script:
     - pushd game && sbt clean test it:test && popd
