@@ -1,13 +1,13 @@
 package io.aigar.controller
 
 import io.aigar.game._
-import io.aigar.model.TeamRepository
+import io.aigar.model.PlayerRepository
 import io.aigar.controller.response._
 import org.json4s.MappingException
 import org.scalatra.json._
 import scala.util.Try
 
-class GameController(game: GameThread, teamRepository: TeamRepository)
+class GameController(game: GameThread, playerRepository: PlayerRepository)
   extends AigarStack with JacksonJsonSupport {
 
   get("/:id") {
@@ -25,11 +25,11 @@ class GameController(game: GameThread, teamRepository: TeamRepository)
   }
 
   def fillPlayerName(state: serializable.GameState): serializable.GameState = {
-    val teams = teamRepository.getTeams
+    val players = playerRepository.getPlayers
     state.copy(players = state.players.map(
                  (player) => {
-                   val name = teams.find(_.id.get == player.id) match {
-                     case Some(team) => team.teamName
+                   val name = players.find(_.id.get == player.id) match {
+                     case Some(player) => player.playerName
                      case None => halt(500)
                    }
                    player.copy(name = name)
@@ -43,9 +43,9 @@ class GameController(game: GameThread, teamRepository: TeamRepository)
   post("/:id/action") {
     try {
       val query = parse(request.body).extract[ActionQuery]
-      teamRepository.readTeamBySecret(query.team_secret) match {
-        case Some(team) => {
-          val actions = ActionQueryWithId(params("id").toInt, team.id.get, query.actions)
+      playerRepository.readPlayerBySecret(query.player_secret) match {
+        case Some(player) => {
+          val actions = ActionQueryWithId(params("id").toInt, player.id.get, query.actions)
           game.actionQueue.put(actions)
         }
         case None => halt(403)

@@ -59,7 +59,7 @@ class CellSpec extends FlatSpec with Matchers {
     val state = cell.state
 
     state.id should equal(1)
-    state.mass should equal(100)
+    state.radius should equal(round(sqrt(cell.mass * Pi)))
   }
 
   it should "Be in the cell" in {

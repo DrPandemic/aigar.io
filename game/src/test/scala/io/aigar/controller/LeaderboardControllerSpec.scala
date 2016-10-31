@@ -14,16 +14,16 @@ class LeaderboardControllerSpec extends MutableScalatraSpec
   implicit val jsonFormats: Formats = DefaultFormats
   sequential
 
-  val teamRepository = new TeamRepository(None)
-  addServlet(new LeaderboardController(teamRepository), "/*")
+  val playerRepository = new PlayerRepository(None)
+  addServlet(new LeaderboardController(playerRepository), "/*")
 
   def cleanState = {
-    teamRepository.dropSchema
-    teamRepository.createSchema
+    playerRepository.dropSchema
+    playerRepository.createSchema
 
-    teamRepository.createTeam(Team(Some(1), "EdgQWhJ!v&", "team1", 789))
-    teamRepository.createTeam(Team(Some(2), "EdgQWhJ!v&2", "team2", 50))
-    teamRepository.createTeam(Team(Some(3), "EdgQWhJ!v&3", "team3", 5))
+    playerRepository.createPlayer(PlayerModel(Some(1), "EdgQWhJ!v&", "player1", 789))
+    playerRepository.createPlayer(PlayerModel(Some(2), "EdgQWhJ!v&2", "player2", 50))
+    playerRepository.createPlayer(PlayerModel(Some(3), "EdgQWhJ!v&3", "player3", 5))
   }
 
   def before = cleanState
@@ -36,12 +36,12 @@ class LeaderboardControllerSpec extends MutableScalatraSpec
 
         val entries = parse(body).extract[LeaderboardResponse].data
         entries.foreach(entry => {
-                          entry.team_id must be_>=(0)
+                          entry.player_id must be_>=(0)
                           entry.score must be_>=(0)
                         })
 
-        val team_ids = entries.map(_.team_id)
-        team_ids.distinct.size must be_==(team_ids.size)
+        val player_ids = entries.map(_.player_id)
+        player_ids.distinct.size must be_==(player_ids.size)
       }
     }
 
@@ -50,10 +50,10 @@ class LeaderboardControllerSpec extends MutableScalatraSpec
         status must_== 200
 
         val entries = parse(body).extract[LeaderboardResponse].data
-        val team_ids = entries.map(_.team_id)
-        val db_team_ids = teamRepository.getTeams.map(_.id.get)
+        val player_ids = entries.map(_.player_id)
+        val db_player_ids = playerRepository.getPlayers.map(_.id.get)
 
-        team_ids must be_==(db_team_ids)
+        player_ids must be_==(db_player_ids)
       }
     }
   }

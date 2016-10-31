@@ -10,7 +10,7 @@ case class GameCreationResponse(data: GameCreation)
 
 case class SuccessResponse(data: String)
 
-case class LeaderboardEntry(team_id: Int, name: String, score: Int)
+case class LeaderboardEntry(player_id: Int, name: String, score: Int)
 case class LeaderboardResponse(data: List[LeaderboardEntry])
 
 case class Action(
@@ -21,4 +21,4 @@ case class Action(
   trade: Int,
   target: Position
 )
-case class ActionQuery(team_secret: String, actions: List[Action])
+case class ActionQuery(player_secret: String, actions: List[Action])

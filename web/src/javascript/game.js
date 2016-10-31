@@ -1,5 +1,5 @@
 import {
-  drawFoodOnMap,
+  drawResourcesOnMap,
   drawMap,
   initMiniMap,
   drawMiniMap,
@@ -13,7 +13,7 @@ export function draw(gameState, canvas) {
   initMap(canvas, gameState.map);
   drawPlayersOnMap(gameState.players, canvas);
   initMiniMap(canvas);
-  drawFoodOnMap(gameState.food, canvas);
+  drawResourcesOnMap(gameState.resources, canvas);
   drawMap(canvas);
   drawMiniMap(canvas);
 }
