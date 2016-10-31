@@ -36,5 +36,5 @@ The [complete API](API.md) can be found in the repository.
 To seed the project you will need to start a console in the project `sbt console`.
 ```
 scala> import io.aigar.model.seed
-scala> seed.seedTeams
+scala> seed.seedPlayers
 ```

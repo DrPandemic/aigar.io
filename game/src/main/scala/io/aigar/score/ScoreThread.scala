@@ -1,6 +1,6 @@
 package io.aigar.score
 
-import io.aigar.model.TeamRepository
+import io.aigar.model.PlayerRepository
 import java.util.concurrent.LinkedBlockingQueue
 
 /**
@@ -8,7 +8,7 @@ import java.util.concurrent.LinkedBlockingQueue
  * messages and this thread persists them to the DB.
  */
 
-class ScoreThread(teamRepository: TeamRepository) extends Runnable {
+class ScoreThread(playerRepository: PlayerRepository) extends Runnable {
   final val modificationQueue = new LinkedBlockingQueue[ScoreModification]
   var running: Boolean = true;
 
@@ -21,6 +21,6 @@ class ScoreThread(teamRepository: TeamRepository) extends Runnable {
   def saveScore: Unit = {
     val modification = modificationQueue.take
 
-    teamRepository.addScore(modification.team_id, modification.value)
+    playerRepository.addScore(modification.player_id, modification.value)
   }
 }
