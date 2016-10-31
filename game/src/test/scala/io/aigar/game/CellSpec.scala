@@ -228,7 +228,7 @@ class CellSpec extends FlatSpec with Matchers {
     opponent.cells should contain only largeCell
   }
 
-  "performAction" should "change target with the right action" in {
+  "performAction" should "change target to match the one from the action" in {
     val cell = new Cell(1, new Vector2(12, 12))
     val grid = new Grid(100, 100);
 
