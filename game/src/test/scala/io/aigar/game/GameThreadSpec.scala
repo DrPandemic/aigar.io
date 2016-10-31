@@ -1,10 +1,14 @@
 import io.aigar.game._
-import io.aigar.score.ScoreThread
+import com.github.jpbetz.subspace.Vector2
+import io.aigar.score.{ ScoreModification, ScoreThread }
 import io.aigar.controller.response.Action
 import io.aigar.game.serializable.Position
 import org.scalatest._
+import org.scalatest.mock.MockitoSugar
+import org.mockito.Mockito._
+import org.mockito.Matchers._
 
-class GameThreadSpec extends FlatSpec with Matchers {
+class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
   "A GameThread" should "not have a ranked game state at first" in {
     val scoreThread = new ScoreThread(null)
     val game = new GameThread(scoreThread, List())
@@ -57,5 +61,21 @@ class GameThreadSpec extends FlatSpec with Matchers {
 
     p1.cells.find(_.id == 0).get.target should equal(Position(0f, 10f))
     p2.cells.find(_.id == 0).get.target should equal(Position(20f, 0f))
+  }
+
+  "updateGames" should "put ScoreModifications from games into the ScoreThread only for the ranked game" in {
+    val scoreThread = mock[ScoreThread]
+    val game = new GameThread(scoreThread, List(0))
+    val ranked = mock[Game]
+    val notRanked = mock[Game]
+    game.games = List(ranked, notRanked)
+    when(ranked.id).thenReturn(Game.RankedGameId)
+    when(notRanked.id).thenReturn(Game.RankedGameId + 1)
+    when(ranked.update(any[Float])).thenReturn(List(ScoreModification(Game.RankedGameId, 1)))
+    when(notRanked.update(any[Float])).thenReturn(List(ScoreModification(Game.RankedGameId + 1, 2)))
+
+    game.updateGames
+
+    verify(scoreThread).addScoreModification(ScoreModification(ranked.id, 1))
   }
 }

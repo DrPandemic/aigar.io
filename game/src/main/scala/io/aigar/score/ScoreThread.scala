@@ -18,6 +18,10 @@ class ScoreThread(playerRepository: PlayerRepository) extends Runnable {
     }
   }
 
+  def addScoreModification(modification: ScoreModification): Unit = {
+    modificationQueue.add(modification)
+  }
+
   def saveScore: Unit = {
     val modification = modificationQueue.take
 

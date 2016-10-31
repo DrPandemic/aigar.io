@@ -1,7 +1,7 @@
 package io.aigar.game
 
+import io.aigar.score.ScoreModification
 import io.aigar.controller.response.Action
-import scala.collection.immutable.HashMap
 
 /**
  * Game holds the logic for an individual game being played
@@ -17,11 +17,12 @@ class Game(val id: Int, playerIDs: List[Int]) {
   val resources = new Resources(grid)
   var tick = 0
 
-  def update(deltaSeconds: Float): Unit = {
+  def update(deltaSeconds: Float): List[ScoreModification] = {
     players.foreach { player => player.update(deltaSeconds, grid, players) }
-    resources.update(players)
-
+    val scoreModifications = resources.update(players)
     tick += 1
+
+    scoreModifications
   }
 
   def performAction(player_id: Int, actions: List[Action]): Unit = {

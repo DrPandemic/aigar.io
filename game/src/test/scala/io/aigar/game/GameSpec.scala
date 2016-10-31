@@ -1,9 +1,9 @@
 import io.aigar.controller.response.Action
 import io.aigar.game._
+import io.aigar.score.ScoreModification
 import io.aigar.game.serializable.Position
 import org.scalatest._
 import com.github.jpbetz.subspace._
-import scala.collection.mutable.HashMap
 
 class GameSpec extends FlatSpec with Matchers {
   "A Game" should "generate a new state object every time (thread-safety)" in {
@@ -70,6 +70,19 @@ class GameSpec extends FlatSpec with Matchers {
 
     state.players should have size 10
     //TODO add more tests as the rest gets implemented
+  }
+
+  "update" should "return a list of ScoreModification" in {
+    val game = new Game(42, List(0))
+    game.resources.regular.positions = List(Vector2(40, 0))
+    val player = game.players.head
+    player.cells.head.position = Vector2(40, 0)
+    player.cells.head.target = Vector2(40, 0)
+    player.cells.foreach { cell => cell.behavior = new NoBehavior(cell) }
+
+    val resourceModifications = game.update(0f)
+
+    resourceModifications should contain (ScoreModification(player.id, Regular.Score))
   }
 
   "performAction" should "update cell's targets" in {

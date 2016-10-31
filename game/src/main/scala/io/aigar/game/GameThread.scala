@@ -16,7 +16,7 @@ class GameThread(scoreThread: ScoreThread, playerIDs: List[Int]) extends Runnabl
   final val actionQueue = new LinkedBlockingQueue[ActionQueryWithId]()
 
   private var states: Map[Int, serializable.GameState] = Map()
-  private var games: List[Game] = List(createRankedGame)
+  var games: List[Game] = List(createRankedGame)
 
   var running = true
 
@@ -56,6 +56,11 @@ class GameThread(scoreThread: ScoreThread, playerIDs: List[Int]) extends Runnabl
   def updateGames: Unit = {
     for (game <- games) {
       val deltaTime = currentTime - previousTime
+      val modifications = game.update(deltaTime)
+      if(game.id == Game.RankedGameId) {
+        modifications.foreach { scoreThread.addScoreModification(_) }
+      }
+
       game.update(deltaTime)
       states = states + (game.id -> game.state)
 
