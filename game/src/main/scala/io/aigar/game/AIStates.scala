@@ -3,7 +3,7 @@ package io.aigar.game
 import com.github.jpbetz.subspace._
 
 /**
- * Represents a movement state of an entity.
+ * Represents a state of an entity.
  * This is used to make a cell move on its own (server AI).
  */
 trait AIState {
