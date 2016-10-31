@@ -114,13 +114,13 @@ class CellSpec extends FlatSpec with Matchers {
     cell1.mass should equal(cell2.mass)
   }
 
-  it should "update its behavior on update" in {
+  it should "update its state on update" in {
     val cell = new Cell(1, new Vector2(0f, 0f))
-    cell.behavior = new TestBehavior
+    cell.machineState = new TestState
 
     cell.update(1f, new Grid(0, 0))
 
-    cell.behavior shouldBe 'updated
+    cell.machineState shouldBe 'updated
   }
 
   it should "not go below 0 x" in {

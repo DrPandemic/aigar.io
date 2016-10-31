@@ -25,7 +25,7 @@ object Cell {
 class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
   var position = startPosition
   var target = startPosition
-  var behavior: SteeringBehavior = new NoBehavior(this)
+  var machineState: AIState = new NullState(this)
   var _mass = Cell.MinMass
   private var _velocity = new Vector2(0f, 0f)
 
@@ -53,7 +53,7 @@ class Cell(id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
   def update(deltaSeconds: Float, grid: Grid) {
     mass = decayedMass(deltaSeconds)
 
-    target = behavior.update(deltaSeconds, grid)
+    target = machineState.update(deltaSeconds, grid)
 
     velocity += acceleration * deltaSeconds
     position += velocity * deltaSeconds

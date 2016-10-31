@@ -38,22 +38,22 @@ class PlayerSpec extends FlatSpec with Matchers {
     state.cells should have size 2
   }
 
-  it should "execute behavior callbacks when calling the external action callback" in {
+  it should "execute state callbacks when calling the external action callback" in {
     val player = new Player(1, new Vector2(0f, 0f))
     player.cells = List(new Cell(1), new Cell(2))
-    player.cells.foreach { _.behavior = new TestBehavior }
+    player.cells.foreach { _.machineState = new TestState }
 
     player.onExternalAction
 
-    val behaviors = player.cells.map(_.behavior.asInstanceOf[TestBehavior])
-    all(behaviors) shouldBe 'active
+    val machineStates = player.cells.map(_.machineState.asInstanceOf[TestState])
+    all(machineStates) shouldBe 'active
   }
 
   it should "be active when any number of cells are not wandering" in {
     val player = new Player(1, new Vector2(0f, 0f))
     player.cells = List(new Cell(1), new Cell(2))
-    player.cells(0).behavior = new WanderingBehavior(player.cells(0))
-    player.cells(1).behavior = new NoBehavior(player.cells(1))
+    player.cells(0).machineState = new WanderingState(player.cells(0))
+    player.cells(1).machineState = new NullState(player.cells(1))
 
     player.isActive should equal(true)
   }
@@ -61,8 +61,8 @@ class PlayerSpec extends FlatSpec with Matchers {
   it should "not be active when all cells are wandering" in {
     val player = new Player(1, new Vector2(0f, 0f))
     player.cells = List(new Cell(1), new Cell(2))
-    player.cells(0).behavior = new WanderingBehavior(player.cells(0))
-    player.cells(1).behavior = new WanderingBehavior(player.cells(1))
+    player.cells(0).machineState = new WanderingState(player.cells(0))
+    player.cells(1).machineState = new WanderingState(player.cells(1))
 
     player.isActive should equal(false)
   }
