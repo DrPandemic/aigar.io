@@ -3,7 +3,9 @@
 - Python 3
 
 ## Setup
-`pip install -r requirements.txt`
+1. `pip install -r requirements.txt`
+2. Rename `player.default.json` to `player.default` and replace the
+   `team_secret` by the value that was given to you by the organiser
 
 ## Joining the Ranked Game
 `python play.py`
