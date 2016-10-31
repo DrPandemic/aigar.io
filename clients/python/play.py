@@ -1,5 +1,6 @@
 from time import sleep
 import json
+import sys
 
 from game.api import API
 from game.models import Game
@@ -24,17 +25,26 @@ def main():
 
 
 def fetch_team_secret():
+    ConfigFile = "player.json"
+    DefaultConfigFile = "player.default.json"
     NullTeamSecret = "REPLACEME"  # value that is by default in the config file
 
-    with open("player.json") as f:
-        data = json.load(f)
-        secret = data["team_secret"]
+    try:
+        with open(ConfigFile) as f:
+            data = json.load(f)
+            secret = data["team_secret"]
 
-        if secret == NullTeamSecret:
-            print("WARNING: Did you forget to change your team secret in "
-                  "'player.json'?")
+            if secret == NullTeamSecret:
+                print("WARNING: Did you forget to change your team secret in "
+                      "'%s'?" % ConfigFile, file=sys.stderr)
 
-        return secret
+            return secret
+
+    except FileNotFoundError:
+        print("ERROR: Could not find '%s'. "
+              "Did you forget to rename '%s' to '%s'?" %
+              (ConfigFile, DefaultConfigFile, ConfigFile), file=sys.stderr)
+        exit(1)
 
 
 if __name__ == "__main__":
