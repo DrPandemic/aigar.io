@@ -3,7 +3,7 @@ import io.aigar.controller.response.Action
 import io.aigar.game.serializable.Position
 import org.scalatest._
 import org.scalatest.LoneElement._
-import com.github.jpbetz.subspace._
+import com.github.jpbetz.subspace.Vector2
 
 class PlayerSpec extends FlatSpec with Matchers {
   "A Player" should "start with a cell at its start position" in {
@@ -105,7 +105,7 @@ class PlayerSpec extends FlatSpec with Matchers {
     all(behaviors) shouldBe 'active
   }
 
-  it should "respawn one cell for itself if it has no mo' cell" in {
+  "update" should "respawn one cell for itself if it has no mo' cell" in {
     val player = new Player(1, new Vector2(0f, 0f))
     val cell1 = new Cell(1)
     val cell2 = new Cell(2)
@@ -120,5 +120,16 @@ class PlayerSpec extends FlatSpec with Matchers {
     player.update(1f, new Grid(0, 0), List(new Player(2, new Vector2(1f, 1f))))
 
     player.cells.size should equal(1)
+  }
+
+  it should "spawn cell with never used id" in {
+    val player = new Player(1, new Vector2(0f, 0f))
+    val initialCellId = player.cells.head.id
+
+    player.cells = List()
+    player.update(1f, new Grid(0, 0), List(player))
+
+    player.cells should not be empty
+    player.cells.map(_.id) should not contain initialCellId
   }
 }

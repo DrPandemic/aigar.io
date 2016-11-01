@@ -2,14 +2,16 @@ package io.aigar.game
 
 import io.aigar.controller.response.Action
 import scala.math.round
-import com.github.jpbetz.subspace._
+import com.github.jpbetz.subspace.Vector2
 
 class Player(val id: Int, startPosition: Vector2) {
-  var cells = List(new Cell(0, startPosition))
+  private var currentCellId: Int = 0
+  var cells = List(new Cell(currentCellId, startPosition))
 
-  def update(deltaSeconds: Float, grid: Grid, players: List[Player]) {
+  def update(deltaSeconds: Float, grid: Grid, players: List[Player]): Unit = {
     if ( cells.isEmpty ) {
-      cells = List(new Cell(0, grid.randomPosition))
+      currentCellId += 1
+      cells = List(new Cell(currentCellId, grid.randomPosition))
     }
     else {
       val opponents = players.filterNot(_ == this)
@@ -18,7 +20,7 @@ class Player(val id: Int, startPosition: Vector2) {
     }
   }
 
-  def state = {
+  def state: serializable.Player = {
     val mass = round(cells.map(_.mass).sum).toInt
     serializable.Player(id,
                         id.toString,
@@ -43,7 +45,7 @@ class Player(val id: Int, startPosition: Vector2) {
    * Should be called whenever an external action occurs (e.g. we receive a
    * command coming from the AI of a player).
    */
-  def onExternalAction = {
+  def onExternalAction: Unit = {
     cells.foreach { _.behavior.onPlayerActivity }
   }
 
