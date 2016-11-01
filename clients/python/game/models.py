@@ -1,4 +1,6 @@
 class Game:
+    RankedGameId = 0
+
     def __init__(self, id_, tick, players, resources, map_, viruses):
         self.id = id_
         self.tick = tick
