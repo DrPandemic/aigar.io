@@ -7,7 +7,12 @@ import scalate.ScalateSupport
 import org.json4s.{DefaultFormats, Formats}
 import org.scalatra.json._
 
-trait AigarStack extends ScalatraServlet with ScalateSupport with JacksonJsonSupport {
+trait AigarStack
+    extends ScalatraServlet
+    with ScalateSupport
+    with JacksonJsonSupport
+    with GZipSupport
+{
   protected implicit val jsonFormats: Formats = DefaultFormats
 
   before() {
