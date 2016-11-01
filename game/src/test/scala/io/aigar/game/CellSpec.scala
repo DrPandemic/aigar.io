@@ -10,6 +10,7 @@ class CellSpec extends FlatSpec with Matchers {
   "A Cell" should "not initiate movement when its target is on itself" in {
     val cell = new Cell(1, new Vector2(42f, 42f))
     cell.target = new Vector2(42f, 42f)
+    cell.behavior = new NoBehavior(cell)
     val grid = new Grid(100, 100);
 
     cell.update(1f, grid)
@@ -79,6 +80,7 @@ class CellSpec extends FlatSpec with Matchers {
 
   it should "not move without setting its target" in {
     val cell = new Cell(1, new Vector2(42f, 42f))
+    cell.behavior = new NoBehavior(cell)
     val grid = new Grid(200, 200)
 
     cell.update(1f, grid)
