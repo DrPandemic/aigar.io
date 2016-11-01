@@ -19,6 +19,15 @@ class Game:
                 []     # TODO Virus.parse
                 )
 
+    def __str__(self):
+        return ("""
+Tick: %d
+Map: %s
+Players:
+  %s""" % (self.tick,
+           self.map,
+           "\n  ".join([str(player) for player in self.players])))
+
 
 class Map:
     def __init__(self, width, height):
@@ -27,6 +36,9 @@ class Map:
 
     def parse(obj):
         return Map(obj["width"], obj["height"])
+
+    def __str__(self):
+        return "%d x %d" % (self.width, self.height)
 
 
 class Player:
@@ -45,3 +57,10 @@ class Player:
                 obj["isActive"],
                 []  # TODO Cell.parse
                 )
+
+    def __str__(self):
+        return ("%d '%s' %s mass=%d cells=[%s]" %
+                (self.id, self.name,
+                 "active" if self.active else "inactive",
+                 self.total_mass,
+                 ", ".join([str(cell) for cell in self.cells])))
