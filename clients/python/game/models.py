@@ -13,7 +13,7 @@ class Game:
         return Game(
                 obj["id"],
                 obj["tick"],
-                [],    # TODO Player.parse
+                [Player.parse(player) for player in obj["players"]],
                 [],    # TODO Resources.parse
                 Map.parse(obj["map"]),
                 []     # TODO Virus.parse

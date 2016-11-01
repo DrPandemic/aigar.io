@@ -11,7 +11,16 @@ class GameTests(TestCase):
                 "map": {
                     "width": 111,
                     "height": 222
-                    }
+                    },
+                "players": [
+                    {
+                        "id": "a",
+                        "name": "b",
+                        "total_mass": 23,
+                        "isActive": True,
+                        "cells": []  # TODO once Cells are implemented
+                        }
+                    ]
                 # TODO add more here
                 }
 
@@ -19,8 +28,17 @@ class GameTests(TestCase):
 
         self.assertEqual(12, game.id)
         self.assertEqual(123, game.tick)
+
         self.assertEqual(111, game.map.width)
         self.assertEqual(222, game.map.height)
+
+        self.assertEqual(1, len(game.players))
+        player = game.players[0]
+        self.assertEqual("a", player.id)
+        self.assertEqual("b", player.name)
+        self.assertEqual(23, player.total_mass)
+        self.assertEqual(True, player.active)
+
         # TODO add more here
 
 
