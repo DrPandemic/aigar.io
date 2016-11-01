@@ -13,11 +13,9 @@ class Player(val id: Int, startPosition: Vector2) {
       currentCellId += 1
       cells = List(new Cell(currentCellId, grid.randomPosition))
     }
-    else {
-      val opponents = players.filterNot(_ == this)
-      cells.foreach { _.update(deltaSeconds, grid) }
-      cells.foreach { _.eats(opponents) }
-    }
+    val opponents = players.filterNot(_ == this)
+    cells.foreach { _.update(deltaSeconds, grid) }
+    cells.foreach { _.eats(opponents) }
   }
 
   def state: serializable.Player = {
