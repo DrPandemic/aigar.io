@@ -65,12 +65,24 @@ export function getPlayerColor(players, currentPlayer) {
 
 export function drawPlayersOnMap(players, canvas) {
   const context = canvas.getContext("2d");
+  let cellArray = [];
+  let cellInfo;
   for(const player of players) {
     const color = getPlayerColor(players, player);
     for(const cell of player.cells) {
-      drawCircle(context, cell.position, cell.radius, color);
-      writeCellTeamName(player.name, context, cell.position)
+      cellInfo = {
+        position: cell.position,
+        radius: cell.radius,
+        color: color,
+        playerName: player.name
+      };
+      cellArray.push(cellInfo);
     }
+  }
+  cellArray.sort();
+  for(const cell of cellArray){
+    drawCircle(context, cell.position, cell.radius, cell.color);
+    writeCellTeamName(cell.playerName, context, cell.position);
   }
 }
 
@@ -168,16 +180,14 @@ function mouseClick(e) {
 screenCanvas.onmousedown = function(e) {
   mouseIsDown = true;
   mouseClick(e);
-}
+};
 screenCanvas.onmouseup = function(e) {
   if(mouseIsDown) mouseClick(e);
-    mouseIsDown = false;
-}
+  mouseIsDown = false;
+};
 
 screenCanvas.onmousemove = function(e) {
   if(!mouseIsDown) return;
   mouseClick(e);
   return false;
-}
-
-
+};
