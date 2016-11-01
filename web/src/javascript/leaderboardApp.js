@@ -18,6 +18,6 @@ function fetchAndDisplay() {
     });
 }
 
-setInterval(fetchAndDisplay, 30 * 1000);
+setInterval(fetchAndDisplay, 5 * 1000);
 
 fetchAndDisplay();
