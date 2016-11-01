@@ -2,6 +2,9 @@ import $ from "jquery";
 import * as constants from "./constants";
 import sort from "immutable-sort";
 
+let canvasWidth = 0;
+let canvasHeight = 0;
+
 const screenCanvas = $("#screenCanvas")[0];
 const screenContext = screenCanvas.getContext("2d");
 const screenWidth = screenCanvas.width;
@@ -49,8 +52,10 @@ export function createGameCanvas() {
 
 export function initMap(canvas, map) {
   canvas.width = map.width;
+  canvasWidth = map.width;
   canvas.height = map.height;
-
+  canvasHeight = map.height;
+  
   screenToMapRatioWidth = canvas.width/ screenCanvas.width;
   screenToMapRatioHeight = canvas.height/ screenCanvas.height;
   miniMapScreenPosWidth = miniMapWidth/screenToMapRatioWidth;
@@ -137,27 +142,36 @@ function drawMiniMapScreenPos(canvas) {
   miniMapContext.strokeRect(xMiniMapPos, yMiniMapPos, miniMapScreenPosWidth, miniMapScreenPosHeight);
 }
 
+export function setFocusScreen(position){
+  position.x = position.x - (screenWidth/2);
+  position.y = position.y - (screenHeight/2)
+
+  position = keepInsideMap(position, canvasWidth, screenWidth, canvasHeight, screenHeight);
+
+  xScreenPosOnMap = position.x
+  yScreenPosOnMap = position.y
+}
 function changeScreenPos(mousePos) {
   let miniMapPos = {
     x : (mousePos.x - miniMapPosX) - (miniMapScreenPosWidth / 2),
     y : mousePos.y - (miniMapScreenPosHeight / 2)
   };
-  miniMapPos = keepInsideMap(miniMapPos);
+  miniMapPos = keepInsideMap(miniMapPos, miniMapWidth, miniMapScreenPosWidth, miniMapHeight, miniMapScreenPosHeight);
 
   xScreenPosOnMap = miniMapPos.x * screenToMapRatioWidth * (screenWidth/miniMapWidth);
   yScreenPosOnMap = miniMapPos.y * screenToMapRatioHeight * (screenHeight/miniMapHeight);
 }
 
-function keepInsideMap(pos) {
+function keepInsideMap(pos, bigWidth, smallWidth, bigHeight, smallHeight) {
   if (pos.x < 0) {
     pos.x = 0;
-  } else if (pos.x > miniMapWidth - miniMapScreenPosWidth) {
-    pos.x = miniMapWidth - miniMapScreenPosWidth;
+  } else if (pos.x > bigWidth - smallWidth) {
+    pos.x = bigWidth - smallWidth;
   }
   if (pos.y < 0) {
     pos.y = 0;
-  } else if (pos.y > miniMapHeight - miniMapScreenPosHeight) {
-    pos.y = miniMapHeight - miniMapScreenPosHeight;
+  } else if (pos.y > bigHeight - smallHeight) {
+    pos.y = bigHeight - smallHeight;
   }
   return pos;
 }

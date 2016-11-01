@@ -1,5 +1,6 @@
 import he from "he";
 import {getPlayerColor} from "./drawMap";
+import {setFocusScreen} from "./drawMap";
 import sort from "immutable-sort";
 
 export function drawLeaderboard(state) {
@@ -11,6 +12,9 @@ export function drawLeaderboard(state) {
   for(const player of players) {
     const color = getPlayerColor(players, player);
     const row = new_tbody.insertRow();
+    row.onclick = function() { 
+        focusOnPlayer(player.id, state);
+      };
     if(!player.isActive) {
       row.className = "inactive-player";
     }
@@ -22,4 +26,32 @@ export function drawLeaderboard(state) {
 
   const old = document.getElementById("leaderboard-body");
   leaderboard.replaceChild(new_tbody, old);
+}
+
+function focusOnPlayer(id, state){
+    var cellToFocus = findBiggestCell(findPlayerWithId(id, state.players).cells);
+    if(cellToFocus != null){
+        setFocusScreen(cellToFocus.position);
+    }
+}
+
+function findPlayerWithId(id, players){
+  for(const player of players) {
+    if(player.id == id){
+      return player;
+    }
+  }
+}
+
+function findBiggestCell(cells){
+  if (cells.length > 0){
+    var biggestCell = cells[0];
+    for(const cell of cells) {
+      if(cell.radius > biggestCell.radius){
+        biggestCell = cell;
+      }
+    }
+    return biggestCell;
+  }
+  return null;
 }
