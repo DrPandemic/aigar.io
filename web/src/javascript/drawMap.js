@@ -79,8 +79,9 @@ export function drawPlayersOnMap(players, canvas) {
       cellArray.push(cellInfo);
     }
   }
-  cellArray.sort();
-  for(const cell of cellArray){
+  //const cells = [].concat.apply([], players.map(player => player.cells);
+  const cellsToDraw = sort(cellArray, (a, b) => a.radius - b.radius);
+  for(const cell of cellsToDraw){
     drawCircle(context, cell.position, cell.radius, cell.color);
     writeCellTeamName(cell.playerName, context, cell.position);
   }
