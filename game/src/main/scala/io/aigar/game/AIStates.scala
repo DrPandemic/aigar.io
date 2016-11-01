@@ -1,10 +1,5 @@
 package io.aigar.game
 
-<<<<<<< HEAD:game/src/main/scala/io/aigar/game/AIStates.scala
-=======
-import io.aigar.controller.response.Action
-import io.aigar.game.Position2Utils._
->>>>>>> master:game/src/main/scala/io/aigar/game/SteeringBehaviors.scala
 import com.github.jpbetz.subspace._
 
 /**
