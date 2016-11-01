@@ -19,7 +19,9 @@ def main():
         game = api.fetch_game_state(game_id)
 
         # TODO call player AI here
-        print(game.tick)
+        print("Tick: %d" % game.tick)
+        print("Map: %d by %d" % (game.map.width, game.map.height))
+        print()
 
         sleep(1 / UpdatesPerSecond)
 

@@ -15,6 +15,15 @@ class Game:
                 obj["tick"],
                 [],    # TODO Player.parse
                 [],    # TODO Resources.parse
-                None,  # TODO Map.parse
+                Map.parse(obj["map"]),
                 []     # TODO Virus.parse
                 )
+
+
+class Map:
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+
+    def parse(obj):
+        return Map(obj["width"], obj["height"])

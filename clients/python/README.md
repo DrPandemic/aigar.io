@@ -26,6 +26,14 @@ Attributes:
 
 - `resources`: Resources in the game that can be collected to gain mass/points
 
-- `map`: Dimensions of the map
+- `map`: Dimensions of the map (`Map` object)
 
 - `viruses`: List of viruses that split a cell when consumed
+
+### Map
+Dimensions of the map the players are on.
+
+Attributes:
+- `width`: Width of the map
+
+- `height`: Height of the map
