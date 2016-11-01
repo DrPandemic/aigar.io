@@ -22,7 +22,7 @@ Attributes:
 
 - `tick`: How many updates the game has gone through so far
 
-- `players`: List of players in the game
+- `players`: List of players (`Player` objects) in the game
 
 - `resources`: Resources in the game that can be collected to gain mass/points
 
@@ -37,3 +37,21 @@ Attributes:
 - `width`: Width of the map
 
 - `height`: Height of the map
+
+### Player
+Owner and controller of cells in the game. As a programmer of an AI, you are a
+`Player`.
+
+Attributes:
+- `id`: Identifier of the player
+
+- `name`: Display name of the player in-game
+
+- `cells`: List of `Cell` objects that the player owns and controls
+
+- `total_mass`: Sum of the mass of the player's cells
+
+- `active`: Whether the player is actively controlling their cells or not. If a
+            player's AI is inactive for too long, this flag will become `False`
+            and a dumb AI will take over the player's cells until the player
+            becomes active once again.
