@@ -35,7 +35,7 @@ class WanderingState(cell: Cell) extends AIState {
   }
 
   def onPlayerActivity {
-    cell.machineState = new NullState(cell)
+    cell.aiState = new NullState(cell)
   }
 }
 object WanderingState {
@@ -56,7 +56,7 @@ class NullState(cell: Cell) extends AIState {
   def update(deltaSeconds: Float, grid: Grid) = {
     inactivityTimeLeft -= deltaSeconds
     if (inactivityTimeLeft < 0f) {
-      cell.machineState = new WanderingState(cell)
+      cell.aiState = new WanderingState(cell)
     }
 
     cell.target

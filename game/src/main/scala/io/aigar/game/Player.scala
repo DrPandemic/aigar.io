@@ -44,14 +44,14 @@ class Player(val id: Int, startPosition: Vector2) {
    * command coming from the AI of a player).
    */
   def onExternalAction = {
-    cells.foreach { _.machineState.onPlayerActivity }
+    cells.foreach { _.aiState.onPlayerActivity }
   }
 
   /**
     * The player is active when there is an active cell.
     */
   def isActive():Boolean = {
-    cells.exists(_.machineState.isActive)
+    cells.exists(_.aiState.isActive)
   }
 
   /**

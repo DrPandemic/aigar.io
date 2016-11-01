@@ -43,19 +43,19 @@ class PlayerSpec extends FlatSpec with Matchers {
   it should "execute state callbacks when calling the external action callback" in {
     val player = new Player(1, new Vector2(0f, 0f))
     player.cells = List(new Cell(1), new Cell(2))
-    player.cells.foreach { _.machineState = new TestState }
+    player.cells.foreach { _.aiState = new TestState }
 
     player.onExternalAction
 
-    val machineStates = player.cells.map(_.machineState.asInstanceOf[TestState])
-    all(machineStates) shouldBe 'active
+    val aiStates = player.cells.map(_.aiState.asInstanceOf[TestState])
+    all(aiStates) shouldBe 'active
   }
 
   it should "be active when any number of cells are not wandering" in {
     val player = new Player(1, new Vector2(0f, 0f))
     player.cells = List(new Cell(1), new Cell(2))
-    player.cells(0).machineState = new WanderingState(player.cells(0))
-    player.cells(1).machineState = new NullState(player.cells(1))
+    player.cells(0).aiState = new WanderingState(player.cells(0))
+    player.cells(1).aiState = new NullState(player.cells(1))
 
     player.isActive should equal(true)
   }
@@ -63,8 +63,8 @@ class PlayerSpec extends FlatSpec with Matchers {
   it should "not be active when all cells are wandering" in {
     val player = new Player(1, new Vector2(0f, 0f))
     player.cells = List(new Cell(1), new Cell(2))
-    player.cells(0).machineState = new WanderingState(player.cells(0))
-    player.cells(1).machineState = new WanderingState(player.cells(1))
+    player.cells(0).aiState = new WanderingState(player.cells(0))
+    player.cells(1).aiState = new WanderingState(player.cells(1))
 
     player.isActive should equal(false)
   }
@@ -95,13 +95,13 @@ class PlayerSpec extends FlatSpec with Matchers {
   it should "prevent player cell's state from going wandering" in {
     val player = new Player(1, new Vector2(0f, 0f))
     player.cells = List(new Cell(1), new Cell(2))
-    player.cells.foreach { _.machineState = new TestState }
+    player.cells.foreach { _.aiState = new TestState }
 
     player.update(NullState.MaxInactivitySeconds * 0.9f, new Grid(0, 0), List(player))
     player.performAction(List(Action(0, false, false, false, 0, Position(0f, 10f))))
     player.update(NullState.MaxInactivitySeconds * 0.9f, new Grid(0, 0), List(player))
 
-    val behaviors = player.cells.map(_.machineState.asInstanceOf[TestState])
+    val behaviors = player.cells.map(_.aiState.asInstanceOf[TestState])
     all(behaviors) shouldBe 'active
   }
 
