@@ -29,7 +29,7 @@ class PlayerSpec extends FlatSpec with Matchers {
 
   it should "generate a state with the right info" in {
     val player = new Player(1, new Vector2(0f, 0f))
-    player.cells = List(new Cell(1), new Cell(2))
+    player.cells = List(new Cell(1, player), new Cell(2, player))
     player.cells(0).mass = Cell.MinMass
     player.cells(1).mass = 25
 
@@ -42,37 +42,18 @@ class PlayerSpec extends FlatSpec with Matchers {
 
   it should "execute state callbacks when calling the external action callback" in {
     val player = new Player(1, new Vector2(0f, 0f))
-    player.cells = List(new Cell(1), new Cell(2))
-    player.cells.foreach { _.machineState = new TestState }
+    player.cells = List(new Cell(1, player), new Cell(2, player))
+    player.machineState = new TestState
 
     player.onExternalAction
 
-    val machineStates = player.cells.map(_.machineState.asInstanceOf[TestState])
-    all(machineStates) shouldBe 'active
-  }
-
-  it should "be active when any number of cells are not wandering" in {
-    val player = new Player(1, new Vector2(0f, 0f))
-    player.cells = List(new Cell(1), new Cell(2))
-    player.cells(0).machineState = new WanderingState(player.cells(0))
-    player.cells(1).machineState = new NullState(player.cells(1))
-
-    player.isActive should equal(true)
-  }
-
-  it should "not be active when all cells are wandering" in {
-    val player = new Player(1, new Vector2(0f, 0f))
-    player.cells = List(new Cell(1), new Cell(2))
-    player.cells(0).machineState = new WanderingState(player.cells(0))
-    player.cells(1).machineState = new WanderingState(player.cells(1))
-
-    player.isActive should equal(false)
+    player.machineState shouldBe 'active
   }
 
   it should "remove a cell from its list when it is dead" in {
     val player = new Player(1, new Vector2(0f, 0f))
-    val cell1 = new Cell(1)
-    val cell2 = new Cell(2)
+    val cell1 = new Cell(1, player)
+    val cell2 = new Cell(2, player)
 
     player.cells = List(cell1, cell2)
 
@@ -83,7 +64,7 @@ class PlayerSpec extends FlatSpec with Matchers {
 
   "performAction" should "update cell's targets" in {
     val player = new Player(1, new Vector2(0f, 0f))
-    player.cells = List(new Cell(0), new Cell(1))
+    player.cells = List(new Cell(0, player), new Cell(1, player))
     player.performAction(List(
                     Action(0, false, false, false, 0, Position(0f, 10f)),
                     Action(1, false, false, false, 0, Position(10f, 15f))))
@@ -92,23 +73,22 @@ class PlayerSpec extends FlatSpec with Matchers {
     player.state.cells.find(_.id == 1).get.target should equal(Position(10f, 15f))
   }
 
-  it should "prevent player cell's state from going wandering" in {
+  it should "prevent player from going wandering" in {
     val player = new Player(1, new Vector2(0f, 0f))
-    player.cells = List(new Cell(1), new Cell(2))
-    player.cells.foreach { _.machineState = new TestState }
+    player.cells = List(new Cell(1, player), new Cell(2, player))
+    player.machineState = new TestState
 
     player.update(NullState.MaxInactivitySeconds * 0.9f, new Grid(0, 0), List(player))
     player.performAction(List(Action(0, false, false, false, 0, Position(0f, 10f))))
     player.update(NullState.MaxInactivitySeconds * 0.9f, new Grid(0, 0), List(player))
 
-    val behaviors = player.cells.map(_.machineState.asInstanceOf[TestState])
-    all(behaviors) shouldBe 'active
+    player.machineState shouldBe 'active
   }
 
   it should "respawn one cell for itself if it has no mo' cell" in {
     val player = new Player(1, new Vector2(0f, 0f))
-    val cell1 = new Cell(1)
-    val cell2 = new Cell(2)
+    val cell1 = new Cell(1, player)
+    val cell2 = new Cell(2, player)
     cell2.mass = 2 * Cell.MinMass
 
     player.cells = List(cell1)
