@@ -12,8 +12,8 @@ UpdatesPerSecond = 3  # how many times we should contact the server per second
 def main():
     game_id = Game.RankedGameId
 
-    team_secret = fetch_team_secret()
-    api = API(team_secret)
+    player_secret = fetch_player_secret()
+    api = API(player_secret)
 
     while True:
         game = api.fetch_game_state(game_id)
@@ -24,19 +24,19 @@ def main():
         sleep(1 / UpdatesPerSecond)
 
 
-def fetch_team_secret():
+def fetch_player_secret():
     ConfigFile = "player.json"
     DefaultConfigFile = "player.default.json"
-    NullTeamSecret = "REPLACEME"  # value that is by default in the config file
+    NullPlayerSecret = "REPLACEME"  # default value in the config file
 
     try:
         with open(ConfigFile) as f:
             data = json.load(f)
-            secret = data["team_secret"]
+            secret = data["player_secret"]
 
-            if secret == NullTeamSecret:
-                print("WARNING: Did you forget to change your team secret in "
-                      "'%s'?" % ConfigFile, file=sys.stderr)
+            if secret == NullPlayerSecret:
+                print("WARNING: Did you forget to change your player secret "
+                      "in '%s'?" % ConfigFile, file=sys.stderr)
 
             return secret
 
