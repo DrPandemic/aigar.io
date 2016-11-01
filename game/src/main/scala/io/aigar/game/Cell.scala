@@ -24,10 +24,9 @@ object Cell {
   final val MassDecayPerSecond = 0.005f
 }
 
-class Cell(val id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
+class Cell(val id: Int, player: Player, startPosition: Vector2 = new Vector2(0f, 0f)) {
   var position = startPosition
   var target = startPosition
-  var aiState: AIState = new NullState(this)
   var _mass = Cell.MinMass
   private var _velocity = new Vector2(0f, 0f)
 
@@ -55,7 +54,7 @@ class Cell(val id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
   def update(deltaSeconds: Float, grid: Grid): Unit = {
     mass = decayedMass(deltaSeconds)
 
-    target = aiState.update(deltaSeconds, grid)
+    target = player.aiState.update(deltaSeconds, grid, this)
 
     velocity += acceleration * deltaSeconds
     position += velocity * deltaSeconds
