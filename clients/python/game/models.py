@@ -27,3 +27,21 @@ class Map:
 
     def parse(obj):
         return Map(obj["width"], obj["height"])
+
+
+class Player:
+    def __init__(self, id_, name, total_mass, active, cells):
+        self.id = id_
+        self.name = name
+        self.total_mass = total_mass
+        self.active = active
+        self.cells = cells
+
+    def parse(obj):
+        return Player(
+                obj["id"],
+                obj["name"],
+                obj["total_mass"],
+                obj["isActive"],
+                []  # TODO Cell.parse
+                )
