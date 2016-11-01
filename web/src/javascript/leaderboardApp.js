@@ -11,7 +11,13 @@ function displayEntries(entries) {
   }
 }
 
-fetchEntries()
-  .then((entries) => {
-    displayEntries(entries);
-  });
+function fetchAndDisplay() {
+  return fetchEntries()
+    .then((entries) => {
+      displayEntries(entries);
+    });
+}
+
+setInterval(fetchAndDisplay, 30 * 1000);
+
+fetchAndDisplay();
