@@ -1,4 +1,6 @@
 import io.aigar.game._
+import io.aigar.controller.response.Action
+import io.aigar.game.serializable.Position
 import org.scalatest._
 import org.scalatest.LoneElement._
 import com.github.jpbetz.subspace._
@@ -77,6 +79,30 @@ class PlayerSpec extends FlatSpec with Matchers {
     player.removeCell(cell1)
 
     player.cells should contain only cell2
+  }
+
+  "performAction" should "update cell's targets" in {
+    val player = new Player(1, new Vector2(0f, 0f))
+    player.cells = List(new Cell(0), new Cell(1))
+    player.performAction(List(
+                    Action(0, false, false, false, 0, Position(0f, 10f)),
+                    Action(1, false, false, false, 0, Position(10f, 15f))))
+
+    player.state.cells.find(_.id == 0).get.target should equal(Position(0f, 10f))
+    player.state.cells.find(_.id == 1).get.target should equal(Position(10f, 15f))
+  }
+
+  it should "prevent behavior from going wandering" in {
+    val player = new Player(1, new Vector2(0f, 0f))
+    player.cells = List(new Cell(1), new Cell(2))
+    player.cells.foreach { _.behavior = new TestBehavior }
+
+    player.update(NoBehavior.MaxInactivitySeconds * 0.9f, new Grid(0, 0), List(player))
+    player.performAction(List(Action(0, false, false, false, 0, Position(0f, 10f))))
+    player.update(NoBehavior.MaxInactivitySeconds * 0.9f, new Grid(0, 0), List(player))
+
+    val behaviors = player.cells.map(_.behavior.asInstanceOf[TestBehavior])
+    all(behaviors) shouldBe 'active
   }
 
   it should "respawn one cell for itself if it has no mo' cell" in {

@@ -18,8 +18,8 @@ class GameControllerSpec extends MutableScalatraSpec
   implicit val jsonFormats: Formats = DefaultFormats
   sequential
 
-  val scoreThread = new ScoreThread
   val playerRepository = new PlayerRepository(None)
+  val scoreThread = new ScoreThread(playerRepository)
   val game = new GameThread(scoreThread, List(1))
   game.updateGames // run once to initialize the game states
 

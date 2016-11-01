@@ -1,22 +1,30 @@
 package io.aigar.score
 
-import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue, TimeUnit}
+import io.aigar.model.PlayerRepository
+import java.util.concurrent.LinkedBlockingQueue
 
 /**
  * ScoreThread is running all the time. The game thread sends score update
  * messages and this thread persists them to the DB.
  */
 
-class ScoreThread extends Runnable {
-  final val messageQueue: BlockingQueue[ScoreMessage] = new LinkedBlockingQueue[ScoreMessage]
+class ScoreThread(playerRepository: PlayerRepository) extends Runnable {
+  final val modificationQueue = new LinkedBlockingQueue[ScoreModification]
   var running: Boolean = true;
 
   def run: Unit = {
-    while (!running) {
-      val message = messageQueue.poll(1, TimeUnit.SECONDS)
-      if(message != null) {
-        println("Some magic here")
-      }
+    while (running) {
+      saveScore
     }
+  }
+
+  def addScoreModification(modification: ScoreModification): Unit = {
+    modificationQueue.add(modification)
+  }
+
+  def saveScore: Unit = {
+    val modification = modificationQueue.take
+
+    playerRepository.addScore(modification.player_id, modification.value)
   }
 }
