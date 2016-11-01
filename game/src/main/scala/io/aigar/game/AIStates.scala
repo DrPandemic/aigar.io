@@ -1,6 +1,6 @@
 package io.aigar.game
 
-import com.github.jpbetz.subspace.Vector2
+import com.github.jpbetz.subspace._
 
 /**
  * Represents an entity's state.
@@ -10,12 +10,12 @@ trait AIState {
   /**
    * Determines what the next target of a cell should be.
    */
-  def update(deltaSeconds: Float, grid: Grid, cell: Cell): Vector2
+  def update(deltaSeconds: Float, grid: Grid): Vector2
   def onPlayerActivity: Unit
   def isActive: Boolean
 }
 
-class WanderingState(player: Player) extends AIState {
+class WanderingState(cell: Cell) extends AIState {
   def isActive = false
 
   var nextTargetTimeLeft = WanderingState.NewTargetDelay
@@ -23,7 +23,7 @@ class WanderingState(player: Player) extends AIState {
   /**
    * Picks a random target. Picks a new one once the previous one is reached.
    */
-  def update(deltaSeconds: Float, grid: Grid, cell: Cell): Vector2 = {
+  def update(deltaSeconds: Float, grid: Grid) = {
     nextTargetTimeLeft -= deltaSeconds
 
     if (cell.contains(cell.target) || nextTargetTimeLeft <= 0f) {
@@ -34,8 +34,8 @@ class WanderingState(player: Player) extends AIState {
     }
   }
 
-  def onPlayerActivity: Unit = {
-    player.machineState = new NullState(player)
+  def onPlayerActivity {
+    cell.machineState = new NullState(cell)
   }
 }
 object WanderingState {
@@ -48,21 +48,21 @@ object WanderingState {
  *
  * Use this when an entity is not controlled by the server.
  */
-class NullState(player: Player) extends AIState {
+class NullState(cell: Cell) extends AIState {
   var inactivityTimeLeft = NullState.MaxInactivitySeconds
 
   def isActive = true
 
-  def update(deltaSeconds: Float, grid: Grid, cell: Cell): Vector2 = {
+  def update(deltaSeconds: Float, grid: Grid) = {
     inactivityTimeLeft -= deltaSeconds
     if (inactivityTimeLeft < 0f) {
-      player.machineState = new WanderingState(player)
+      cell.machineState = new WanderingState(cell)
     }
 
     cell.target
   }
 
-  def onPlayerActivity: Unit = {
+  def onPlayerActivity = {
     inactivityTimeLeft = NullState.MaxInactivitySeconds
   }
 }
@@ -78,12 +78,11 @@ class TestState extends AIState {
   var updated = false
   var active = false
 
-  def update(deltaSeconds: Float, grid: Grid, cell: Cell): Vector2 = {
+  def update(deltaSeconds: Float, grid: Grid) = {
     updated = true
     new Vector2(0f, 0f)
   }
-
-  def onPlayerActivity: Unit = {
+  def onPlayerActivity {
     active = true
   }
 
