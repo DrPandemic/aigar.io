@@ -92,7 +92,7 @@ class PlayerSpec extends FlatSpec with Matchers {
     player.state.cells.find(_.id == 1).get.target should equal(Position(10f, 15f))
   }
 
-  it should "prevent behavior from going wandering" in {
+  it should "prevent player cell's state from going wandering" in {
     val player = new Player(1, new Vector2(0f, 0f))
     player.cells = List(new Cell(1), new Cell(2))
     player.cells.foreach { _.machineState = new TestState }
