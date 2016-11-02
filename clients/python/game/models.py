@@ -1,3 +1,6 @@
+from planar import Vec2
+
+
 class Game:
     RankedGameId = 0
 
@@ -14,7 +17,7 @@ class Game:
                 obj["id"],
                 obj["tick"],
                 [Player.parse(player) for player in obj["players"]],
-                [],    # TODO Resources.parse
+                Resources.parse(obj["resources"]),
                 Map.parse(obj["map"]),
                 []     # TODO Virus.parse
                 )
@@ -24,9 +27,12 @@ class Game:
 Tick: %d
 Map: %s
 Players:
+  %s
+Resources:
   %s""" % (self.tick,
            self.map,
-           "\n  ".join([str(player) for player in self.players])))
+           "\n  ".join([str(player) for player in self.players]),
+           self.resources))
 
 
 class Map:
@@ -64,3 +70,25 @@ class Player:
                  "active" if self.active else "inactive",
                  self.total_mass,
                  ", ".join([str(cell) for cell in self.cells])))
+
+
+class Resources:
+    def __init__(self, regular_positions, silver_positions, gold_positions):
+        self.regular = regular_positions
+        self.silver = silver_positions
+        self.gold = gold_positions
+
+    def parse(obj):
+        return Resources(
+                [parse_vec2(pos) for pos in obj["regular"]],
+                [parse_vec2(pos) for pos in obj["silver"]],
+                [parse_vec2(pos) for pos in obj["gold"]]
+                )
+
+    def __str__(self):
+        return ("regular: %d, silver: %d, gold: %d" %
+                (len(self.regular), len(self.silver), len(self.gold)))
+
+
+def parse_vec2(obj):
+    return Vec2(obj["x"], obj["y"])

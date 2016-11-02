@@ -6,6 +6,8 @@ import scala.util.control._
 object Regular {
   final val Max = 250
   final val Min = 100
+
+  // IMPORTANT: keep those values in sync with the client documentation
   final val Mass = 1
   final val Score = 1
 }
@@ -13,6 +15,8 @@ object Regular {
 object Silver {
   final val Max = 25
   final val Min = 12
+
+  // IMPORTANT: keep those values in sync with the client documentation
   final val Mass = 3
   final val Score = 3
 }
@@ -20,6 +24,8 @@ object Silver {
 object Gold {
   final val Max = 10
   final val Min = 5
+
+  // IMPORTANT: keep those values in sync with the client documentation
   final val Mass = 0
   final val Score = 10
 }

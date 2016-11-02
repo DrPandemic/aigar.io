@@ -17,7 +17,7 @@
 ### Game
 State of a game.
 
-Attributes:
+#### Attributes
 - `id`: Identifier of the game
 
 - `tick`: How many updates the game has gone through so far
@@ -33,7 +33,7 @@ Attributes:
 ### Map
 Dimensions of the map the players are on.
 
-Attributes:
+#### Attributes
 - `width`: Width of the map
 
 - `height`: Height of the map
@@ -42,7 +42,7 @@ Attributes:
 Owner and controller of cells in the game. As a programmer of an AI, you are a
 `Player`.
 
-Attributes:
+#### Attributes
 - `id`: Identifier of the player
 
 - `name`: Display name of the player in-game
@@ -55,3 +55,37 @@ Attributes:
             player's AI is inactive for too long, this flag will become `False`
             and a dumb AI will take over the player's cells until the player
             becomes active once again.
+
+### Resources
+Contains the information about the resources available on the map. Collecting
+those resources with a cell results in a potential increase of a cell's mass
+and a player's overall score in the competition.
+
+There are three available resource types:
+| Resource Type | Cell Mass Gain | Player Score Gain |
+| ------------- | -------------- | ----------------- |
+| `regular`     | 1              | 1                 |
+| `silver`      | 3              | 3                 |
+| `gold`        | 0              | 10                |
+
+#### Attributes
+- `regular`: List of positions (`Vec2` objects) for *regular* resources
+
+- `silver`: List of positions (`Vec2` objects) for *silver* resources
+
+- `gold`: List of positions (`Vec2` objects) for *gold* resources
+
+### Vec2
+A 2D vector from the [`planar`](https://pypi.python.org/pypi/planar) Python
+library. Refer to
+[its documentation](http://pythonhosted.org/planar/vectorref.html#planar.Vec2)
+for details.
+
+#### Interesting Methods
+- `distance_to`: Calculates the distance between two `Vec2`s
+
+- `almost_equals`: Check if two `Vec2`s have similar values (helps with
+                   floating point equality comparisons)
+
+- `angle_to`: Gives the smallest angle between two `Vec2`s (can be used to
+              compare the directions of two cells, for example)
