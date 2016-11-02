@@ -104,6 +104,7 @@ class Cell(val id: Int, player: Player, startPosition: Vector2 = new Vector2(0f,
 
   def state: serializable.Cell = {
     serializable.Cell(id,
+                      round(mass).toInt,
                       round(radius).toInt,
                       position.state,
                       target.state)
