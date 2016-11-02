@@ -4,7 +4,8 @@ from planar import Vec2
 class Game:
     RankedGameId = 0
 
-    def __init__(self, id_, tick, players, resources, map_, viruses):
+    def __init__(self, id_, tick, player_id, players,
+                 resources, map_, viruses):
         self.id = id_
         self.tick = tick
         self.players = players
@@ -12,10 +13,14 @@ class Game:
         self.map = map_
         self.viruses = viruses
 
-    def parse(obj):
+        self.me = [player for player in players if player.id == player_id][0]
+        self.enemies = [player for player in players if player.id != player_id]
+
+    def parse(obj, player_id):
         return Game(
                 obj["id"],
                 obj["tick"],
+                player_id,
                 [Player.parse(player) for player in obj["players"]],
                 Resources.parse(obj["resources"]),
                 Map.parse(obj["map"]),

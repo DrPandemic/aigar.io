@@ -15,7 +15,7 @@ class GameTests(TestCase):
                     },
                 "players": [
                     {
-                        "id": "a",
+                        "id": 1,
                         "name": "b",
                         "total_mass": 23,
                         "isActive": True,
@@ -39,7 +39,7 @@ class GameTests(TestCase):
                     }]
                 }
 
-        game = Game.parse(obj)
+        game = Game.parse(obj, 1)
 
         self.assertEqual(12, game.id)
         self.assertEqual(123, game.tick)
@@ -49,7 +49,7 @@ class GameTests(TestCase):
 
         self.assertEqual(1, len(game.players))
         player = game.players[0]
-        self.assertEqual("a", player.id)
+        self.assertEqual(1, player.id)
         self.assertEqual("b", player.name)
         self.assertEqual(23, player.total_mass)
         self.assertEqual(True, player.active)
@@ -73,6 +73,17 @@ class GameTests(TestCase):
         virus = game.viruses[0]
         self.assertEqual(2, virus.mass)
         self.assertTrue(virus.position.almost_equals(Vec2(1, 2)))
+
+    def test_init(self):
+        me = Player(123, "", 0, False, [])
+        others = [
+                Player(222, "", 0, False, []),
+                Player(111, "", 0, False, [])
+                ]
+        game = Game(0, 0, me.id, [me] + others, None, None, [])
+
+        self.assertEqual(me, game.me)
+        self.assertEqual(others, game.enemies)
 
 
 class MapTests(TestCase):
