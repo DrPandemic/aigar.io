@@ -60,7 +60,6 @@ class Cell(val id: Int, player: Player, startPosition: Vector2 = new Vector2(0f,
     position += velocity * deltaSeconds
 
     keepInGrid(grid)
-
   }
 
   def keepInGrid(grid: Grid): Unit = {
