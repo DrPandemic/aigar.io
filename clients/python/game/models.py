@@ -1,6 +1,11 @@
 from planar import Vec2
 
 
+class UnknownPlayerIdException(Exception):
+    def __init__(self, player_id):
+        super().__init__("Unknown Player ID %d" % player_id)
+
+
 class Game:
     RankedGameId = 0
 
@@ -13,7 +18,11 @@ class Game:
         self.map = map_
         self.viruses = viruses
 
-        self.me = [player for player in players if player.id == player_id][0]
+        with_my_id = [player for player in players if player.id == player_id]
+        if not with_my_id:
+            raise UnknownPlayerIdException(player_id)
+        self.me = with_my_id[0]
+
         self.enemies = [player for player in players if player.id != player_id]
 
     def parse(obj, player_id):

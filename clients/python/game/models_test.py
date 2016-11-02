@@ -1,7 +1,8 @@
 from unittest import TestCase
 from planar import Vec2
 
-from .models import Game, Map, Player, Cell, Resources, Virus
+from .models import (Game, Map, Player, Cell, Resources, Virus,
+                     UnknownPlayerIdException)
 
 
 class GameTests(TestCase):
@@ -84,6 +85,15 @@ class GameTests(TestCase):
 
         self.assertEqual(me, game.me)
         self.assertEqual(others, game.enemies)
+
+    def test_init_unknown_player_id(self):
+        unknown_id = 42
+        players = [
+                Player(222, "", 0, False, []),
+                Player(111, "", 0, False, [])
+                ]
+        self.assertRaises(UnknownPlayerIdException, Game,
+                          0, 0, unknown_id, players, None, None, [])
 
 
 class MapTests(TestCase):
