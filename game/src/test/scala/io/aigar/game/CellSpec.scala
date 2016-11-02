@@ -188,6 +188,54 @@ class CellSpec extends FlatSpec with Matchers {
     cell.position.y should be <= 10f
   }
 
+  it should "resets its X velocity when having a collision with the max horizontal boundary" in {
+    val cell = new Cell(1, new Vector2(10, 5))
+    val grid = new Grid(10, 10)
+
+    cell.velocity = new Vector2(15, 5)
+    cell.target = new Vector2(15, 5)
+
+    cell.update(0.005f, grid)
+
+    cell.velocity.x should equal(0)
+  }
+
+  it should "resets its X velocity when having a collision with the min horizontal boundary" in {
+    val cell = new Cell(1, new Vector2(0, 5))
+    val grid = new Grid(10, 10)
+
+    cell.velocity = new Vector2(-5, 5)
+    cell.target = new Vector2(-5, 5)
+
+    cell.update(0.005f, grid)
+
+    cell.velocity.x should equal(0)
+  }
+
+  it should "resets its Y velocity when having a collision with the max vertical boundary" in {
+    val cell = new Cell(1, new Vector2(5, 10))
+    val grid = new Grid(10, 10)
+
+    cell.velocity = new Vector2(5, 15)
+    cell.target = new Vector2(5, 15)
+
+    cell.update(0.005f, grid)
+
+    cell.velocity.y should equal(0)
+  }
+
+  it should "resets its Y velocity when having a collision with the min vertical boundary" in {
+    val cell = new Cell(1, new Vector2(5, 0))
+    val grid = new Grid(10, 10)
+
+    cell.velocity = new Vector2(5, -5)
+    cell.target = new Vector2(5, -5)
+
+    cell.update(0.005f, grid)
+
+    cell.velocity.y should equal(0)
+  }
+
   it should "eat a cell smaller than 90% of its mass when contained in itself" in {
     val largeCell = new Cell(1, new Vector2(10, 10))
     val smallCell = new Cell(2, new Vector2(10, 10))
