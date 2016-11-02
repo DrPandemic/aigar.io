@@ -8,7 +8,11 @@ let currentState;
 async function updateLoop() {
   currentState = await fetchState(0);
   drawGame(currentState, gameCanvas);
+}
+
+function updateLeaderBoard() {
   drawLeaderboard(currentState);
 }
 
 setInterval(updateLoop, 1000/24);
+setInterval(updateLeaderBoard, 1000);
