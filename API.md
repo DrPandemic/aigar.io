@@ -46,6 +46,7 @@ Every error will contain a root element named `error` with an error message.
         {
             "id": "int",
             "mass": "int",
+            "radius": "int",
             "position": {
                 "x": "float",
                 "y": "float"
