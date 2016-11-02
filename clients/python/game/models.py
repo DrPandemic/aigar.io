@@ -93,8 +93,8 @@ class Cell:
 
     def __str__(self):
         return ("#%d (%d) %s -> %s" %
-                self.id, self.mass,
-                format_vec2(self.position), format_vec2(self.target))
+                (self.id, self.mass,
+                 format_vec2(self.position), format_vec2(self.target)))
 
 
 class Resources:
