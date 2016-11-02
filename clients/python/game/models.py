@@ -90,5 +90,9 @@ class Resources:
                 (len(self.regular), len(self.silver), len(self.gold)))
 
 
+def format_vec2(vec2):
+    return "(%d;%d)" % (vec2.x, vec2.y)
+
+
 def parse_vec2(obj):
     return Vec2(obj["x"], obj["y"])
