@@ -1,6 +1,7 @@
 from unittest import TestCase
+from planar import Vec2
 
-from .models import Game, Player, Map
+from .models import Game, Map, Player, Resources
 
 
 class GameTests(TestCase):
@@ -72,3 +73,23 @@ class PlayerTests(TestCase):
         self.assertEqual(42, player.total_mass)
         self.assertEqual(True, player.active)
         # TODO test cell equality here
+
+
+class ResourcesTests(TestCase):
+    def test_parse(self):
+        obj = {
+                "regular": [{"x": 1, "y": 2}],
+                "silver": [{"x": 3, "y": 4}],
+                "gold": [{"x": 5, "y": 6}]
+                }
+
+        resources = Resources.parse(obj)
+
+        self.assertEqual(1, len(resources.regular))
+        self.assertTrue(resources.regular[0].almost_equals(Vec2(1, 2)))
+
+        self.assertEqual(1, len(resources.silver))
+        self.assertTrue(resources.silver[0].almost_equals(Vec2(3, 4)))
+
+        self.assertEqual(1, len(resources.gold))
+        self.assertTrue(resources.gold[0].almost_equals(Vec2(5, 6)))

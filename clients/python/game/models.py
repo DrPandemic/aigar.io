@@ -1,3 +1,6 @@
+from planar import Vec2
+
+
 class Game:
     RankedGameId = 0
 
@@ -64,3 +67,35 @@ class Player:
                  "active" if self.active else "inactive",
                  self.total_mass,
                  ", ".join([str(cell) for cell in self.cells])))
+
+
+class Resources:
+    def __init__(self, regular_positions, silver_positions, gold_positions):
+        self.regular = regular_positions
+        self.silver = silver_positions
+        self.gold = gold_positions
+
+    def parse(obj):
+        return Resources(
+                [parse_vec2(pos) for pos in obj["regular"]],
+                [parse_vec2(pos) for pos in obj["silver"]],
+                [parse_vec2(pos) for pos in obj["gold"]]
+                )
+
+    def __str__(self):
+        return ("regular: %s, silver: %s, gold: %s" %
+                (Resources._format_resources(self.regular),
+                 Resources._format_resources(self.silver),
+                 Resources._format_resources(self.gold)))
+
+    def _format_resources(positions):
+        return ("[%s]" %
+                ",".join([format_vec2(pos) for pos in positions]))
+
+
+def format_vec2(vec2):
+    return "(%d;%d)" % (vec2.x, vec2.y)
+
+
+def parse_vec2(obj):
+    return Vec2(obj["x"], obj["y"])
