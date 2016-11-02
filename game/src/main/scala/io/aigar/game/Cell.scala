@@ -58,6 +58,14 @@ class Cell(val id: Int, player: Player, startPosition: Vector2 = new Vector2(0f,
 
     velocity += acceleration * deltaSeconds
     position += velocity * deltaSeconds
+
+    if (position.x <= 0 || position.x >= grid.width){
+      velocity = new Vector2(0f, velocity.y)
+    }
+    if (position.y <= 0 || position.y >= grid.height){
+      velocity = new Vector2(velocity.x, 0f)
+    }
+    
     position = position.clamp(new Vector2(0f, 0f), new Vector2(grid.width, grid.height))
   }
 
