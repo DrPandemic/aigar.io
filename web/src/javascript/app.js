@@ -10,7 +10,7 @@ async function updateLoop() {
   drawGame(currentState, gameCanvas);
 }
 
-async function updateLeaderBoard() {
+function updateLeaderBoard() {
   drawLeaderboard(currentState);
 }
 

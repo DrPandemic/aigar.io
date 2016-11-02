@@ -142,15 +142,16 @@ function drawMiniMapScreenPos(canvas) {
   miniMapContext.strokeRect(xMiniMapPos, yMiniMapPos, miniMapScreenPosWidth, miniMapScreenPosHeight);
 }
 
-export function setFocusScreen(position){
-  position.x = position.x - (screenWidth/2);
-  position.y = position.y - (screenHeight/2)
-
-  position = keepInsideMap(position, canvasWidth, screenWidth, canvasHeight, screenHeight);
-
-  xScreenPosOnMap = position.x
-  yScreenPosOnMap = position.y
+export function setFocusScreen(position) {
+  let newPosition = {
+    x: position.x - (screenWidth/2),
+    y: position.y - (screenHeight/2)
+  };
+  newPosition = keepInsideMap(newPosition, canvasWidth, screenWidth, canvasHeight, screenHeight);
+  xScreenPosOnMap = newPosition.x;
+  yScreenPosOnMap = newPosition.y;
 }
+
 function changeScreenPos(mousePos) {
   let miniMapPos = {
     x : (mousePos.x - miniMapPosX) - (miniMapScreenPosWidth / 2),
