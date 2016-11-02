@@ -75,6 +75,18 @@ There are three available resource types:
 
 - `gold`: List of positions (`Vec2` objects) for *gold* resources
 
+### Virus
+Dangerous stationary cell on the map that, when eaten, causes the eating cell
+to split (and lose mass).
+
+A `Cell` will explode if it mostly overlaps a virus and has 10% more mass.
+
+#### Attributes
+- `mass`: Mass of the virus.
+          A `Cell` will explode if it is 10% bigger than this.
+
+- `position`: Position (`Vec2` object) of the virus
+
 ### Vec2
 A 2D vector from the [`planar`](https://pypi.python.org/pypi/planar) Python
 library. Refer to
