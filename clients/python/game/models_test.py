@@ -1,7 +1,7 @@
 from unittest import TestCase
 from planar import Vec2
 
-from .models import Game, Map, Player, Resources, Virus
+from .models import Game, Map, Player, Cell, Resources, Virus
 
 
 class GameTests(TestCase):
@@ -91,6 +91,25 @@ class PlayerTests(TestCase):
         self.assertEqual(42, player.total_mass)
         self.assertEqual(True, player.active)
         # TODO test cell equality here
+
+
+class CellTests(TestCase):
+    def test_parse(self):
+        obj = {
+                "id": 1,
+                "mass": 12,
+                "radius": 8,
+                "position": {"x": 1241, "y": 442},
+                "target": {"x": 1448, "y": 1136}
+                }
+
+        cell = Cell.parse(obj)
+
+        self.assertEqual(1, cell.id)
+        self.assertEqual(12, cell.mass)
+        self.assertEqual(8, cell.radius)
+        self.assertTrue(cell.position.almost_equals(Vec2(1241, 442)))
+        self.assertTrue(cell.target.almost_equals(Vec2(1448, 1136)))
 
 
 class ResourcesTests(TestCase):
