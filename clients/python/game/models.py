@@ -74,6 +74,29 @@ class Player:
                  ", ".join([str(cell) for cell in self.cells])))
 
 
+class Cell:
+    def __init__(self, id_, mass, radius, position, target):
+        self.id = id_
+        self.mass = mass
+        self.radius = radius
+        self.position = position
+        self.target = target
+
+    def parse(obj):
+        return Cell(
+                obj["id"],
+                obj["mass"],
+                obj["radius"],
+                parse_vec2(obj["position"]),
+                parse_vec2(obj["target"])
+                )
+
+    def __str__(self):
+        return ("#%d (%d) %s -> %s" %
+                self.id, self.mass,
+                format_vec2(self.position), format_vec2(self.target))
+
+
 class Resources:
     def __init__(self, regular_positions, silver_positions, gold_positions):
         self.regular = regular_positions
