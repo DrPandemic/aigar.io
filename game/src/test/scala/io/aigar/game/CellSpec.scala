@@ -67,7 +67,7 @@ class CellSpec extends FlatSpec with Matchers {
 
     state.id should equal(0)
     state.mass should equal(100)
-    state.radius should equal(cell.radius)
+    state.radius should equal(round(cell.radius).toInt)
   }
 
   it should "Be in the cell" in {
