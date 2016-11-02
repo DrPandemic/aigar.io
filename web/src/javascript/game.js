@@ -2,9 +2,12 @@ import $ from "jquery";
 import * as constants from "./constants";
 import sort from "immutable-sort";
 
+<<<<<<< HEAD
 let canvasWidth = 0;
 let canvasHeight = 0;
 
+=======
+>>>>>>> Adds webworker
 const screenCanvas = $("#screenCanvas")[0];
 const screenContext = screenCanvas.getContext("2d");
 const screenWidth = screenCanvas.width;
@@ -52,9 +55,13 @@ export function createGameCanvas() {
 
 export function initMap(canvas, map) {
   canvas.width = map.width;
+<<<<<<< HEAD
   canvasWidth = map.width;
   canvas.height = map.height;
   canvasHeight = map.height;
+=======
+  canvas.height = map.height;
+>>>>>>> Adds webworker
 
   screenToMapRatioWidth = canvas.width/ screenCanvas.width;
   screenToMapRatioHeight = canvas.height/ screenCanvas.height;
@@ -191,7 +198,7 @@ screenCanvas.onmouseup = function(e) {
 };
 
 screenCanvas.onmousemove = function(e) {
-  if(!mouseIsDown) return;
+  if(!mouseIsDown) return false;
   mouseClick(e);
   return false;
 };
