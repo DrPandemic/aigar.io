@@ -1,7 +1,7 @@
 from unittest import TestCase
 from planar import Vec2
 
-from .models import Game, Map, Player, Resources
+from .models import Game, Map, Player, Resources, Virus
 
 
 class GameTests(TestCase):
@@ -26,8 +26,11 @@ class GameTests(TestCase):
                     "regular": [{"x": 1, "y": 2}],
                     "silver": [{"x": 3, "y": 4}],
                     "gold": [{"x": 5, "y": 6}]
-                    }
-                # TODO add more here
+                    },
+                "viruses": [{
+                    "mass": 2,
+                    "position": {"x": 1, "y": 2}
+                    }]
                 }
 
         game = Game.parse(obj)
@@ -52,7 +55,10 @@ class GameTests(TestCase):
         self.assertEqual(1, len(game.resources.gold))
         self.assertTrue(game.resources.gold[0].almost_equals(Vec2(5, 6)))
 
-        # TODO add more here
+        self.assertEqual(1, len(game.viruses))
+        virus = game.viruses[0]
+        self.assertEqual(2, virus.mass)
+        self.assertTrue(virus.position.almost_equals(Vec2(1, 2)))
 
 
 class MapTests(TestCase):
@@ -105,3 +111,16 @@ class ResourcesTests(TestCase):
 
         self.assertEqual(1, len(resources.gold))
         self.assertTrue(resources.gold[0].almost_equals(Vec2(5, 6)))
+
+
+class VirusTests(TestCase):
+    def test_parse(self):
+        obj = {
+                "mass": 1,
+                "position": {"x": 2, "y": 3}
+                }
+
+        virus = Virus.parse(obj)
+
+        self.assertEqual(1, virus.mass)
+        self.assertTrue(virus.position.almost_equals(Vec2(2, 3)))

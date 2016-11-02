@@ -19,7 +19,7 @@ class Game:
                 [Player.parse(player) for player in obj["players"]],
                 Resources.parse(obj["resources"]),
                 Map.parse(obj["map"]),
-                []     # TODO Virus.parse
+                [Virus.parse(virus) for virus in obj["viruses"]]
                 )
 
     def __str__(self):
@@ -28,10 +28,12 @@ Tick: %d
 Map: %s
 Players:
   %s
+Viruses: [%s]
 Resources:
   %s""" % (self.tick,
            self.map,
            "\n  ".join([str(player) for player in self.players]),
+           ", ".join([str(virus) for virus in self.viruses]),
            self.resources))
 
 
@@ -90,5 +92,24 @@ class Resources:
                 (len(self.regular), len(self.silver), len(self.gold)))
 
 
+class Virus:
+    def __init__(self, mass, position):
+        self.mass = mass
+        self.position = position
+
+    def parse(obj):
+        return Virus(
+                obj["mass"],
+                parse_vec2(obj["position"])
+                )
+
+    def __str__(self):
+        return format_vec2(self.position)
+
+
 def parse_vec2(obj):
     return Vec2(obj["x"], obj["y"])
+
+
+def format_vec2(vec2):
+    return "(%d,%d)" % (vec2.x, vec2.y)
