@@ -63,7 +63,7 @@ class Player:
                 obj["name"],
                 obj["total_mass"],
                 obj["isActive"],
-                []  # TODO Cell.parse
+                [Cell.parse(cell) for cell in obj["cells"]]
                 )
 
     def __str__(self):
