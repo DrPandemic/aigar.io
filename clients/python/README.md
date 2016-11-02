@@ -79,7 +79,8 @@ There are three available resource types:
 Dangerous stationary cell on the map that, when eaten, causes the eating cell
 to split (and lose mass).
 
-A `Cell` will explode if it mostly overlaps a virus and has 10% more mass.
+A `Cell` will explode if it mostly overlaps a virus and has 10% more mass. It
+is safe to hide under a virus if the cell is smaller.
 
 #### Attributes
 - `mass`: Mass of the virus.
