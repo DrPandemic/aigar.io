@@ -17,7 +17,7 @@ before_install:  # see http://stackoverflow.com/a/30496307/395386
     - sudo apt-get update
     - sudo apt-get install python3 python3-pip
 
-install: sudo pip3 install -r clients/python/requirements.txt
+install: pip3 install --user -r clients/python/requirements.txt
 
 script:
     - pushd game && sbt clean test it:test && popd
