@@ -157,7 +157,7 @@ class CellSpec extends FlatSpec with Matchers {
   it should "not go below 0 y" in {
     val player = new Player(0, Vector2(10f, -5f))
     val cell = player.cells.head
-    val grid = new Grid(10, 10);
+    val grid = new Grid(10, 10)
 
     cell.update(1f, grid)
 
@@ -170,7 +170,7 @@ class CellSpec extends FlatSpec with Matchers {
   it should "not go outside grid x boundary" in {
     val player = new Player(0, Vector2(12f, 5f))
     val cell = player.cells.head
-    val grid = new Grid(10, 10);
+    val grid = new Grid(10, 10)
 
     cell.update(1f, grid)
 
@@ -183,7 +183,7 @@ class CellSpec extends FlatSpec with Matchers {
   it should "not go outside grid y boundary" in {
     val player = new Player(0, Vector2(5f, 12f))
     val cell = player.cells.head
-    val grid = new Grid(10, 10);
+    val grid = new Grid(10, 10)
 
     cell.update(1f, grid)
 
@@ -196,7 +196,7 @@ class CellSpec extends FlatSpec with Matchers {
   it should "not go outside two grid boundaries at the same time" in {
     val player = new Player(0, Vector2(15f, 12f))
     val cell = player.cells.head
-    val grid = new Grid(10, 10);
+    val grid = new Grid(10, 10)
 
     cell.update(1f, grid)
 
@@ -207,7 +207,8 @@ class CellSpec extends FlatSpec with Matchers {
   }
 
   it should "resets its X velocity when having a collision with the max horizontal boundary" in {
-    val cell = new Cell(1, new Vector2(10, 5))
+    val player = new Player(1, new Vector2(10, 5))
+    val cell = player.cells.head
     val grid = new Grid(10, 10)
 
     cell.velocity = new Vector2(15, 5)
@@ -219,7 +220,8 @@ class CellSpec extends FlatSpec with Matchers {
   }
 
   it should "resets its X velocity when having a collision with the min horizontal boundary" in {
-    val cell = new Cell(1, new Vector2(0, 5))
+    val player = new Player(1, new Vector2(0, 5))
+    val cell = player.cells.head
     val grid = new Grid(10, 10)
 
     cell.velocity = new Vector2(-5, 5)
@@ -231,7 +233,8 @@ class CellSpec extends FlatSpec with Matchers {
   }
 
   it should "resets its Y velocity when having a collision with the max vertical boundary" in {
-    val cell = new Cell(1, new Vector2(5, 10))
+    val player = new Player(1, new Vector2(5, 10))
+    val cell = player.cells.head
     val grid = new Grid(10, 10)
 
     cell.velocity = new Vector2(5, 15)
@@ -243,7 +246,8 @@ class CellSpec extends FlatSpec with Matchers {
   }
 
   it should "resets its Y velocity when having a collision with the min vertical boundary" in {
-    val cell = new Cell(1, new Vector2(5, 0))
+    val player = new Player(1, new Vector2(5, 0))
+    val cell = player.cells.head
     val grid = new Grid(10, 10)
 
     cell.velocity = new Vector2(5, -5)
