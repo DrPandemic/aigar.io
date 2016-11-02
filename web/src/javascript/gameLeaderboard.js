@@ -1,5 +1,5 @@
 import he from "he";
-import {getPlayerColor, setFocusScreen} from "./drawMap";
+import {getPlayerColor, setFocusScreen} from "./game";
 import sort from "immutable-sort";
 
 export function drawLeaderboard(state) {
