@@ -1,4 +1,4 @@
-import {fetchEntries} from "./leaderboardEntry";
+import {fetchLeaderboardEntries} from "./network";
 import he from "he";
 
 function displayEntries(entries) {
@@ -12,7 +12,7 @@ function displayEntries(entries) {
 }
 
 function fetchAndDisplay() {
-  return fetchEntries()
+  return fetchLeaderboardEntries()
     .then((entries) => {
       displayEntries(entries);
     });
