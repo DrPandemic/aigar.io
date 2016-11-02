@@ -35,7 +35,7 @@ function drawCircle(context, position, radius, color) {
 function writeCellTeamName(playerName, context, position){
   context.fillStyle = constants.textColor;
   context.font = constants.textStyle;
-  context.textAlign="center"; 
+  context.textAlign="center";
   context.textBaseline = "middle";
   context.strokeStyle = constants.textBorderColor;
 
@@ -50,7 +50,7 @@ export function createGameCanvas() {
 export function initMap(canvas, map) {
   canvas.width = map.width;
   canvas.height = map.height;
-  
+
   screenToMapRatioWidth = canvas.width/ screenCanvas.width;
   screenToMapRatioHeight = canvas.height/ screenCanvas.height;
   miniMapScreenPosWidth = miniMapWidth/screenToMapRatioWidth;
@@ -69,7 +69,7 @@ export function drawPlayersOnMap(players, canvas) {
     const color = getPlayerColor(players, player);
     for(const cell of player.cells) {
       drawCircle(context, cell.position, cell.radius, color);
-      writeCellTeamName(player.name, context, cell.position)
+      writeCellTeamName(player.name, context, cell.position);
     }
   }
 }
@@ -84,7 +84,7 @@ export function drawResourcesOnMap(resources, canvas) {
       drawCircle(context, resource, mass, grd);
     }
   };
-  
+
   drawResources(resources.regular, constants.regularColor, constants.regularRGBColor, constants.regularResourceMass);
   drawResources(resources.silver, constants.silverColor, constants.silverRGBColor, constants.resourceMass);
   drawResources(resources.gold, constants.goldColor, constants.goldRGBColor,  constants.resourceMass);
@@ -168,16 +168,14 @@ function mouseClick(e) {
 screenCanvas.onmousedown = function(e) {
   mouseIsDown = true;
   mouseClick(e);
-}
+};
 screenCanvas.onmouseup = function(e) {
   if(mouseIsDown) mouseClick(e);
-    mouseIsDown = false;
-}
+  mouseIsDown = false;
+};
 
 screenCanvas.onmousemove = function(e) {
   if(!mouseIsDown) return;
   mouseClick(e);
   return false;
-}
-
-
+};

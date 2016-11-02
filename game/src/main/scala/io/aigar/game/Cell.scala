@@ -2,9 +2,9 @@ package io.aigar.game
 
 import io.aigar.controller.response.Action
 import scala.math.{max, round, pow}
-import io.aigar.game.Vector2Utils._
-import io.aigar.game.Position2Utils._
-import com.github.jpbetz.subspace._
+import io.aigar.game.Vector2Utils.StateAddon
+import io.aigar.game.Position2Utils.PositionAddon
+import com.github.jpbetz.subspace.Vector2
 import scala.math._
 
 object Cell {
@@ -35,16 +35,16 @@ class Cell(val id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
    * The maximum speed (length of the velocity) for the cell, in units per
    * second.
    */
-  def maxSpeed = {
+  def maxSpeed: Float = {
     50f //TODO depend on mass?
   }
 
-  def velocity = _velocity
-  def velocity_=(vel:Vector2) {
+  def velocity: Vector2 = _velocity
+  def velocity_=(vel:Vector2): Unit = {
     _velocity = if (vel.magnitude < maxSpeed) vel else vel.normalize * maxSpeed
   }
-  def mass = _mass
-  def mass_=(m: Float) {
+  def mass: Float = _mass
+  def mass_=(m: Float): Unit = {
     _mass = max(m, Cell.MinMass)
   }
 
@@ -62,18 +62,18 @@ class Cell(val id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
     position = position.clamp(new Vector2(0f, 0f), new Vector2(grid.width, grid.height))
   }
 
-  def decayedMass(deltaSeconds: Float) = {
+  def decayedMass(deltaSeconds: Float): Float = {
     mass * pow(1f - Cell.MassDecayPerSecond, deltaSeconds).toFloat
   }
 
   def acceleration: Vector2 = {
     val dir = target - position
     val value = Cell.MovementForce / mass
-    return if (dir.magnitude > 0) dir.normalize * value else new Vector2(0f,0f)
+    if (dir.magnitude > 0) dir.normalize * value else new Vector2(0f,0f)
   }
 
   def contains(pos: Vector2): Boolean = {
-    return position.distanceTo(pos) <= radius
+    position.distanceTo(pos) <= radius
   }
 
   def eats(opponents: List[Player]): Unit ={
@@ -91,7 +91,7 @@ class Cell(val id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
     target = action.target.toVector
   }
 
-  def state = {
+  def state: serializable.Cell = {
     serializable.Cell(id,
                       round(radius).toInt,
                       position.state,

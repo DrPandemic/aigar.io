@@ -2,23 +2,23 @@ package io.aigar.game
 
 import io.aigar.controller.response.Action
 import scala.math.round
-import com.github.jpbetz.subspace._
+import com.github.jpbetz.subspace.Vector2
 
 class Player(val id: Int, startPosition: Vector2) {
-  var cells = List(new Cell(0, startPosition))
+  private var currentCellId: Int = 0
+  var cells = List(new Cell(currentCellId, startPosition))
 
-  def update(deltaSeconds: Float, grid: Grid, players: List[Player]) {
+  def update(deltaSeconds: Float, grid: Grid, players: List[Player]): Unit = {
     if ( cells.isEmpty ) {
-      cells = List(new Cell(0, grid.randomPosition))
+      currentCellId += 1
+      cells = List(new Cell(currentCellId, grid.randomPosition))
     }
-    else {
-      val opponents = players.filterNot(_ == this)
-      cells.foreach { _.update(deltaSeconds, grid) }
-      cells.foreach { _.eats(opponents) }
-    }
+    val opponents = players.filterNot(_ == this)
+    cells.foreach { _.update(deltaSeconds, grid) }
+    cells.foreach { _.eats(opponents) }
   }
 
-  def state = {
+  def state: serializable.Player = {
     val mass = round(cells.map(_.mass).sum).toInt
     serializable.Player(id,
                         id.toString,
