@@ -84,7 +84,7 @@ is safe to hide under a virus if the cell is smaller.
 
 #### Attributes
 - `mass`: Mass of the virus.
-          A `Cell` will explode if it is 10% bigger than this.
+          A `Cell` eating the virus will explode if it is 10% bigger than this.
 
 - `position`: Position (`Vec2` object) of the virus
 
