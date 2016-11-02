@@ -21,7 +21,12 @@ class GameTests(TestCase):
                         "isActive": True,
                         "cells": []  # TODO once Cells are implemented
                         }
-                    ]
+                    ],
+                "resources": {
+                    "regular": [{"x": 1, "y": 2}],
+                    "silver": [{"x": 3, "y": 4}],
+                    "gold": [{"x": 5, "y": 6}]
+                    }
                 # TODO add more here
                 }
 
@@ -39,6 +44,13 @@ class GameTests(TestCase):
         self.assertEqual("b", player.name)
         self.assertEqual(23, player.total_mass)
         self.assertEqual(True, player.active)
+
+        self.assertEqual(1, len(game.resources.regular))
+        self.assertTrue(game.resources.regular[0].almost_equals(Vec2(1, 2)))
+        self.assertEqual(1, len(game.resources.silver))
+        self.assertTrue(game.resources.silver[0].almost_equals(Vec2(3, 4)))
+        self.assertEqual(1, len(game.resources.gold))
+        self.assertTrue(game.resources.gold[0].almost_equals(Vec2(5, 6)))
 
         # TODO add more here
 
