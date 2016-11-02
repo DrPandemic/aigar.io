@@ -58,8 +58,8 @@ Owner and controller of cells in the game. As a programmer of an AI, you are a
 
 ### Resources
 Contains the information about the resources available on the map. Collecting
-those resources with a cell results in an increase of a cell's mass and,
-possibly, an increase of the player's overall score in the competition.
+those resources with a cell results in a potential increase of a cell's mass
+and a player's overall score in the competition.
 
 There are three available resource types:
 | Resource Type | Cell Mass Gain | Player Score Gain |
