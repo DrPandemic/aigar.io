@@ -43,15 +43,15 @@ class Player(val id: Int, startPosition: Vector2) {
    * Should be called whenever an external action occurs (e.g. we receive a
    * command coming from the AI of a player).
    */
-  def onExternalAction: Unit = {
-    cells.foreach { _.behavior.onPlayerActivity }
+  def onExternalAction = {
+    cells.foreach { _.aiState.onPlayerActivity }
   }
 
   /**
     * The player is active when there is an active cell.
     */
   def isActive():Boolean = {
-    cells.exists(_.behavior.isActive)
+    cells.exists(_.aiState.isActive)
   }
 
   /**

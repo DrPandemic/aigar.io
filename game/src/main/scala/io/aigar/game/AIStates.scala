@@ -1,14 +1,12 @@
 package io.aigar.game
 
-import io.aigar.controller.response.Action
-import io.aigar.game.Position2Utils._
 import com.github.jpbetz.subspace._
 
 /**
- * Represents a movement behavior of an entity.
+ * Represents an entity's state.
  * This is used to make a cell move on its own (server AI).
  */
-trait SteeringBehavior {
+trait AIState {
   /**
    * Determines what the next target of a cell should be.
    */
@@ -17,10 +15,10 @@ trait SteeringBehavior {
   def isActive: Boolean
 }
 
-class WanderingBehavior(cell: Cell) extends SteeringBehavior {
+class WanderingState(cell: Cell) extends AIState {
   def isActive = false
 
-  var nextTargetTimeLeft = WanderingBehavior.NewTargetDelay
+  var nextTargetTimeLeft = WanderingState.NewTargetDelay
 
   /**
    * Picks a random target. Picks a new one once the previous one is reached.
@@ -29,7 +27,7 @@ class WanderingBehavior(cell: Cell) extends SteeringBehavior {
     nextTargetTimeLeft -= deltaSeconds
 
     if (cell.contains(cell.target) || nextTargetTimeLeft <= 0f) {
-      nextTargetTimeLeft = WanderingBehavior.NewTargetDelay
+      nextTargetTimeLeft = WanderingState.NewTargetDelay
       grid.randomPosition
     } else {
       cell.target
@@ -37,10 +35,10 @@ class WanderingBehavior(cell: Cell) extends SteeringBehavior {
   }
 
   def onPlayerActivity {
-    cell.behavior = new NoBehavior(cell)
+    cell.aiState = new NullState(cell)
   }
 }
-object WanderingBehavior {
+object WanderingState {
   // how long we have to wait to pick a new target (seconds)
   final val NewTargetDelay = 10f
 }
@@ -50,33 +48,33 @@ object WanderingBehavior {
  *
  * Use this when an entity is not controlled by the server.
  */
-class NoBehavior(cell: Cell) extends SteeringBehavior {
-  var inactivityTimeLeft = NoBehavior.MaxInactivitySeconds
+class NullState(cell: Cell) extends AIState {
+  var inactivityTimeLeft = NullState.MaxInactivitySeconds
 
   def isActive = true
 
   def update(deltaSeconds: Float, grid: Grid) = {
     inactivityTimeLeft -= deltaSeconds
     if (inactivityTimeLeft < 0f) {
-      cell.behavior = new WanderingBehavior(cell)
+      cell.aiState = new WanderingState(cell)
     }
 
     cell.target
   }
 
   def onPlayerActivity = {
-    inactivityTimeLeft = NoBehavior.MaxInactivitySeconds
+    inactivityTimeLeft = NullState.MaxInactivitySeconds
   }
 }
-object NoBehavior {
+object NullState {
   final val MaxInactivitySeconds = 2f
 }
 
 
 /**
- * Spy behavior used for testing purposes.
+ * Spy state used for testing purposes.
  */
-class TestBehavior extends SteeringBehavior {
+class TestState extends AIState {
   var updated = false
   var active = false
 

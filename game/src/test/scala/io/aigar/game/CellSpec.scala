@@ -10,8 +10,8 @@ class CellSpec extends FlatSpec with Matchers {
   "A Cell" should "not initiate movement when its target is on itself" in {
     val cell = new Cell(1, new Vector2(42f, 42f))
     cell.target = new Vector2(42f, 42f)
-    cell.behavior = new NoBehavior(cell)
-    val grid = new Grid(100, 100);
+    cell.aiState = new NullState(cell)
+    val grid = new Grid(100, 100)
 
     cell.update(1f, grid)
 
@@ -21,7 +21,7 @@ class CellSpec extends FlatSpec with Matchers {
   it should "move towards its target when it is away from itself" in {
     val cell = new Cell(1, new Vector2(42f, 42f))
     cell.target = new Vector2(1000f, 1000f)
-    val grid = new Grid(100, 100);
+    val grid = new Grid(100, 100)
 
     val initialDistance = cell.position.distanceTo(cell.target)
 
@@ -80,7 +80,7 @@ class CellSpec extends FlatSpec with Matchers {
 
   it should "not move without setting its target" in {
     val cell = new Cell(1, new Vector2(42f, 42f))
-    cell.behavior = new NoBehavior(cell)
+    cell.aiState = new NullState(cell)
     val grid = new Grid(200, 200)
 
     cell.update(1f, grid)
@@ -119,13 +119,13 @@ class CellSpec extends FlatSpec with Matchers {
     cell1.mass should equal(cell2.mass)
   }
 
-  it should "update its behavior on update" in {
+  it should "update its state on update" in {
     val cell = new Cell(1, new Vector2(0f, 0f))
-    cell.behavior = new TestBehavior
+    cell.aiState = new TestState
 
     cell.update(1f, new Grid(0, 0))
 
-    cell.behavior shouldBe 'updated
+    cell.aiState shouldBe 'updated
   }
 
   it should "not go below 0 x" in {
@@ -142,7 +142,7 @@ class CellSpec extends FlatSpec with Matchers {
 
   it should "not go below 0 y" in {
     val cell = new Cell(1, new Vector2(10, -5))
-    val grid = new Grid(10, 10);
+    val grid = new Grid(10, 10)
 
     cell.update(1f, grid)
 
@@ -154,7 +154,7 @@ class CellSpec extends FlatSpec with Matchers {
 
   it should "not go outside grid x boundary" in {
     val cell = new Cell(1, new Vector2(12, 5))
-    val grid = new Grid(10, 10);
+    val grid = new Grid(10, 10)
 
     cell.update(1f, grid)
 
@@ -166,7 +166,7 @@ class CellSpec extends FlatSpec with Matchers {
 
   it should "not go outside grid y boundary" in {
     val cell = new Cell(1, new Vector2(5, 12))
-    val grid = new Grid(10, 10);
+    val grid = new Grid(10, 10)
 
     cell.update(1f, grid)
 
@@ -178,7 +178,7 @@ class CellSpec extends FlatSpec with Matchers {
 
   it should "not go outside two grid boundaries at the same time" in {
     val cell = new Cell(1, new Vector2(12, 12))
-    val grid = new Grid(10, 10);
+    val grid = new Grid(10, 10)
 
     cell.update(1f, grid)
 
@@ -232,7 +232,6 @@ class CellSpec extends FlatSpec with Matchers {
 
   "performAction" should "change target to match the one from the action" in {
     val cell = new Cell(1, new Vector2(12, 12))
-    val grid = new Grid(100, 100);
 
     cell.performAction(Action(0, false, false, false, 0, Position(0f, 10f)))
 
