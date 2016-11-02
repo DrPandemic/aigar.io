@@ -24,10 +24,9 @@ object Cell {
   final val MassDecayPerSecond = 0.005f
 }
 
-class Cell(val id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
+class Cell(val id: Int, player: Player, startPosition: Vector2 = new Vector2(0f, 0f)) {
   var position = startPosition
   var target = startPosition
-  var behavior: SteeringBehavior = new WanderingBehavior(this)
   var _mass = Cell.MinMass
   private var _velocity = new Vector2(0f, 0f)
 
@@ -55,10 +54,22 @@ class Cell(val id: Int, startPosition: Vector2 = new Vector2(0f, 0f)) {
   def update(deltaSeconds: Float, grid: Grid): Unit = {
     mass = decayedMass(deltaSeconds)
 
-    target = behavior.update(deltaSeconds, grid)
+    target = player.aiState.update(deltaSeconds, grid, this)
 
     velocity += acceleration * deltaSeconds
     position += velocity * deltaSeconds
+
+    keepInGrid(grid)
+  }
+
+  def keepInGrid(grid: Grid): Unit = {
+    if (position.x <= 0 || position.x >= grid.width){
+      velocity = new Vector2(0f, velocity.y)
+    }
+    if (position.y <= 0 || position.y >= grid.height){
+      velocity = new Vector2(velocity.x, 0f)
+    }
+
     position = position.clamp(new Vector2(0f, 0f), new Vector2(grid.width, grid.height))
   }
 

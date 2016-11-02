@@ -1,46 +1,44 @@
 package io.aigar.game
 
-import io.aigar.controller.response.Action
-import io.aigar.game.Position2Utils._
-import com.github.jpbetz.subspace._
+import com.github.jpbetz.subspace.Vector2
 
 /**
- * Represents a movement behavior of an entity.
+ * Represents an entity's state.
  * This is used to make a cell move on its own (server AI).
  */
-trait SteeringBehavior {
+trait AIState {
   /**
    * Determines what the next target of a cell should be.
    */
-  def update(deltaSeconds: Float, grid: Grid): Vector2
+  def update(deltaSeconds: Float, grid: Grid, cell: Cell): Vector2
   def onPlayerActivity: Unit
   def isActive: Boolean
 }
 
-class WanderingBehavior(cell: Cell) extends SteeringBehavior {
+class WanderingState(player: Player) extends AIState {
   def isActive = false
 
-  var nextTargetTimeLeft = WanderingBehavior.NewTargetDelay
+  var nextTargetTimeLeft = WanderingState.NewTargetDelay
 
   /**
    * Picks a random target. Picks a new one once the previous one is reached.
    */
-  def update(deltaSeconds: Float, grid: Grid) = {
+  def update(deltaSeconds: Float, grid: Grid, cell: Cell): Vector2 = {
     nextTargetTimeLeft -= deltaSeconds
 
     if (cell.contains(cell.target) || nextTargetTimeLeft <= 0f) {
-      nextTargetTimeLeft = WanderingBehavior.NewTargetDelay
+      nextTargetTimeLeft = WanderingState.NewTargetDelay
       grid.randomPosition
     } else {
       cell.target
     }
   }
 
-  def onPlayerActivity {
-    cell.behavior = new NoBehavior(cell)
+  def onPlayerActivity: Unit = {
+    player.aiState = new NullState(player)
   }
 }
-object WanderingBehavior {
+object WanderingState {
   // how long we have to wait to pick a new target (seconds)
   final val NewTargetDelay = 10f
 }
@@ -50,41 +48,42 @@ object WanderingBehavior {
  *
  * Use this when an entity is not controlled by the server.
  */
-class NoBehavior(cell: Cell) extends SteeringBehavior {
-  var inactivityTimeLeft = NoBehavior.MaxInactivitySeconds
+class NullState(player: Player) extends AIState {
+  var inactivityTimeLeft = NullState.MaxInactivitySeconds
 
   def isActive = true
 
-  def update(deltaSeconds: Float, grid: Grid) = {
+  def update(deltaSeconds: Float, grid: Grid, cell: Cell): Vector2 = {
     inactivityTimeLeft -= deltaSeconds
     if (inactivityTimeLeft < 0f) {
-      cell.behavior = new WanderingBehavior(cell)
+      player.aiState = new WanderingState(player)
     }
 
     cell.target
   }
 
-  def onPlayerActivity = {
-    inactivityTimeLeft = NoBehavior.MaxInactivitySeconds
+  def onPlayerActivity: Unit = {
+    inactivityTimeLeft = NullState.MaxInactivitySeconds
   }
 }
-object NoBehavior {
+object NullState {
   final val MaxInactivitySeconds = 2f
 }
 
 
 /**
- * Spy behavior used for testing purposes.
+ * Spy state used for testing purposes.
  */
-class TestBehavior extends SteeringBehavior {
+class TestState extends AIState {
   var updated = false
   var active = false
 
-  def update(deltaSeconds: Float, grid: Grid) = {
+  def update(deltaSeconds: Float, grid: Grid, cell: Cell): Vector2 = {
     updated = true
     new Vector2(0f, 0f)
   }
-  def onPlayerActivity {
+
+  def onPlayerActivity: Unit = {
     active = true
   }
 

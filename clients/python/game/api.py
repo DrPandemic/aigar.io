@@ -6,8 +6,8 @@ from .models import Game
 class API:
     URL = "http://localhost:1337/api/1/game/"
 
-    def __init__(self, team_secret):
-        self.secret = team_secret
+    def __init__(self, player_secret):
+        self.secret = player_secret
 
     def fetch_game_state(self, game_id):
         """
