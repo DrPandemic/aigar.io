@@ -18,10 +18,11 @@ class Game:
         self.map = map_
         self.viruses = viruses
 
-        with_my_id = [player for player in players if player.id == player_id]
-        if not with_my_id:
+        try:
+            self.me = next(player for player in players
+                           if player.id == player_id)
+        except StopIteration:
             raise UnknownPlayerIdException(player_id)
-        self.me = with_my_id[0]
 
         self.enemies = [player for player in players if player.id != player_id]
 
