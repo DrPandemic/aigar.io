@@ -14,6 +14,7 @@ object Game {
 class Game(val id: Int, playerIDs: List[Int]) {
   val grid = new Grid(playerIDs.length * Grid.WidthPerPlayer, playerIDs.length * Grid.HeightPerPlayer)
   val players = createPlayers
+  val viruses = createViruses
   val resources = new Resources(grid)
   var tick = 0
 
@@ -37,15 +38,19 @@ class Game(val id: Int, playerIDs: List[Int]) {
     serializable.GameState(
         id,
         tick,
-        players.map(_.state).toList,
+        players.map(_.state),
         resources.state,
         grid.state,
-        List[serializable.Position]()
+        viruses.map(_.state)
       )
   }
 
   def createPlayers = {
     playerIDs.map { new Player(_, spawnPosition) }
+  }
+
+  def createViruses: List[Virus] = {
+    List.fill(Virus.Quantity)(new Virus(grid.randomPosition))
   }
 
   def spawnPosition = {
