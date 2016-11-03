@@ -3,7 +3,8 @@ const path = require("path");
 module.exports = {
   entry: {
     app: "./src/javascript/app.js",
-    leaderboardApp: "./src/javascript/leaderboardApp.js"
+    leaderboardApp: "./src/javascript/leaderboardApp.js",
+    gameWebWorker: "./src/javascript/gameWebWorker.js",
   },
   output: {
     path: path.join(__dirname, "dist/web/javascript"),
