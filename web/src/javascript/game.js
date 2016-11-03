@@ -2,12 +2,9 @@ import $ from "jquery";
 import * as constants from "./constants";
 import sort from "immutable-sort";
 
-<<<<<<< HEAD
 let canvasWidth = 0;
 let canvasHeight = 0;
 
-=======
->>>>>>> Adds webworker
 const screenCanvas = $("#screenCanvas")[0];
 const screenContext = screenCanvas.getContext("2d");
 const screenWidth = screenCanvas.width;
@@ -55,13 +52,9 @@ export function createGameCanvas() {
 
 export function initMap(canvas, map) {
   canvas.width = map.width;
-<<<<<<< HEAD
   canvasWidth = map.width;
   canvas.height = map.height;
   canvasHeight = map.height;
-=======
-  canvas.height = map.height;
->>>>>>> Adds webworker
 
   screenToMapRatioWidth = canvas.width/ screenCanvas.width;
   screenToMapRatioHeight = canvas.height/ screenCanvas.height;
@@ -90,10 +83,10 @@ export function drawResourcesOnMap(resources, canvas) {
   const context = canvas.getContext("2d");
   const drawResources = (resources, color, rgba, mass) => {
     for(const resource of resources) {
-      var grd=context.createRadialGradient(resource.x,resource.y, .5, resource.x, resource.y,constants.resourceMass);
-      grd.addColorStop(0,color);
-      grd.addColorStop(1, rgba);
-      drawCircle(context, resource, mass, grd);
+      const grid = context.createRadialGradient(resource.x,resource.y, .5, resource.x, resource.y,constants.resourceMass);
+      grid.addColorStop(0,color);
+      grid.addColorStop(1, rgba);
+      drawCircle(context, resource, mass, grid);
     }
   };
 
