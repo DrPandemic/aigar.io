@@ -204,3 +204,9 @@ export function drawGame(gameState, canvas) {
   drawMap(canvas);
   drawMiniMap(canvas);
 }
+
+export function updateState(lastState, nextState, timestamp) {
+  const currentState = JSON.parse(JSON.stringify(lastState));
+
+  return currentState;
+}

@@ -1,10 +1,14 @@
 import {drawLeaderboard} from "./gameLeaderboard";
-import {drawGame, createGameCanvas} from "./game";
+import {drawGame, createGameCanvas, updateState} from "./game";
 import {gameRefresh, leaderboardRefresh} from "./constants";
 
 const gameCanvas = createGameCanvas();
 
-let currentState;
+let lastState;
+let nextState;
+const nextStates = [];
+let lastTick = (new Date()).valueOf();
+
 const networkWorker = new Worker("javascript/gameWebWorker.bundle.js");
 networkWorker.onmessage = message => {
   // This is to prevent Chrome's GC from deleting the worker.
@@ -12,14 +16,17 @@ networkWorker.onmessage = message => {
   if(!networkWorker) {
     console.error("Got GCed");
   }
-  currentState = message.data;
+  nextStates.push({
+    ...message.data,
+    timestamp: (new Date()).valueOf(),
+  });
 };
 
 async function updateGame() {
   const startTime = (new Date()).getTime();
-  if(currentState) {
-    drawGame(currentState, gameCanvas);
-  }
+
+  const currentState = updateState(prev, next, diff);
+  drawGame(currentState, gameCanvas);
 
   const elapsed = (new Date()).getTime() - startTime;
   setTimeout(updateGame, 1000/gameRefresh - elapsed);
@@ -27,8 +34,8 @@ async function updateGame() {
 
 function updateLeaderBoard() {
   const startTime = (new Date()).getTime();
-  if(currentState) {
-    drawLeaderboard(currentState);
+  if(lastState) {
+    drawLeaderboard(lastState);
   }
 
   const elapsed = (new Date()).getTime() - startTime;

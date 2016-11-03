@@ -34,4 +34,4 @@ export const playerColors = [
 
 export const gameRefresh = 24;
 export const leaderboardRefresh = 1;
-export const networkRefresh = 24;
+export const networkRefresh = 1;

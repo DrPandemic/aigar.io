@@ -19,7 +19,12 @@ module.exports = {
         loader: "babel-loader",
         exclude: /node_modules/,
         query: {
-          plugins: ["transform-runtime", "syntax-async-functions", "transform-regenerator"],
+          plugins: [
+            "transform-runtime",
+            "syntax-async-functions",
+            "transform-regenerator",
+            "transform-object-rest-spread",
+          ],
           presets: ["es2015"]
         }
       }
