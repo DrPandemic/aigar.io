@@ -20,6 +20,7 @@ class Game(val id: Int, playerIDs: List[Int]) {
 
   def update(deltaSeconds: Float): List[ScoreModification] = {
     players.foreach { player => player.update(deltaSeconds, grid, players) }
+    viruses.foreach { virus => virus.update(grid, players) }
     val scoreModifications = resources.update(players)
     tick += 1
 
