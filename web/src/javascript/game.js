@@ -83,10 +83,10 @@ export function drawResourcesOnMap(resources, canvas) {
   const context = canvas.getContext("2d");
   const drawResources = (resources, color, rgba, mass) => {
     for(const resource of resources) {
-      var grd=context.createRadialGradient(resource.x,resource.y, .5, resource.x, resource.y,constants.resourceMass);
-      grd.addColorStop(0,color);
-      grd.addColorStop(1, rgba);
-      drawCircle(context, resource, mass, grd);
+      const grid = context.createRadialGradient(resource.x,resource.y, .5, resource.x, resource.y,constants.resourceMass);
+      grid.addColorStop(0,color);
+      grid.addColorStop(1, rgba);
+      drawCircle(context, resource, mass, grid);
     }
   };
 
@@ -191,7 +191,7 @@ screenCanvas.onmouseup = function(e) {
 };
 
 screenCanvas.onmousemove = function(e) {
-  if(!mouseIsDown) return;
+  if(!mouseIsDown) return false;
   mouseClick(e);
   return false;
 };
