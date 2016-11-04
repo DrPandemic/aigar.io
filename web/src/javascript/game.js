@@ -205,8 +205,11 @@ export function drawGame(gameState, canvas) {
   drawMiniMap(canvas);
 }
 
-export function updateState(lastState, nextState, timestamp) {
-  const currentState = JSON.parse(JSON.stringify(lastState));
+export function interpolateState(prev, next, ratio) {
+  if(ratio <= 0) return prev;
+  if(ratio >= 1) return next;
 
-  return currentState;
+  const current = JSON.parse(JSON.stringify(prev));
+
+  return current;
 }
