@@ -2,6 +2,7 @@ package io.aigar.game
 
 import com.github.jpbetz.subspace.Vector2
 import io.aigar.game.serializable.Position
+import io.aigar.game.Vector2Utils.StateAddon
 
 object Virus {
   final val Quantity = 15
@@ -45,6 +46,6 @@ class Virus(var position: Vector2) {
   }
 
   def state: Position = {
-    Vector2Utils.StateAddon(position).state
+    position.state
   }
 }
