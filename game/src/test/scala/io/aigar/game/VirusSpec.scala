@@ -20,7 +20,7 @@ class VirusSpec extends FlatSpec with Matchers {
     cell.mass = 80
     player.cells = List(cell)
 
-    virus.detectCollisions(List(player)) shouldBe false
+    virus.detectCollisions(List(player)) equals None
   }
 
   it should "detect a collision when being into a larger cell" in {
@@ -31,7 +31,7 @@ class VirusSpec extends FlatSpec with Matchers {
     cell.mass = 120
     player.cells = List(cell)
 
-    virus.detectCollisions(List(player)) shouldBe true
+    virus.detectCollisions(List(player)) equals Some(Cell)
   }
 
   it should "not respawn on a cell" in {

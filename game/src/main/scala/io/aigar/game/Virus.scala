@@ -10,22 +10,24 @@ object Virus {
 
 class Virus(var position: Vector2) {
   def update(grid: Grid, players: List[Player]): Unit = {
-    if(detectCollisions(players)) {
+    val cell = detectCollisions(players)
+     cell match {
       // TODO Add the virus consumption into the cell
-      respawn(grid, players)
+      case Some(c: Cell) => respawn(grid, players)
+      case _ =>
     }
   }
 
-  def detectCollisions(players: List[Player]): Boolean ={
+  def detectCollisions(players: List[Player]): Option[Cell] ={
     for(player <- players) {
       for(cell <- player.cells) {
         // TODO Change the 1.1 value to the constant
         if(cell.contains(position) && cell.mass > Virus.Mass * 1.1){
-          return true
+          return Some(cell)
         }
       }
     }
-    false
+    None
   }
 
   def respawn(grid: Grid, players: List[Player]): Unit = {
