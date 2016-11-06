@@ -9,7 +9,6 @@ object Virus {
 }
 
 class Virus(var position: Vector2) {
-
   def update(grid: Grid, players: List[Player]): Unit = {
     if(detectCollisions(players)) {
       // TODO Add the virus consumption into the cell
@@ -30,15 +29,14 @@ class Virus(var position: Vector2) {
   }
 
   def respawn(grid: Grid, players: List[Player]): Unit = {
-    val newPosition = grid.randomPosition
+    val listPositions = players.map { _.cells.map { _.position} }
+    var newPosition = grid.randomPosition
 
-    // We always want 15 viruses. How to we manage it without doing a while true loop?
-    for (player <- players) {
-      for (cell <- player.cells) {
-        if (cell.contains(newPosition)) return
+    1 to 15 foreach { _ =>
+      if (listPositions.contains(newPosition)) {
+        newPosition = grid.randomPosition
       }
     }
-
     position = newPosition
   }
 
