@@ -29,12 +29,14 @@ class Virus(var position: Vector2) {
   }
 
   def respawn(grid: Grid, players: List[Player]): Unit = {
-    val listPositions = players.map { _.cells.map { _.position} }
     var newPosition = grid.randomPosition
 
     1 to 15 foreach { _ =>
-      if (listPositions.contains(newPosition)) {
-        newPosition = grid.randomPosition
+      for (player <- players) {
+        for (cell <- player.cells) {
+          if (cell.contains(position))
+            newPosition = grid.randomPosition
+        }
       }
     }
     position = newPosition

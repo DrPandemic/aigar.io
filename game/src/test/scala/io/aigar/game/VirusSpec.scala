@@ -33,4 +33,19 @@ class VirusSpec extends FlatSpec with Matchers {
 
     virus.detectCollisions(List(player)) shouldBe true
   }
+
+  it should "not respawn on a cell" in {
+    val grid = new Grid(1000, 1000)
+    val initialPosition = new Vector2(5, 5)
+    val virus = new Virus(initialPosition)
+    val player = new Player(1, initialPosition)
+    val cell = new Cell(1, player, initialPosition)
+
+    cell.mass = 200
+    player.cells = List(cell)
+
+    virus.respawn(grid, List(player))
+
+    virus.position should not be initialPosition
+  }
 }
