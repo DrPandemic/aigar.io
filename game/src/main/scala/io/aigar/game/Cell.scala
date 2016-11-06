@@ -26,7 +26,7 @@ object Cell {
   /**
     * Ratio of impact of the mass on the acceleration.
     */
-  final val MassImpactOnAcceleration = 0.666f
+  final val MassImpactOnAcceleration = 0.75f
 }
 
 class Cell(val id: Int, player: Player, startPosition: Vector2 = new Vector2(0f, 0f)) {
