@@ -1,8 +1,9 @@
 from time import sleep
 import json
 import sys
+from planar import Vec2
 
-from game.api import API
+from game.api import API, CellActions
 from game.models import Game
 from ai import step
 
@@ -21,7 +22,8 @@ def main():
 
         step(game)
 
-        # TODO send actions here
+        api.send_actions(game_id,
+                         [CellActions(1, Vec2(0, 0), False, False, False, 0)])
 
         sleep(1 / UpdatesPerSecond)
 

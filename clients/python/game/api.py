@@ -1,4 +1,4 @@
-from requests import get
+from requests import get, post
 
 from .models import Game
 
@@ -17,12 +17,37 @@ class API:
         :param game_id: ID of a game
         :returns:       Game object
         """
-        response = get(API.URL + str(game_id))
+        response = get("%s%d" % (API.URL, game_id))
         data = self._extract_data(response)
         return Game.parse(data, self.player_id)
+
+    def send_actions(self, game_id, cell_actions):
+        data = {
+                "player_secret": self.secret,
+                "actions": [{
+                    "cell_id": actions.cell_id,
+                    "burst": actions.burst,
+                    "split": actions.split,
+                    "feed": actions.feed,
+                    "trade": actions.trade,
+                    "target": {"x": actions.target.x, "y": actions.target.y}
+                    } for actions in cell_actions]
+                }
+
+        post("%s%d/action" % (API.URL, game_id), json=data)
 
     def _extract_data(self, response):
         """
         Extracts the application data from a requests Response object.
         """
         return response.json()["data"]
+
+
+class CellActions:
+    def __init__(self, cell_id, target, burst, split, feed, trade):
+        self.cell_id = cell_id
+        self.target = target
+        self.burst = burst
+        self.split = split
+        self.feed = feed
+        self.trade = trade
