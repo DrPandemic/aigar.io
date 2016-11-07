@@ -23,7 +23,7 @@ class API:
 
     def send_actions(self, game_id, cell_actions):
         data = {
-                "player_secret": self.secret,
+                "player_secret": self.player_secret,
                 "actions": [{
                     "cell_id": actions.cell_id,
                     "burst": actions.burst,

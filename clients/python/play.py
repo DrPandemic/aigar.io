@@ -23,7 +23,8 @@ def main():
         step(game)
 
         api.send_actions(game_id,
-                         [CellActions(1, Vec2(0, 0), False, False, False, 0)])
+                         [CellActions(game.me.cells[0].id,
+                          Vec2(0, 0), False, False, False, 0)])
 
         sleep(1 / UpdatesPerSecond)
 
