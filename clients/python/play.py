@@ -4,6 +4,7 @@ import sys
 
 from game.api import API
 from game.models import Game
+from ai import step
 
 
 UpdatesPerSecond = 3  # how many times we should contact the server per second
@@ -18,8 +19,9 @@ def main():
     while True:
         game = api.fetch_game_state(game_id)
 
-        # TODO call player AI here
-        print(str(game))
+        step(game)
+
+        # TODO send actions here
 
         sleep(1 / UpdatesPerSecond)
 
