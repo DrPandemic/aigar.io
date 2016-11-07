@@ -56,10 +56,39 @@ Owner and controller of cells in the game. As a programmer of an AI, you are a
             and a dumb AI will take over the player's cells until the player
             becomes active once again.
 
+### Cell
+Individual entity controlled by a `Player`. Through movement, it can consume
+resources and enemy cells to grow. It loses a portion of its mass over time.
+
+A cell can be moved by changing its `target`.
+
+To collect a resource, a cell must collide with it.
+
+To eat an enemy cell, a cell must almost completely overlap its enemy and be
+10% bigger than it.
+
+#### Attributes
+- `id`: Identifier of the cell
+
+- `mass`: Mass of the cell.
+          The bigger the mass, the bigger the cell, the slower the cell can move
+          or accelerate.
+          Mass decays over time (by a ratio of the current mass).
+
+- `radius`: Radius of the cell, influenced by its current mass
+
+- `position`: Current position (`Vec2` object) of the cell in the `Map`
+
+- `target`: Target (`Vec2` object) that the cell should go for.
+            Move the cell by changing this value.
+
+
 ### Resources
 Contains the information about the resources available on the map. Collecting
 those resources with a cell results in a potential increase of a cell's mass
 and a player's overall score in the competition.
+
+To collect a resource, a `Cell` must collide with it.
 
 There are three available resource types:
 | Resource Type | Cell Mass Gain | Player Score Gain |

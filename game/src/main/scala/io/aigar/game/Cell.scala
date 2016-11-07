@@ -22,6 +22,13 @@ object Cell {
    * Ratio of mass lost per second.
    */
   final val MassDecayPerSecond = 0.005f
+
+  /**
+   * How much bigger a cell must be to eat an enemy cell (ratio).
+   *
+   * IMPORTANT keep this value in sync with the client documentation
+   */
+  final val MassDominanceRatio = 1.1f
 }
 
 class Cell(val id: Int, player: Player, startPosition: Vector2 = new Vector2(0f, 0f)) {
@@ -90,7 +97,7 @@ class Cell(val id: Int, player: Player, startPosition: Vector2 = new Vector2(0f,
   def eats(opponents: List[Player]): Unit ={
     for(opponent <- opponents) {
       for(cell <- opponent.cells) {
-        if (contains(cell.position) && mass >= 1.1 * cell.mass) { //Cell must be 10% larger to eat it
+        if (contains(cell.position) && mass >= Cell.MassDominanceRatio * cell.mass) {
           mass = mass + cell.mass
           opponent.removeCell(cell)
         }

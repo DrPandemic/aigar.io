@@ -1,7 +1,7 @@
 from unittest import TestCase
 from planar import Vec2
 
-from .models import Game, Map, Player, Resources, Virus
+from .models import Game, Map, Player, Cell, Resources, Virus
 
 
 class GameTests(TestCase):
@@ -19,7 +19,13 @@ class GameTests(TestCase):
                         "name": "b",
                         "total_mass": 23,
                         "isActive": True,
-                        "cells": []  # TODO once Cells are implemented
+                        "cells": [{
+                            "id": 1,
+                            "mass": 2,
+                            "radius": 3,
+                            "position": {"x": 1, "y": 2},
+                            "target": {"x": 3, "y": 4}
+                            }]
                         }
                     ],
                 "resources": {
@@ -47,6 +53,14 @@ class GameTests(TestCase):
         self.assertEqual("b", player.name)
         self.assertEqual(23, player.total_mass)
         self.assertEqual(True, player.active)
+
+        self.assertEqual(1, len(player.cells))
+        cell = player.cells[0]
+        self.assertEqual(1, cell.id)
+        self.assertEqual(2, cell.mass)
+        self.assertEqual(3, cell.radius)
+        self.assertTrue(cell.position.almost_equals(Vec2(1, 2)))
+        self.assertTrue(cell.target.almost_equals(Vec2(3, 4)))
 
         self.assertEqual(1, len(game.resources.regular))
         self.assertTrue(game.resources.regular[0].almost_equals(Vec2(1, 2)))
@@ -81,7 +95,13 @@ class PlayerTests(TestCase):
                 "name": "alice",
                 "total_mass": 42,
                 "isActive": True,
-                "cells": {}  # TODO once Cells are implemented
+                "cells": [{
+                    "id": 1,
+                    "mass": 2,
+                    "radius": 3,
+                    "position": {"x": 1, "y": 2},
+                    "target": {"x": 3, "y": 4}
+                    }]
                 }
 
         player = Player.parse(obj)
@@ -90,7 +110,33 @@ class PlayerTests(TestCase):
         self.assertEqual("alice", player.name)
         self.assertEqual(42, player.total_mass)
         self.assertEqual(True, player.active)
-        # TODO test cell equality here
+
+        self.assertEqual(1, len(player.cells))
+        cell = player.cells[0]
+        self.assertEqual(1, cell.id)
+        self.assertEqual(2, cell.mass)
+        self.assertEqual(3, cell.radius)
+        self.assertTrue(cell.position.almost_equals(Vec2(1, 2)))
+        self.assertTrue(cell.target.almost_equals(Vec2(3, 4)))
+
+
+class CellTests(TestCase):
+    def test_parse(self):
+        obj = {
+                "id": 1,
+                "mass": 12,
+                "radius": 8,
+                "position": {"x": 1241, "y": 442},
+                "target": {"x": 1448, "y": 1136}
+                }
+
+        cell = Cell.parse(obj)
+
+        self.assertEqual(1, cell.id)
+        self.assertEqual(12, cell.mass)
+        self.assertEqual(8, cell.radius)
+        self.assertTrue(cell.position.almost_equals(Vec2(1241, 442)))
+        self.assertTrue(cell.target.almost_equals(Vec2(1448, 1136)))
 
 
 class ResourcesTests(TestCase):
