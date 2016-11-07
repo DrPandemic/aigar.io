@@ -4,8 +4,9 @@
 
 ## Setup
 1. `pip install -r ./requirements.txt`
-2. Rename `player.default.json` to `player.json` and replace the
-   `player_secret` by the value that was given to you by the organiser
+2. Rename `player.default.json` to `player.json` and replace
+   `player_id` and `player_secret` by the values that were given to you by the
+   organisers
 
 ## Joining the Ranked Game
 `python ./play.py`
