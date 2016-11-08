@@ -24,7 +24,7 @@ object Cell {
   final val MassDecayPerSecond = 0.005f
 
   /**
-    * Ratio of impact of the mass on the acceleration.
+    * Exponent used on the mass when calculating the acceleration of a cell.
     */
   final val MassImpactOnAcceleration = 0.75f
 }
