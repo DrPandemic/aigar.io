@@ -17,10 +17,11 @@ class VirusSpec extends FlatSpec with Matchers {
     val player = new Player(1, new Vector2(5, 5))
     val cell = new Cell(1, player, new Vector2(5, 5))
 
-    cell.mass = 80
+    // We make sure the cell is small enough so it doesn't eat the virus
+    cell.mass = Virus.Mass / Cell.MassDominanceRatio - 1
     player.cells = List(cell)
 
-    virus.detectCollisions(List(player)) equals None
+    virus.detectCollisions(List(player))should equal(None)
   }
 
   it should "detect a collision when being into a larger cell" in {
@@ -28,10 +29,11 @@ class VirusSpec extends FlatSpec with Matchers {
     val player = new Player(1, new Vector2(5, 5))
     val cell = new Cell(1, player, new Vector2(5, 5))
 
-    cell.mass = 120
+    // We make sure the cell is big enough to eat the virus
+    cell.mass = Virus.Mass * Cell.MassDominanceRatio + 1
     player.cells = List(cell)
 
-    virus.detectCollisions(List(player)) equals Some(Cell)
+    virus.detectCollisions(List(player)) should equal(Some(cell))
   }
 
   it should "not respawn on a cell" in {
