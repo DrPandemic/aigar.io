@@ -35,7 +35,9 @@ object Cell {
     */
   final val MassImpactOnAcceleration = 0.75f
 
-  final val MinSpeed = 25f
+  final val MinMaximumSpeed = 25f
+  final val MaxMaximumSpeed = 50f
+  final val SpeedLimitReductionPerMassUnit = 0.002f
 }
 
 class Cell(val id: Int, player: Player, startPosition: Vector2 = new Vector2(0f, 0f)) {
@@ -49,7 +51,8 @@ class Cell(val id: Int, player: Player, startPosition: Vector2 = new Vector2(0f,
    * second.
    */
   def maxSpeed: Float = {
-    max(50f - mass*0.002, Cell.MinSpeed).toFloat
+    max(Cell.MaxMaximumSpeed - mass*Cell.SpeedLimitReductionPerMassUnit,
+      Cell.MinMaximumSpeed)
   }
 
   def velocity: Vector2 = _velocity

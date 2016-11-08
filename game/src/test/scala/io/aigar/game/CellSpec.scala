@@ -58,14 +58,29 @@ class CellSpec extends FlatSpec with Matchers {
     small.acceleration.magnitude should be > big.acceleration.magnitude
   }
 
+  it should "not move slower than the minimal speed limit, no matter what its mass is" in {
+    val player = new Player(0, Vector2(0f, 0f))
+    val small = new Cell(1, player)
+    small.target = new Vector2(100f, 100f)
+    val big = new Cell(2, player)
+    big.target = new Vector2(100f, 100f)
+    player.cells = List(small, big)
+
+    small.mass = Cell.MinMass
+    big.mass = 100 * Cell.MinMass
+
+    small.maxSpeed should be > big.maxSpeed
+  }
+
   it should "not move slower than the minimal speed no matter its mass" in {
     val player = new Player(0, Vector2(0f, 0f))
     val big = new Cell(2, player)
     player.cells = List(big)
 
-    big.mass = 10000 * Cell.MinMass
+    // This makes sure that the mass is big enough to have the MinMaximumSpeed
+    big.mass = Cell.MinMaximumSpeed / Cell.SpeedLimitReductionPerMassUnit
 
-    big.maxSpeed should be >= Cell.MinSpeed
+    big.maxSpeed shouldEqual Cell.MinMaximumSpeed
   }
 
   it should "return a state with the right info" in {
