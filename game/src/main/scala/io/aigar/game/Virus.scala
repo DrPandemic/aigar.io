@@ -7,6 +7,7 @@ import io.aigar.game.Vector2Utils.StateAddon
 object Virus {
   final val Quantity = 15
   final val Mass = 100
+  final val RespawnRetryAttempts = 15
 }
 
 class Virus(var position: Vector2) {
@@ -23,7 +24,7 @@ class Virus(var position: Vector2) {
     for(player <- players) {
       for(cell <- player.cells) {
         // TODO Change the 1.1 value to the constant
-        if(cell.contains(position) && cell.mass > Virus.Mass * 1.1){
+        if(cell.contains(position) && cell.mass > Virus.Mass * Cell.MassDominanceRatio){
           return Some(cell)
         }
       }
@@ -34,7 +35,7 @@ class Virus(var position: Vector2) {
   def respawn(grid: Grid, players: List[Player]): Unit = {
     var newPosition = grid.randomPosition
 
-    1 to 15 foreach { _ =>
+    1 to Virus.RespawnRetryAttempts foreach { _ =>
       for (player <- players) {
         for (cell <- player.cells) {
           if (cell.contains(position))
