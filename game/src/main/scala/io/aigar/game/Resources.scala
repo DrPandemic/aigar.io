@@ -37,8 +37,7 @@ class Resources(grid: Grid) {
   var resourceTypes = List(regular, silver, gold)
 
   def update(players: List[Player]): List[ScoreModification] = {
-    val scoreModifications = resourceTypes.map(_.detectCollisions(players))
-      .flatten
+    val scoreModifications = resourceTypes.flatten(_.detectCollisions(players))
     resourceTypes.foreach(_.spawnResources(players))
 
     scoreModifications
@@ -60,7 +59,7 @@ class ResourceType(grid: Grid, val min: Int, val max: Int, mass: Int, score: Int
     val ratio = (positions.length - min).toFloat / (max - min)
 
     if (scala.util.Random.nextFloat >= ratio) {
-      var position = grid.randomPosition
+      val position = grid.randomPosition
       for (player <- players) {
         for (cell <- player.cells) {
           if (cell.contains(position)) return
