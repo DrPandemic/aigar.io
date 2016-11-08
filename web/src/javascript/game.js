@@ -68,13 +68,13 @@ export function getPlayerColor(players, currentPlayer) {
   return constants.playerColors[playerPosition];
 }
 
-export function drawPlayersOnMap(players, canvas, names) {
+export function drawPlayersOnMap(players, canvas, drawNames) {
   const context = canvas.getContext("2d");
   for(const player of players) {
     const color = getPlayerColor(players, player);
     for(const cell of player.cells) {
       drawCircle(context, cell.position, cell.radius, color);
-      if (names) writeCellTeamName(player.name, context, cell.position);
+      if (drawNames) writeCellTeamName(player.name, context, cell.position);
     }
   }
 }
