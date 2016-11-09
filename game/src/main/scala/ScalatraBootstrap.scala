@@ -10,11 +10,16 @@ class ScalatraBootstrap extends LifeCycle {
   var playerRepository: PlayerRepository = null
   var game: GameThread = null
   var scoreThread: ScoreThread = null
+  final val adminPassword = (new scala.util.Random(new java.security.SecureRandom())).alphanumeric.take(28).mkString
+  final val path = "/api/1"
 
   override def init(context: ServletContext): Unit = {
     appInit()
 
-    val path = "/api/1"
+    println("****************************")
+    println("***Administrator password***")
+    println(adminPassword)
+    println("****************************")
     context.mount(new LeaderboardController(playerRepository), s"$path/leaderboard/*")
     context.mount(new GameController(game, playerRepository), s"$path/game/*")
   }
