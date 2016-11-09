@@ -10,43 +10,48 @@ object Virus {
   final val RespawnRetryAttempts = 15
 }
 
-class Virus(var position: Vector2) {
+class Virus(spawnPosition: Vector2) extends Entity {
+  position = spawnPosition
+  mass = Virus.Mass
+
+  def state: Position = {
+    position.state
+  }
+}
+
+class Viruses(grid: Grid) extends EntityContainer {
+  var viruses = List.fill(Virus.Quantity)(new Virus(grid.randomPosition))
+
   def update(grid: Grid, players: List[Player]): Unit = {
-    val cell = detectCollisions(players)
-     cell match {
-      // TODO Add the virus consumption into the cell
-      case Some(c: Cell) => respawn(grid, players)
-      case _ =>
+
+    detectCollisions(players)
+
+    if(viruses.size < Virus.Quantity) {
+      val position = respawn(grid, players, Virus.RespawnRetryAttempts)
+
+      position match {
+        case Some(position) => viruses :::= List(new Virus(position))
+        case _ =>
+      }
     }
   }
 
   def detectCollisions(players: List[Player]): Option[Cell] ={
-    for(player <- players) {
-      for(cell <- player.cells) {
-        // TODO Change the 1.1 value to the constant
-        if(cell.contains(position) && cell.mass > Virus.Mass * Cell.MassDominanceRatio){
-          return Some(cell)
+    for(virus <- viruses){
+      for(player <- players) {
+        for(cell <- player.cells) {
+          if(cell.contains(virus.position) && cell.mass > Virus.Mass * Cell.MassDominanceRatio){
+            // TODO : Split cell
+            viruses = viruses diff List(virus)
+            return Some(cell)
+          }
         }
       }
     }
     None
   }
 
-  def respawn(grid: Grid, players: List[Player]): Unit = {
-    var newPosition = grid.randomPosition
-
-    1 to Virus.RespawnRetryAttempts foreach { _ =>
-      for (player <- players) {
-        for (cell <- player.cells) {
-          if (cell.contains(position))
-            newPosition = grid.randomPosition
-        }
-      }
-    }
-    position = newPosition
-  }
-
-  def state: Position = {
-    position.state
+  def state: List[Position] = {
+    viruses.map(_.state)
   }
 }
