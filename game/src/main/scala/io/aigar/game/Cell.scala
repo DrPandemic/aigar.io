@@ -29,6 +29,11 @@ object Cell {
    * IMPORTANT keep this value in sync with the client documentation
    */
   final val MassDominanceRatio = 1.1f
+
+  /**
+    * Exponent used on the mass when calculating the acceleration of a cell.
+    */
+  final val MassImpactOnAcceleration = 0.75f
 }
 
 class Cell(val id: Int, player: Player, startPosition: Vector2 = new Vector2(0f, 0f)) {
@@ -55,7 +60,7 @@ class Cell(val id: Int, player: Player, startPosition: Vector2 = new Vector2(0f,
   }
 
   def radius: Double = {
-    sqrt(mass * Pi)
+    4 + sqrt(mass) * 3
   }
 
   def update(deltaSeconds: Float, grid: Grid): Unit = {
@@ -86,7 +91,7 @@ class Cell(val id: Int, player: Player, startPosition: Vector2 = new Vector2(0f,
 
   def acceleration: Vector2 = {
     val dir = target - position
-    val value = Cell.MovementForce / mass
+    val value = Cell.MovementForce / pow(mass, Cell.MassImpactOnAcceleration).toFloat
     if (dir.magnitude > 0) dir.normalize * value else new Vector2(0f,0f)
   }
 
@@ -111,7 +116,7 @@ class Cell(val id: Int, player: Player, startPosition: Vector2 = new Vector2(0f,
 
   def state: serializable.Cell = {
     serializable.Cell(id,
-                      round(mass).toInt,
+                      round(mass),
                       round(radius).toInt,
                       position.state,
                       target.state)

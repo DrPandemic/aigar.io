@@ -40,7 +40,7 @@ class AIStateSpec extends FlatSpec with Matchers {
   "WanderingState" should "keep the current cell's target on creation" in {
     val player = new Player(0, Vector2(0f, 0f))
     val cell = player.cells.head
-    cell.target = Vector2(10f, 10f)
+    cell.target = Vector2(100f, 100f)
     player.aiState = new WanderingState(player)
 
     val target = player.aiState.update(1f, new Grid(0, 0), cell)
