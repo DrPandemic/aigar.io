@@ -97,6 +97,17 @@ class Cell:
         self.position = position
         self.target = target
 
+        self._actions = CellActions(self.id)
+
+    def split(self):
+        self._actions.split = True
+
+    def burst(self):
+        self._actions.burst = True
+
+    def trade(self, quantity):
+        self._actions.trade = quantity
+
     def parse(obj):
         return Cell(
                 obj["id"],
@@ -110,6 +121,14 @@ class Cell:
         return ("#%d (%d) %s -> %s" %
                 (self.id, self.mass,
                  format_vec2(self.position), format_vec2(self.target)))
+
+    def actions(self):
+        actions = self._actions
+        actions.target = self.target
+
+        self._actions = CellActions(self.id)
+
+        return actions
 
 
 class Resources:
@@ -143,6 +162,15 @@ class Virus:
 
     def __str__(self):
         return format_vec2(self.position)
+
+
+class CellActions:
+    def __init__(self, cell_id):
+        self.cell_id = cell_id
+        self.target = None
+        self.burst = False
+        self.split = False
+        self.trade = 0
 
 
 def parse_vec2(obj):

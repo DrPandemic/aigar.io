@@ -40,12 +40,3 @@ class API:
         Extracts the application data from a requests Response object.
         """
         return response.json()["data"]
-
-
-class CellActions:
-    def __init__(self, cell_id, target, burst, split, trade):
-        self.cell_id = cell_id
-        self.target = target
-        self.burst = burst
-        self.split = split
-        self.trade = trade
