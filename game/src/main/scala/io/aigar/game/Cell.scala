@@ -42,11 +42,11 @@ object Cell {
   final val SpeedLimitReductionPerMassUnit = 0.002f
 }
 
-class Cell(val id: Int, player: Player, startPosition: Vector2 = new Vector2(0f, 0f)) {
-  var position = startPosition
-  var target = startPosition
-  var _mass = Cell.MinMass
+class Cell(val id: Int, player: Player, startPosition: Vector2 = new Vector2(0f, 0f)) extends Entity {
   private var _velocity = new Vector2(0f, 0f)
+  var target = startPosition
+  position = startPosition
+  _mass = Cell.MinMass
 
   /**
    * The maximum speed (length of the velocity) for the cell, in units per
@@ -61,8 +61,8 @@ class Cell(val id: Int, player: Player, startPosition: Vector2 = new Vector2(0f,
   def velocity_=(vel:Vector2): Unit = {
     _velocity = if (vel.magnitude < maxSpeed) vel else vel.normalize * maxSpeed
   }
-  def mass: Float = _mass
-  def mass_=(m: Float): Unit = {
+  override def mass: Float = _mass
+  override def mass_=(m: Float): Unit = {
     _mass = max(m, Cell.MinMass)
   }
 
