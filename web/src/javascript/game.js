@@ -68,13 +68,13 @@ export function getPlayerColor(players, currentPlayer) {
   return constants.playerColors[playerPosition];
 }
 
-export function drawPlayersOnMap(players, canvas) {
+export function drawPlayersOnMap(players, canvas, drawNames) {
   const context = canvas.getContext("2d");
   for(const player of players) {
     const color = getPlayerColor(players, player);
     for(const cell of player.cells) {
       drawCircle(context, cell.position, cell.radius, color);
-      writeCellTeamName(player.name, context, cell.position);
+      if (drawNames) writeCellTeamName(player.name, context, cell.position);
     }
   }
 }
@@ -100,21 +100,24 @@ export function drawMap(canvas) {
   screenContext.drawImage(canvas, xScreenPosOnMap, yScreenPosOnMap, screenWidth, screenHeight, 0, 0, screenWidth, screenHeight);
 }
 
-export function initMiniMap(canvas) {
-  miniMapContext.clearRect(0, 0, screenWidth, screenHeight);
+export function initMiniMap(canvas, players) {
+  const tempCanvas = document.createElement("canvas");
+  let context = tempCanvas.getContext("2d");
   miniMapHeight = miniMapWidth*canvas.height/canvas.width;
 
   //set dimensions
-  miniMapCanvas.width = screenWidth;
-  miniMapCanvas.height = screenHeight;
+  miniMapCanvas.width = miniMapHeight;
+  miniMapCanvas.height = miniMapHeight;
+  tempCanvas.width = canvasWidth;
+  tempCanvas.height = canvasHeight;
 
   //MiniMap background
-  miniMapContext.rect(0, 0, miniMapWidth, miniMapHeight);
+  miniMapContext.rect(0, 0, canvasWidth, canvasHeight);
   miniMapContext.fillStyle = "rgba(58, 58, 58, 0.85)";
   miniMapContext.fill();
 
-  //apply the old canvas to the new one
-  miniMapContext.drawImage(canvas, 0, 0, miniMapWidth, miniMapHeight);
+  drawPlayersOnMap(players, tempCanvas, false);
+  miniMapContext.drawImage(tempCanvas, 0, 0, miniMapWidth, miniMapHeight);
 }
 
 export function drawMiniMap(canvas) {
@@ -198,9 +201,9 @@ screenCanvas.onmousemove = function(e) {
 
 export function drawGame(gameState, canvas) {
   initMap(canvas, gameState.map);
-  drawPlayersOnMap(gameState.players, canvas);
-  initMiniMap(canvas);
+  initMiniMap(canvas, gameState.players);
   drawResourcesOnMap(gameState.resources, canvas);
+  drawPlayersOnMap(gameState.players, canvas, true);
   drawMap(canvas);
   drawMiniMap(canvas);
 }
