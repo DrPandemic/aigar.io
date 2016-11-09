@@ -207,3 +207,27 @@ export function drawGame(gameState, canvas) {
   drawMap(canvas);
   drawMiniMap(canvas);
 }
+
+export function interpolateState(prev, next, ratio) {
+  if(ratio <= 0) return prev;
+  if(ratio >= 1) return next;
+
+  const current = JSON.parse(JSON.stringify(prev));
+
+  current.players = current.players.map(player => {
+    player.cells = player.cells.filter(cell => {
+      const nextCell = next.players.find(p => p.id === player.id).cells.find(c => c.id === cell.id);
+      // This will destroy every cell that is not present in the next frame
+      if(!nextCell) return false;
+
+      cell.position.x = (1 - ratio) * cell.position.x + ratio * nextCell.position.x;
+      cell.position.y = (1 - ratio) * cell.position.y + ratio * nextCell.position.y;
+
+      return true;
+    });
+
+    return player;
+  });
+
+  return current;
+}
