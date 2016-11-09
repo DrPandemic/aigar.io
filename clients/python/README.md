@@ -80,6 +80,7 @@ To eat an enemy cell, a cell must almost completely overlap its enemy and be
           The bigger the mass, the bigger the cell, the slower the cell can move
           or accelerate.
           Mass decays over time (by a ratio of the current mass).
+          The minimal mass of a cell is `20`.
 
 - `radius`: Radius of the cell, influenced by its current mass
 

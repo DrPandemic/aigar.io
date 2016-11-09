@@ -15,6 +15,8 @@ object Cell {
 
   /**
    * Default mass of a cell (at spawn).
+   *
+   * IMPORTANT must stay in sync with the client's documentation
    */
   final val MinMass = 20f
 
