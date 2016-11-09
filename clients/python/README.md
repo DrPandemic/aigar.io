@@ -92,6 +92,7 @@ and a player's overall score in the competition.
 To collect a resource, a `Cell` must collide with it.
 
 There are three available resource types:
+
 | Resource Type | Cell Mass Gain | Player Score Gain |
 | ------------- | -------------- | ----------------- |
 | `regular`     | 1              | 1                 |
