@@ -28,7 +28,6 @@ class API:
                     "cell_id": actions.cell_id,
                     "burst": actions.burst,
                     "split": actions.split,
-                    "feed": actions.feed,
                     "trade": actions.trade,
                     "target": {"x": actions.target.x, "y": actions.target.y}
                     } for actions in cell_actions]
@@ -44,10 +43,9 @@ class API:
 
 
 class CellActions:
-    def __init__(self, cell_id, target, burst, split, feed, trade):
+    def __init__(self, cell_id, target, burst, split, trade):
         self.cell_id = cell_id
         self.target = target
         self.burst = burst
         self.split = split
-        self.feed = feed
         self.trade = trade
