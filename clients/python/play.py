@@ -2,6 +2,7 @@ from time import sleep
 import json
 import sys
 
+from game.game_loop import update_game
 from game.api import API
 from game.models import Game
 from ai import step
@@ -17,11 +18,7 @@ def main():
     api = API(player_id, player_secret)
 
     while True:
-        game = api.fetch_game_state(game_id)
-
-        step(game)
-
-        api.send_actions(game_id, [cell.actions() for cell in game.me.cells])
+        update_game(api, game_id, step)
 
         sleep(1 / UpdatesPerSecond)
 
