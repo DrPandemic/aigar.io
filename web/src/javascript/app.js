@@ -1,6 +1,6 @@
 import {drawLeaderboard} from "./gameLeaderboard";
 import {drawGame, createGameCanvas, interpolateState} from "./game";
-import {gameRefresh, leaderboardRefresh, gameDelay} from "./constants";
+import {gameRefresh, leaderboardRefresh, gameDelay, maximumStoredStates} from "./constants";
 
 const gameCanvas = createGameCanvas();
 let gameRunning = false;
@@ -14,6 +14,10 @@ networkWorker.onmessage = message => {
     ...message.data,
     timestamp: (new Date()).getTime(),
   });
+
+  if(states.length > maximumStoredStates) {
+    states.shift();
+  }
 
   triggerStart(states);
 };

@@ -37,3 +37,4 @@ export const gameRefresh = 24;
 export const gameDelay = 2 * 1000;
 export const leaderboardRefresh = 1;
 export const networkRefresh = 3;
+export const maximumStoredStates = 10;
