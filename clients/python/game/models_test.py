@@ -159,6 +159,14 @@ class CellTests(TestCase):
         self.assertTrue(cell.position.almost_equals(Vec2(1241, 442)))
         self.assertTrue(cell.target.almost_equals(Vec2(1448, 1136)))
 
+    def test_move_sets_target(self):
+        cell = Cell(1, 2, 3, Vec2(4, 5), Vec2(6, 7))
+
+        target = Vec2(8, 9)
+        cell.move(target)
+
+        self.assertEqual(target, cell.target)
+
     def test_actions_sets_actions_target(self):
         cell = Cell(1, 2, 3, Vec2(4, 5), Vec2(6, 7))
 

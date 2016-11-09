@@ -99,6 +99,9 @@ class Cell:
 
         self._actions = CellActions(self.id)
 
+    def move(self, target):
+        self.target = target
+
     def split(self):
         self._actions.split = True
 
