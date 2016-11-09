@@ -34,6 +34,10 @@ object Cell {
     * Exponent used on the mass when calculating the acceleration of a cell.
     */
   final val MassImpactOnAcceleration = 0.75f
+
+  final val MinMaximumSpeed = 25f
+  final val MaxMaximumSpeed = 50f
+  final val SpeedLimitReductionPerMassUnit = 0.002f
 }
 
 class Cell(val id: Int, player: Player, startPosition: Vector2 = new Vector2(0f, 0f)) {
@@ -47,7 +51,8 @@ class Cell(val id: Int, player: Player, startPosition: Vector2 = new Vector2(0f,
    * second.
    */
   def maxSpeed: Float = {
-    50f //TODO depend on mass?
+    max(Cell.MaxMaximumSpeed - mass*Cell.SpeedLimitReductionPerMassUnit,
+      Cell.MinMaximumSpeed)
   }
 
   def velocity: Vector2 = _velocity
