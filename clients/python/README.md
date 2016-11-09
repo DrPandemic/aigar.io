@@ -31,6 +31,10 @@ State of a game.
 
 - `viruses`: List of viruses that split a cell when consumed
 
+- `me`: Your `Player` instance
+
+- `enemies`: List of the other `Player`s
+
 ### Map
 Dimensions of the map the players are on.
 
@@ -42,6 +46,7 @@ Dimensions of the map the players are on.
 ### Player
 Owner and controller of cells in the game. As a programmer of an AI, you are a
 `Player`.
+You can access your player via `game.me`.
 
 #### Attributes
 - `id`: Identifier of the player
