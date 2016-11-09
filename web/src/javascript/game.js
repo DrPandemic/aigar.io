@@ -213,7 +213,12 @@ export function interpolateState(prev, next, ratio) {
 
   current.players = current.players.map(player => {
     player.cells = player.cells.filter(cell => {
-      if(!next.players.find(p => p.id === player.id).cells.some(c => c.id === cell.id)) return false;
+      const nextCell = next.players.find(p => p.id === player.id).cells.find(c => c.id === cell.id);
+      // This will destroy every cell that is not present in the next frame
+      if(!nextCell) return false;
+
+      cell.position.x = (1 - ratio) * cell.position.x + ratio * nextCell.position.x;
+      cell.position.y = (1 - ratio) * cell.position.y + ratio * nextCell.position.y;
 
       return true;
     });
