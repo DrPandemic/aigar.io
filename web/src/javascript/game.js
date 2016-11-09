@@ -205,15 +205,20 @@ export function drawGame(gameState, canvas) {
   drawMiniMap(canvas);
 }
 
-const mapWith = (a1, a2, fn) => a1.map((x, i) => fn(x, a2[i]));
-
 export function interpolateState(prev, next, ratio) {
   if(ratio <= 0) return prev;
   if(ratio >= 1) return next;
 
   const current = JSON.parse(JSON.stringify(prev));
-  current.players = mapWith(prev.players, next.players, (prevPlayer, nextPlayer) => {
-    return mapWith(prevPlayer.cells, nextPlayer.`);
+
+  current.players = current.players.map(player => {
+    player.cells = player.cells.filter(cell => {
+      if(!next.players.find(p => p.id === player.id).cells.some(c => c.id === cell.id)) return false;
+
+      return true;
+    });
+
+    return player;
   });
 
   return current;
