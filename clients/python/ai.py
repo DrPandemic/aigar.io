@@ -10,4 +10,14 @@ def step(game):
 
     :param game: Game object
     """
-    print(game)
+
+    resources = (game.resources.gold + game.resources.silver +
+                 game.resources.regular)
+
+    for cell in game.me.cells:
+        def distance_to_me(position):
+            return cell.position.distance_to(position)
+
+        if resources:
+            closest = sorted(resources, key=distance_to_me)[0]
+            cell.move(closest)
