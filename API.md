@@ -111,7 +111,6 @@ Every error will contain a root element named `error` with an error message.
         "cell_id": "int",
         "burst": "bool",
         "split": "bool",
-        "feed": "bool",
         "trade": "int",
         "target": {
             "x": "float",

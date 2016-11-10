@@ -93,9 +93,9 @@ class GameSpec extends FlatSpec with Matchers {
 
   "performAction" should "update cell's targets" in {
     val game = new Game(0, List(1, 2, 3))
-    game.performAction(1, List(Action(0, false, false, false, 0, Position(0f, 10f))))
-    game.performAction(2, List(Action(0, false, false, false, 0, Position(20f, 10f))))
-    game.performAction(3, List(Action(0, false, false, false, 0, Position(50f, 1f))))
+    game.performAction(1, List(Action(0, false, false, 0, Position(0f, 10f))))
+    game.performAction(2, List(Action(0, false, false, 0, Position(20f, 10f))))
+    game.performAction(3, List(Action(0, false, false, 0, Position(50f, 1f))))
 
     val state = game.state
     val p1 = state.players.find(_.id == 1).get

@@ -17,7 +17,6 @@ case class Action(
   cell_id: Int,
   burst: Boolean,
   split: Boolean,
-  feed: Boolean,
   trade: Int,
   target: Position
 )

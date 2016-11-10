@@ -331,7 +331,7 @@ class CellSpec extends FlatSpec with Matchers {
     val cell = player.cells.head
     val grid = new Grid(100, 100);
 
-    cell.performAction(Action(0, false, false, false, 0, Position(0f, 10f)))
+    cell.performAction(Action(0, false, false, 0, Position(0f, 10f)))
 
     cell.target.state should equal(Position(0f, 10f))
   }
