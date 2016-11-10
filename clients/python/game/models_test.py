@@ -159,6 +159,46 @@ class CellTests(TestCase):
         self.assertTrue(cell.position.almost_equals(Vec2(1241, 442)))
         self.assertTrue(cell.target.almost_equals(Vec2(1448, 1136)))
 
+    def test_move_sets_target(self):
+        cell = Cell(1, 2, 3, Vec2(4, 5), Vec2(6, 7))
+
+        target = Vec2(8, 9)
+        cell.move(target)
+
+        self.assertEqual(target, cell.target)
+
+    def test_actions_sets_actions_target(self):
+        cell = Cell(1, 2, 3, Vec2(4, 5), Vec2(6, 7))
+
+        actions = cell.actions()
+
+        self.assertEqual(1, actions.cell_id)
+        self.assertTrue(Vec2(6, 7).almost_equals(actions.target))
+
+    def test_split_sets_actions_split(self):
+        cell = Cell(1, 2, 3, Vec2(4, 5), Vec2(6, 7))
+
+        cell.split()
+
+        actions = cell.actions()
+        self.assertTrue(actions.split)
+
+    def test_burst_sets_actions_burst(self):
+        cell = Cell(1, 2, 3, Vec2(4, 5), Vec2(6, 7))
+
+        cell.burst()
+
+        actions = cell.actions()
+        self.assertTrue(actions.burst)
+
+    def test_trade_sets_actions_trade(self):
+        cell = Cell(1, 2, 3, Vec2(4, 5), Vec2(6, 7))
+
+        cell.trade(42)
+
+        actions = cell.actions()
+        self.assertEqual(42, actions.trade)
+
 
 class ResourcesTests(TestCase):
     def test_parse(self):

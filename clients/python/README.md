@@ -80,6 +80,7 @@ To eat an enemy cell, a cell must almost completely overlap its enemy and be
           The bigger the mass, the bigger the cell, the slower the cell can move
           or accelerate.
           Mass decays over time (by a ratio of the current mass).
+          The minimal mass of a cell is `20`.
 
 - `radius`: Radius of the cell, influenced by its current mass
 
@@ -87,6 +88,29 @@ To eat an enemy cell, a cell must almost completely overlap its enemy and be
 
 - `target`: Target (`Vec2` object) that the cell should go for.
             Move the cell by changing this value.
+
+#### Methods
+*Note: the following methods will only have an effect when called on cells
+       owned by your player.*
+
+- `move(target)`: Moves towards the given `Vec2` target.
+                  Convenience method that sets `cell.target`.
+
+- `split()`: Splits the cell into two distinct cells with half their parent's
+             mass. The new cells will later be available to control via the
+             `cells` list in `Player`.
+             The cell must be at least twice the minimum mass for this call to
+             have an effect.
+
+- `burst()`: Exchanges a fixed amount of the cell's mass to gain a temporary
+             speed boost.
+             If the cell is too small to afford the price, this call has no
+             effect.
+
+- `trade(mass)`: Trades a given amount of the cell's mass to gain a small gain
+                 in the player's score (competition points).
+                 If the given quantity is too large for the cell's mass, the
+                 trade will only be based on how much the cell can afford.
 
 
 ### Resources
