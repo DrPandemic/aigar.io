@@ -23,12 +23,20 @@ trait AigarStack
     returnError(400, "invalid request")
   }
 
+  trap(403) {
+    returnError(403, "forbidden")
+  }
+
   trap(404) {
     returnError(404, "not found")
   }
 
   trap(422) {
     returnError(422, "unprocessable entity")
+  }
+
+  trap(500) {
+    returnError(500, "internal server error")
   }
 
   def returnError(statusCode: Int, message: String): ErrorResponse  = {
