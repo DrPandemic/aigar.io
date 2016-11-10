@@ -23,7 +23,7 @@ class VirusSpec extends FlatSpec with Matchers {
     cell.mass = Virus.Mass / Cell.MassDominanceRatio - 1
     player.cells = List(cell)
 
-    viruses.detectCollisions(List(player))
+    viruses.update(new Grid(0, 0), List(player))
 
     viruses.state should have size 1
   }
@@ -39,7 +39,7 @@ class VirusSpec extends FlatSpec with Matchers {
     cell.mass = Virus.Mass * Cell.MassDominanceRatio + 1
     player.cells = List(cell)
 
-    viruses.detectCollisions(List(player))
+    viruses.update(new Grid(0, 0), List(player))
 
     viruses.state should have size 0
   }

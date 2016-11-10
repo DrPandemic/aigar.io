@@ -22,33 +22,17 @@ class Virus(spawnPosition: Vector2) extends Entity {
 class Viruses(grid: Grid) extends EntityContainer {
   var viruses = List.fill(Virus.Quantity)(new Virus(grid.randomPosition))
 
+  def shouldRespawn: Boolean = viruses.size < Virus.Quantity
+
   def update(grid: Grid, players: List[Player]): Unit = {
+    viruses = detectCollisions(viruses, players).asInstanceOf[List[Virus]]
 
-    detectCollisions(players)
-
-    if(viruses.size < Virus.Quantity) {
-      val position = respawn(grid, players, Virus.RespawnRetryAttempts)
-
-      position match {
+    if (shouldRespawn) {
+      getRespawnPosition(grid, players, Virus.RespawnRetryAttempts) match {
         case Some(position) => viruses :::= List(new Virus(position))
         case _ =>
       }
     }
-  }
-
-  def detectCollisions(players: List[Player]): Option[Cell] ={
-    for(virus <- viruses){
-      for(player <- players) {
-        for(cell <- player.cells) {
-          if(cell.contains(virus.position) && cell.mass > Virus.Mass * Cell.MassDominanceRatio){
-            // TODO : Split cell
-            viruses = viruses diff List(virus)
-            return Some(cell)
-          }
-        }
-      }
-    }
-    None
   }
 
   def state: List[Position] = {
