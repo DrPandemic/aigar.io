@@ -75,8 +75,18 @@ export function drawPlayersOnMap(players, canvas, drawNames) {
     for(const cell of player.cells) {
       drawCircle(context, cell.position, cell.radius, color);
       if (drawNames) writeCellTeamName(player.name, context, cell.position);
+      const targetLinesBtn = $("#targetLinesBtn")[0];
+      if (targetLinesBtn.className == "btn btn-primary") drawCellTargetLines(context, cell.position, cell.target, color);
     }
   }
+}
+
+export function drawCellTargetLines(context, position, target, color){
+  context.beginPath();
+  context.moveTo(position.x, position.y);
+  context.lineTo(target.x, target.y);
+  context.strokeStyle = color;
+  context.stroke();
 }
 
 export function drawResourcesOnMap(resources, canvas) {

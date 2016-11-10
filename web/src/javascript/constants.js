@@ -8,7 +8,7 @@ export const resourceMass = 9;
 export const regularResourceMass = 6;
 
 export const textColor = "#fff";
-export const textBorderColor = "#000 1px solid";
+export const textBorderColor = "#000";
 export const textStyle = "25px Arial";
 
 export const playerColors = [
