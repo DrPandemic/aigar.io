@@ -14,13 +14,13 @@ object Game {
 class Game(val id: Int, playerIDs: List[Int]) {
   val grid = new Grid(playerIDs.length * Grid.WidthPerPlayer, playerIDs.length * Grid.HeightPerPlayer)
   val players = createPlayers
-  val viruses = createViruses
+  val viruses = new Viruses(grid)
   val resources = new Resources(grid)
   var tick = 0
 
   def update(deltaSeconds: Float): List[ScoreModification] = {
     players.foreach { player => player.update(deltaSeconds, grid, players) }
-    viruses.foreach { virus => virus.update(grid, players) }
+    viruses.update(grid, players)
     val scoreModifications = resources.update(players)
     tick += 1
 
@@ -42,16 +42,12 @@ class Game(val id: Int, playerIDs: List[Int]) {
         players.map(_.state),
         resources.state,
         grid.state,
-        viruses.map(_.state)
+        viruses.state
       )
   }
 
   def createPlayers = {
     playerIDs.map { new Player(_, spawnPosition) }
-  }
-
-  def createViruses: List[Virus] = {
-    List.fill(Virus.Quantity)(new Virus(grid.randomPosition))
   }
 
   def spawnPosition = {

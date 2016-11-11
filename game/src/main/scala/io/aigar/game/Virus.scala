@@ -10,43 +10,32 @@ object Virus {
   final val RespawnRetryAttempts = 15
 }
 
-class Virus(var position: Vector2) {
-  def update(grid: Grid, players: List[Player]): Unit = {
-    val cell = detectCollisions(players)
-     cell match {
-      // TODO Add the virus consumption into the cell
-      case Some(c: Cell) => respawn(grid, players)
-      case _ =>
-    }
-  }
-
-  def detectCollisions(players: List[Player]): Option[Cell] ={
-    for(player <- players) {
-      for(cell <- player.cells) {
-        // TODO Change the 1.1 value to the constant
-        if(cell.contains(position) && cell.mass > Virus.Mass * Cell.MassDominanceRatio){
-          return Some(cell)
-        }
-      }
-    }
-    None
-  }
-
-  def respawn(grid: Grid, players: List[Player]): Unit = {
-    var newPosition = grid.randomPosition
-
-    1 to Virus.RespawnRetryAttempts foreach { _ =>
-      for (player <- players) {
-        for (cell <- player.cells) {
-          if (cell.contains(position))
-            newPosition = grid.randomPosition
-        }
-      }
-    }
-    position = newPosition
-  }
+class Virus(spawnPosition: Vector2) extends Entity {
+  position = spawnPosition
+  mass = Virus.Mass
 
   def state: Position = {
     position.state
+  }
+}
+
+class Viruses(grid: Grid) extends EntityContainer {
+  var viruses = List.fill(Virus.Quantity)(new Virus(grid.randomPosition))
+
+  def shouldRespawn: Boolean = viruses.size < Virus.Quantity
+
+  def update(grid: Grid, players: List[Player]): Unit = {
+    viruses = detectCollisions(viruses, players).asInstanceOf[List[Virus]]
+
+    if (shouldRespawn) {
+      getRespawnPosition(grid, players, Virus.RespawnRetryAttempts) match {
+        case Some(position) => viruses :::= List(new Virus(position))
+        case _ =>
+      }
+    }
+  }
+
+  def state: List[Position] = {
+    viruses.map(_.state)
   }
 }
