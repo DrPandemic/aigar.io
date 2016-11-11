@@ -21,10 +21,12 @@ class Game(val id: Int, playerIDs: List[Int]) {
   def update(deltaSeconds: Float): List[ScoreModification] = {
     players.foreach { player => player.update(deltaSeconds, grid, players) }
     viruses.update(grid, players)
-    val scoreModifications = resources.update(players)
-    tick += 1
-
-    scoreModifications
+    resources.update(grid, players)
+//    val scoreModifications = resources.update(players)
+//    tick += 1
+//
+//    scoreModifications
+    List(new ScoreModification(1, 0))
   }
 
   def performAction(player_id: Int, actions: List[Action]): Unit = {
