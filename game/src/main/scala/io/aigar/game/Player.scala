@@ -14,7 +14,7 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer {
     opponents = players diff List(this)
     cells = handleCollision(cells, opponents).asInstanceOf[List[Cell]]
 
-    if (shouldRespawn) {
+    if (shouldRespawn(cells.size, 1)) {
       getRespawnPosition(grid, opponents, Cell.RespawnRetryAttempts) match {
         case Some(position) => {
           currentCellId += 1
@@ -26,8 +26,6 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer {
 
     cells.foreach { _.update(deltaSeconds, grid) }
   }
-
-  def shouldRespawn: Boolean = cells.size < 1
 
   def onCellCollision(opponentCell: Cell, entity: Entity): List[Entity] = {
     var entityReturn = List[Entity]()

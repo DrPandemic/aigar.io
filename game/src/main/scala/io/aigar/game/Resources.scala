@@ -1,10 +1,14 @@
 package io.aigar.game
 
+import com.github.jpbetz.subspace.Vector2
+import io.aigar.game.serializable.Position
+import io.aigar.game.Vector2Utils.StateAddon
 import io.aigar.score.ScoreModification
 
 object Regular {
   final val Max = 250
   final val Min = 100
+  final val RespawnRetryAttempts = 1
 
   // IMPORTANT: keep those values in sync with the client documentation
   final val Mass = 1
@@ -14,6 +18,7 @@ object Regular {
 object Silver {
   final val Max = 25
   final val Min = 12
+  final val RespawnRetryAttempts = 1
 
   // IMPORTANT: keep those values in sync with the client documentation
   final val Mass = 3
@@ -23,6 +28,7 @@ object Silver {
 object Gold {
   final val Max = 10
   final val Min = 5
+  final val RespawnRetryAttempts = 1
 
   // IMPORTANT: keep those values in sync with the client documentation
   final val Mass = 0
@@ -31,83 +37,81 @@ object Gold {
 
 class Resources(grid: Grid) extends EntityContainer {
   var regulars = List.fill(Regular.Max)(new Regular(grid.randomPosition))
-//  val regular = new ResourceType(grid, Regular.Min, Regular.Max, Regular.Mass, Regular.Score)
-//  val silver = new ResourceType(grid, Silver.Min, Silver.Max, Silver.Mass, Silver.Score)
-//  val gold = new ResourceType(grid, Gold.Min, Gold.Max, Gold.Mass, Gold.Score)
-//  var resourceTypes = List(regular, silver, gold)
-//
-//  def update(players: List[Player]): List[ScoreModification] = {
-//    val scoreModifications = resourceTypes.flatten(_.detectCollisions(players))
-//    resourceTypes.foreach(_.spawnResources(players))
-//
-//    scoreModifications
-//  }
-//
-//  def state = {
-//    serializable.Resources(
-//      regular.positions,
-//      silver.positions,
-//      gold.positions
-//    )
-//  }
+  var silvers = List.fill(Silver.Max)(new Silver(grid.randomPosition))
+  var golds = List.fill(Gold.Max)(new Gold(grid.randomPosition))
 
-  def shouldRespawn: Boolean
+  def update(grid: Grid, players: List[Player]): Unit = {
+    regulars = handleCollision(regulars, players).asInstanceOf[List[Regular]]
+    silvers = handleCollision(silvers, players).asInstanceOf[List[Silver]]
+    golds = handleCollision(golds, players).asInstanceOf[List[Gold]]
 
-  def onCellCollision(cell: Cell, entity: Entity): List[Entity]
+    if (shouldRespawn(regulars.size, Regular.Min)) {
+      getRespawnPosition(grid, players, Regular.RespawnRetryAttempts) match {
+        case Some(position) => regulars :::= List(new Regular(position))
+        case _ =>
+      }
+    }
+
+    if (shouldRespawn(silvers.size, Silver.Min)) {
+      getRespawnPosition(grid, players, Silver.RespawnRetryAttempts) match {
+        case Some(position) => silvers :::= List(new Silver(position))
+        case _ =>
+      }
+    }
+
+    if (shouldRespawn(golds.size, Gold.Min)) {
+      getRespawnPosition(grid, players, Gold.RespawnRetryAttempts) match {
+        case Some(position) => golds :::= List(new Gold(position))
+        case _ =>
+      }
+    }
+  }
+
+  def onCellCollision(cell: Cell, entity: Entity): List[Entity] = {
+    //    val scoreModifications = resourceTypes.flatten(_.detectCollisions(players))
+    //    resourceTypes.foreach(_.spawnResources(players))
+    //
+    //    scoreModifications
+    reward(cell, entity.mass)
+    List(entity)
+  }
+
+  def reward(cell: Cell, mass: Float): Unit = {
+    cell.mass += mass
+  }
+
+  def state: serializable.Resources = {
+    serializable.Resources(
+      regulars.map(_.state),
+      silvers.map(_.state),
+      golds.map(_.state)
+    )
+  }
 }
 
-class Regular(grid: Grid) extends Entity {
+class Regular(var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
+  mass = Regular.Mass
+  val score = Regular.Score
 
+  def state: Vector2 = {
+    position
+  }
 }
 
-class Silver extends Entity {
+class Silver(var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
+  mass = Silver.Mass
+  val score = Silver.Score
 
+  def state: Vector2 = {
+    position
+  }
 }
 
-class Gold extends Entity {
+class Gold(var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
+  mass = Gold.Mass
+  val score = Gold.Score
 
+  def state: Vector2 = {
+    position
+  }
 }
-
-//class ResourceType(grid: Grid, val min: Int, val max: Int, mass: Int, score: Int) {
-//  var positions = List.fill(max)(grid.randomPosition)
-//
-//  def spawnResources(players: List[Player]): Unit = {
-//    val ratio = (positions.length - min).toFloat / (max - min)
-//
-//    if (scala.util.Random.nextFloat >= ratio) {
-//      val position = grid.randomPosition
-//      for (player <- players) {
-//        for (cell <- player.cells) {
-//          if (cell.contains(position)) return
-//        }
-//      }
-//      positions :::= List(position)
-//    }
-//  }
-//
-//  /*
-//  * Checks if any of the cells from the players should consume a resource.
-//  * If it is the case, reward the colliding player/cell.
-//  */
-//  def detectCollisions(players: List[Player]): List[ScoreModification] = {
-//    var scoreModifications = List[ScoreModification]()
-//    for(player <- players) {
-//      for(cell <- player.cells) {
-//        for(position <- positions){
-//          if(cell.contains(position)){
-//            reward(cell)
-//            scoreModifications ::= ScoreModification(player.id, score)
-//
-//            // Returns a new list without the resource that has been consumed
-//            positions = positions.filterNot(a => a == position)
-//          }
-//        }
-//      }
-//    }
-//    scoreModifications
-//  }
-//
-//  def reward(cell: Cell): Unit = {
-//    cell.mass += mass
-//  }
-//}
