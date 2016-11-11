@@ -21,12 +21,11 @@ trait EntityContainer {
 
   def handleCollision(entities: List[Entity], players: List[Player]): List[Entity] ={
     var entitiesReturn = List[Entity]()
-    for(entity <- entities){
-      for(player <- players) {
-        for(cell <- player.cells) {
-          if(cell.contains(entity.position) && cell.mass > Virus.Mass * Cell.MassDominanceRatio){
-            onCellCollision(cell)
-            entitiesReturn :::= List(entity)
+    for (entity <- entities){
+      for (player <- players) {
+        for (cell <- player.cells) {
+          if (cell.contains(entity.position)) {
+            entitiesReturn :::= onCellCollision(cell, entity)
           }
         }
       }
@@ -34,5 +33,5 @@ trait EntityContainer {
     entities diff entitiesReturn
   }
 
-  def onCellCollision(cell: Cell): Unit
+  def onCellCollision(cell: Cell, entity: Entity): List[Entity]
 }

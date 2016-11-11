@@ -284,48 +284,6 @@ class CellSpec extends FlatSpec with Matchers {
     cell.velocity.y should equal(0)
   }
 
-  it should "eat a cell smaller than 90% of its mass when contained in itself" in {
-    val player = new Player(0, Vector2(10f, 10f))
-    val largeCell = player.cells.head
-    val opponent = new Player(2, Vector2(10f, 10f))
-    val smallCell = opponent.cells.head
-
-    largeCell.mass = 30
-    smallCell.mass = 27
-
-    largeCell.eats(List(opponent))
-
-    opponent.cells shouldBe empty
-  }
-
-  it should "not eat a cell between 90% to 100% of its mass when contained in itself" in {
-    val player = new Player(0, Vector2(10f, 10f))
-    val largeCell = player.cells.head
-    val opponent = new Player(2, Vector2(10f, 10f))
-    val smallCell = opponent.cells.head
-
-    largeCell.mass = Cell.MinMass + 1
-    smallCell.mass = Cell.MinMass
-
-    smallCell.eats(List(opponent))
-
-    opponent.cells should contain only smallCell
-  }
-
-  it should "not eat a larger cell when into it" in {
-    val player = new Player(0, Vector2(10f, 10f))
-    val smallCell = player.cells.head
-    val opponent = new Player(2, Vector2(10f, 10f))
-    val largeCell = opponent.cells.head
-
-    largeCell.mass = Cell.MinMass + 1
-    smallCell.mass = Cell.MinMass
-
-    smallCell.eats(List(opponent))
-
-    opponent.cells should contain only largeCell
-  }
-
   "performAction" should "change target to match the one from the action" in {
     val player = new Player(0, Vector2(12f, 12f))
     val cell = player.cells.head

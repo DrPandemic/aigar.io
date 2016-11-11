@@ -24,25 +24,20 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer {
     }
 
     cells.foreach { _.update(deltaSeconds, grid) }
-    cells.foreach { _.eats(opponents) }
   }
 
   def shouldRespawn: Boolean = cells.size < 1
 
-  def onCellCollision(cell: Cell): Unit = {
+  def onCellCollision(opponentCell: Cell, entity: Entity): List[Entity] = {
+    var entityReturn = List[Entity]()
+    val cell = entity.asInstanceOf[Cell]
 
+    if (opponentCell.contains(cell.position) && opponentCell.mass >= Cell.MassDominanceRatio * cell.mass) {
+      opponentCell.mass = opponentCell.mass + cell.mass
+      entityReturn = List(entity)
+    }
+    entityReturn
   }
-
-//  def eats(opponents: List[Player]): Unit ={
-//    for(opponent <- opponents) {
-//      for(cell <- opponent.cells) {
-//        if (contains(cell.position) && mass >= Cell.MassDominanceRatio * cell.mass) {
-//          mass = mass + cell.mass
-//          opponent.removeCell(cell)
-//        }
-//      }
-//    }
-//  }
 
   def state: serializable.Player = {
     val mass = round(cells.map(_.mass).sum)

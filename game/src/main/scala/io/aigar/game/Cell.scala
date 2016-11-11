@@ -108,16 +108,16 @@ class Cell(val id: Int, player: Player, startPosition: Vector2 = new Vector2(0f,
     position.distanceTo(pos) <= radius
   }
 
-  def eats(opponents: List[Player]): Unit ={
-    for(opponent <- opponents) {
-      for(cell <- opponent.cells) {
-        if (contains(cell.position) && mass >= Cell.MassDominanceRatio * cell.mass) {
-          mass = mass + cell.mass
-          opponent.removeCell(cell)
-        }
-      }
-    }
-  }
+//  def eats(opponents: List[Player]): Unit ={
+//    for(opponent <- opponents) {
+//      for(cell <- opponent.cells) {
+//        if (contains(cell.position) && mass >= Cell.MassDominanceRatio * cell.mass) {
+//          mass = mass + cell.mass
+//          opponent.removeCell(cell)
+//        }
+//      }
+//    }
+//  }
 
   def performAction(action: Action): Unit = {
     target = action.target.toVector
