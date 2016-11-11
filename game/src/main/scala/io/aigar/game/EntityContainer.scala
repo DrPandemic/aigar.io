@@ -34,4 +34,6 @@ trait EntityContainer {
   }
 
   def onCellCollision(cell: Cell, entity: Entity): List[Entity]
+
+  def state: Unit
 }

@@ -26,8 +26,6 @@ class Virus(var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
 class Viruses(grid: Grid) extends EntityContainer {
   var viruses = List.fill(Virus.Quantity)(new Virus(grid.randomPosition))
 
-  def shouldRespawn: Boolean = viruses.size < Virus.Quantity
-
   def update(grid: Grid, players: List[Player]): Unit = {
     viruses = handleCollision(viruses, players).asInstanceOf[List[Virus]]
 
@@ -38,6 +36,8 @@ class Viruses(grid: Grid) extends EntityContainer {
       }
     }
   }
+
+  def shouldRespawn: Boolean = viruses.size < Virus.Quantity
 
   def onCellCollision(cell: Cell, entity: Entity): List[Entity] = {
     var entityReturn = List[Entity]()
