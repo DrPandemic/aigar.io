@@ -72,8 +72,7 @@ function updateLeaderBoard() {
 function initButtonOnClick() {
   const targetLinesBtn = $("#targetLinesBtn")[0];
   targetLinesBtn.onclick = function() {
-    //const targetLinesBtn = $("#targetLinesBtn")[0];
-    if (targetLinesBtn.className == "btn btn-primary") {
+    if (targetLinesBtn.className === "btn btn-primary") {
       document.getElementById("targetLinesBtn").className = "btn btn-default";
     }
     else{

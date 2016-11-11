@@ -35,7 +35,7 @@ function drawCircle(context, position, radius, color) {
   context.fill();
 }
 
-function writeCellTeamName(playerName, context, position){
+function writeCellTeamName(playerName, context, position) {
   context.fillStyle = constants.textColor;
   context.font = constants.textStyle;
   context.textAlign="center";
@@ -76,12 +76,12 @@ export function drawPlayersOnMap(players, canvas, drawNames) {
       drawCircle(context, cell.position, cell.radius, color);
       if (drawNames) writeCellTeamName(player.name, context, cell.position);
       const targetLinesBtn = $("#targetLinesBtn")[0];
-      if (targetLinesBtn.className == "btn btn-primary") drawCellTargetLines(context, cell.position, cell.target, color);
+      if (targetLinesBtn.className === "btn btn-primary") drawCellTargetLines(context, cell.position, cell.target, color);
     }
   }
 }
 
-export function drawCellTargetLines(context, position, target, color){
+export function drawCellTargetLines(context, position, target, color) {
   context.beginPath();
   context.moveTo(position.x, position.y);
   context.lineTo(target.x, target.y);
