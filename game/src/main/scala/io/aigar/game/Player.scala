@@ -74,11 +74,4 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer {
   def isActive(): Boolean = {
     aiState.isActive
   }
-
-  /**
-    * Removes dead cell from the player's cell list
-    */
-  def removeCell(cell: Cell): Unit = {
-    cells = cells.filterNot(_ == cell)
-  }
 }

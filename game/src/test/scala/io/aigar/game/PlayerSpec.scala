@@ -50,18 +50,6 @@ class PlayerSpec extends FlatSpec with Matchers {
     player.aiState shouldBe 'active
   }
 
-  it should "remove a cell from its list when it is dead" in {
-    val player = new Player(1, new Vector2(0f, 0f))
-    val cell1 = new Cell(1, player)
-    val cell2 = new Cell(2, player)
-
-    player.cells = List(cell1, cell2)
-
-    player.removeCell(cell1)
-
-    player.cells should contain only cell2
-  }
-
   "performAction" should "update cell's targets" in {
     val player = new Player(1, new Vector2(0f, 0f))
     player.cells = List(new Cell(0, player), new Cell(1, player))
