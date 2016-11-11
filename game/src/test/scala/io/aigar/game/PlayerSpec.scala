@@ -111,43 +111,4 @@ class PlayerSpec extends FlatSpec with Matchers {
     player.cells should not be empty
     player.cells.map(_.id) should not contain initialCellId
   }
-
-  "A Player's cell" should "be eaten when it is smaller than 90% of the opponent mass" in {
-    val player = new Player(0, Vector2(10f, 10f))
-    val smallCell = player.cells.head
-    val opponent = new Player(2, Vector2(10f, 10f))
-    val largeCell = opponent.cells.head
-
-    smallCell.mass = 26
-    largeCell.mass = 30
-
-    //The return is the entity to remove, hence the cell of the player if applicable
-    player.onCellCollision(opponent.cells.head, player.cells.head) should contain (smallCell.asInstanceOf[Entity])
-  }
-
-  it should "not be eaten by a cell between 90% to 100% of its mass" in {
-    val player = new Player(0, Vector2(10f, 10f))
-    val largeCell = player.cells.head
-    val opponent = new Player(2, Vector2(10f, 10f))
-    val smallCell = opponent.cells.head
-
-    largeCell.mass = Cell.MinMass + 1
-    smallCell.mass = Cell.MinMass
-
-    //The return is the entity to remove, hence the cell of the player if applicable
-    player.onCellCollision(opponent.cells.head, player.cells.head) shouldBe empty
-  }
-
-  it should "not be eaten by a smaller cell" in {
-    val player = new Player(0, Vector2(10f, 10f))
-    val smallCell = player.cells.head
-    val opponent = new Player(2, Vector2(10f, 10f))
-    val largeCell = opponent.cells.head
-
-    largeCell.mass = Cell.MinMass + 1
-    smallCell.mass = Cell.MinMass
-
-    //The return is the entity to remove, hence the cell of the player if applicable
-    player.onCellCollision(opponent.cells.head, player.cells.head) shouldBe empty
-  }
 }
