@@ -69,5 +69,18 @@ function updateLeaderBoard() {
   setTimeout(updateLeaderBoard, 1000/leaderboardRefresh - elapsed);
 }
 
+function initButtonOnClick() {
+  const targetLinesBtn = $("#targetLinesBtn")[0];
+  targetLinesBtn.onclick = function() {
+    if (targetLinesBtn.className === "btn btn-primary") {
+      document.getElementById("targetLinesBtn").className = "btn btn-default";
+    }
+    else{
+      document.getElementById("targetLinesBtn").className = "btn btn-primary";
+    }
+  };
+}
+
+initButtonOnClick()
 updateGame();
 updateLeaderBoard();
