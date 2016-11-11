@@ -44,10 +44,9 @@ object Cell {
   final val RespawnRetryAttempts = 15
 }
 
-class Cell(val id: Int, player: Player, startPosition: Vector2 = new Vector2(0f, 0f)) extends Entity {
+class Cell(val id: Int, player: Player, override var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
   private var _velocity = new Vector2(0f, 0f)
-  var target = startPosition
-  position = startPosition
+  var target = position
   _mass = Cell.MinMass
 
   /**
@@ -63,7 +62,7 @@ class Cell(val id: Int, player: Player, startPosition: Vector2 = new Vector2(0f,
   def velocity_=(vel:Vector2): Unit = {
     _velocity = if (vel.magnitude < maxSpeed) vel else vel.normalize * maxSpeed
   }
-  override def mass: Float = _mass
+
   override def mass_=(m: Float): Unit = {
     _mass = max(m, Cell.MinMass)
   }

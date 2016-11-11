@@ -11,13 +11,14 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer {
   var opponents = List[Player]()
 
   def update(deltaSeconds: Float, grid: Grid, players: List[Player]): Unit = {
-    opponents = players.filterNot(_ == this)
+    opponents = players diff List(this)
     cells = handleCollision(cells, opponents).asInstanceOf[List[Cell]]
 
     if (shouldRespawn) {
       getRespawnPosition(grid, opponents, Cell.RespawnRetryAttempts) match {
-        case Some(position) => {currentCellId += 1
-                                cells = List(new Cell(currentCellId, this, position))
+        case Some(position) => {
+          currentCellId += 1
+          cells = List(new Cell(currentCellId, this, position))
         }
         case _ =>
       }
