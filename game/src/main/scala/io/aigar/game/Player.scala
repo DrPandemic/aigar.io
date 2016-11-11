@@ -4,23 +4,48 @@ import io.aigar.controller.response.Action
 import scala.math.round
 import com.github.jpbetz.subspace.Vector2
 
-class Player(val id: Int, startPosition: Vector2) {
+class Player(val id: Int, startPosition: Vector2) extends EntityContainer {
   var aiState: AIState = new NullState(this)
   private var currentCellId: Int = 0
   var cells = List(new Cell(currentCellId, this, startPosition))
+  var opponents = List[Player]()
 
   def update(deltaSeconds: Float, grid: Grid, players: List[Player]): Unit = {
-    if ( cells.isEmpty ) {
-      currentCellId += 1
-      cells = List(new Cell(currentCellId, this, grid.randomPosition))
+    opponents = players.filterNot(_ == this)
+    cells = handleCollision(cells, opponents).asInstanceOf[List[Cell]]
+
+    if (shouldRespawn) {
+      getRespawnPosition(grid, opponents, Cell.RespawnRetryAttempts) match {
+        case Some(position) => {currentCellId += 1
+                                cells = List(new Cell(currentCellId, this, position))
+        }
+        case _ =>
+      }
     }
-    val opponents = players.filterNot(_ == this)
+
     cells.foreach { _.update(deltaSeconds, grid) }
     cells.foreach { _.eats(opponents) }
   }
 
+  def shouldRespawn: Boolean = cells.size < 1
+
+  def onCellCollision(cell: Cell): Unit = {
+
+  }
+
+//  def eats(opponents: List[Player]): Unit ={
+//    for(opponent <- opponents) {
+//      for(cell <- opponent.cells) {
+//        if (contains(cell.position) && mass >= Cell.MassDominanceRatio * cell.mass) {
+//          mass = mass + cell.mass
+//          opponent.removeCell(cell)
+//        }
+//      }
+//    }
+//  }
+
   def state: serializable.Player = {
-    val mass = round(cells.map(_.mass).sum).toInt
+    val mass = round(cells.map(_.mass).sum)
     serializable.Player(id,
                         id.toString,
                         mass,
@@ -35,7 +60,7 @@ class Player(val id: Int, startPosition: Vector2) {
     actions.foreach {
       action => cells.find(_.id == action.cell_id) match {
         case Some(cell) => cell.performAction(action)
-        case None => {}
+        case None =>
       }
     }
   }

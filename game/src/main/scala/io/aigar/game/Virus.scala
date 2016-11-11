@@ -25,7 +25,7 @@ class Viruses(grid: Grid) extends EntityContainer {
   def shouldRespawn: Boolean = viruses.size < Virus.Quantity
 
   def update(grid: Grid, players: List[Player]): Unit = {
-    viruses = detectCollisions(viruses, players).asInstanceOf[List[Virus]]
+    viruses = handleCollision(viruses, players).asInstanceOf[List[Virus]]
 
     if (shouldRespawn) {
       getRespawnPosition(grid, players, Virus.RespawnRetryAttempts) match {
@@ -33,6 +33,10 @@ class Viruses(grid: Grid) extends EntityContainer {
         case _ =>
       }
     }
+  }
+
+  def onCellCollision(cell: Cell): Unit = {
+    // TODO Split the cell ;)
   }
 
   def state: List[Position] = {

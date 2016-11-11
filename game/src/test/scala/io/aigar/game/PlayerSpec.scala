@@ -97,7 +97,7 @@ class PlayerSpec extends FlatSpec with Matchers {
 
     player.cells shouldBe empty
 
-    player.update(1f, new Grid(0, 0), List(new Player(2, new Vector2(1f, 1f))))
+    player.update(1f, new Grid(100, 100), List(new Player(2, new Vector2(1f, 1f))))
 
     player.cells.size should equal(1)
   }

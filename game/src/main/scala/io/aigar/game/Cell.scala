@@ -40,6 +40,8 @@ object Cell {
   final val MinMaximumSpeed = 25f
   final val MaxMaximumSpeed = 50f
   final val SpeedLimitReductionPerMassUnit = 0.002f
+
+  final val RespawnRetryAttempts = 15
 }
 
 class Cell(val id: Int, player: Player, startPosition: Vector2 = new Vector2(0f, 0f)) extends Entity {
