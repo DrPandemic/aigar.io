@@ -11,9 +11,17 @@ function displayEntries(entries) {
   }
 }
 
+function clearEntries() {
+  const leaderboard = document.getElementById("leaderboard-body");
+  while (leaderboard.firstChild) {
+    leaderboard.removeChild(leaderboard.firstChild);
+  }
+}
+
 function fetchAndDisplay() {
   return fetchLeaderboardEntries()
     .then((entries) => {
+      clearEntries();
       displayEntries(entries);
     });
 }
