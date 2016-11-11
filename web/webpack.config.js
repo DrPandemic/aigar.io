@@ -5,6 +5,8 @@ module.exports = {
     app: "./src/javascript/app.js",
     leaderboardApp: "./src/javascript/leaderboardApp.js",
     gameWebWorker: "./src/javascript/gameWebWorker.js",
+    adminApp: "./src/javascript/adminApp.js",
+    adminLoginApp: "./src/javascript/adminLoginApp.js",
   },
   output: {
     path: path.join(__dirname, "dist/web/javascript"),
