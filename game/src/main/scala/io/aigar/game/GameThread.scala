@@ -66,11 +66,13 @@ class GameThread(scoreThread: ScoreThread, playerIDs: List[Int]) extends Runnabl
   }
 
   def updateGames: Unit = {
+    // Test to see if the ranked is over
     games.find(_.id == Game.RankedGameId) match {
       case Some(ranked) => {
         val difference = GameThread.time - ranked.startTime
         if(ranked.duration < difference) {
           games = games diff List(ranked)
+          games = createRankedGame :: games
         }
       }
       case None => {}

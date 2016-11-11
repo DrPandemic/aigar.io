@@ -81,7 +81,7 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
     verify(scoreThread).addScoreModification(ScoreModification(ranked.id, 1))
   }
 
-  it should "remove the ranked game after a given time" in {
+  it should "remove the ranked game and create a new one after a given time" in {
     val scoreThread = mock[ScoreThread]
     val ranked = mock[Game]
     when(ranked.id).thenReturn(Game.RankedGameId)
@@ -92,6 +92,7 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
 
     game.updateGames
 
-    game.games shouldBe empty
+    game.games.find(_.id == Game.RankedGameId) should not be None
+    game.games.find(_.id == Game.RankedGameId).get should not be theSameInstanceAs(ranked)
   }
 }
