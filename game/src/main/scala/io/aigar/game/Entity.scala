@@ -5,7 +5,6 @@ import com.github.jpbetz.subspace.Vector2
 trait Entity {
   var position = new Vector2(0, 0)
   var _mass = 0f
-  var score = 0
 
   def mass: Float = _mass
   def mass_=(m: Float): Unit = {
