@@ -44,7 +44,7 @@ object Cell {
   final val RespawnRetryAttempts = 15
 }
 
-class Cell(val id: Int, player: Player, override var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
+class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
   private var _velocity = new Vector2(0f, 0f)
   var target = position
   _mass = Cell.MinMass
