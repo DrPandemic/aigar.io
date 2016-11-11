@@ -3,7 +3,7 @@ package io.aigar.game
 import com.github.jpbetz.subspace.Vector2
 
 trait EntityContainer {
-  def shouldRespawn(size: Int, min: Int): Boolean = size <= min
+  def shouldRespawn(size: Int, min: Int): Boolean = size < min
 
   def getRespawnPosition(grid: Grid, players: List[Player], respawnRetryAttempts: Int): Option[Vector2] = {
     1 to respawnRetryAttempts foreach { _ =>
