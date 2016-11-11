@@ -10,6 +10,18 @@ import scala.collection.immutable.HashMap
  * takes care of updating the individual games and processing the queued inputs
  * of the players.
  */
+object GameThread {
+  /**
+    * Current time, in seconds.
+    */
+  final val NanoSecondsPerMillisecond = 1000000f
+  final val MillisecondsPerSecond = 1000f
+  final val NanoSecondsPerSecond = NanoSecondsPerMillisecond * MillisecondsPerSecond
+  def time: Float = {
+    System.nanoTime / NanoSecondsPerSecond
+  }
+}
+
 class GameThread(scoreThread: ScoreThread, playerIDs: List[Int]) extends Runnable {
   val MillisecondsPerTick = 16
 
@@ -54,6 +66,16 @@ class GameThread(scoreThread: ScoreThread, playerIDs: List[Int]) extends Runnabl
   }
 
   def updateGames: Unit = {
+    games.find(_.id == Game.RankedGameId) match {
+      case Some(ranked) => {
+        val difference = GameThread.time - ranked.startTime
+        if(ranked.duration < difference) {
+          games = games diff List(ranked)
+        }
+      }
+      case None => {}
+    }
+
     for (game <- games) {
       val deltaTime = currentTime - previousTime
       val modifications = game.update(deltaTime)
@@ -65,17 +87,7 @@ class GameThread(scoreThread: ScoreThread, playerIDs: List[Int]) extends Runnabl
       states = states + (game.id -> game.state)
 
       previousTime = currentTime
-      currentTime = time
+      currentTime = GameThread.time
     }
-  }
-
-  /**
-   * Current time, in seconds.
-   */
-  final val NanoSecondsPerMillisecond = 1000000f
-  final val MillisecondsPerSecond = 1000f
-  final val NanoSecondsPerSecond = NanoSecondsPerMillisecond * MillisecondsPerSecond
-  def time: Float = {
-    System.nanoTime / NanoSecondsPerSecond
   }
 }
