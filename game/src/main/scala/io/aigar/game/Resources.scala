@@ -88,7 +88,7 @@ class Resources(grid: Grid) extends EntityContainer {
 }
 
 class Regular(var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
-  mass = Regular.Mass
+  _mass = Regular.Mass
   val score = Regular.Score
 
   def state: Vector2 = {
@@ -97,7 +97,7 @@ class Regular(var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
 }
 
 class Silver(var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
-  mass = Silver.Mass
+  _mass = Silver.Mass
   val score = Silver.Score
 
   def state: Vector2 = {
@@ -106,7 +106,7 @@ class Silver(var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
 }
 
 class Gold(var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
-  mass = Gold.Mass
+  _mass = Gold.Mass
   val score = Gold.Score
 
   def state: Vector2 = {

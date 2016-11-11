@@ -16,7 +16,7 @@ object Virus {
 }
 
 class Virus(var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
-  mass = Virus.Mass
+  _mass = Virus.Mass
 
   def state: Position = {
     position.state

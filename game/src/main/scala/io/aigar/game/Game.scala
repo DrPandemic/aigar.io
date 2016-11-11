@@ -23,7 +23,7 @@ class Game(val id: Int, playerIDs: List[Int]) {
     viruses.update(grid, players)
     resources.update(grid, players)
 //    val scoreModifications = resources.update(players)
-//    tick += 1
+    tick += 1
 //
 //    scoreModifications
     List(new ScoreModification(1, 0))
