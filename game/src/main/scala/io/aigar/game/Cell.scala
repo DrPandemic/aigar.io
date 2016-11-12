@@ -48,6 +48,7 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
   private var _velocity = new Vector2(0f, 0f)
   var target = position
   _mass = Cell.MinMass
+  score = 0
 
   /**
    * The maximum speed (length of the velocity) for the cell, in units per

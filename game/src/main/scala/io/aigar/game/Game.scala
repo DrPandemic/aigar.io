@@ -2,6 +2,7 @@ package io.aigar.game
 
 import io.aigar.score.ScoreModification
 import io.aigar.controller.response.Action
+import scala.collection.mutable.MutableList
 
 /**
  * Game holds the logic for an individual game being played
@@ -18,15 +19,16 @@ class Game(val id: Int, playerIDs: List[Int]) {
   val resources = new Resources(grid)
   var tick = 0
 
-  def update(deltaSeconds: Float): List[ScoreModification] = {
+  def update(deltaSeconds: Float): MutableList[ScoreModification] = {
     players.foreach { player => player.update(deltaSeconds, grid, players) }
     viruses.update(grid, players)
     resources.update(grid, players)
-//    val scoreModifications = resources.update(players)
+
+    val scoreModifications = resources.update(grid, players)
+
     tick += 1
-//
-//    scoreModifications
-    List(new ScoreModification(1, 0))
+
+    scoreModifications
   }
 
   def performAction(player_id: Int, actions: List[Action]): Unit = {

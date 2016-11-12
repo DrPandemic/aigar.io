@@ -2,6 +2,7 @@ package io.aigar.game
 
 import com.github.jpbetz.subspace.Vector2
 import io.aigar.score.ScoreModification
+import scala.collection.mutable.MutableList
 
 object Regular {
   final val Max = 250
@@ -34,14 +35,15 @@ object Gold {
 }
 
 class Resources(grid: Grid) extends EntityContainer {
+  var scoreModifications = MutableList[ScoreModification]()
   var regulars = List.fill(Regular.Max)(new Regular(grid.randomPosition))
   var silvers = List.fill(Silver.Max)(new Silver(grid.randomPosition))
   var golds = List.fill(Gold.Max)(new Gold(grid.randomPosition))
 
-  def update(grid: Grid, players: List[Player]): Unit = {
-    regulars = handleCollision(regulars, players).asInstanceOf[List[Regular]]
-    silvers = handleCollision(silvers, players).asInstanceOf[List[Silver]]
-    golds = handleCollision(golds, players).asInstanceOf[List[Gold]]
+  def update(grid: Grid, players: List[Player]): MutableList[ScoreModification] = {
+    regulars = handleCollision(regulars, players, scoreModifications).asInstanceOf[List[Regular]]
+    silvers = handleCollision(silvers, players, scoreModifications).asInstanceOf[List[Silver]]
+    golds = handleCollision(golds, players, scoreModifications).asInstanceOf[List[Gold]]
 
     if (shouldRespawn(regulars.size, Regular.Min)) {
       getRespawnPosition(grid, players, Regular.RespawnRetryAttempts) match {
@@ -63,13 +65,11 @@ class Resources(grid: Grid) extends EntityContainer {
         case _ =>
       }
     }
+    scoreModifications
   }
 
-  def onCellCollision(cell: Cell, entity: Entity): List[Entity] = {
-    //    val scoreModifications = resourceTypes.flatten(_.detectCollisions(players))
-    //    resourceTypes.foreach(_.spawnResources(players))
-    //
-    //    scoreModifications
+  def onCellCollision(cell: Cell, player: Player,  entity: Entity, scoreModifications: MutableList[ScoreModification]): List[Entity] = {
+    scoreModifications += ScoreModification(player.id, entity.score)
     reward(cell, entity.mass)
     List(entity)
   }
