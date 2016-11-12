@@ -9,9 +9,10 @@ import io.aigar.controller.response.Action
  */
 object Game {
   final val RankedGameId = 0
+  final val DefaultDuration = 60 * 20
 }
 
-class Game(val id: Int, playerIDs: List[Int], val duration: Int = 60 * 20) {
+class Game(val id: Int, playerIDs: List[Int], val duration: Int = Game.DefaultDuration) {
   val grid = new Grid(playerIDs.length * Grid.WidthPerPlayer, playerIDs.length * Grid.HeightPerPlayer)
   val players = createPlayers
   val viruses = new Viruses(grid)
