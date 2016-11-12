@@ -145,12 +145,6 @@ class GameControllerSpec extends MutableScalatraSpec
                  ("burst" -> false) ~
                  ("split" -> true) ~
                  ("trade" -> 0) ~
-                 ("target" -> ("x" -> 10) ~ ("y" -> 10)),
-
-               ("cell_id" -> 1234) ~
-                 ("burst" -> false) ~
-                 ("split" -> true) ~
-                 ("trade" -> 0) ~
                  ("target" -> ("x" -> 10) ~ ("y" -> 10))
              )
           )
