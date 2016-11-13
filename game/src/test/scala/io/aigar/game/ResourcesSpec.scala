@@ -4,6 +4,8 @@ import io.aigar.score._
 import com.github.jpbetz.subspace.Vector2
 import org.scalatest._
 
+import scala.collection.mutable.MutableList
+
 class ResourcesSpec extends FlatSpec with Matchers {
   "Resources" should "spawn at the right quantity" in {
     val resources = new Resources(new Grid(0, 0))
@@ -23,7 +25,7 @@ class ResourcesSpec extends FlatSpec with Matchers {
     resources.silvers = resources.silvers.take(Silver.Min - 1)
     resources.golds = resources.golds.take(Gold.Min - 1)
 
-    resources.update(grid, List(new Player(1, new Vector2(0, 0))))
+    resources.update(grid, List(new Player(1, Vector2(0, 0))))
 
     resources.regulars.size should be >= Regular.Min
     resources.silvers.size should be >= Silver.Min
@@ -34,32 +36,36 @@ class ResourcesSpec extends FlatSpec with Matchers {
     val grid = new Grid(100000, 1000000)
     val resources = new Resources(grid)
 
-    resources.update(grid, List(new Player(1, new Vector2(0, 0))))
+    resources.update(grid, List(new Player(1, Vector2(0, 0))))
 
     resources.regulars should have size Regular.Max
     resources.silvers should have size Silver.Max
     resources.golds should have size Gold.Max
   }
 
-//  "Resources update" should "return a list of ScoreModification" in {
-//    val resources = new Resources(new Grid(100, 100))
-//    resources.regular.positions = List(Vector2(0, 0), Vector2(40, 40))
-//    resources.silver.positions = List(Vector2(20, 20))
-//    resources.gold.positions = List(Vector2(40, 40))
-//
-//    val p1 = new Player(1, resources.regular.positions.head)
-//    val p2 = new Player(2, resources.silver.positions.head)
-//    val p3 = new Player(3, resources.gold.positions.head)
-//
-//    val resourceMessages = resources.update(new Grid(0, 0), List(p1, p2, p3))
-//
-//    resourceMessages should contain allOf (
-//      ScoreModification(p1.id, Regular.Score),
-//      ScoreModification(p2.id, Silver.Score),
-//      ScoreModification(p3.id, Gold.Score),
-//      ScoreModification(p3.id, Regular.Score)
-//    )
-//  }
+  "Resources update" should "return a list of ScoreModification" in {
+    val grid = new Grid(100, 100)
+    val resources = new Resources(new Grid(100, 100))
+
+    val p1 = new Player(1, Vector2(10, 10))
+    val p2 = new Player(2, Vector2(20, 20))
+    val p3 = new Player(3, Vector2(30, 30))
+
+    resources.regulars = List(
+      new Regular(p1.cells.head.position),
+      new Regular(p3.cells.head.position))
+    resources.silvers = List(new Silver(p2.cells.head.position))
+    resources.golds = List(new Gold(p3.cells.head.position))
+
+    val resourceMessages = resources.update(new Grid(0, 0), List(p1, p2, p3))
+
+    resourceMessages should contain allOf (
+      ScoreModification(p1.id, Regular.Score),
+      ScoreModification(p2.id, Silver.Score),
+      ScoreModification(p3.id, Gold.Score),
+      ScoreModification(p3.id, Regular.Score)
+    )
+  }
 
   "A Resource" should "be consumed on collision" in {
     val resources = new Resources(new Grid(100, 100))
@@ -85,30 +91,37 @@ class ResourcesSpec extends FlatSpec with Matchers {
     cell.mass should equal(initialMass + Regular.Mass)
   }
 
-//  it should "return a list of ScoreModifications for players that collided" in {
-//    val resource = new ResourceType(new Grid(0, 0), 0, 0, 5, 10)
-//    val r1 = Vector2(10f, 10f)
-//    val r2 = Vector2(50f, 50f)
-//    resource.positions = List(r1, r2)
-//
-//    val p1 = new Player(1, Vector2(10f, 10f))
-//    val p2 = new Player(2, Vector2(50f, 50f))
-//
-//    val resourceMessages = resource.detectCollisions(List(p1, p2))
-//
-//    resourceMessages should contain only (ScoreModification(p1.id, 10), ScoreModification(p2.id, 10))
-//  }
-//
-//  it should "return an empty list of ScoreModifications when no collision occurs" in {
-//    val resource = new ResourceType(new Grid(0, 0), 0, 0, 5, 10)
-//    val r1 = Vector2(10f, 10f)
-//    val r2 = Vector2(50f, 50f)
-//    resource.positions = List(r1, r2)
-//
-//    val p1 = new Player(1, Vector2(100f, 100f))
-//
-//    val resourceModification = resource.detectCollisions(List(p1))
-//
-//    resourceModification shouldBe empty
-//  }
+  "Resources collision" should "return the original list of entities minus the ones that collided with a player" in {
+    val resources = new Resources(new Grid(0, 0))
+    val p1 = new Player(1, Vector2(10f, 10f))
+    val p2 = new Player(2, Vector2(50f, 50f))
+
+    resources.regulars = List(
+      new Regular(p1.cells.head.position),
+      new Regular(p2.cells.head.position))
+
+    val regularsReturn = resources.handleCollision(
+      resources.regulars,
+      List(p1, p2),
+      Some(new MutableList[ScoreModification]()))
+
+    regularsReturn shouldBe empty
+  }
+
+  it should "return the original list of entities when no collision occurs" in {
+    val resources = new Resources(new Grid(0, 0))
+    val p1 = new Player(1, Vector2(10f, 10f))
+    val p2 = new Player(2, Vector2(50f, 50f))
+
+    resources.regulars = List(
+      new Regular(Vector2(20, 20)),
+      new Regular(Vector2(30, 30))
+
+    val regularsReturn = resources.handleCollision(
+      resources.regulars,
+      List(p1, p2),
+      Some(new MutableList[ScoreModification]()))
+
+    regularsReturn should contain theSameElementsAs resources.regulars
+  }
 }
