@@ -13,3 +13,13 @@ services:
       - ./api/nginx.conf:/etc/nginx/nginx.conf
       - ./api/mime_types:/etc/nginx/mime_types
       - ./api/logs/:/etc/nginx/logs/
+
+  web:
+    build: ./web/
+    volumes:
+      - ./web/src/:/src/src/
+      - ./web/package.json:/src/package.json
+      - ./web/gulpfile.js:/src/gulpfile.js
+      - ./web/webpack.config.js:/src/webpack.config.js
+      - ./web/node_modules/:/src/node_modules/
+    command: [npm, run, watch]
