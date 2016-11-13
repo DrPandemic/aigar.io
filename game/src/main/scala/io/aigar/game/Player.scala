@@ -1,8 +1,12 @@
 package io.aigar.game
 
 import io.aigar.controller.response.Action
+
 import scala.math.round
 import com.github.jpbetz.subspace.Vector2
+import io.aigar.score.ScoreModification
+
+import scala.collection.mutable.MutableList
 
 class Player(val id: Int, startPosition: Vector2) extends EntityContainer {
   var aiState: AIState = new NullState(this)
@@ -12,7 +16,7 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer {
 
   def update(deltaSeconds: Float, grid: Grid, players: List[Player]): Unit = {
     opponents = players diff List(this)
-    cells = handleCollision(cells, opponents).asInstanceOf[List[Cell]]
+    cells = handleCollision(cells, opponents, None).asInstanceOf[List[Cell]]
 
     if (shouldRespawn(cells.size, 1)) {
       getRespawnPosition(grid, opponents, Cell.RespawnRetryAttempts) match {
@@ -27,7 +31,7 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer {
     cells.foreach { _.update(deltaSeconds, grid) }
   }
 
-  def onCellCollision(opponentCell: Cell, entity: Entity): List[Entity] = {
+  def onCellCollision(opponentCell: Cell, player: Option[Player],  entity: Entity, scoreModifications: Option[MutableList[ScoreModification]]): List[Entity] = {
     var entityReturn = List[Entity]()
     val cell = entity.asInstanceOf[Cell]
 

@@ -35,15 +35,15 @@ object Gold {
 }
 
 class Resources(grid: Grid) extends EntityContainer {
-  var scoreModifications = MutableList[ScoreModification]()
   var regulars = List.fill(Regular.Max)(new Regular(grid.randomPosition))
   var silvers = List.fill(Silver.Max)(new Silver(grid.randomPosition))
   var golds = List.fill(Gold.Max)(new Gold(grid.randomPosition))
 
   def update(grid: Grid, players: List[Player]): MutableList[ScoreModification] = {
-    regulars = handleCollision(regulars, players, scoreModifications).asInstanceOf[List[Regular]]
-    silvers = handleCollision(silvers, players, scoreModifications).asInstanceOf[List[Silver]]
-    golds = handleCollision(golds, players, scoreModifications).asInstanceOf[List[Gold]]
+    var scoreModifications = MutableList[ScoreModification]()
+    regulars = handleCollision(regulars, players, Some(scoreModifications)).asInstanceOf[List[Regular]]
+    silvers = handleCollision(silvers, players, Some(scoreModifications)).asInstanceOf[List[Silver]]
+    golds = handleCollision(golds, players, Some(scoreModifications)).asInstanceOf[List[Gold]]
 
     if (shouldRespawn(regulars.size, Regular.Min)) {
       getRespawnPosition(grid, players, Regular.RespawnRetryAttempts) match {
@@ -68,8 +68,8 @@ class Resources(grid: Grid) extends EntityContainer {
     scoreModifications
   }
 
-  def onCellCollision(cell: Cell, player: Player,  entity: Entity, scoreModifications: MutableList[ScoreModification]): List[Entity] = {
-    scoreModifications += ScoreModification(player.id, entity.score)
+  def onCellCollision(cell: Cell, player: Option[Player],  entity: Entity, scoreModifications: Option[MutableList[ScoreModification]]): List[Entity] = {
+    scoreModifications.get += ScoreModification(player.get.id, entity.score)
     reward(cell, entity.mass)
     List(entity)
   }

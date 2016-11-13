@@ -21,13 +21,13 @@ trait EntityContainer {
     None
   }
 
-  def handleCollision(entities: List[Entity], players: List[Player], scoreModifications: MutableList[ScoreModification]): List[Entity] ={
+  def handleCollision(entities: List[Entity], players: List[Player], scoreModifications: Option[MutableList[ScoreModification]]): List[Entity] ={
     var entitiesReturn = List[Entity]()
     for (entity <- entities){
       for (player <- players) {
         for (cell <- player.cells) {
           if (cell.contains(entity.position)) {
-            entitiesReturn :::= onCellCollision(cell, player, entity, scoreModifications)
+            entitiesReturn :::= onCellCollision(cell, Some(player), entity, scoreModifications)
           }
         }
       }
@@ -35,5 +35,5 @@ trait EntityContainer {
     entities diff entitiesReturn
   }
 
-  def onCellCollision(cell: Cell, player: Player, entity: Entity, scoreModifications: MutableList[ScoreModification]): List[Entity]
+  def onCellCollision(cell: Cell, player: Option[Player], entity: Entity, scoreModifications: Option[MutableList[ScoreModification]]): List[Entity]
 }

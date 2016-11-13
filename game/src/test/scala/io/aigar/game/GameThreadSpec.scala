@@ -1,12 +1,12 @@
 import io.aigar.game._
-import com.github.jpbetz.subspace.Vector2
-import io.aigar.score.{ ScoreModification, ScoreThread }
+import io.aigar.score.{ScoreModification, ScoreThread}
 import io.aigar.controller.response.Action
 import io.aigar.game.serializable.Position
 import org.scalatest._
 import org.scalatest.mock.MockitoSugar
 import org.mockito.Mockito._
 import org.mockito.Matchers._
+import scala.collection.mutable.MutableList
 
 class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
   "A GameThread" should "not have a ranked game state at first" in {
@@ -71,8 +71,8 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
     game.games = List(ranked, notRanked)
     when(ranked.id).thenReturn(Game.RankedGameId)
     when(notRanked.id).thenReturn(Game.RankedGameId + 1)
-    when(ranked.update(any[Float])).thenReturn(List(ScoreModification(Game.RankedGameId, 1)))
-    when(notRanked.update(any[Float])).thenReturn(List(ScoreModification(Game.RankedGameId + 1, 2)))
+    when(ranked.update(any[Float])).thenReturn(MutableList(ScoreModification(Game.RankedGameId, 1)))
+    when(notRanked.update(any[Float])).thenReturn(MutableList(ScoreModification(Game.RankedGameId + 1, 2)))
 
     game.updateGames
 
