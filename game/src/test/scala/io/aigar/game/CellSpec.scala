@@ -290,8 +290,8 @@ class CellSpec extends FlatSpec with Matchers {
     val opponent = new Player(2, Vector2(10f, 10f))
     val largeCell = opponent.cells.head
 
-    smallCell.mass = 26
     largeCell.mass = 30
+    smallCell.mass = 26
 
     //The return is the entity to remove, hence the cell of the player if applicable
     player.onCellCollision(opponent.cells.head, None, player.cells.head, None) should contain (smallCell.asInstanceOf[Entity])

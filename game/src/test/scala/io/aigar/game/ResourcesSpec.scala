@@ -3,7 +3,6 @@ package io.aigar.game
 import io.aigar.score._
 import com.github.jpbetz.subspace.Vector2
 import org.scalatest._
-
 import scala.collection.mutable.MutableList
 
 class ResourcesSpec extends FlatSpec with Matchers {

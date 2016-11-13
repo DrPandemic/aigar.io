@@ -22,9 +22,7 @@ class Game(val id: Int, playerIDs: List[Int]) {
   def update(deltaSeconds: Float): MutableList[ScoreModification] = {
     players.foreach { player => player.update(deltaSeconds, grid, players) }
     viruses.update(grid, players)
-
     val scoreModifications = resources.update(grid, players)
-
     tick += 1
 
     scoreModifications

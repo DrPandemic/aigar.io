@@ -1,11 +1,9 @@
 package io.aigar.game
 
 import io.aigar.controller.response.Action
-
 import scala.math.round
 import com.github.jpbetz.subspace.Vector2
 import io.aigar.score.ScoreModification
-
 import scala.collection.mutable.MutableList
 
 class Player(val id: Int, startPosition: Vector2) extends EntityContainer {
@@ -27,7 +25,6 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer {
         case _ =>
       }
     }
-
     cells.foreach { _.update(deltaSeconds, grid) }
   }
 
