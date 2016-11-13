@@ -10,9 +10,11 @@ services:
     ports:
       - 8080:80
     volumes:
-      - ./api/nginx.conf:/etc/nginx/nginx.conf
+      - ./api/nginx.docker.conf:/etc/nginx/nginx.conf
       - ./api/mime_types:/etc/nginx/mime_types
       - ./api/logs/:/etc/nginx/logs/
+    volumes_from:
+      - web:ro
 
   web:
     build: ./web/
@@ -21,5 +23,5 @@ services:
       - ./web/package.json:/src/package.json
       - ./web/gulpfile.js:/src/gulpfile.js
       - ./web/webpack.config.js:/src/webpack.config.js
-      - ./web/node_modules/:/src/node_modules/
+      - ./web/dist/:/src/dist/
     command: [npm, run, watch]
