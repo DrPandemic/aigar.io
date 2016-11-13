@@ -31,6 +31,8 @@ export const playerColors = [
   "#2196F3",
   "#00BCD4"
 ];
+export const virusColor = "#00ff00";
+export const numberOfSpikes = 25;
 
 export const gameRefresh = 24;
 // delay (ms) between the current time and the time of the currently displayed state
