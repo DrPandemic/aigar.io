@@ -1,6 +1,6 @@
 package io.aigar.controller
 
-import io.aigar.controller.response.AdminQuery
+import io.aigar.controller.response.{ AdminQuery, SetRankedDurationCommand, SetRankedDurationQuery, SuccessResponse }
 import io.aigar.game.GameThread
 import io.aigar.model.PlayerRepository
 import org.json4s.MappingException
@@ -24,5 +24,18 @@ class AdminController(password: String, game: GameThread, playerRepository: Play
 
   post("/echo") {
     parse(request.body).extract[AdminQuery]
+  }
+
+  patch("/ranked") {
+    try {
+      val query = parse(request.body).extract[SetRankedDurationQuery]
+      val command = SetRankedDurationCommand(query.duration)
+      game.adminQueue.put(command)
+    } catch {
+      case e: MappingException => halt(422)
+      case e: java.lang.NumberFormatException => halt(400)
+    }
+
+    SuccessResponse("ok")
   }
 }

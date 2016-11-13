@@ -1,5 +1,6 @@
 package io.aigar.game
 
+import io.aigar.controller.response.AdminCommand
 import io.aigar.score.ScoreThread
 import io.aigar.controller.response.Action
 import java.util.concurrent.LinkedBlockingQueue
@@ -26,6 +27,7 @@ class GameThread(scoreThread: ScoreThread, playerIDs: List[Int]) extends Runnabl
   val MillisecondsPerTick = 16
 
   final val actionQueue = new LinkedBlockingQueue[ActionQueryWithId]()
+  final val adminQueue = new LinkedBlockingQueue[AdminCommand]()
 
   private var states: Map[Int, serializable.GameState] = Map()
   var games: List[Game] = List(createRankedGame)
@@ -35,6 +37,8 @@ class GameThread(scoreThread: ScoreThread, playerIDs: List[Int]) extends Runnabl
   var previousTime = 0f
   var currentTime = MillisecondsPerTick / 1000f // avoid having an initial 0 delta time
 
+  var nextRankedDuration = Game.DefaultDuration
+
   /**
    * Safe way to get the game state of a particular game from another thread.
    */
@@ -43,7 +47,7 @@ class GameThread(scoreThread: ScoreThread, playerIDs: List[Int]) extends Runnabl
   }
 
   def createRankedGame: Game = {
-    new Game(Game.RankedGameId, playerIDs)
+    new Game(Game.RankedGameId, playerIDs, nextRankedDuration)
   }
 
   def run: Unit = {
