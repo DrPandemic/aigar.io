@@ -16,22 +16,22 @@ class ResourcesSpec extends FlatSpec with Matchers {
   }
 
   it should "respawn when the quantity is minimal" in {
-    val grid = new Grid(100, 100)
+    val grid = new Grid(100000, 1000000)
     val resources = new Resources(grid)
 
-    resources.regulars = resources.regulars.take(Regular.Min)
-    resources.silvers = resources.silvers.take(Silver.Min)
-    resources.golds = resources.golds.take(Gold.Min)
+    resources.regulars = resources.regulars.take(Regular.Min - 1)
+    resources.silvers = resources.silvers.take(Silver.Min - 1)
+    resources.golds = resources.golds.take(Gold.Min - 1)
 
     resources.update(grid, List(new Player(1, new Vector2(0, 0))))
 
-    resources.regulars.size should be > Regular.Min
-    resources.silvers.size should be > Silver.Min
-    resources.golds.size should be > Gold.Min
+    resources.regulars.size should be >= Regular.Min
+    resources.silvers.size should be >= Silver.Min
+    resources.golds.size should be >= Gold.Min
   }
 
   it should "not respawn when the quantity is maximal" in {
-    val grid = new Grid(100, 100)
+    val grid = new Grid(100000, 1000000)
     val resources = new Resources(grid)
 
     resources.update(grid, List(new Player(1, new Vector2(0, 0))))
