@@ -19,7 +19,7 @@ services:
       - "game:game"
 
   web:
-    build: drpandemic/aigario-web-dev
+    build: ./web/
     volumes:
       - ./web/src/:/src/src/
       - ./web/package.json:/src/package.json
@@ -29,7 +29,7 @@ services:
     command: [npm, run, watch]
 
   game:
-    build: drpandemic/aigario-game-dev
+    build: ./game/
     expose:
       - 8080
     volumes:
