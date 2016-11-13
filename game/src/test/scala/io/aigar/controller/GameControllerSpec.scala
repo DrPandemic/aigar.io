@@ -137,8 +137,19 @@ class GameControllerSpec extends MutableScalatraSpec
     }
 
     "403 when the player secret doesn't match" in {
-      postJson("/nope/action", defaultActionJson) {
-        status must_== 400
+      val action =
+        ("player_secret" -> "nope") ~
+          ("actions" ->
+             List(
+               ("cell_id" -> 123) ~
+                 ("burst" -> false) ~
+                 ("split" -> true) ~
+                 ("trade" -> 0) ~
+                 ("target" -> ("x" -> 10) ~ ("y" -> 10))
+             )
+          )
+      postJson("/1/action", action) {
+        status must_== 403
       }
     }
   }

@@ -1,5 +1,6 @@
 package io.aigar.controller.response
-import io.aigar.game.serializable._
+
+import io.aigar.game.serializable.{ GameState, Position }
 
 case class ErrorResponse(error: String)
 
