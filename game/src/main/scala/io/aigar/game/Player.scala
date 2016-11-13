@@ -31,7 +31,10 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer {
     cells.foreach { _.update(deltaSeconds, grid) }
   }
 
-  def onCellCollision(opponentCell: Cell, player: Option[Player],  entity: Entity, scoreModifications: Option[MutableList[ScoreModification]]): List[Entity] = {
+  def onCellCollision(opponentCell: Cell,
+                      player: Option[Player],
+                      entity: Entity,
+                      scoreModifications: Option[MutableList[ScoreModification]]): List[Entity] = {
     var entityReturn = List[Entity]()
     val cell = entity.asInstanceOf[Cell]
 

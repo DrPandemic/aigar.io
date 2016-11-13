@@ -42,7 +42,10 @@ class Viruses(grid: Grid) extends EntityContainer {
     }
   }
 
-  def onCellCollision(cell: Cell, player: Option[Player],  entity: Entity, scoreModifications: Option[MutableList[ScoreModification]]): List[Entity] = {
+  def onCellCollision(cell: Cell,
+                      player: Option[Player],
+                      entity: Entity,
+                      scoreModifications: Option[MutableList[ScoreModification]]): List[Entity] = {
     var entityReturn = List[Entity]()
 
     if (cell.mass > Virus.Mass * Cell.MassDominanceRatio) {

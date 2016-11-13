@@ -78,18 +78,18 @@ class GameSpec extends FlatSpec with Matchers {
     //TODO add more tests as the rest gets implemented
   }
 
-//  "update" should "return a list of ScoreModification" in {
-//    val game = new Game(42, List(0))
-//    game.resources.regular.positions = List(Vector2(40, 0))
-//    val player = game.players.head
-//    player.cells.head.position = Vector2(40, 0)
-//    player.cells.head.target = Vector2(40, 0)
-//    player.aiState = new NullState(player)
-//
-//    val resourceModifications = game.update(0f)
-//
-//    resourceModifications should contain (ScoreModification(player.id, Regular.Score))
-//  }
+  "update" should "return a list of ScoreModification" in {
+    val game = new Game(42, List(0))
+    game.resources.regulars = List(new Regular(Vector2(40, 0)))
+    val player = game.players.head
+    player.cells.head.position = Vector2(40, 0)
+    player.cells.head.target = Vector2(40, 0)
+    player.aiState = new NullState(player)
+
+    val resourceModifications = game.update(0f)
+
+    resourceModifications should contain (ScoreModification(player.id, Regular.Score))
+  }
 
   "performAction" should "update cell's targets" in {
     val game = new Game(0, List(1, 2, 3))

@@ -113,21 +113,15 @@ class ResourcesSpec extends FlatSpec with Matchers {
     val p1 = new Player(1, Vector2(10f, 10f))
     val p2 = new Player(2, Vector2(50f, 50f))
 
+    // Be aware to be out of the radius of the cells
     resources.regulars = List(
       new Regular(Vector2(25, 25)),
       new Regular(Vector2(30, 30)))
-
-    println(p1.cells.head.position)
-    println(p2.cells.head.position)
-    for(resource <- resources.regulars) println(resource.position)
 
     val regularsReturn = resources.handleCollision(
       resources.regulars,
       List(p1, p2),
       Some(new MutableList[ScoreModification]()))
-
-
-
 
     regularsReturn should contain theSameElementsAs resources.regulars
   }

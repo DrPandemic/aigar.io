@@ -68,7 +68,10 @@ class Resources(grid: Grid) extends EntityContainer {
     scoreModifications
   }
 
-  def onCellCollision(cell: Cell, player: Option[Player],  entity: Entity, scoreModifications: Option[MutableList[ScoreModification]]): List[Entity] = {
+  def onCellCollision(cell: Cell,
+                      player: Option[Player],
+                      entity: Entity,
+                      scoreModifications: Option[MutableList[ScoreModification]]): List[Entity] = {
     scoreModifications.get += ScoreModification(player.get.id, entity.score)
     reward(cell, entity.mass)
     List(entity)

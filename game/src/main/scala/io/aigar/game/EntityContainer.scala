@@ -7,7 +7,9 @@ import scala.collection.mutable.MutableList
 trait EntityContainer {
   def shouldRespawn(size: Int, min: Int): Boolean = size < min
 
-  def getRespawnPosition(grid: Grid, players: List[Player], respawnRetryAttempts: Int): Option[Vector2] = {
+  def getRespawnPosition(grid: Grid,
+                         players: List[Player],
+                         respawnRetryAttempts: Int): Option[Vector2] = {
     1 to respawnRetryAttempts foreach { _ =>
       var collides = false
       val newPosition = grid.randomPosition
@@ -21,7 +23,9 @@ trait EntityContainer {
     None
   }
 
-  def handleCollision(entities: List[Entity], players: List[Player], scoreModifications: Option[MutableList[ScoreModification]]): List[Entity] ={
+  def handleCollision(entities: List[Entity],
+                      players: List[Player],
+                      scoreModifications: Option[MutableList[ScoreModification]]): List[Entity] ={
     var entitiesReturn = List[Entity]()
     for (entity <- entities){
       for (player <- players) {
@@ -35,5 +39,8 @@ trait EntityContainer {
     entities diff entitiesReturn
   }
 
-  def onCellCollision(cell: Cell, player: Option[Player], entity: Entity, scoreModifications: Option[MutableList[ScoreModification]]): List[Entity]
+  def onCellCollision(cell: Cell,
+                      player: Option[Player],
+                      entity: Entity,
+                      scoreModifications: Option[MutableList[ScoreModification]]): List[Entity]
 }
