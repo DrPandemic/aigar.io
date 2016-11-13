@@ -4,7 +4,7 @@ The base URL for the API is `/api/[version]/` and the current version is `1`. Th
 ## HTTP codes
 We use HTTP codes to provide the query state. Every successful query will return a `200`. Every error will return a standard error code.
 
-## Structure
+## Response structure
 Every successful response will contain a root element named `data`.
 ```json
 {
@@ -21,6 +21,8 @@ Every error will contain a root element named `error` with an error message.
 ## Main leaderboard
 ### Fetch the global score
 `GET /leaderboard`
+
+**Response**
 ```json
 [{
 	"player_id": "string", 
@@ -32,6 +34,8 @@ Every error will contain a root element named `error` with an error message.
 ## Game
 ### Fetch a game state
 `GET /game/:game_id`
+
+**Response**
 ```json
 {
     "id": "int",
@@ -93,7 +97,15 @@ Every error will contain a root element named `error` with an error message.
 ```
 
 ### Create a game
-`POST /game` <- `{"player_secret" : "string"}`
+`POST /game`
+
+**Request**
+```json
+{
+    "player_secret" : "string"
+}
+```
+**Response**
 ```json
 {
     "game_id": "int",
@@ -102,7 +114,9 @@ Every error will contain a root element named `error` with an error message.
 ```
 
 ### Create an action
-`POST/game/:game_id/action` <-
+`POST /game/:game_id/action`
+
+**Request**
 ```json
 {
     "player_secret": "string",
@@ -119,9 +133,73 @@ Every error will contain a root element named `error` with an error message.
     }]
 }
 ```
-
+**Response**
 ```json
 {
     "data": "ok"
+}
+```
+
+## Administrator
+### Request structure
+Every query will need to contain the key `administratorPassword` with the right password.
+```json
+{
+    "administratorPassword": "string",
+    ...
+}
+```
+
+### Launch competition
+Note that putting running to `false` won't have any effect.
+
+`PATCH /admin/competition`
+
+**Request**
+```json
+{
+    "running": "boolean"
+}
+```
+**Response**
+```json
+{
+    "data": "ok"
+}
+```
+
+### Set ranked game duration
+This will set the duration of the next ranked game.
+
+`PATCH /admin/ranked`
+
+**Request**
+```json
+{
+    "duration": "int"
+}
+```
+**Response**
+```json
+{
+    "data": "ok"
+}
+```
+
+### Create player
+`POST /admin/player`
+
+**Request**
+```json
+{
+    "playerName": "string"
+}
+```
+**Response**
+```json
+{
+    "data": {
+        "playerSecret": "string"
+    }
 }
 ```
