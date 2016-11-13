@@ -1,0 +1,15 @@
+version: '2'
+
+volumes:
+  database_data:
+    driver: local
+
+services:
+  api:
+    image: nginx:alpine
+    ports:
+      - 8080:80
+    volumes:
+      - ./api/nginx.conf:/etc/nginx/nginx.conf
+      - ./api/mime_types:/etc/nginx/mime_types
+      - ./api/logs/:/etc/nginx/logs/
