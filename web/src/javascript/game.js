@@ -107,11 +107,12 @@ export function drawResourcesOnMap(resources, canvas) {
 
 export function drawVirusesOnMap(viruses, canvas) {
   const context = canvas.getContext("2d");
-  //temporary because we are not sent the radius for the virus
-  let radius = 25;
 
   for(const virus of viruses) {
-    drawVirusShape(virus, constants.numberOfSpikes, radius, context, constants.virusColor);
+    const grad = context.createRadialGradient(virus.x,virus.y, 5, virus.x, virus.y, constants.virusRadius);
+    grad.addColorStop(0, constants.virusColor);
+    grad.addColorStop(1, constants.virusEndColor);
+    drawVirusShape(virus, constants.numberOfSpikes, constants.virusRadius, context, grad);
   }
 }
 
