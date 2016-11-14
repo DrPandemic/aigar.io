@@ -1,6 +1,11 @@
 package io.aigar.controller
 
-import io.aigar.controller.response.{ AdminQuery, SetRankedDurationCommand, SetRankedDurationQuery, SuccessResponse }
+import io.aigar.controller.response.{
+  AdminQuery,
+  SetRankedDurationCommand,
+  SetRankedDurationQuery,
+  SuccessResponse
+}
 import io.aigar.game.GameThread
 import io.aigar.model.PlayerRepository
 import org.json4s.MappingException

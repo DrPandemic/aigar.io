@@ -1,13 +1,13 @@
 package io.aigar.controller.response
 
-trait AdminQuery {
-  val administrator_password: String
-}
+case class AdminQuery (
+  administrator_password: String
+ )
 
 case class SetRankedDurationQuery(
-  val administrator_password: String,
-  val duration: Int
-) extends AdminQuery
+  administrator_password: String,
+  duration: Int
+)
 
 /**
   * Class used to transfer commands from the AdminController to the game thread.
