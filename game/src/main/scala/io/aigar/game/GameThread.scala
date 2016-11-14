@@ -65,18 +65,21 @@ class GameThread(scoreThread: ScoreThread, playerIDs: List[Int]) extends Runnabl
     }
   }
 
-  def updateGames: Unit = {
-    // Test to see if the ranked is over
+  private def resetRankedGameIfExpired: Unit = {
     games.find(_.id == Game.RankedGameId) match {
       case Some(ranked) => {
-        val difference = GameThread.time - ranked.startTime
-        if(ranked.duration < difference) {
+        val elapsed = GameThread.time - ranked.startTime
+        if(ranked.duration < elapsed) {
           games = games diff List(ranked)
           games = createRankedGame :: games
         }
       }
-      case None => {}
+      case None =>
     }
+  }
+
+  def updateGames: Unit = {
+    resetRankedGameIfExpired
 
     for (game <- games) {
       val deltaTime = currentTime - previousTime
