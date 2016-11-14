@@ -16,7 +16,7 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer {
     opponents = players diff List(this)
     cells = handleCollision(cells, opponents, None).asInstanceOf[List[Cell]]
 
-    if (shouldRespawn(cells.size, 1)) {
+    if (shouldRespawn(cells.size, 1, None)) {
       getRespawnPosition(grid, opponents, Cell.RespawnRetryAttempts) match {
         case Some(position) => {
           currentCellId += 1

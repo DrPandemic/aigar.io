@@ -5,7 +5,7 @@ import io.aigar.score.ScoreModification
 import scala.collection.mutable.MutableList
 
 trait EntityContainer {
-  def shouldRespawn(size: Int, min: Int): Boolean = size < min
+  def shouldRespawn(size: Int, min: Int, max: Option[Int]): Boolean = size < min
 
   def getRespawnPosition(grid: Grid,
                          players: List[Player],
