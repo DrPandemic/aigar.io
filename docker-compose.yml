@@ -25,7 +25,7 @@ services:
       - ./web/package.json:/src/package.json
       - ./web/gulpfile.js:/src/gulpfile.js
       - ./web/webpack.config.js:/src/webpack.config.js
-      - ./web/dist/:/src/dist/
+      - ./web/docker-dist/:/src/dist/
     command: [npm, run, watch]
 
   game:
@@ -33,5 +33,6 @@ services:
     expose:
       - 8080
     volumes:
-      - ./game/:/game/
+      - ./game/project/:/game/project/
+      - ./game/src/:/game/src/
     command: [sbt, "~;jetty:stop;jetty:start"]
