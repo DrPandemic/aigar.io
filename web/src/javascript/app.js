@@ -81,6 +81,6 @@ function initButtonOnClick() {
   };
 }
 
-initButtonOnClick()
+initButtonOnClick();
 updateGame();
 updateLeaderBoard();
