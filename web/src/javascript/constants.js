@@ -32,7 +32,7 @@ export const playerColors = [
   "#00BCD4"
 ];
 export const virusColor = "#00ff00";
-export const virusRGBColor = "#004e00";
+export const virusEndColor = "#004e00";
 export const numberOfSpikes = 25;
 export const virusRadius = 34;
 
