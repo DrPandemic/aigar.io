@@ -30,7 +30,7 @@ class GameSpec extends FlatSpec with Matchers {
   it should "create just enough viruses" in {
     val game = new Game(42, 1 to 10 toList)
 
-    game.viruses.state should have size Virus.Quantity
+    game.viruses.state should have size Virus.Max
   }
 
   it should "spawn players at distinct positions at creation" in {

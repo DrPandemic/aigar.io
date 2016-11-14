@@ -45,21 +45,21 @@ class Resources(grid: Grid) extends EntityContainer {
     silvers = handleCollision(silvers, players, Some(scoreModifications)).asInstanceOf[List[Silver]]
     golds = handleCollision(golds, players, Some(scoreModifications)).asInstanceOf[List[Gold]]
 
-    if (shouldRespawn(regulars.size, Regular.Min, Some(Regular.Max))) {
+    if (shouldRespawn(regulars.size, Regular.Min, Regular.Max)) {
       getRespawnPosition(grid, players, Regular.RespawnRetryAttempts) match {
         case Some(position) => regulars :::= List(new Regular(position))
         case _ =>
       }
     }
 
-    if (shouldRespawn(silvers.size, Silver.Min, Some(Silver.Max))) {
+    if (shouldRespawn(silvers.size, Silver.Min, Silver.Max)) {
       getRespawnPosition(grid, players, Silver.RespawnRetryAttempts) match {
         case Some(position) => silvers :::= List(new Silver(position))
         case _ =>
       }
     }
 
-    if (shouldRespawn(golds.size, Gold.Min, Some(Gold.Max))) {
+    if (shouldRespawn(golds.size, Gold.Min, Gold.Max)) {
       getRespawnPosition(grid, players, Gold.RespawnRetryAttempts) match {
         case Some(position) => golds :::= List(new Gold(position))
         case _ =>
@@ -75,11 +75,6 @@ class Resources(grid: Grid) extends EntityContainer {
     scoreModifications.get += ScoreModification(player.get.id, entity.score)
     reward(cell, entity.mass)
     List(entity)
-  }
-
-  override def shouldRespawn(size: Int, min: Int, max: Option[Int]): Boolean = {
-    val ratio = (size - min).toFloat / (max.get - min)
-    scala.util.Random.nextFloat >= ratio
   }
 
   def reward(cell: Cell, mass: Float): Unit = {

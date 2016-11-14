@@ -16,7 +16,7 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer {
     opponents = players diff List(this)
     cells = handleCollision(cells, opponents, None).asInstanceOf[List[Cell]]
 
-    if (shouldRespawn(cells.size, 1, None)) {
+    if (shouldRespawn(cells.size, 1)) {
       getRespawnPosition(grid, opponents, Cell.RespawnRetryAttempts) match {
         case Some(position) => {
           currentCellId += 1
@@ -41,6 +41,8 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer {
     }
     entityReturn
   }
+
+  def shouldRespawn(size: Int, min: Int): Boolean = size < min
 
   def state: serializable.Player = {
     val mass = round(cells.map(_.mass).sum)

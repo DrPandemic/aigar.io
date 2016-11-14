@@ -7,7 +7,8 @@ import io.aigar.score.ScoreModification
 import scala.collection.mutable.MutableList
 
 object Virus {
-  final val Quantity = 15
+  final val Max = 15
+  final val Min = 10
   final val Mass = 100
   final val RespawnRetryAttempts = 15
 
@@ -29,12 +30,12 @@ class Virus(var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
 class Viruses(grid: Grid) extends EntityContainer {
   val scoreModifications = MutableList[ScoreModification]()
 
-  var viruses = List.fill(Virus.Quantity)(new Virus(grid.randomPosition))
+  var viruses = List.fill(Virus.Max)(new Virus(grid.randomPosition))
 
   def update(grid: Grid, players: List[Player]): Unit = {
     viruses = handleCollision(viruses, players, None).asInstanceOf[List[Virus]]
 
-    if (shouldRespawn(viruses.size, Virus.Quantity, None)) {
+    if (shouldRespawn(viruses.size, Virus.Min, Virus.Max)) {
       getRespawnPosition(grid, players, Virus.RespawnRetryAttempts) match {
         case Some(position) => viruses :::= List(new Virus(position))
         case _ =>
