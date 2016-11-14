@@ -1,4 +1,5 @@
 import io.aigar.game._
+import io.aigar.controller.response.SetRankedDurationCommand
 import com.github.jpbetz.subspace.Vector2
 import io.aigar.score.{ ScoreModification, ScoreThread }
 import io.aigar.controller.response.Action
@@ -69,6 +70,26 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
 
     p1.cells.find(_.id == 0).get.target should equal(Position(0f, 10f))
     p2.cells.find(_.id == 0).get.target should equal(Position(20f, 0f))
+  }
+
+  "transferAdminCommands" should "empty the adminCommandQueue" in {
+    val scoreThread = new ScoreThread(null)
+    val game = new GameThread(scoreThread, List())
+    game.adminCommandQueue.put(SetRankedDurationCommand(10))
+
+    game.transferAdminCommands
+
+    game.adminCommandQueue shouldBe empty
+  }
+
+  it should "sets the nextRankedDuration" in {
+    val scoreThread = new ScoreThread(null)
+    val game = new GameThread(scoreThread, List())
+    game.adminCommandQueue.put(SetRankedDurationCommand(1337))
+
+    game.transferAdminCommands
+
+    game.nextRankedDuration shouldBe 1337
   }
 
   "updateGames" should "put ScoreModifications from games into the ScoreThread only for the ranked game" in {

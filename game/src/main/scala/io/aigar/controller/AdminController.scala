@@ -35,7 +35,7 @@ class AdminController(password: String, game: GameThread, playerRepository: Play
     try {
       val query = parse(request.body).extract[SetRankedDurationQuery]
       val command = SetRankedDurationCommand(query.duration)
-      game.adminQueue.put(command)
+      game.adminCommandQueue.put(command)
     } catch {
       case e: MappingException => halt(422)
       case e: java.lang.NumberFormatException => halt(400)

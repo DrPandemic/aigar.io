@@ -69,12 +69,12 @@ class AdminControllerSpec extends MutableScalatraSpec
 
   "PATCH /rakned" should {
     "put the action in the admin queue" in {
-      game.adminQueue.isEmpty() must be_==(true)
+      game.adminCommandQueue.isEmpty() must be_==(true)
       patchJson("ranked", defaultActionJson ~ ("duration" -> 10)) {
         status must_== 200
 
-        game.adminQueue.isEmpty() must be_==(false)
-        val command = game.adminQueue.take()
+        game.adminCommandQueue.isEmpty() must be_==(false)
+        val command = game.adminCommandQueue.take()
         command must haveClass[SetRankedDurationCommand]
         command.asInstanceOf[SetRankedDurationCommand].duration must be_==(10)
       }

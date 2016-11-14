@@ -1,6 +1,6 @@
 package io.aigar.game
 
-import io.aigar.controller.response.AdminCommand
+import io.aigar.controller.response.{ AdminCommand, SetRankedDurationCommand }
 import io.aigar.score.ScoreThread
 import io.aigar.controller.response.Action
 import java.util.concurrent.LinkedBlockingQueue
@@ -27,7 +27,7 @@ class GameThread(scoreThread: ScoreThread, playerIDs: List[Int]) extends Runnabl
   val MillisecondsPerTick = 16
 
   final val actionQueue = new LinkedBlockingQueue[ActionQueryWithId]()
-  final val adminQueue = new LinkedBlockingQueue[AdminCommand]()
+  final val adminCommandQueue = new LinkedBlockingQueue[AdminCommand]()
 
   private var states: Map[Int, serializable.GameState] = Map()
   var games: List[Game] = List(createRankedGame)
@@ -53,6 +53,7 @@ class GameThread(scoreThread: ScoreThread, playerIDs: List[Int]) extends Runnabl
   def run: Unit = {
     while (running) {
       transferActions
+      transferAdminCommands
       updateGames
 
       Thread.sleep(MillisecondsPerTick)
@@ -64,7 +65,15 @@ class GameThread(scoreThread: ScoreThread, playerIDs: List[Int]) extends Runnabl
       val action = actionQueue.take
       games.find(_.id == action.game_id) match {
         case Some(game) => game.performAction(action.player_id, action.actions)
-        case None => {}
+        case None =>
+      }
+    }
+  }
+
+  def transferAdminCommands: Unit = {
+    while(!adminCommandQueue.isEmpty) {
+      adminCommandQueue.take match {
+        case command: SetRankedDurationCommand => nextRankedDuration = command.duration
       }
     }
   }
