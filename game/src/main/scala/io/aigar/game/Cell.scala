@@ -2,7 +2,7 @@ package io.aigar.game
 
 import io.aigar.controller.response.Action
 import scala.math.{max, round, pow}
-import io.aigar.game.Vector2Utils.StateAddon
+import io.aigar.game.Vector2Utils.Vector2Addons
 import io.aigar.game.Position2Utils.PositionAddon
 import com.github.jpbetz.subspace.Vector2
 import scala.math._
