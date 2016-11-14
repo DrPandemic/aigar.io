@@ -50,18 +50,6 @@ class PlayerSpec extends FlatSpec with Matchers {
     player.aiState shouldBe 'active
   }
 
-  it should "remove a cell from its list when it is dead" in {
-    val player = new Player(1, new Vector2(0f, 0f))
-    val cell1 = new Cell(1, player)
-    val cell2 = new Cell(2, player)
-
-    player.cells = List(cell1, cell2)
-
-    player.removeCell(cell1)
-
-    player.cells should contain only cell2
-  }
-
   "performAction" should "update cell's targets" in {
     val player = new Player(1, new Vector2(0f, 0f))
     player.cells = List(new Cell(0, player), new Cell(1, player))
@@ -87,19 +75,18 @@ class PlayerSpec extends FlatSpec with Matchers {
 
   "update" should "respawn one cell for itself if it has no mo' cell" in {
     val player = new Player(1, new Vector2(0f, 0f))
+    val opponent = new Player(2, new Vector2(0f, 0f))
     val cell1 = new Cell(1, player)
     val cell2 = new Cell(2, player)
-    cell2.mass = 2 * Cell.MinMass
 
+    cell2.mass = 2 * Cell.MinMass
+    opponent.cells = List(cell2)
     player.cells = List(cell1)
 
-    cell2.eats(List(player))
-
-    player.cells shouldBe empty
-
-    player.update(1f, new Grid(0, 0), List(new Player(2, new Vector2(1f, 1f))))
+    player.update(1f, new Grid(100, 100), List(player, opponent))
 
     player.cells.size should equal(1)
+    player.cells.head should not be theSameInstanceAs(cell1)
   }
 
   it should "spawn cell with never used id" in {

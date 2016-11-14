@@ -8,10 +8,14 @@ object Virus {
   final val Quantity = 15
   final val Mass = 100
   final val RespawnRetryAttempts = 15
+
+  /**
+    * Impact on the mass of the cell eating the Virus
+    */
+  final val ImpactOnMass = 0.75f
 }
 
-class Virus(spawnPosition: Vector2) extends Entity {
-  position = spawnPosition
+class Virus(var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
   mass = Virus.Mass
 
   def state: Position = {
@@ -25,7 +29,7 @@ class Viruses(grid: Grid) extends EntityContainer {
   def shouldRespawn: Boolean = viruses.size < Virus.Quantity
 
   def update(grid: Grid, players: List[Player]): Unit = {
-    viruses = detectCollisions(viruses, players).asInstanceOf[List[Virus]]
+    viruses = handleCollision(viruses, players).asInstanceOf[List[Virus]]
 
     if (shouldRespawn) {
       getRespawnPosition(grid, players, Virus.RespawnRetryAttempts) match {
@@ -33,6 +37,18 @@ class Viruses(grid: Grid) extends EntityContainer {
         case _ =>
       }
     }
+  }
+
+  def onCellCollision(cell: Cell, entity: Entity): List[Entity] = {
+    var entityReturn = List[Entity]()
+
+    if (cell.mass > Virus.Mass * Cell.MassDominanceRatio) {
+      cell.mass = cell.mass * Virus.ImpactOnMass
+      // TODO Split the cell ;)
+      entityReturn = List(entity)
+    }
+    //Returns the entity to remove from the list
+    entityReturn
   }
 
   def state: List[Position] = {

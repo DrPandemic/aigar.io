@@ -19,18 +19,19 @@ trait EntityContainer {
     None
   }
 
-  def detectCollisions(entities: List[Entity], players: List[Player]): List[Entity] ={
-    var entitiesReturn = entities
-    for(entity <- entities){
-      for(player <- players) {
-        for(cell <- player.cells) {
-          if(cell.contains(entity.position) && cell.mass > Virus.Mass * Cell.MassDominanceRatio){
-            // TODO : Split cell
-            entitiesReturn = entities diff List(entity)
+  def handleCollision(entities: List[Entity], players: List[Player]): List[Entity] ={
+    var entitiesReturn = List[Entity]()
+    for (entity <- entities){
+      for (player <- players) {
+        for (cell <- player.cells) {
+          if (cell.contains(entity.position)) {
+            entitiesReturn :::= onCellCollision(cell, entity)
           }
         }
       }
     }
-    entitiesReturn
+    entities diff entitiesReturn
   }
+
+  def onCellCollision(cell: Cell, entity: Entity): List[Entity]
 }
