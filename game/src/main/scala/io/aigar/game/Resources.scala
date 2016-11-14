@@ -72,7 +72,7 @@ class Resources(grid: Grid) extends EntityContainer {
                       player: Option[Player],
                       entity: Entity,
                       scoreModifications: Option[MutableList[ScoreModification]]): List[Entity] = {
-    scoreModifications.get += ScoreModification(player.get.id, entity.score)
+    scoreModifications.get += ScoreModification(player.get.id, entity.scoreModification)
     reward(cell, entity.mass)
     List(entity)
   }
@@ -92,7 +92,7 @@ class Resources(grid: Grid) extends EntityContainer {
 
 class Regular(var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
   _mass = Regular.Mass
-  val score = Regular.Score
+  val scoreModification = Regular.Score
 
   def state: Vector2 = {
     position
@@ -101,7 +101,7 @@ class Regular(var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
 
 class Silver(var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
   _mass = Silver.Mass
-  val score = Silver.Score
+  val scoreModification = Silver.Score
 
   def state: Vector2 = {
     position
@@ -110,7 +110,7 @@ class Silver(var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
 
 class Gold(var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
   _mass = Gold.Mass
-  val score = Gold.Score
+  val scoreModification = Gold.Score
 
   def state: Vector2 = {
     position

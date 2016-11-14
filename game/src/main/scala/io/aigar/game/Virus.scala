@@ -20,7 +20,7 @@ object Virus {
 
 class Virus(var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
   _mass = Virus.Mass
-  val score = 0
+  val scoreModification = 0
 
   def state: Position = {
     position.state
