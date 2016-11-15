@@ -31,6 +31,18 @@ class Vector2UtilsSpec extends FlatSpec with Matchers {
     truncated should be theSameInstanceAs(vector)
   }
 
+  it should "not crash when calling safeNormalize on a zero vector" in {
+    val vector = new Vector2(0f, 0f)
+
+    vector.safeNormalize should equal(vector)
+  }
+
+  it should "return a normalized vector for non-zero vectors" in {
+    val vector = new Vector2(100f, 98f)
+
+    vector.safeNormalize should equal(vector.normalize)
+  }
+
   "Position" should "generate a vector with the right coordinates" in {
     val position = new Position(100f, 200f)
 
