@@ -1,7 +1,12 @@
 package io.aigar.game
 
+import com.github.jpbetz.subspace.Vector2
 import io.aigar.score.ScoreModification
-import scala.util.control._
+import scala.collection.mutable.MutableList
+
+object Resource {
+  final val RespawnRetryAttempts = 10
+}
 
 object Regular {
   final val Max = 250
@@ -31,67 +36,88 @@ object Gold {
 }
 
 class Resources(grid: Grid) {
-  val regular = new ResourceType(grid, Regular.Min, Regular.Max, Regular.Mass, Regular.Score)
-  val silver = new ResourceType(grid, Silver.Min, Silver.Max, Silver.Mass, Silver.Score)
-  val gold = new ResourceType(grid, Gold.Min, Gold.Max, Gold.Mass, Gold.Score)
-  var resourceTypes = List(regular, silver, gold)
+  val regulars = new ResourceType(
+    grid,
+    Regular.Mass,
+    Regular.Score,
+    Regular.Min,
+    Regular.Max
+  )
+  val silvers = new ResourceType(
+    grid,
+    Silver.Mass,
+    Silver.Score,
+    Silver.Min,
+    Silver.Max
+  )
+  val golds = new ResourceType(
+    grid,
+    Gold.Mass,
+    Gold.Score,
+    Gold.Min,
+    Gold.Max
+  )
+  val resourceTypes = List(regulars, silvers, golds)
 
-  def update(players: List[Player]): List[ScoreModification] = {
-    val scoreModifications = resourceTypes.flatten(_.detectCollisions(players))
-    resourceTypes.foreach(_.spawnResources(players))
+  def update(grid: Grid, players: List[Player]): MutableList[ScoreModification] = {
+    val scoreModifications = MutableList[ScoreModification]()
+    resourceTypes.foreach { _.update(grid, players, scoreModifications) }
 
     scoreModifications
   }
 
-  def state = {
+  def state: serializable.Resources = {
     serializable.Resources(
-      regular.positions,
-      silver.positions,
-      gold.positions
+      regulars.state,
+      silvers.state,
+      golds.state
     )
   }
 }
 
-class ResourceType(grid: Grid, val min: Int, val max: Int, mass: Int, score: Int) {
-  var positions = List.fill(max)(grid.randomPosition)
+class ResourceType(grid: Grid,
+                   resourceMass: Float,
+                   resourceScore: Int,
+                   resourceMin: Int,
+                   resourceMax: Int
+                  ) extends EntityContainer {
+  var resources = List.fill(resourceMax)(new Resource(grid.randomPosition, resourceMass, resourceScore))
 
-  def spawnResources(players: List[Player]): Unit = {
-    val ratio = (positions.length - min).toFloat / (max - min)
+  def update(grid: Grid, players: List[Player], scoreModifications: MutableList[ScoreModification]): Unit = {
+    resources = handleCollision(resources, players, Some(scoreModifications)).asInstanceOf[List[Resource]]
 
-    if (scala.util.Random.nextFloat >= ratio) {
-      val position = grid.randomPosition
-      for (player <- players) {
-        for (cell <- player.cells) {
-          if (cell.contains(position)) return
-        }
+    if (shouldRespawn(resources.size, resourceMin, resourceMax)) {
+      getRespawnPosition(grid, players, Resource.RespawnRetryAttempts) match {
+        case Some(position) => resources :::= List(new Resource(position, resourceMass, resourceScore))
+        case _ =>
       }
-      positions :::= List(position)
     }
   }
 
-  /*
-  * Checks if any of the cells from the players should consume a resource.
-  * If it is the case, reward the colliding player/cell.
-  */
-  def detectCollisions(players: List[Player]): List[ScoreModification] = {
-    var scoreModifications = List[ScoreModification]()
-    for(player <- players) {
-      for(cell <- player.cells) {
-        for(position <- positions){
-          if(cell.contains(position)){
-            reward(cell)
-            scoreModifications ::= ScoreModification(player.id, score)
-
-            // Returns a new list without the resource that has been consumed
-            positions = positions.filterNot(a => a == position)
-          }
-        }
-      }
-    }
-    scoreModifications
+  def onCellCollision(cell: Cell,
+                      player: Player,
+                      entity: Entity,
+                      scoreModifications: Option[MutableList[ScoreModification]]): List[Entity] = {
+    scoreModifications.get += ScoreModification(player.id, entity.scoreModification)
+    reward(cell, entity.mass)
+    List(entity)
   }
 
-  def reward(cell: Cell): Unit = {
+  def reward(cell: Cell, mass: Float): Unit = {
     cell.mass += mass
+  }
+
+  def state: List[Vector2] = {
+    resources.map(_.state)
+  }
+}
+
+class Resource(var position: Vector2 = new Vector2(0f, 0f),
+               val resourceMass: Float,
+               val scoreModification: Int = 0) extends Entity {
+  _mass = resourceMass
+
+  def state: Vector2 = {
+    position
   }
 }

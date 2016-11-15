@@ -268,11 +268,11 @@ class CellSpec extends FlatSpec with Matchers {
     val opponent = new Player(2, Vector2(10f, 10f))
     val largeCell = opponent.cells.head
 
-    smallCell.mass = 26
     largeCell.mass = 30
+    smallCell.mass = 26
 
     //The return is the entity to remove, hence the cell of the player if applicable
-    player.onCellCollision(opponent.cells.head, player.cells.head) should contain (smallCell.asInstanceOf[Entity])
+    player.onCellCollision(opponent.cells.head, player, player.cells.head, None) should contain (smallCell.asInstanceOf[Entity])
   }
 
   it should "not be eaten by a cell between 90% to 100% of its mass" in {
@@ -285,7 +285,7 @@ class CellSpec extends FlatSpec with Matchers {
     smallCell.mass = Cell.MinMass
 
     //The return is the entity to remove, hence the cell of the player if applicable
-    player.onCellCollision(opponent.cells.head, player.cells.head) shouldBe empty
+    player.onCellCollision(opponent.cells.head, player, player.cells.head, None) shouldBe empty
   }
 
   it should "not be eaten by a smaller cell" in {
@@ -298,7 +298,7 @@ class CellSpec extends FlatSpec with Matchers {
     smallCell.mass = Cell.MinMass
 
     //The return is the entity to remove, hence the cell of the player if applicable
-    player.onCellCollision(opponent.cells.head, player.cells.head) shouldBe empty
+    player.onCellCollision(opponent.cells.head, player, player.cells.head, None) shouldBe empty
   }
   "performAction" should "change target to match the one from the action" in {
     val player = new Player(0, Vector2(12f, 12f))

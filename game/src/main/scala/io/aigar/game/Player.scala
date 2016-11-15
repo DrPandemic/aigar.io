@@ -3,6 +3,8 @@ package io.aigar.game
 import io.aigar.controller.response.Action
 import scala.math.round
 import com.github.jpbetz.subspace.Vector2
+import io.aigar.score.ScoreModification
+import scala.collection.mutable.MutableList
 
 class Player(val id: Int, startPosition: Vector2) extends EntityContainer {
   var aiState: AIState = new NullState(this)
@@ -12,9 +14,9 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer {
 
   def update(deltaSeconds: Float, grid: Grid, players: List[Player]): Unit = {
     opponents = players diff List(this)
-    cells = handleCollision(cells, opponents).asInstanceOf[List[Cell]]
+    cells = handleCollision(cells, opponents, None).asInstanceOf[List[Cell]]
 
-    if (shouldRespawn) {
+    if (shouldRespawn(cells.size, 1)) {
       getRespawnPosition(grid, opponents, Cell.RespawnRetryAttempts) match {
         case Some(position) => {
           currentCellId += 1
@@ -23,13 +25,13 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer {
         case _ =>
       }
     }
-
     cells.foreach { _.update(deltaSeconds, grid) }
   }
 
-  def shouldRespawn: Boolean = cells.size < 1
-
-  def onCellCollision(opponentCell: Cell, entity: Entity): List[Entity] = {
+  def onCellCollision(opponentCell: Cell,
+                      player: Player,
+                      entity: Entity,
+                      scoreModifications: Option[MutableList[ScoreModification]]): List[Entity] = {
     var entityReturn = List[Entity]()
     val cell = entity.asInstanceOf[Cell]
 
@@ -39,6 +41,8 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer {
     }
     entityReturn
   }
+
+  def shouldRespawn(size: Int, min: Int): Boolean = size < min
 
   def state: serializable.Player = {
     val mass = round(cells.map(_.mass).sum)

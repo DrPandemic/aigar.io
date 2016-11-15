@@ -30,7 +30,7 @@ class GameSpec extends FlatSpec with Matchers {
   it should "create just enough viruses" in {
     val game = new Game(42, 1 to 10 toList)
 
-    game.viruses.state should have size Virus.Quantity
+    game.viruses.state should have size Virus.Max
   }
 
   it should "spawn players at distinct positions at creation" in {
@@ -76,7 +76,9 @@ class GameSpec extends FlatSpec with Matchers {
 
   "update" should "return a list of ScoreModification" in {
     val game = new Game(42, List(0))
-    game.resources.regular.positions = List(Vector2(40, 0))
+
+    game.resources.regulars.resources = List(new Resource(Vector2(40, 0), Regular.Mass, Regular.Score))
+
     val player = game.players.head
     player.cells.head.position = Vector2(40, 0)
     player.cells.head.target = Vector2(40, 0)

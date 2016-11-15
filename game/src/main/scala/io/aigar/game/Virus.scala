@@ -2,10 +2,13 @@ package io.aigar.game
 
 import com.github.jpbetz.subspace.Vector2
 import io.aigar.game.serializable.Position
+import io.aigar.score.ScoreModification
+import scala.collection.mutable.MutableList
 import io.aigar.game.Vector2Utils.Vector2Addons
 
 object Virus {
-  final val Quantity = 15
+  final val Max = 15
+  final val Min = 10
   final val Mass = 100
   final val RespawnRetryAttempts = 15
 
@@ -16,7 +19,8 @@ object Virus {
 }
 
 class Virus(var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
-  mass = Virus.Mass
+  _mass = Virus.Mass
+  val scoreModification = 0
 
   def state: Position = {
     position.state
@@ -24,14 +28,14 @@ class Virus(var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
 }
 
 class Viruses(grid: Grid) extends EntityContainer {
-  var viruses = List.fill(Virus.Quantity)(new Virus(grid.randomPosition))
+  val scoreModifications = MutableList[ScoreModification]()
 
-  def shouldRespawn: Boolean = viruses.size < Virus.Quantity
+  var viruses = List.fill(Virus.Max)(new Virus(grid.randomPosition))
 
   def update(grid: Grid, players: List[Player]): Unit = {
-    viruses = handleCollision(viruses, players).asInstanceOf[List[Virus]]
+    viruses = handleCollision(viruses, players, None).asInstanceOf[List[Virus]]
 
-    if (shouldRespawn) {
+    if (shouldRespawn(viruses.size, Virus.Min, Virus.Max)) {
       getRespawnPosition(grid, players, Virus.RespawnRetryAttempts) match {
         case Some(position) => viruses :::= List(new Virus(position))
         case _ =>
@@ -39,7 +43,10 @@ class Viruses(grid: Grid) extends EntityContainer {
     }
   }
 
-  def onCellCollision(cell: Cell, entity: Entity): List[Entity] = {
+  def onCellCollision(cell: Cell,
+                      player: Player,
+                      entity: Entity,
+                      scoreModifications: Option[MutableList[ScoreModification]]): List[Entity] = {
     var entityReturn = List[Entity]()
 
     if (cell.mass > Virus.Mass * Cell.MassDominanceRatio) {
