@@ -4,10 +4,13 @@ import com.github.jpbetz.subspace.Vector2
 import io.aigar.score.ScoreModification
 import scala.collection.mutable.MutableList
 
+object Resource {
+  final val RespawnRetryAttempts = 10
+}
+
 object Regular {
   final val Max = 250
   final val Min = 100
-  final val RespawnRetryAttempts = 10
 
   // IMPORTANT: keep those values in sync with the client documentation
   final val Mass = 1
@@ -17,7 +20,6 @@ object Regular {
 object Silver {
   final val Max = 25
   final val Min = 12
-  final val RespawnRetryAttempts = 10
 
   // IMPORTANT: keep those values in sync with the client documentation
   final val Mass = 3
@@ -27,45 +29,69 @@ object Silver {
 object Gold {
   final val Max = 10
   final val Min = 5
-  final val RespawnRetryAttempts = 10
 
   // IMPORTANT: keep those values in sync with the client documentation
   final val Mass = 0
   final val Score = 10
 }
 
-class Resources(grid: Grid) extends EntityContainer {
-  var regulars = List.fill(Regular.Max)(new Regular(grid.randomPosition))
-  var silvers = List.fill(Silver.Max)(new Silver(grid.randomPosition))
-  var golds = List.fill(Gold.Max)(new Gold(grid.randomPosition))
+class Resources(grid: Grid) {
+  var regulars = new ResourceType(
+    grid,
+    Regular.Mass,
+    Regular.Score,
+    Regular.Min,
+    Regular.Max
+  )
+  var silvers = new ResourceType(
+    grid,
+    Silver.Mass,
+    Silver.Score,
+    Silver.Min,
+    Silver.Max
+  )
+  var golds = new ResourceType(
+    grid,
+    Gold.Mass,
+    Gold.Score,
+    Gold.Min,
+    Gold.Max
+  )
+  val resourceTypes = List(regulars, silvers, golds)
 
   def update(grid: Grid, players: List[Player]): MutableList[ScoreModification] = {
     val scoreModifications = MutableList[ScoreModification]()
-    regulars = handleCollision(regulars, players, Some(scoreModifications)).asInstanceOf[List[Regular]]
-    silvers = handleCollision(silvers, players, Some(scoreModifications)).asInstanceOf[List[Silver]]
-    golds = handleCollision(golds, players, Some(scoreModifications)).asInstanceOf[List[Gold]]
+    resourceTypes.foreach { _.update(grid, players, scoreModifications) }
 
-    if (shouldRespawn(regulars.size, Regular.Min, Regular.Max)) {
-      getRespawnPosition(grid, players, Regular.RespawnRetryAttempts) match {
-        case Some(position) => regulars :::= List(new Regular(position))
-        case _ =>
-      }
-    }
-
-    if (shouldRespawn(silvers.size, Silver.Min, Silver.Max)) {
-      getRespawnPosition(grid, players, Silver.RespawnRetryAttempts) match {
-        case Some(position) => silvers :::= List(new Silver(position))
-        case _ =>
-      }
-    }
-
-    if (shouldRespawn(golds.size, Gold.Min, Gold.Max)) {
-      getRespawnPosition(grid, players, Gold.RespawnRetryAttempts) match {
-        case Some(position) => golds :::= List(new Gold(position))
-        case _ =>
-      }
-    }
     scoreModifications
+  }
+
+  def state: serializable.Resources = {
+    serializable.Resources(
+      resourceTypes(0).state,
+      resourceTypes(1).state,
+      resourceTypes(2).state
+    )
+  }
+}
+
+class ResourceType(grid: Grid,
+                   resourceMass: Float,
+                   resourceScore: Int,
+                   resourceMin: Int,
+                   resourceMax: Int
+                  ) extends EntityContainer {
+  var resources = List.fill(resourceMax)(new Resource(grid.randomPosition, resourceMass, resourceScore))
+
+  def update(grid: Grid, players: List[Player], scoreModifications: MutableList[ScoreModification]): Unit = {
+    resources = handleCollision(resources, players, Some(scoreModifications)).asInstanceOf[List[Resource]]
+
+    if (shouldRespawn(resources.size, resourceMin, resourceMax)) {
+      getRespawnPosition(grid, players, Resource.RespawnRetryAttempts) match {
+        case Some(position) => resources :::= List(new Resource(position, resourceMass, resourceScore))
+        case _ =>
+      }
+    }
   }
 
   def onCellCollision(cell: Cell,
@@ -81,36 +107,15 @@ class Resources(grid: Grid) extends EntityContainer {
     cell.mass += mass
   }
 
-  def state: serializable.Resources = {
-    serializable.Resources(
-      regulars.map(_.state),
-      silvers.map(_.state),
-      golds.map(_.state)
-    )
+  def state: List[Vector2] = {
+    resources.map(_.state)
   }
 }
 
-class Regular(var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
-  _mass = Regular.Mass
-  val scoreModification = Regular.Score
-
-  def state: Vector2 = {
-    position
-  }
-}
-
-class Silver(var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
-  _mass = Silver.Mass
-  val scoreModification = Silver.Score
-
-  def state: Vector2 = {
-    position
-  }
-}
-
-class Gold(var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
-  _mass = Gold.Mass
-  val scoreModification = Gold.Score
+class Resource(var position: Vector2 = new Vector2(0f, 0f),
+               val resourceMass: Float,
+               val scoreModification: Int = 0) extends Entity {
+  _mass = resourceMass
 
   def state: Vector2 = {
     position
