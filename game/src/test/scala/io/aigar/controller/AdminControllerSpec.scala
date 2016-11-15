@@ -67,7 +67,7 @@ class AdminControllerSpec extends MutableScalatraSpec
     }
   }
 
-  "PATCH /rakned" should {
+  "PATCH /ranked" should {
     "put the action in the admin queue" in {
       game.adminCommandQueue.isEmpty() must be_==(true)
       patchJson("ranked", defaultActionJson ~ ("duration" -> 10)) {
