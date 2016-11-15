@@ -88,7 +88,7 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
   }
 
   /**
-   * Returns a steering force (unbounded) towards the target of the cell.
+   * Returns a steering force (unbounded) towards the target velocity
    */
   def steering: Vector2 = {
     val dir = target - position
