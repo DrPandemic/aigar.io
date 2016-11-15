@@ -12,6 +12,10 @@ object Vector2Utils {
     def truncate(length: Float): Vector2 = {
       if (vector.magnitude > length) vector.normalize * length else vector
     }
+
+    def safeNormalize: Vector2 = {
+      if (vector.magnitude > 0f) vector.normalize else vector
+    }
   }
 }
 

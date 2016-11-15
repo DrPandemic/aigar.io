@@ -9,11 +9,6 @@ import scala.math._
 
 object Cell {
   /**
-   * Force (in Newtons) applied when moving.
-   */
-  final val MovementForce = 350f
-
-  /**
    * Default mass of a cell (at spawn).
    *
    * IMPORTANT must stay in sync with the client's documentation
@@ -32,14 +27,9 @@ object Cell {
    */
   final val MassDominanceRatio = 1.1f
 
-  /**
-    * Exponent used on the mass when calculating the acceleration of a cell.
-    */
-  final val MassImpactOnAcceleration = 0.75f
-
   final val MinMaximumSpeed = 25f
   final val MaxMaximumSpeed = 50f
-  final val SpeedLimitReductionPerMassUnit = 0.002f
+  final val SpeedLimitReductionPerMassUnit = 0.02f
 
   final val RespawnRetryAttempts = 15
 }
@@ -76,10 +66,10 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
 
     target = player.aiState.update(deltaSeconds, grid, this)
 
-    velocity += acceleration * deltaSeconds
     position += velocity * deltaSeconds
-
     keepInGrid(grid)
+
+    velocity += steering.truncate(maxSpeed) * deltaSeconds
   }
 
   def keepInGrid(grid: Grid): Unit = {
@@ -97,10 +87,13 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
     mass * pow(1f - Cell.MassDecayPerSecond, deltaSeconds).toFloat
   }
 
-  def acceleration: Vector2 = {
+  /**
+   * Returns a steering force (unbounded) towards the target of the cell.
+   */
+  def steering: Vector2 = {
     val dir = target - position
-    val value = Cell.MovementForce / pow(mass, Cell.MassImpactOnAcceleration).toFloat
-    if (dir.magnitude > 0) dir.normalize * value else new Vector2(0f,0f)
+    val targetVelocity = dir.safeNormalize * maxSpeed
+    targetVelocity - velocity
   }
 
   def contains(pos: Vector2): Boolean = {
