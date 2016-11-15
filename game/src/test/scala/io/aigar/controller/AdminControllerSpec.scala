@@ -55,13 +55,13 @@ class AdminControllerSpec extends MutableScalatraSpec
   "POST on GameController" should {
     "403 when the administrator password doesn't match" in {
       val action = ("administrator_password" -> "nope")
-      postJson("/echo", action) {
+      patchJson("/ranked", action) {
         status must_== 403
       }
     }
 
     "not 403 when the administrator password matches" in {
-      postJson("/echo", defaultActionJson) {
+      patchJson("/ranked", defaultActionJson) {
         status must_!= 403
       }
     }
@@ -77,6 +77,24 @@ class AdminControllerSpec extends MutableScalatraSpec
         val command = game.adminCommandQueue.take()
         command must haveClass[SetRankedDurationCommand]
         command.asInstanceOf[SetRankedDurationCommand].duration must be_==(10)
+      }
+    }
+  }
+
+  "POST /player" should {
+    "seed the players if the query contains seed" in {
+      postJson("player", defaultActionJson ~ ("seed" -> true)) {
+        status must_== 200
+
+        playerRepository.getPlayers.size must_== 15
+      }
+    }
+
+    "not seed the players if the query doesn't contain seed" in {
+      postJson("player", defaultActionJson) {
+        status must_== 200
+
+        playerRepository.getPlayers.size must_== 1
       }
     }
   }

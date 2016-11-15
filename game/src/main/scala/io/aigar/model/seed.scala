@@ -1,8 +1,7 @@
 package io.aigar.model
 
 object seed {
-  def seedPlayers: Unit = {
-    val playerRepository = new PlayerRepository(None)
+  def seedPlayers(playerRepository: PlayerRepository = new PlayerRepository(None)): Unit = {
     playerRepository.dropSchema
     playerRepository.createSchema
 
