@@ -36,21 +36,21 @@ object Gold {
 }
 
 class Resources(grid: Grid) {
-  var regulars = new ResourceType(
+  val regulars = new ResourceType(
     grid,
     Regular.Mass,
     Regular.Score,
     Regular.Min,
     Regular.Max
   )
-  var silvers = new ResourceType(
+  val silvers = new ResourceType(
     grid,
     Silver.Mass,
     Silver.Score,
     Silver.Min,
     Silver.Max
   )
-  var golds = new ResourceType(
+  val golds = new ResourceType(
     grid,
     Gold.Mass,
     Gold.Score,
@@ -68,9 +68,9 @@ class Resources(grid: Grid) {
 
   def state: serializable.Resources = {
     serializable.Resources(
-      resourceTypes(0).state,
-      resourceTypes(1).state,
-      resourceTypes(2).state
+      regulars.state,
+      silvers.state,
+      golds.state
     )
   }
 }
