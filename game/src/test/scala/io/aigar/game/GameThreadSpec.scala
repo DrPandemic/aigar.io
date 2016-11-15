@@ -37,6 +37,14 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
     ranked.id should equal (Game.RankedGameId)
   }
 
+  it should "create a ranked game with the initial duration" in {
+    val scoreThread = new ScoreThread(null)
+    val game = new GameThread(scoreThread, List())
+    val ranked = game.games.find(_.id == Game.RankedGameId).get
+
+    ranked.duration shouldBe Game.DefaultDuration
+  }
+
   "createRankedGame" should "use the duration from the game thread" in {
     val scoreThread = new ScoreThread(null)
     val game = new GameThread(scoreThread, List())
