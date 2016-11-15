@@ -87,6 +87,7 @@ Every error will contain a root element named `error` with an error message.
     },
     "viruses": [
     {
+        "radius": "int",
         "mass": "int",
         "position": {
             "x": "float",
