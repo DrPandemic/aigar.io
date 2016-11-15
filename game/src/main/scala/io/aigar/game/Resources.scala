@@ -95,10 +95,10 @@ class ResourceType(grid: Grid,
   }
 
   def onCellCollision(cell: Cell,
-                      player: Option[Player],
+                      player: Player,
                       entity: Entity,
                       scoreModifications: Option[MutableList[ScoreModification]]): List[Entity] = {
-    scoreModifications.get += ScoreModification(player.get.id, entity.scoreModification)
+    scoreModifications.get += ScoreModification(player.id, entity.scoreModification)
     reward(cell, entity.mass)
     List(entity)
   }

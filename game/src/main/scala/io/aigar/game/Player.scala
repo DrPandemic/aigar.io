@@ -29,7 +29,7 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer {
   }
 
   def onCellCollision(opponentCell: Cell,
-                      player: Option[Player],
+                      player: Player,
                       entity: Entity,
                       scoreModifications: Option[MutableList[ScoreModification]]): List[Entity] = {
     var entityReturn = List[Entity]()

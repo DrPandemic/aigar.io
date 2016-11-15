@@ -34,7 +34,7 @@ trait EntityContainer {
       for (player <- players) {
         for (cell <- player.cells) {
           if (cell.contains(entity.position)) {
-            entitiesReturn :::= onCellCollision(cell, Some(player), entity, scoreModifications)
+            entitiesReturn :::= onCellCollision(cell, player, entity, scoreModifications)
           }
         }
       }
@@ -43,7 +43,7 @@ trait EntityContainer {
   }
 
   def onCellCollision(cell: Cell,
-                      player: Option[Player],
+                      player: Player,
                       entity: Entity,
                       scoreModifications: Option[MutableList[ScoreModification]]): List[Entity]
 }
