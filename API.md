@@ -145,7 +145,7 @@ Every error will contain a root element named `error` with an error message.
 Every query will need to contain the key `administratorPassword` with the right password.
 ```json
 {
-    "administratorPassword": "string",
+    "administrator_password": "string",
     ...
 }
 ```
@@ -169,7 +169,7 @@ Note that putting running to `false` won't have any effect.
 ```
 
 ### Set ranked game duration
-This will set the duration of the next ranked game.
+This will set the next ranked game duration(seconds).
 
 `PATCH /admin/ranked`
 
@@ -192,14 +192,14 @@ This will set the duration of the next ranked game.
 **Request**
 ```json
 {
-    "playerName": "string"
+    "player_name": "string"
 }
 ```
 **Response**
 ```json
 {
     "data": {
-        "playerSecret": "string"
+        "player_secret": "string"
     }
 }
 ```

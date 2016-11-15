@@ -20,6 +20,8 @@ class ScalatraBootstrap extends LifeCycle {
     println("***Administrator password***")
     println(adminPassword)
     println("****************************")
+
+    context.mount(new AdminController(adminPassword, game, playerRepository), s"$path/admin/*")
     context.mount(new LeaderboardController(playerRepository), s"$path/leaderboard/*")
     context.mount(new GameController(game, playerRepository), s"$path/game/*")
   }
