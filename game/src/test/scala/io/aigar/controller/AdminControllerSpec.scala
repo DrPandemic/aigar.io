@@ -1,4 +1,5 @@
 import io.aigar.controller.AdminController
+import io.aigar.controller.response.SetRankedDurationCommand
 import io.aigar.model.{ PlayerModel, PlayerRepository }
 import io.aigar.game.GameThread
 import io.aigar.score.ScoreThread
@@ -35,6 +36,13 @@ class AdminControllerSpec extends MutableScalatraSpec
   def before: Unit = cleanState
   def after: Unit = cleanState
 
+  def patchJson[A](uri: String, body: JValue, headers: Map[String, String] = Map())(f: => A): A =
+    patch(
+      uri,
+      compact(render(body)).getBytes("utf-8"),
+      Map("Content-Type" -> "application/json") ++ headers
+    )(f)
+
   def postJson[A](uri: String, body: JValue, headers: Map[String, String] = Map())(f: => A): A =
     post(
       uri,
@@ -55,6 +63,20 @@ class AdminControllerSpec extends MutableScalatraSpec
     "not 403 when the administrator password matches" in {
       postJson("/echo", defaultActionJson) {
         status must_!= 403
+      }
+    }
+  }
+
+  "PATCH /ranked" should {
+    "put the action in the admin queue" in {
+      game.adminCommandQueue.isEmpty() must be_==(true)
+      patchJson("ranked", defaultActionJson ~ ("duration" -> 10)) {
+        status must_== 200
+
+        game.adminCommandQueue.isEmpty() must be_==(false)
+        val command = game.adminCommandQueue.take()
+        command must haveClass[SetRankedDurationCommand]
+        command.asInstanceOf[SetRankedDurationCommand].duration must be_==(10)
       }
     }
   }

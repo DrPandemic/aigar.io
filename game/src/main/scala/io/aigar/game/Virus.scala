@@ -2,9 +2,9 @@ package io.aigar.game
 
 import com.github.jpbetz.subspace.Vector2
 import io.aigar.game.serializable.Position
-import io.aigar.game.Vector2Utils.StateAddon
 import io.aigar.score.ScoreModification
 import scala.collection.mutable.MutableList
+import io.aigar.game.Vector2Utils.Vector2Addons
 
 object Virus {
   final val Max = 15

@@ -1,25 +1,38 @@
 package io.aigar.game
 
+import io.aigar.controller.response.{ AdminCommand, SetRankedDurationCommand }
 import io.aigar.score.ScoreThread
-import io.aigar.controller.response.Action
 import java.util.concurrent.LinkedBlockingQueue
-import scala.collection.immutable.HashMap
 
 /**
  * GameThread is the thread that runs continuously through the competition that
  * takes care of updating the individual games and processing the queued inputs
  * of the players.
  */
+object GameThread {
+  /**
+    * Current time, in seconds.
+    */
+  final val NanoSecondsPerMillisecond = 1000000f
+  final val MillisecondsPerSecond = 1000f
+  final val NanoSecondsPerSecond = NanoSecondsPerMillisecond * MillisecondsPerSecond
+
+  def time: Float = {
+    System.nanoTime / NanoSecondsPerSecond
+  }
+}
+
 class GameThread(scoreThread: ScoreThread, playerIDs: List[Int]) extends Runnable {
   val MillisecondsPerTick = 16
 
   final val actionQueue = new LinkedBlockingQueue[ActionQueryWithId]()
+  final val adminCommandQueue = new LinkedBlockingQueue[AdminCommand]()
 
+  var nextRankedDuration = Game.DefaultDuration
   private var states: Map[Int, serializable.GameState] = Map()
   var games: List[Game] = List(createRankedGame)
 
   var running = true
-
   var previousTime = 0f
   var currentTime = MillisecondsPerTick / 1000f // avoid having an initial 0 delta time
 
@@ -31,12 +44,13 @@ class GameThread(scoreThread: ScoreThread, playerIDs: List[Int]) extends Runnabl
   }
 
   def createRankedGame: Game = {
-    new Game(Game.RankedGameId, playerIDs)
+    new Game(Game.RankedGameId, playerIDs, nextRankedDuration)
   }
 
   def run: Unit = {
     while (running) {
       transferActions
+      transferAdminCommands
       updateGames
 
       Thread.sleep(MillisecondsPerTick)
@@ -48,12 +62,35 @@ class GameThread(scoreThread: ScoreThread, playerIDs: List[Int]) extends Runnabl
       val action = actionQueue.take
       games.find(_.id == action.game_id) match {
         case Some(game) => game.performAction(action.player_id, action.actions)
-        case None => {}
+        case None =>
       }
     }
   }
 
+  def transferAdminCommands: Unit = {
+    while(!adminCommandQueue.isEmpty) {
+      adminCommandQueue.take match {
+        case command: SetRankedDurationCommand => nextRankedDuration = command.duration
+      }
+    }
+  }
+
+  private def resetRankedGameIfExpired: Unit = {
+    games.find(_.id == Game.RankedGameId) match {
+      case Some(ranked) => {
+        val elapsed = GameThread.time - ranked.startTime
+        if(ranked.duration < elapsed) {
+          games = games diff List(ranked)
+          games = createRankedGame :: games
+        }
+      }
+      case None =>
+    }
+  }
+
   def updateGames: Unit = {
+    resetRankedGameIfExpired
+
     for (game <- games) {
       val deltaTime = currentTime - previousTime
       val modifications = game.update(deltaTime)
@@ -65,17 +102,7 @@ class GameThread(scoreThread: ScoreThread, playerIDs: List[Int]) extends Runnabl
       states = states + (game.id -> game.state)
 
       previousTime = currentTime
-      currentTime = time
+      currentTime = GameThread.time
     }
-  }
-
-  /**
-   * Current time, in seconds.
-   */
-  final val NanoSecondsPerMillisecond = 1000000f
-  final val MillisecondsPerSecond = 1000f
-  final val NanoSecondsPerSecond = NanoSecondsPerMillisecond * MillisecondsPerSecond
-  def time: Float = {
-    System.nanoTime / NanoSecondsPerSecond
   }
 }

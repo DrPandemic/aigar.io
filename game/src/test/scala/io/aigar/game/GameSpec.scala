@@ -52,13 +52,9 @@ class GameSpec extends FlatSpec with Matchers {
     cell.position = Vector2(0, 0)
     cell.target = new Vector2(100f, 100f)
 
-    val initialDistance = cell.position.distanceTo(cell.target)
-
     game.update(1f)
 
-    val finalDistance = cell.position.distanceTo(cell.target)
-
-    initialDistance should be > finalDistance
+    cell.velocity.magnitude should be > 0f
   }
 
   it should "create a bigger grid if there are more players" in {

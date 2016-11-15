@@ -25,13 +25,9 @@ class CellSpec extends FlatSpec with Matchers {
     cell.target = new Vector2(1000f, 1000f)
     val grid = new Grid(100, 100)
 
-    val initialDistance = cell.position.distanceTo(cell.target)
-
     cell.update(1f, grid)
 
-    val finalDistance = cell.position.distanceTo(cell.target)
-
-    initialDistance should be > finalDistance
+    cell.velocity.magnitude should be > 0f
   }
 
   it should "have a maximal velocity" in {
@@ -55,24 +51,10 @@ class CellSpec extends FlatSpec with Matchers {
     small.mass = Cell.MinMass
     big.mass = 100 * Cell.MinMass
 
-    small.acceleration.magnitude should be > big.acceleration.magnitude
-  }
-
-  it should "not move slower than the minimal speed limit, no matter what its mass is" in {
-    val player = new Player(0, Vector2(0f, 0f))
-    val small = new Cell(1, player)
-    small.target = new Vector2(100f, 100f)
-    val big = new Cell(2, player)
-    big.target = new Vector2(100f, 100f)
-    player.cells = List(small, big)
-
-    small.mass = Cell.MinMass
-    big.mass = 100 * Cell.MinMass
-
     small.maxSpeed should be > big.maxSpeed
   }
 
-  it should "not move slower than the minimal speed no matter its mass" in {
+  it should "not move slower than the minimal speed limit, no matter what its mass is" in {
     val player = new Player(0, Vector2(0f, 0f))
     val big = new Cell(2, player)
     player.cells = List(big)
@@ -232,54 +214,50 @@ class CellSpec extends FlatSpec with Matchers {
     cell.position.y should be <= 10f
   }
 
-  it should "resets its X velocity when having a collision with the max horizontal boundary" in {
+  it should "reset its X velocity when having a collision with the max horizontal boundary" in {
     val player = new Player(1, new Vector2(10, 5))
     val cell = player.cells.head
     val grid = new Grid(10, 10)
 
     cell.velocity = new Vector2(15, 5)
-    cell.target = new Vector2(15, 5)
 
-    cell.update(0.005f, grid)
+    cell.keepInGrid(grid)
 
     cell.velocity.x should equal(0)
   }
 
-  it should "resets its X velocity when having a collision with the min horizontal boundary" in {
+  it should "reset its X velocity when having a collision with the min horizontal boundary" in {
     val player = new Player(1, new Vector2(0, 5))
     val cell = player.cells.head
     val grid = new Grid(10, 10)
 
     cell.velocity = new Vector2(-5, 5)
-    cell.target = new Vector2(-5, 5)
 
-    cell.update(0.005f, grid)
+    cell.keepInGrid(grid)
 
     cell.velocity.x should equal(0)
   }
 
-  it should "resets its Y velocity when having a collision with the max vertical boundary" in {
+  it should "reset its Y velocity when having a collision with the max vertical boundary" in {
     val player = new Player(1, new Vector2(5, 10))
     val cell = player.cells.head
     val grid = new Grid(10, 10)
 
     cell.velocity = new Vector2(5, 15)
-    cell.target = new Vector2(5, 15)
 
-    cell.update(0.005f, grid)
+    cell.keepInGrid(grid)
 
     cell.velocity.y should equal(0)
   }
 
-  it should "resets its Y velocity when having a collision with the min vertical boundary" in {
+  it should "reset its Y velocity when having a collision with the min vertical boundary" in {
     val player = new Player(1, new Vector2(5, 0))
     val cell = player.cells.head
     val grid = new Grid(10, 10)
 
     cell.velocity = new Vector2(5, -5)
-    cell.target = new Vector2(5, -5)
 
-    cell.update(0.005f, grid)
+    cell.keepInGrid(grid)
 
     cell.velocity.y should equal(0)
   }

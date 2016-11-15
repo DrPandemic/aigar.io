@@ -12,19 +12,15 @@ class PlayerSpec extends FlatSpec with Matchers {
     player.cells.loneElement.position should equal(new Vector2(42f, 42f))
   }
 
-  it should "move its cells on update" in {
+  it should "move its cells on updates" in {
     val player = new Player(0, new Vector2(0f, 0f))
     val target = new Vector2(100f, 100f)
     player.cells.head.target = target
     val grid = new Grid(100, 100)
 
-    val initialDistance = player.cells.head.position.distanceTo(target)
+    player.update(1f, grid, List(player))
 
-    player.update(1f, grid, List(new Player(0, new Vector2(0, 0))))
-
-    val finalDistance = player.cells.head.position.distanceTo(target)
-
-    initialDistance should be > finalDistance
+    player.cells.head.velocity.magnitude should be > 0f
   }
 
   it should "generate a state with the right info" in {

@@ -1,5 +1,8 @@
 # AIgar.io
 ## Development
+### Docker
+Install `docker` and `docker-compose`. Run `docker-compose up` in the root folder.
+
 ### Linux & Windows
 #### Requirements
 You need to have `sbt`, `nginx` and `node` installed.
