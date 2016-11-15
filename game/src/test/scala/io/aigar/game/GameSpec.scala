@@ -80,15 +80,8 @@ class GameSpec extends FlatSpec with Matchers {
 
   "update" should "return a list of ScoreModification" in {
     val game = new Game(42, List(0))
-    val resourceType = new ResourceType(
-      new Grid(100, 100),
-      Regular.Mass,
-      Regular.Score,
-      Regular.Min,
-      Regular.Max
-    )
-    resourceType.resources = List(new Resource(Vector2(40, 0), Regular.Mass, Regular.Score))
-    game.resources.regulars = resourceType
+
+    game.resources.regulars.resources = List(new Resource(Vector2(40, 0), Regular.Mass, Regular.Score))
 
     val player = game.players.head
     player.cells.head.position = Vector2(40, 0)
