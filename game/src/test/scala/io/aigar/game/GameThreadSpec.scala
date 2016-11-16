@@ -1,6 +1,7 @@
 import io.aigar.game._
 import io.aigar.controller.response.{SetRankedDurationCommand, RestartThreadCommand}
-import io.aigar.score.{ ScoreModification, ScoreThread }
+import com.github.jpbetz.subspace.Vector2
+import io.aigar.score.{ScoreModification, ScoreThread}
 import io.aigar.controller.response.Action
 import io.aigar.game.serializable.Position
 import org.scalatest._
