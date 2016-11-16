@@ -1,3 +1,3 @@
 cd ../web
-npm run build
+npm install
 cd ../bin
