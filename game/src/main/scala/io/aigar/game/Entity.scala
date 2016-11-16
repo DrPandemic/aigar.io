@@ -8,7 +8,7 @@ object Entity {
    * How much (ratio) of an entity's diameter must be covered by another entity
    * to consider that it is being overlapped.
    */
-  val OverlappingRatio = 0.8f
+  val OverlappingRatio = 0.85f
 
   /**
    * Ratio of the diameter to reach the middle of an entity. Use this value to
