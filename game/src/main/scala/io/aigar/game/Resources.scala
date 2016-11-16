@@ -103,6 +103,10 @@ class ResourceType(grid: Grid,
     List(entity)
   }
 
+  def randomPosition(grid: Grid): Vector2 = {
+    grid.randomPosition
+  }
+
   def reward(cell: Cell, mass: Float): Unit = {
     cell.mass += mass
   }

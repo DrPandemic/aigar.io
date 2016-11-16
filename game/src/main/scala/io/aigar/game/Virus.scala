@@ -30,7 +30,7 @@ class Virus(var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
 class Viruses(grid: Grid) extends EntityContainer {
   val scoreModifications = MutableList[ScoreModification]()
 
-  var viruses = List.fill(Virus.Max)(new Virus(grid.randomPosition))
+  var viruses = List.fill(Virus.Max)(new Virus(grid.randomRadiusPosition))
 
   def update(grid: Grid, players: List[Player]): Unit = {
     viruses = handleCollision(viruses, players, None).asInstanceOf[List[Virus]]
@@ -56,6 +56,26 @@ class Viruses(grid: Grid) extends EntityContainer {
     }
     //Returns the entity to remove from the list
     entityReturn
+  }
+
+  override def getRespawnPosition(grid: Grid,
+                         players: List[Player],
+                         respawnRetryAttempts: Int): Option[Vector2] = {
+    1 to respawnRetryAttempts foreach { _ =>
+      var collides = false
+      val newPosition = grid.randomRadiusPosition
+      for (player <- players) {
+        for (cell <- player.cells) {
+          if (cell.contains(newPosition)) collides = true
+        }
+      }
+      if (!collides) return Some(newPosition)
+    }
+    None
+  }
+
+  def randomPosition(grid: Grid): Vector2 = {
+    grid.randomRadiusPosition
   }
 
   def state: List[Position] = {
