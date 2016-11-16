@@ -264,15 +264,18 @@ export function interpolateState(prev, next, ratio) {
   const current = JSON.parse(JSON.stringify(prev));
 
   current.players = current.players.map(player => {
-    player.cells = player.cells.filter(cell => {
-      const nextCell = next.players.find(p => p.id === player.id).cells.find(c => c.id === cell.id);
-      // This will destroy every cell that is not present in the next frame
-      if(!nextCell) return false;
+    player.cells = player.cells.map(cell => {
+      let nextCell = next.players.find(p => p.id === player.id).cells.find(c => c.id === cell.id);
+      // Only interpolate position when the cell is not dead
+      if(nextCell) {
+        cell.position.x = (1 - ratio) * cell.position.x + ratio * nextCell.position.x;
+        cell.position.y = (1 - ratio) * cell.position.y + ratio * nextCell.position.y;
+        cell.radius = (1 - ratio) * cell.radius + ratio * nextCell.radius;
+      } else {
+        cell.radius = (1 - ratio) * cell.radius;
+      }
 
-      cell.position.x = (1 - ratio) * cell.position.x + ratio * nextCell.position.x;
-      cell.position.y = (1 - ratio) * cell.position.y + ratio * nextCell.position.y;
-
-      return true;
+      return cell;
     });
 
     return player;
