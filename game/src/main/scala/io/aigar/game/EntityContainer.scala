@@ -33,7 +33,7 @@ trait EntityContainer {
     for (entity <- entities){
       for (player <- players) {
         for (cell <- player.cells) {
-          if (cell.contains(entity.position)) {
+          if (cell.overlaps(entity)) {
             entitiesReturn :::= onCellCollision(cell, player, entity, scoreModifications)
           }
         }
