@@ -16,7 +16,7 @@ object GameThread {
   final val MillisecondsPerSecond = 1000f
   final val NanoSecondsPerSecond = NanoSecondsPerMillisecond * MillisecondsPerSecond
 
-  final val TicksPerSecond = 6
+  final val TicksPerSecond = 15
   final val MillisecondsPerTick = round(MillisecondsPerSecond / TicksPerSecond)
 
   /**
