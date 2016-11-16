@@ -82,15 +82,20 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer
     )
   }
 
-  def performAction(actions: List[Action]): Unit = {
+  def performAction(actions: List[Action]): List[ScoreModification] = {
     onExternalAction
 
+    var modifications = List[ScoreModification]()
     actions.foreach {
       action => cells.find(_.id == action.cell_id) match {
-        case Some(cell) => cell.performAction(action)
+        case Some(cell) => cell.performAction(action) match {
+          case Some(modification) => modifications :::= List(modification)
+          case None =>
+        }
         case None =>
       }
     }
+    modifications
   }
 
   /**

@@ -32,11 +32,15 @@ class Game(val id: Int, playerIDs: List[Int], val duration: Int = Game.DefaultDu
     scoreModifications
   }
 
-  def performAction(player_id: Int, actions: List[Action]): Unit = {
+  def performAction(player_id: Int, actions: List[Action]): List[ScoreModification] = {
+    var modifications = List[ScoreModification]()
     players.find(_.id == player_id) match {
-      case Some(player) => player.performAction(actions)
-      case None => {}
+      case Some(player) => {
+        modifications = player.performAction(actions)
+      }
+      case None =>
     }
+    modifications
   }
 
   def state = {

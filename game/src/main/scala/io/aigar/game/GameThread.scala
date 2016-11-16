@@ -64,10 +64,17 @@ class GameThread(scoreThread: ScoreThread, playerIDs: List[Int]) extends Runnabl
   }
 
   def transferActions: Unit = {
-    while(!actionQueue.isEmpty) {
+    while (!actionQueue.isEmpty) {
       val action = actionQueue.take
       games.find(_.id == action.game_id) match {
-        case Some(game) => game.performAction(action.player_id, action.actions)
+        case Some(game) => {
+          val modifications = game.performAction(action.player_id, action.actions)
+          if (game.id == Game.RankedGameId) {
+            modifications.foreach {
+              scoreThread.addScoreModification(_)
+            }
+          }
+        }
         case None =>
       }
     }

@@ -1,7 +1,7 @@
 package io.aigar.game
 
 import io.aigar.controller.response.Action
-import scala.math.{max, round, pow}
+import io.aigar.score.ScoreModification
 import io.aigar.game.Vector2Utils.Vector2Addons
 import io.aigar.game.Position2Utils.PositionAddon
 import com.github.jpbetz.subspace.Vector2
@@ -101,10 +101,15 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
     targetVelocity - velocity
   }
 
-  def performAction(action: Action): Unit = {
+  def performAction(action: Action): Option[ScoreModification] = {
     target = action.target.toVector
 
     if (action.split) split
+
+    if (action.trade > 0 && mass > 2 * Cell.MinMass) {
+      return Some(tradeMass(action.trade))
+    }
+    return None
   }
 
   def split(): Unit = {
@@ -118,6 +123,11 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
     mass /= 2f
 
     other.position += Vector2(radius * 2f, radius * 2f) // TODO replace this with a pushing force
+  }
+
+  def tradeMass(massToTrade: Int): ScoreModification = {
+    mass = mass / 2
+    new ScoreModification(player.id, massToTrade / 2)
   }
 
   def state: serializable.Cell = {
