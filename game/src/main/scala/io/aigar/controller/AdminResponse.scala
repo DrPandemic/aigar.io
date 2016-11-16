@@ -33,3 +33,5 @@ trait AdminCommand
 case class SetRankedDurationCommand(
   val duration: Int
 ) extends AdminCommand
+
+case class StartThread() extends AdminCommand

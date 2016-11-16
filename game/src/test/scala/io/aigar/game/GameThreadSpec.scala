@@ -1,5 +1,5 @@
 import io.aigar.game._
-import io.aigar.controller.response.SetRankedDurationCommand
+import io.aigar.controller.response.{ SetRankedDurationCommand, StartThread }
 import com.github.jpbetz.subspace.Vector2
 import io.aigar.score.{ ScoreModification, ScoreThread }
 import io.aigar.controller.response.Action
@@ -44,6 +44,33 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
     val ranked = game.games.find(_.id == Game.RankedGameId).get
 
     ranked.duration shouldBe Game.DefaultDuration
+  }
+
+  it should "be created but not started" in {
+    val scoreThread = new ScoreThread(null)
+    val game = new GameThread(scoreThread)
+
+    game.started shouldBe false
+  }
+
+  "send StartThread" should "put started to true" {
+    val scoreThread = new ScoreThread(null)
+    val game = new GameThread(scoreThread)
+    game.adminCommandQueue.put(StartThread())
+    game.transferAdminCommands
+
+    game.started shouldBe(true)
+  }
+
+  it should "empty queues" in {
+    val scoreThread = new ScoreThread(null)
+    val game = new GameThread(scoreThread)
+    game.actionQueue.put(ActionQueryWithId(1, 1, List()))
+    game.adminCommandQueue.put(SetRankedDurationCommand(10))
+    game.start(List())
+
+    game.actionQueue shouldBe empty
+    game.adminCommandQueue shouldBe empty
   }
 
   "createRankedGame" should "use the duration from the game thread" in {
