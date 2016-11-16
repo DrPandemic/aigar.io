@@ -12,6 +12,8 @@ if not "%~1"=="-p" goto UNKNOWN
 
 set PREFIX_PATH=%2
 set CONFIG_PATH=%2/nginx.conf
+
+start install.bat
 start build.bat
 start sbt.bat
 
