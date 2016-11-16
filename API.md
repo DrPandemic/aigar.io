@@ -203,3 +203,19 @@ This will set the next ranked game duration(seconds).
     }
 }
 ```
+
+### Seed players
+`POST /admin/player`
+
+**Request**
+```json
+{
+    "seed": "boolean"
+}
+```
+**Response**
+```json
+{
+    "data": "ok"
+}
+```
