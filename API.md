@@ -87,6 +87,7 @@ Every error will contain a root element named `error` with an error message.
     },
     "viruses": [
     {
+        "radius": "int",
         "mass": "int",
         "position": {
             "x": "float",
@@ -201,5 +202,21 @@ This will set the next ranked game duration(seconds).
     "data": {
         "player_secret": "string"
     }
+}
+```
+
+### Seed players
+`POST /admin/player`
+
+**Request**
+```json
+{
+    "seed": "boolean"
+}
+```
+**Response**
+```json
+{
+    "data": "ok"
 }
 ```

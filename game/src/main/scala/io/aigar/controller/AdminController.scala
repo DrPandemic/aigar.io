@@ -4,10 +4,14 @@ import io.aigar.controller.response.{
   AdminQuery,
   SetRankedDurationCommand,
   SetRankedDurationQuery,
+  SeedPlayersQuery,
   SuccessResponse
 }
 import io.aigar.game.GameThread
-import io.aigar.model.PlayerRepository
+import io.aigar.model.{
+  PlayerRepository,
+  seed
+}
 import org.json4s.MappingException
 import org.scalatra.MethodOverride
 import org.scalatra.json.JacksonJsonSupport
@@ -27,11 +31,21 @@ class AdminController(password: String, game: GameThread, playerRepository: Play
     }
   }
 
-  post("/echo") {
-    parse(request.body).extract[AdminQuery]
+  post("/player") {
+    try {
+      val query = parse(request.body).extract[SeedPlayersQuery]
+
+      if(query.seed) {
+        seed.seedPlayers(playerRepository)
+      }
+    } catch {
+      case e: MappingException => // Do the normal query
+    }
+
+    SuccessResponse("ok")
   }
 
-  patch("/ranked") {
+  put("/ranked") {
     try {
       val query = parse(request.body).extract[SetRankedDurationQuery]
       val command = SetRankedDurationCommand(query.duration)

@@ -1,5 +1,6 @@
 package io.aigar.game
 
+import scala.math.round
 import com.github.jpbetz.subspace.Vector2
 import io.aigar.game.serializable.Position
 import io.aigar.score.ScoreModification
@@ -21,9 +22,12 @@ object Virus {
 class Virus(var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
   _mass = Virus.Mass
   val scoreModification = 0
+  def radius: Float = Cell.radius(mass)
 
-  def state: Position = {
-    position.state
+  def state: serializable.Virus = {
+    serializable.Virus(position.state,
+                       round(mass),
+                       round(radius))
   }
 }
 
@@ -62,7 +66,7 @@ class Viruses(grid: Grid) extends EntityContainer {
     grid.randomRadiusPosition
   }
 
-  def state: List[Position] = {
+  def state: List[serializable.Virus] = {
     viruses.map(_.state)
   }
 }

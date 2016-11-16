@@ -32,6 +32,10 @@ object Cell {
   final val SpeedLimitReductionPerMassUnit = 0.02f
 
   final val RespawnRetryAttempts = 15
+
+  def radius(mass: Float): Float = {
+    4f + sqrt(mass).toFloat * 3f
+  }
 }
 
 class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
@@ -58,8 +62,8 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
     _mass = max(m, Cell.MinMass)
   }
 
-  def radius: Double = {
-    4 + sqrt(mass) * 3
+  def radius: Float = {
+    Cell.radius(mass)
   }
 
   def update(deltaSeconds: Float, grid: Grid): Unit = {
@@ -95,10 +99,6 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
     val dir = target - position
     val targetVelocity = dir.safeNormalize * maxSpeed
     targetVelocity - velocity
-  }
-
-  def contains(pos: Vector2): Boolean = {
-    position.distanceTo(pos) <= radius
   }
 
   def performAction(action: Action): Unit = {

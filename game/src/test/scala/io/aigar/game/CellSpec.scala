@@ -77,23 +77,6 @@ class CellSpec extends FlatSpec with Matchers {
     state.radius should equal(round(cell.radius).toInt)
   }
 
-  it should "Be in the cell" in {
-    val player = new Player(0, Vector2(0f, 0f))
-    val cell = player.cells.head
-    cell.mass = (pow(100f, 2) / Pi).toFloat
-
-    val vec = new Vector2(42f, 42f)
-    cell.contains(vec) should equal(true)
-  }
-  it should "Not be in the cell" in {
-    val player = new Player(0, Vector2(0f, 0f))
-    val cell = player.cells.head
-    cell.mass = Cell.MinMass
-
-    val vec = new Vector2(42f, 42f)
-    cell.contains(vec) should equal(false)
-  }
-
   it should "not move without setting its target" in {
     val player = new Player(0, Vector2(42f, 42f))
     val cell = player.cells.head
