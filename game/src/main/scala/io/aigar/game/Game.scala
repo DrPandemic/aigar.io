@@ -1,5 +1,6 @@
 package io.aigar.game
 
+import com.typesafe.scalalogging.LazyLogging
 import io.aigar.score.ScoreModification
 import io.aigar.controller.response.Action
 import scala.collection.mutable.MutableList
@@ -13,7 +14,8 @@ object Game {
   final val DefaultDuration = 60 * 20
 }
 
-class Game(val id: Int, playerIDs: List[Int], val duration: Int = Game.DefaultDuration) {
+class Game(val id: Int, playerIDs: List[Int], val duration: Int = Game.DefaultDuration) extends LazyLogging {
+  logger.info(s"Launching game with ID $id.")
   val grid = new Grid(playerIDs.length * Grid.WidthPerPlayer, playerIDs.length * Grid.HeightPerPlayer)
   val players = createPlayers
   val viruses = new Viruses(grid)
