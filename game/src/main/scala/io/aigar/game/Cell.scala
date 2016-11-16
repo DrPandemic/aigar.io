@@ -27,6 +27,13 @@ object Cell {
    */
   final val MassDominanceRatio = 1.1f
 
+  /**
+    * How much a unit of mass represent when traded for score
+    *
+    * IMPORTANT keep this value in sync with the client documentation
+    */
+  final val MassToScoreRatio = 0.5f
+
   final val MinMaximumSpeed = 25f
   final val MaxMaximumSpeed = 50f
   final val SpeedLimitReductionPerMassUnit = 0.02f
@@ -105,8 +112,8 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
     target = action.target.toVector
 
     if (action.split) split
-
-    if (action.trade > 0 && mass > 2 * Cell.MinMass) {
+    val massToTrade = action.trade
+    if (massToTrade > 0 && mass - massToTrade >= Cell.MinMass) {
       return Some(tradeMass(action.trade))
     }
     return None
@@ -126,8 +133,8 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
   }
 
   def tradeMass(massToTrade: Int): ScoreModification = {
-    mass = mass / 2
-    new ScoreModification(player.id, massToTrade / 2)
+    mass = mass - massToTrade
+    new ScoreModification(player.id, massToTrade * Cell.MassToScoreRatio)
   }
 
   def state: serializable.Cell = {

@@ -4,6 +4,8 @@ import io.aigar.game.Vector2Utils._
 import io.aigar.controller.response.Action
 import org.scalatest._
 import com.github.jpbetz.subspace._
+import io.aigar.score.ScoreModification
+
 import scala.math._
 
 class CellSpec extends FlatSpec with Matchers {
@@ -319,10 +321,32 @@ class CellSpec extends FlatSpec with Matchers {
   "performAction" should "change target to match the one from the action" in {
     val player = new Player(0, Vector2(12f, 12f))
     val cell = player.cells.head
-    val grid = new Grid(100, 100);
 
     cell.performAction(Action(0, false, false, 0, Position(0f, 10f)))
 
     cell.target.state should equal(Position(0f, 10f))
+  }
+
+  "performAction" should "trade mass for score when mass is sufficient" in {
+    val player = new Player(1, Vector2(12f, 12f))
+    val cell = player.cells.head
+    val massToTrade = 11
+
+    cell.mass = Cell.MinMass + massToTrade
+    val modification = cell.performAction(Action(cell.id, false, false, massToTrade, Position(0f, 10f)))
+
+    modification.isEmpty shouldBe false
+    modification.get should equal(new ScoreModification(player.id, massToTrade * Cell.MassToScoreRatio))
+  }
+
+  "performAction" should "not trade mass for score when mass is insufficient" in {
+    val player = new Player(1, Vector2(12f, 12f))
+    val cell = player.cells.head
+    val massToTrade = 1
+
+    cell.mass = Cell.MinMass
+    val modification = cell.performAction(Action(cell.id, false, false, massToTrade, Position(0f, 10f)))
+
+    modification.isEmpty shouldBe true
   }
 }
