@@ -58,22 +58,6 @@ class Viruses(grid: Grid) extends EntityContainer {
     entityReturn
   }
 
-  override def getRespawnPosition(grid: Grid,
-                         players: List[Player],
-                         respawnRetryAttempts: Int): Option[Vector2] = {
-    1 to respawnRetryAttempts foreach { _ =>
-      var collides = false
-      val newPosition = grid.randomRadiusPosition
-      for (player <- players) {
-        for (cell <- player.cells) {
-          if (cell.contains(newPosition)) collides = true
-        }
-      }
-      if (!collides) return Some(newPosition)
-    }
-    None
-  }
-
   def randomPosition(grid: Grid): Vector2 = {
     grid.randomRadiusPosition
   }
