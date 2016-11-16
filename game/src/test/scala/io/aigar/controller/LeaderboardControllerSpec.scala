@@ -37,7 +37,7 @@ class LeaderboardControllerSpec extends MutableScalatraSpec
         val entries = parse(body).extract[LeaderboardResponse].data
         entries.foreach(entry => {
                           entry.player_id must be_>=(0)
-                          entry.score must be_>=(0)
+                          entry.score must be_>=(0f)
                         })
 
         val player_ids = entries.map(_.player_id)

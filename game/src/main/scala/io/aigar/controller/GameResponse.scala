@@ -11,7 +11,7 @@ case class GameCreationResponse(data: GameCreation)
 
 case class SuccessResponse(data: String)
 
-case class LeaderboardEntry(player_id: Int, name: String, score: Int)
+case class LeaderboardEntry(player_id: Int, name: String, score: Float)
 case class LeaderboardResponse(data: List[LeaderboardEntry])
 
 case class Action(

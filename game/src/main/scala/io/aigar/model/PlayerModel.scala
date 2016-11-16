@@ -8,13 +8,13 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.Await
 import scala.concurrent.{Await, Future}
 
-case class PlayerModel(id: Option[Int], playerSecret: String, playerName: String, var score: Int)
+case class PlayerModel(id: Option[Int], playerSecret: String, playerName: String, var score: Float)
 
 class Players(tag: Tag) extends Table[PlayerModel](tag, "PLAYERS") {
   def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
   def playerSecret = column[String]("PLAYER_SECRET")
   def playerName = column[String]("PLAYER_NAME")
-  def score = column[Int]("SCORE", O.Default(0))
+  def score = column[Float]("SCORE", O.Default(0f))
   def * = (id.?, playerSecret, playerName, score) <> (PlayerModel.tupled, PlayerModel.unapply)
 }
 
@@ -53,7 +53,7 @@ object PlayerDAO extends TableQuery(new Players(_)) {
     )
   }
 
-  def addScore(db: Database, player_id: Int, value: Int): Unit ={
+  def addScore(db: Database, player_id: Int, value: Float): Unit ={
     val sql = sqlu"""update PLAYERS
                      set score = score + ${value}
                      where id = ${player_id}"""
