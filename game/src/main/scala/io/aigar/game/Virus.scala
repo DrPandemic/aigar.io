@@ -34,7 +34,7 @@ class Virus(var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
 class Viruses(grid: Grid) extends EntityContainer {
   val scoreModifications = MutableList[ScoreModification]()
 
-  var viruses = List.fill(Virus.Max)(new Virus(grid.randomPosition))
+  var viruses = List.fill(Virus.Max)(new Virus(grid.randomRadiusPosition))
 
   def update(grid: Grid, players: List[Player]): Unit = {
     viruses = handleCollision(viruses, players, None).asInstanceOf[List[Virus]]
@@ -60,6 +60,10 @@ class Viruses(grid: Grid) extends EntityContainer {
     }
     //Returns the entity to remove from the list
     entityReturn
+  }
+
+  def randomPosition(grid: Grid): Vector2 = {
+    grid.randomRadiusPosition
   }
 
   def state: List[serializable.Virus] = {

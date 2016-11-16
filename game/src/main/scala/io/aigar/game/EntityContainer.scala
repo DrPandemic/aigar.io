@@ -10,12 +10,14 @@ trait EntityContainer {
     scala.util.Random.nextFloat >= ratio
   }
 
+  def randomPosition(grid: Grid): Vector2
+
   def getRespawnPosition(grid: Grid,
                          players: List[Player],
                          respawnRetryAttempts: Int): Option[Vector2] = {
     1 to respawnRetryAttempts foreach { _ =>
       var collides = false
-      val newPosition = grid.randomPosition
+      val newPosition = randomPosition(grid)
       for (player <- players) {
         for (cell <- player.cells) {
           if (cell.contains(newPosition)) collides = true

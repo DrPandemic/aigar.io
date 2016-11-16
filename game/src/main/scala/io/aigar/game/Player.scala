@@ -44,6 +44,10 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer {
 
   def shouldRespawn(size: Int, min: Int): Boolean = size < min
 
+  def randomPosition(grid: Grid): Vector2 = {
+    grid.randomPosition
+  }
+
   def state: serializable.Player = {
     val mass = round(cells.map(_.mass).sum)
     serializable.Player(id,
