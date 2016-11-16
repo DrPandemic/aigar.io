@@ -9,7 +9,11 @@ class VirusSpec extends FlatSpec with Matchers {
   "A Virus" should "create a state with the right info" in {
     val virus = new Virus(new Vector2(5, 6))
 
-    virus.state should equal(new Position(5, 6))
+    val state = virus.state
+
+    state.position should equal(new Position(5, 6))
+    state.mass should equal(virus.mass)
+    state.radius should equal(virus.radius)
   }
 
   it should "not detect a collision when being into a smaller cell" in {

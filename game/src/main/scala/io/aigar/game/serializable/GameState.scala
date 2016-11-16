@@ -35,11 +35,16 @@ case class Resources(
   silver: List[Vector2],
   gold: List[Vector2]
 )
+case class Virus(
+  position: Position,
+  mass: Int,
+  radius: Int
+)
 case class GameState(
   id: Int,
   tick: Int,
   players: List[Player],
   resources: Resources,
   map: Dimensions,
-  viruses: List[Position]
+  viruses: List[Virus]
 )

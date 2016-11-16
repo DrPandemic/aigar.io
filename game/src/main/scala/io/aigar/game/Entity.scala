@@ -11,6 +11,6 @@ trait Entity {
 
   def mass: Float = _mass
   def mass_=(m: Float): Unit = {
-    _mass
+    _mass = m
   }
 }

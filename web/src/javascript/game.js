@@ -109,10 +109,11 @@ export function drawVirusesOnMap(viruses, canvas) {
   const context = canvas.getContext("2d");
 
   for(const virus of viruses) {
-    const grad = context.createRadialGradient(virus.x,virus.y, 5, virus.x, virus.y, constants.virusRadius);
+    const position = virus.position;
+    const grad = context.createRadialGradient(position.x, position.y, 5, position.x, position.y, virus.radius);
     grad.addColorStop(0, constants.virusColor);
     grad.addColorStop(1, constants.virusEndColor);
-    drawVirusShape(virus, constants.numberOfSpikes, constants.virusRadius, context, grad);
+    drawVirusShape(position, constants.numberOfSpikes, virus.radius, context, grad);
   }
 }
 
