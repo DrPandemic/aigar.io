@@ -101,10 +101,6 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
     targetVelocity - velocity
   }
 
-  def contains(pos: Vector2): Boolean = {
-    position.distanceTo(pos) <= radius
-  }
-
   def performAction(action: Action): Unit = {
     target = action.target.toVector
   }

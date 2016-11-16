@@ -117,6 +117,8 @@ class Resource(var position: Vector2 = new Vector2(0f, 0f),
                val scoreModification: Int = 0) extends Entity {
   _mass = resourceMass
 
+  def radius: Float = 1
+
   def state: Vector2 = {
     position
   }
