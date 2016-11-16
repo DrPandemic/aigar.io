@@ -48,7 +48,9 @@ object AigarBuild extends Build {
     "org.scalactic" %% "scalactic" % "3.0.0",
     "org.scalatest" %% "scalatest" % "3.0.0" % "test,it",
     "com.github.jpbetz" % "subspace" % "0.1.0",
-    "org.mockito" % "mockito-all" % "1.8.4" % "test, it"
+    "org.mockito" % "mockito-all" % "1.8.4" % "test, it",
+    "com.typesafe.scala-logging" %% "scala-logging" % "3.1.0",
+    "ch.qos.logback" % "logback-classic" % "1.1.2"
   )
 
   lazy val scalateTemplates =
