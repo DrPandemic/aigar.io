@@ -16,7 +16,8 @@ class Grid(val width: Int, val height: Int) {
     val y = random.nextFloat() * height
     Vector2(x, y)
   }
-
+  
+  // Logic coming from http://stackoverflow.com/a/5838055/395386
   def randomRadiusPosition: Vector2 = {
     val angle = 2 * Math.PI * random.nextFloat()
     val a = random.nextFloat() + random.nextFloat()
