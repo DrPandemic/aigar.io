@@ -7,6 +7,14 @@ import com.github.jpbetz.subspace.Vector2
 import io.aigar.score.ScoreModification
 import scala.collection.mutable.MutableList
 
+object Player {
+  /**
+   * Maximum amount of cells that a player can control at once.
+   * IMPORTANT keep this value in sync with the client documentation.
+   */
+  final val MaxCells = 10
+}
+
 class Player(val id: Int, startPosition: Vector2) extends EntityContainer
                                                   with LazyLogging {
   var aiState: AIState = new NullState(this)
@@ -21,11 +29,7 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer
     if (shouldRespawn(cells.size, 1)) {
       getRespawnPosition(grid, opponents, Cell.RespawnRetryAttempts) match {
         case Some(position) => {
-          currentCellId += 1
-          val cell = new Cell(currentCellId, this, position)
-          cells = List(cell)
-
-          logger.info(s"Player $id respawned with cell ${cell.id} at (${cell.position.x}, ${cell.position.y})")
+          spawnCell(position)
         }
         case _ =>
       }
@@ -46,6 +50,17 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer
       entityReturn = List(entity)
     }
     entityReturn
+  }
+
+  def spawnCell(position: Vector2): Cell = {
+    currentCellId += 1
+
+    val cell = new Cell(currentCellId, this, position)
+    cells ::= cell
+
+    logger.info(s"Player $id respawned with cell ${cell.id} at (${cell.position.x}, ${cell.position.y})")
+
+    cell
   }
 
   def shouldRespawn(size: Int, min: Int): Boolean = size < min
