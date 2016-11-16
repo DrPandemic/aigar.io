@@ -36,8 +36,8 @@ class AdminControllerSpec extends MutableScalatraSpec
   def before: Unit = cleanState
   def after: Unit = cleanState
 
-  def patchJson[A](uri: String, body: JValue, headers: Map[String, String] = Map())(f: => A): A =
-    patch(
+  def putJson[A](uri: String, body: JValue, headers: Map[String, String] = Map())(f: => A): A =
+    put(
       uri,
       compact(render(body)).getBytes("utf-8"),
       Map("Content-Type" -> "application/json") ++ headers
@@ -55,22 +55,22 @@ class AdminControllerSpec extends MutableScalatraSpec
   "POST on GameController" should {
     "403 when the administrator password doesn't match" in {
       val action = ("administrator_password" -> "nope")
-      patchJson("/ranked", action) {
+      putJson("/ranked", action) {
         status must_== 403
       }
     }
 
     "not 403 when the administrator password matches" in {
-      patchJson("/ranked", defaultActionJson) {
+      putJson("/ranked", defaultActionJson) {
         status must_!= 403
       }
     }
   }
 
-  "PATCH /ranked" should {
+  "PUT /ranked" should {
     "put the action in the admin queue" in {
       game.adminCommandQueue.isEmpty() must be_==(true)
-      patchJson("ranked", defaultActionJson ~ ("duration" -> 10)) {
+      putJson("ranked", defaultActionJson ~ ("duration" -> 10)) {
         status must_== 200
 
         game.adminCommandQueue.isEmpty() must be_==(false)

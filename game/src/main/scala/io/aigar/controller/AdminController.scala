@@ -45,7 +45,7 @@ class AdminController(password: String, game: GameThread, playerRepository: Play
     SuccessResponse("ok")
   }
 
-  patch("/ranked") {
+  put("/ranked") {
     try {
       val query = parse(request.body).extract[SetRankedDurationQuery]
       val command = SetRankedDurationCommand(query.duration)
