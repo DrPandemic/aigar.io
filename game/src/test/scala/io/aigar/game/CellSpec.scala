@@ -283,6 +283,39 @@ class CellSpec extends FlatSpec with Matchers {
     //The return is the entity to remove, hence the cell of the player if applicable
     player.onCellCollision(opponent.cells.head, player, player.cells.head, None) shouldBe empty
   }
+
+  it should "split into 2 cells with half the mass" in {
+    val player = new Player(0, Vector2(0f, 0f))
+    val cell = player.cells.head
+    cell.mass = 100f
+
+    cell.split
+
+    player.cells should have size 2
+    cell.mass should equal(50f)
+    player.cells(1).mass should equal(50f)
+  }
+
+  it should "not split when it does not have enough mass" in {
+    val player = new Player(0, Vector2(0f, 0f))
+    val cell = player.cells.head
+    cell.mass = Cell.MinMass
+
+    cell.split
+
+    player.cells should have size 1
+    player.cells.head should be theSameInstanceAs(cell)
+  }
+
+  it should "not split when the player has the maximum amount of cells" in {
+    val player = new Player(0, Vector2(0f, 0f))
+    player.cells = List.fill(Player.MaxCells)(player.spawnCell(Vector2(0f, 0f)))
+
+    player.cells.head.split
+
+    player.cells should have size Player.MaxCells
+  }
+
   "performAction" should "change target to match the one from the action" in {
     val player = new Player(0, Vector2(12f, 12f))
     val cell = player.cells.head

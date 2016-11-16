@@ -19,7 +19,10 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer
                                                   with LazyLogging {
   var aiState: AIState = new NullState(this)
   private var currentCellId: Int = 0
-  var cells = List(new Cell(currentCellId, this, startPosition))
+
+  var cells: List[Cell] = List()
+  spawnCell(startPosition)
+
   var opponents = List[Player]()
 
   def update(deltaSeconds: Float, grid: Grid, players: List[Player]): Unit = {
@@ -53,12 +56,12 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer
   }
 
   def spawnCell(position: Vector2): Cell = {
-    currentCellId += 1
-
     val cell = new Cell(currentCellId, this, position)
     cells ::= cell
 
     logger.info(s"Player $id respawned with cell ${cell.id} at (${cell.position.x}, ${cell.position.y})")
+
+    currentCellId += 1
 
     cell
   }
