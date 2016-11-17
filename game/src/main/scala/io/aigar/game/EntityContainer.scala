@@ -2,7 +2,6 @@ package io.aigar.game
 
 import com.github.jpbetz.subspace.Vector2
 import io.aigar.score.ScoreModification
-import scala.collection.mutable.MutableList
 
 trait EntityContainer {
   def shouldRespawn(size: Int, min: Int, max: Int): Boolean = {
@@ -29,23 +28,24 @@ trait EntityContainer {
   }
 
   def handleCollision(entities: List[Entity],
-                      players: List[Player],
-                      scoreModifications: Option[MutableList[ScoreModification]]): List[Entity] ={
+                      players: List[Player]): (List[Entity], List[ScoreModification]) ={
     var entitiesReturn = List[Entity]()
+    var modifications = List[ScoreModification]()
+
     for (entity <- entities){
       for (player <- players) {
         for (cell <- player.cells) {
           if (cell.overlaps(entity)) {
-            entitiesReturn :::= onCellCollision(cell, player, entity, scoreModifications)
+            entitiesReturn ::= entity
+            modifications ::= onCellCollision(cell, player, entity)
           }
         }
       }
     }
-    entities diff entitiesReturn
+    (entities diff entitiesReturn, modifications)
   }
 
   def onCellCollision(cell: Cell,
                       player: Player,
-                      entity: Entity,
-                      scoreModifications: Option[MutableList[ScoreModification]]): List[Entity]
+                      entity: Entity): ScoreModification
 }

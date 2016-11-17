@@ -5,7 +5,6 @@ import io.aigar.controller.response.Action
 import scala.math.round
 import com.github.jpbetz.subspace.Vector2
 import io.aigar.score.ScoreModification
-import scala.collection.mutable.MutableList
 
 object Player {
   /**
@@ -25,9 +24,12 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer
 
   var opponents = List[Player]()
 
-  def update(deltaSeconds: Float, grid: Grid, players: List[Player]): Unit = {
+  def update(deltaSeconds: Float, grid: Grid, players: List[Player]): List[ScoreModification] = {
     opponents = players diff List(this)
-    cells = handleCollision(cells, opponents, None).asInstanceOf[List[Cell]]
+    val tupleReturn = handleCollision(cells, opponents)
+
+    cells = tupleReturn._1.asInstanceOf[List[Cell]]
+    val modifications = tupleReturn._2
 
     if (shouldRespawn(cells.size, 1)) {
       getRespawnPosition(grid, opponents, Cell.RespawnRetryAttempts) match {
@@ -38,21 +40,19 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer
       }
     }
     cells.foreach { _.update(deltaSeconds, grid) }
+    modifications
   }
 
   def onCellCollision(opponentCell: Cell,
                       player: Player,
-                      entity: Entity,
-                      scoreModifications: Option[MutableList[ScoreModification]]): List[Entity] = {
-    var entityReturn = List[Entity]()
+                      entity: Entity): ScoreModification = {
     val cell = entity.asInstanceOf[Cell]
 
     if (opponentCell.contains(cell.position) && opponentCell.mass >= Cell.MassDominanceRatio * cell.mass) {
       logger.info(s"Player ${player.id}'s ${opponentCell.id} (mass ${opponentCell.mass}) ate $id's ${cell.id} (mass ${cell.mass})")
       opponentCell.mass = opponentCell.mass + cell.mass
-      entityReturn = List(entity)
     }
-    entityReturn
+    new ScoreModification(player.id, 0)
   }
 
   def spawnCell(position: Vector2): Cell = {
