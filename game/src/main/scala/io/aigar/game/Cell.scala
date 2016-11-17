@@ -112,9 +112,9 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
     target = action.target.toVector
 
     if (action.split) split
-    val massToTrade = action.trade
+    val massToTrade = min(action.trade, max(mass - Cell.MinMass, 0)).toInt
     if (massToTrade > 0 && mass - massToTrade >= Cell.MinMass) {
-      return Some(tradeMass(action.trade))
+      return Some(tradeMass(massToTrade))
     }
     return None
   }
@@ -133,7 +133,7 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
   }
 
   def tradeMass(massToTrade: Int): ScoreModification = {
-    mass = mass - massToTrade
+    mass -= massToTrade
     new ScoreModification(player.id, massToTrade * Cell.MassToScoreRatio)
   }
 

@@ -339,7 +339,18 @@ class CellSpec extends FlatSpec with Matchers {
     modification.get should equal(new ScoreModification(player.id, massToTrade * Cell.MassToScoreRatio))
   }
 
-  "performAction" should "not trade mass for score when mass is insufficient" in {
+  it should "trade mass so that the cell keeps at least the minimal mass" in {
+    val player = new Player(1, Vector2(12f, 12f))
+    val cell = player.cells.head
+    val massToTrade = 100
+
+    cell.mass = Cell.MinMass + 10
+    val modification = cell.performAction(Action(cell.id, false, false, massToTrade, Position(0f, 10f)))
+
+    modification.get should equal(new ScoreModification(player.id, 10 * Cell.MassToScoreRatio))
+  }
+
+  it should "not trade mass for score when mass is insufficient" in {
     val player = new Player(1, Vector2(12f, 12f))
     val cell = player.cells.head
     val massToTrade = 1
