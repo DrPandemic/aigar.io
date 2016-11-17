@@ -1,7 +1,7 @@
 package io.aigar.game
 
 import io.aigar.controller.response.Action
-import scala.math.{max, round, pow}
+import io.aigar.score.ScoreModification
 import io.aigar.game.Vector2Utils.Vector2Addons
 import io.aigar.game.Position2Utils.PositionAddon
 import com.github.jpbetz.subspace.Vector2
@@ -26,6 +26,13 @@ object Cell {
    * IMPORTANT keep this value in sync with the client documentation
    */
   final val MassDominanceRatio = 1.1f
+
+  /**
+    * How much a unit of mass represent when traded for score
+    *
+    * IMPORTANT keep this value in sync with the client documentation
+    */
+  final val MassToScoreRatio = 0.5f
 
   final val MinMaximumSpeed = 25f
   final val MaxMaximumSpeed = 50f
@@ -101,10 +108,12 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
     targetVelocity - velocity
   }
 
-  def performAction(action: Action): Unit = {
+  def performAction(action: Action): Option[ScoreModification] = {
     target = action.target.toVector
 
     if (action.split) split
+    val modifications = tradeMass(action.trade)
+    modifications
   }
 
   def split(): Unit = {
@@ -118,6 +127,18 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
     mass /= 2f
 
     other.position += Vector2(radius * 2f, radius * 2f) // TODO replace this with a pushing force
+  }
+
+  def tradeMass(massToTrade: Int): Option[ScoreModification] = {
+
+    val amount = min(massToTrade, max(mass - Cell.MinMass, 0)).toInt
+
+    if (amount > 0 && mass - amount >= Cell.MinMass) {
+      mass -= amount
+      return Some(ScoreModification(player.id, amount * Cell.MassToScoreRatio))
+    }
+
+    None
   }
 
   def state: serializable.Cell = {

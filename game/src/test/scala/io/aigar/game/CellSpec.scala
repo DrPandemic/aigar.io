@@ -4,6 +4,8 @@ import io.aigar.game.Vector2Utils._
 import io.aigar.controller.response.Action
 import org.scalatest._
 import com.github.jpbetz.subspace._
+import io.aigar.score.ScoreModification
+
 import scala.math._
 
 class CellSpec extends FlatSpec with Matchers {
@@ -251,27 +253,16 @@ class CellSpec extends FlatSpec with Matchers {
     val opponent = new Player(2, Vector2(10f, 10f))
     val largeCell = opponent.cells.head
 
-    largeCell.mass = 30
-    smallCell.mass = 26
+    largeCell.mass = Cell.MinMass * 2
+    smallCell.mass = Cell.MinMass
 
-    //The return is the entity to remove, hence the cell of the player if applicable
-    player.onCellCollision(opponent.cells.head, player, player.cells.head, None) should contain (smallCell.asInstanceOf[Entity])
+    player.cells = player.handleCollision(player.cells, List(opponent))._1.asInstanceOf[List[Cell]]
+
+    opponent.cells should contain(largeCell)
+    player.cells shouldBe empty
   }
 
   it should "not be eaten by a cell between 90% to 100% of its mass" in {
-    val player = new Player(0, Vector2(10f, 10f))
-    val largeCell = player.cells.head
-    val opponent = new Player(2, Vector2(10f, 10f))
-    val smallCell = opponent.cells.head
-
-    largeCell.mass = Cell.MinMass + 1
-    smallCell.mass = Cell.MinMass
-
-    //The return is the entity to remove, hence the cell of the player if applicable
-    player.onCellCollision(opponent.cells.head, player, player.cells.head, None) shouldBe empty
-  }
-
-  it should "not be eaten by a smaller cell" in {
     val player = new Player(0, Vector2(10f, 10f))
     val smallCell = player.cells.head
     val opponent = new Player(2, Vector2(10f, 10f))
@@ -280,8 +271,23 @@ class CellSpec extends FlatSpec with Matchers {
     largeCell.mass = Cell.MinMass + 1
     smallCell.mass = Cell.MinMass
 
-    //The return is the entity to remove, hence the cell of the player if applicable
-    player.onCellCollision(opponent.cells.head, player, player.cells.head, None) shouldBe empty
+    player.handleCollision(player.cells, List(opponent))
+
+    player.cells should contain(smallCell)
+    opponent.cells should contain(largeCell)
+  }
+
+  it should "not be eaten by a smaller cell" in {
+    val player = new Player(0, Vector2(10f, 10f))
+    val largeCell = player.cells.head
+    val opponent = new Player(2, Vector2(10f, 10f))
+    val smallCell = opponent.cells.head
+
+    largeCell.mass = Cell.MinMass * 2
+    smallCell.mass = Cell.MinMass
+
+    player.cells should contain(largeCell)
+    opponent.cells should contain(smallCell)
   }
 
   it should "split into 2 cells with half the mass" in {
@@ -319,10 +325,43 @@ class CellSpec extends FlatSpec with Matchers {
   "performAction" should "change target to match the one from the action" in {
     val player = new Player(0, Vector2(12f, 12f))
     val cell = player.cells.head
-    val grid = new Grid(100, 100);
 
     cell.performAction(Action(0, false, false, 0, Position(0f, 10f)))
 
     cell.target.state should equal(Position(0f, 10f))
+  }
+
+  "performAction" should "trade mass for score when mass is sufficient" in {
+    val player = new Player(1, Vector2(12f, 12f))
+    val cell = player.cells.head
+    val massToTrade = 11
+
+    cell.mass = Cell.MinMass + massToTrade
+    val modification = cell.performAction(Action(cell.id, false, false, massToTrade, Position(0f, 10f)))
+
+    modification.isEmpty shouldBe false
+    modification.get should equal(ScoreModification(player.id, massToTrade * Cell.MassToScoreRatio))
+  }
+
+  it should "trade mass so that the cell keeps at least the minimal mass" in {
+    val player = new Player(1, Vector2(12f, 12f))
+    val cell = player.cells.head
+    val massToTrade = 100
+
+    cell.mass = Cell.MinMass + 10
+    val modification = cell.performAction(Action(cell.id, false, false, massToTrade, Position(0f, 10f)))
+
+    modification.get should equal(ScoreModification(player.id, 10 * Cell.MassToScoreRatio))
+  }
+
+  it should "not trade mass for score when mass is insufficient" in {
+    val player = new Player(1, Vector2(12f, 12f))
+    val cell = player.cells.head
+    val massToTrade = 1
+
+    cell.mass = Cell.MinMass
+    val modification = cell.performAction(Action(cell.id, false, false, massToTrade, Position(0f, 10f)))
+
+    modification shouldBe empty
   }
 }

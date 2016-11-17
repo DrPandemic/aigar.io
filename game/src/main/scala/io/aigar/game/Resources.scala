@@ -2,7 +2,6 @@ package io.aigar.game
 
 import com.github.jpbetz.subspace.Vector2
 import io.aigar.score.ScoreModification
-import scala.collection.mutable.MutableList
 
 object Resource {
   final val RespawnRetryAttempts = 10
@@ -59,11 +58,11 @@ class Resources(grid: Grid) {
   )
   val resourceTypes = List(regulars, silvers, golds)
 
-  def update(grid: Grid, players: List[Player]): MutableList[ScoreModification] = {
-    val scoreModifications = MutableList[ScoreModification]()
-    resourceTypes.foreach { _.update(grid, players, scoreModifications) }
+  def update(grid: Grid, players: List[Player]): List[ScoreModification] = {
+    var modifications = List[ScoreModification]()
+    resourceTypes.foreach { modifications :::= _.update(grid, players) }
 
-    scoreModifications
+    modifications
   }
 
   def state: serializable.Resources = {
@@ -83,24 +82,25 @@ class ResourceType(grid: Grid,
                   ) extends EntityContainer {
   var resources = List.fill(resourceMax)(new Resource(grid.randomPosition, resourceMass, resourceScore))
 
-  def update(grid: Grid, players: List[Player], scoreModifications: MutableList[ScoreModification]): Unit = {
-    resources = handleCollision(resources, players, Some(scoreModifications)).asInstanceOf[List[Resource]]
+  def update(grid: Grid, players: List[Player]): List[ScoreModification] = {
+    val (resourcesReturn, modifications) = handleCollision(resources, players)
+
+    resources = resourcesReturn.asInstanceOf[List[Resource]]
 
     if (shouldRespawn(resources.size, resourceMin, resourceMax)) {
       getRespawnPosition(grid, players, Resource.RespawnRetryAttempts) match {
-        case Some(position) => resources :::= List(new Resource(position, resourceMass, resourceScore))
+        case Some(position) => resources ::= new Resource(position, resourceMass, resourceScore)
         case _ =>
       }
     }
+    modifications
   }
 
   def onCellCollision(cell: Cell,
                       player: Player,
-                      entity: Entity,
-                      scoreModifications: Option[MutableList[ScoreModification]]): List[Entity] = {
-    scoreModifications.get += ScoreModification(player.id, entity.scoreModification)
+                      entity: Entity): (List[Entity], ScoreModification) = {
     reward(cell, entity.mass)
-    List(entity)
+    (List(entity), new ScoreModification(player.id, entity.scoreModification))
   }
 
   def randomPosition(grid: Grid): Vector2 = {

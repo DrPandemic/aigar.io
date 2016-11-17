@@ -108,7 +108,8 @@ To eat an enemy cell, a cell must almost completely overlap its enemy and be
              effect.
 
 - `trade(mass)`: Trades a given amount of the cell's mass to gain a small gain
-                 in the player's score (competition points).
+                 in the player's score (competition points) with a ratio of 
+                 2:1.
                  If the given quantity is too large for the cell's mass, the
                  trade will only be based on how much the cell can afford.
 

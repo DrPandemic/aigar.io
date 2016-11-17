@@ -3,7 +3,6 @@ package io.aigar.game
 import com.typesafe.scalalogging.LazyLogging
 import io.aigar.score.ScoreModification
 import io.aigar.controller.response.Action
-import scala.collection.mutable.MutableList
 
 /**
  * Game holds the logic for an individual game being played
@@ -23,20 +22,24 @@ class Game(val id: Int, playerIDs: List[Int], val duration: Int = Game.DefaultDu
   val startTime = GameThread.time
   var tick = 0
 
-  def update(deltaSeconds: Float): MutableList[ScoreModification] = {
-    players.foreach { player => player.update(deltaSeconds, grid, players) }
-    viruses.update(grid, players)
-    val scoreModifications = resources.update(grid, players)
+  def update(deltaSeconds: Float): List[ScoreModification] = {
+    var modifications = players.flatten {  _.update(deltaSeconds, grid, players) }
+    modifications :::= viruses.update(grid, players)
+    modifications :::= resources.update(grid, players)
     tick += 1
 
-    scoreModifications
+    modifications
   }
 
-  def performAction(player_id: Int, actions: List[Action]): Unit = {
+  def performAction(player_id: Int, actions: List[Action]): List[ScoreModification] = {
+    var modifications = List[ScoreModification]()
     players.find(_.id == player_id) match {
-      case Some(player) => player.performAction(actions)
-      case None => {}
+      case Some(player) => {
+        modifications = player.performAction(actions)
+      }
+      case None =>
     }
+    modifications
   }
 
   def state = {

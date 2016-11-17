@@ -5,7 +5,6 @@ import io.aigar.controller.response.Action
 import scala.math.round
 import com.github.jpbetz.subspace.Vector2
 import io.aigar.score.ScoreModification
-import scala.collection.mutable.MutableList
 
 object Player {
   /**
@@ -25,9 +24,11 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer
 
   var opponents = List[Player]()
 
-  def update(deltaSeconds: Float, grid: Grid, players: List[Player]): Unit = {
+  def update(deltaSeconds: Float, grid: Grid, players: List[Player]): List[ScoreModification] = {
     opponents = players diff List(this)
-    cells = handleCollision(cells, opponents, None).asInstanceOf[List[Cell]]
+    val (cellsReturn, modifications) = handleCollision(cells, opponents)
+
+    cells = cellsReturn.asInstanceOf[List[Cell]]
 
     if (shouldRespawn(cells.size, 1)) {
       getRespawnPosition(grid, opponents, Cell.RespawnRetryAttempts) match {
@@ -38,21 +39,21 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer
       }
     }
     cells.foreach { _.update(deltaSeconds, grid) }
+    modifications
   }
 
   def onCellCollision(opponentCell: Cell,
                       player: Player,
-                      entity: Entity,
-                      scoreModifications: Option[MutableList[ScoreModification]]): List[Entity] = {
-    var entityReturn = List[Entity]()
+                      entity: Entity): (List[Entity], ScoreModification) = {
     val cell = entity.asInstanceOf[Cell]
+    var entitiesReturn = List[Entity]()
 
     if (opponentCell.contains(cell.position) && opponentCell.mass >= Cell.MassDominanceRatio * cell.mass) {
       logger.info(s"Player ${player.id}'s ${opponentCell.id} (mass ${opponentCell.mass}) ate $id's ${cell.id} (mass ${cell.mass})")
+      entitiesReturn :::= List(entity)
       opponentCell.mass = opponentCell.mass + cell.mass
-      entityReturn = List(entity)
     }
-    entityReturn
+    (entitiesReturn,  ScoreModification(player.id, 0))
   }
 
   def spawnCell(position: Vector2): Cell = {
@@ -82,15 +83,20 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer
     )
   }
 
-  def performAction(actions: List[Action]): Unit = {
+  def performAction(actions: List[Action]): List[ScoreModification] = {
     onExternalAction
 
+    var modifications = List[ScoreModification]()
     actions.foreach {
       action => cells.find(_.id == action.cell_id) match {
-        case Some(cell) => cell.performAction(action)
+        case Some(cell) => cell.performAction(action) match {
+          case Some(modification) => modifications :::= List(modification)
+          case None =>
+        }
         case None =>
       }
     }
+    modifications
   }
 
   /**

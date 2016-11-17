@@ -5,7 +5,6 @@ import com.typesafe.scalalogging.LazyLogging
 import com.github.jpbetz.subspace.Vector2
 import io.aigar.game.serializable.Position
 import io.aigar.score.ScoreModification
-import scala.collection.mutable.MutableList
 import io.aigar.game.Vector2Utils.Vector2Addons
 
 object Virus {
@@ -34,36 +33,34 @@ class Virus(var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
 
 class Viruses(grid: Grid) extends EntityContainer
                           with LazyLogging {
-  val scoreModifications = MutableList[ScoreModification]()
+  var viruses = List.fill(Virus.Max)(new Virus(grid.randomPosition))
 
-  var viruses = List.fill(Virus.Max)(new Virus(grid.randomRadiusPosition))
+  def update(grid: Grid, players: List[Player]): List[ScoreModification] = {
+    val (virusesReturn, modifications) = handleCollision(viruses, players)
 
-  def update(grid: Grid, players: List[Player]): Unit = {
-    viruses = handleCollision(viruses, players, None).asInstanceOf[List[Virus]]
+    viruses = virusesReturn.asInstanceOf[List[Virus]]
 
     if (shouldRespawn(viruses.size, Virus.Min, Virus.Max)) {
       getRespawnPosition(grid, players, Virus.RespawnRetryAttempts) match {
-        case Some(position) => viruses :::= List(new Virus(position))
+        case Some(position) => viruses ::= new Virus(position)
         case _ =>
       }
     }
+    modifications
   }
 
   def onCellCollision(cell: Cell,
                       player: Player,
-                      entity: Entity,
-                      scoreModifications: Option[MutableList[ScoreModification]]): List[Entity] = {
-    var entityReturn = List[Entity]()
-
+                      entity: Entity): (List[Entity], ScoreModification) = {
+    var entitiesReturn = List[Entity]()
     if (cell.mass > Virus.Mass * Cell.MassDominanceRatio) {
       logger.info(s"Player ${player.id}'s ${cell.id} (mass ${cell.mass}) ate a virus.")
 
       cell.mass = cell.mass * Virus.ImpactOnMass
+      entitiesReturn :::= List(entity)
       // TODO Split the cell ;)
-      entityReturn = List(entity)
     }
-    //Returns the entity to remove from the list
-    entityReturn
+    (entitiesReturn, new ScoreModification(player.id, 0))
   }
 
   def randomPosition(grid: Grid): Vector2 = {

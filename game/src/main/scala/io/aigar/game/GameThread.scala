@@ -2,8 +2,8 @@ package io.aigar.game
 
 import com.typesafe.scalalogging.LazyLogging
 import scala.math.round
-import io.aigar.controller.response.{ AdminCommand, SetRankedDurationCommand }
-import io.aigar.score.ScoreThread
+import io.aigar.controller.response.{AdminCommand, SetRankedDurationCommand}
+import io.aigar.score.{ScoreModification, ScoreThread}
 import java.util.concurrent.LinkedBlockingQueue
 
 /**
@@ -64,10 +64,13 @@ class GameThread(scoreThread: ScoreThread, playerIDs: List[Int]) extends Runnabl
   }
 
   def transferActions: Unit = {
-    while(!actionQueue.isEmpty) {
+    while (!actionQueue.isEmpty) {
       val action = actionQueue.take
       games.find(_.id == action.game_id) match {
-        case Some(game) => game.performAction(action.player_id, action.actions)
+        case Some(game) => {
+          val modifications = game.performAction(action.player_id, action.actions)
+          applyScoreModifications(game, modifications)
+          }
         case None =>
       }
     }
@@ -100,15 +103,19 @@ class GameThread(scoreThread: ScoreThread, playerIDs: List[Int]) extends Runnabl
     for (game <- games) {
       val deltaTime = currentTime - previousTime
       val modifications = game.update(deltaTime)
-      if(game.id == Game.RankedGameId) {
-        modifications.foreach { scoreThread.addScoreModification(_) }
-      }
+      applyScoreModifications(game, modifications)
 
       game.update(deltaTime)
       states = states + (game.id -> game.state)
 
       previousTime = currentTime
       currentTime = GameThread.time
+    }
+  }
+
+  def applyScoreModifications(game: Game, modifications: List[ScoreModification]): Unit = {
+    if(game.id == Game.RankedGameId) {
+      modifications.foreach { scoreThread.addScoreModification(_) }
     }
   }
 }
