@@ -1,6 +1,7 @@
 package io.aigar.game
 
 import scala.math.round
+import com.typesafe.scalalogging.LazyLogging
 import com.github.jpbetz.subspace.Vector2
 import io.aigar.game.serializable.Position
 import io.aigar.score.ScoreModification
@@ -31,7 +32,8 @@ class Virus(var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
   }
 }
 
-class Viruses(grid: Grid) extends EntityContainer {
+class Viruses(grid: Grid) extends EntityContainer
+                          with LazyLogging {
   val scoreModifications = MutableList[ScoreModification]()
 
   var viruses = List.fill(Virus.Max)(new Virus(grid.randomRadiusPosition))
@@ -54,6 +56,8 @@ class Viruses(grid: Grid) extends EntityContainer {
     var entityReturn = List[Entity]()
 
     if (cell.mass > Virus.Mass * Cell.MassDominanceRatio) {
+      logger.info(s"Player ${player.id}'s ${cell.id} (mass ${cell.mass}) ate a virus.")
+
       cell.mass = cell.mass * Virus.ImpactOnMass
       // TODO Split the cell ;)
       entityReturn = List(entity)

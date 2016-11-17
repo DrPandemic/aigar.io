@@ -1,12 +1,14 @@
 package io.aigar.game
 
+import com.typesafe.scalalogging.LazyLogging
 import io.aigar.controller.response.Action
 import scala.math.round
 import com.github.jpbetz.subspace.Vector2
 import io.aigar.score.ScoreModification
 import scala.collection.mutable.MutableList
 
-class Player(val id: Int, startPosition: Vector2) extends EntityContainer {
+class Player(val id: Int, startPosition: Vector2) extends EntityContainer
+                                                  with LazyLogging {
   var aiState: AIState = new NullState(this)
   private var currentCellId: Int = 0
   var cells = List(new Cell(currentCellId, this, startPosition))
@@ -20,7 +22,10 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer {
       getRespawnPosition(grid, opponents, Cell.RespawnRetryAttempts) match {
         case Some(position) => {
           currentCellId += 1
-          cells = List(new Cell(currentCellId, this, position))
+          val cell = new Cell(currentCellId, this, position)
+          cells = List(cell)
+
+          logger.info(s"Player $id respawned with cell ${cell.id} at (${cell.position.x}, ${cell.position.y})")
         }
         case _ =>
       }
@@ -36,6 +41,7 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer {
     val cell = entity.asInstanceOf[Cell]
 
     if (opponentCell.contains(cell.position) && opponentCell.mass >= Cell.MassDominanceRatio * cell.mass) {
+      logger.info(s"Player ${player.id}'s ${opponentCell.id} (mass ${opponentCell.mass}) ate $id's ${cell.id} (mass ${cell.mass})")
       opponentCell.mass = opponentCell.mass + cell.mass
       entityReturn = List(entity)
     }
@@ -74,6 +80,7 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer {
    * command coming from the AI of a player).
    */
   def onExternalAction: Unit = {
+    if (!isActive) logger.info(s"Player $id reconnected.")
     aiState.onPlayerActivity
   }
 

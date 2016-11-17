@@ -1,5 +1,6 @@
 package io.aigar.game
 
+import com.typesafe.scalalogging.LazyLogging
 import io.aigar.controller.response.{ AdminCommand, SetRankedDurationCommand }
 import io.aigar.score.ScoreThread
 import java.util.concurrent.LinkedBlockingQueue
@@ -22,7 +23,9 @@ object GameThread {
   }
 }
 
-class GameThread(scoreThread: ScoreThread, playerIDs: List[Int]) extends Runnable {
+class GameThread(scoreThread: ScoreThread, playerIDs: List[Int]) extends Runnable
+                                                                 with LazyLogging {
+  logger.info("Starting Game thread.")
   val MillisecondsPerTick = 16
 
   final val actionQueue = new LinkedBlockingQueue[ActionQueryWithId]()

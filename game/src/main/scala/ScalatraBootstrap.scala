@@ -1,3 +1,4 @@
+import com.typesafe.scalalogging.LazyLogging
 import io.aigar.game.GameThread
 import io.aigar.controller._
 import io.aigar.score.ScoreThread
@@ -6,7 +7,9 @@ import javax.servlet.ServletContext
 
 import io.aigar.model.PlayerRepository
 
-class ScalatraBootstrap extends LifeCycle {
+class ScalatraBootstrap extends LifeCycle
+                        with LazyLogging {
+  logger.info("Bootstrapping application.")
   var playerRepository: PlayerRepository = null
   var game: GameThread = null
   var scoreThread: ScoreThread = null
