@@ -100,9 +100,10 @@ class ResourcesSpec extends FlatSpec with Matchers {
       new Resource(p1.cells.head.position, Regular.Mass, Regular.Score),
       new Resource(p2.cells.head.position, Regular.Mass, Regular.Score))
 
-    val tupleReturn = resources.regulars.handleCollision(resources.regulars.resources, List(p1, p2))
+    val (resourcesReturn, modifications) = resources.regulars.handleCollision(resources.regulars.resources, List(p1, p2))
 
-    tupleReturn._1 shouldBe empty
+    resourcesReturn shouldBe empty
+    modifications should contain theSameElementsAs List(ScoreModification(p1.id, Regular.Score), ScoreModification(p2.id, Regular.Score))
   }
 
   it should "return the original list of entities when no collision occurs" in {
@@ -115,8 +116,9 @@ class ResourcesSpec extends FlatSpec with Matchers {
       new Resource(Vector2(25, 25), Regular.Mass, Regular.Score),
       new Resource(Vector2(30, 30), Regular.Mass, Regular.Score))
 
-    val tupleReturn = resources.regulars.handleCollision(resources.regulars.resources, List(p1, p2))
+    val (resourcesReturn, modifications) = resources.regulars.handleCollision(resources.regulars.resources, List(p1, p2))
 
-    tupleReturn._1 should contain theSameElementsAs resources.regulars.resources
+    resourcesReturn should contain theSameElementsAs resources.regulars.resources
+    modifications shouldBe empty
   }
 }

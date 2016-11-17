@@ -258,11 +258,8 @@ class CellSpec extends FlatSpec with Matchers {
 
     player.cells = player.handleCollision(player.cells, List(opponent))._1.asInstanceOf[List[Cell]]
 
-    println(player.cells)
-    println(smallCell)
-
     opponent.cells should contain(largeCell)
-    player.cells.isEmpty shouldBe true
+    player.cells shouldBe empty
   }
 
   it should "not be eaten by a cell between 90% to 100% of its mass" in {
@@ -343,7 +340,7 @@ class CellSpec extends FlatSpec with Matchers {
     val modification = cell.performAction(Action(cell.id, false, false, massToTrade, Position(0f, 10f)))
 
     modification.isEmpty shouldBe false
-    modification.get should equal(new ScoreModification(player.id, massToTrade * Cell.MassToScoreRatio))
+    modification.get should equal(ScoreModification(player.id, massToTrade * Cell.MassToScoreRatio))
   }
 
   it should "trade mass so that the cell keeps at least the minimal mass" in {
@@ -354,7 +351,7 @@ class CellSpec extends FlatSpec with Matchers {
     cell.mass = Cell.MinMass + 10
     val modification = cell.performAction(Action(cell.id, false, false, massToTrade, Position(0f, 10f)))
 
-    modification.get should equal(new ScoreModification(player.id, 10 * Cell.MassToScoreRatio))
+    modification.get should equal(ScoreModification(player.id, 10 * Cell.MassToScoreRatio))
   }
 
   it should "not trade mass for score when mass is insufficient" in {
@@ -365,6 +362,6 @@ class CellSpec extends FlatSpec with Matchers {
     cell.mass = Cell.MinMass
     val modification = cell.performAction(Action(cell.id, false, false, massToTrade, Position(0f, 10f)))
 
-    modification.isEmpty shouldBe true
+    modification shouldBe empty
   }
 }
