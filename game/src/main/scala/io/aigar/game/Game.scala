@@ -23,9 +23,7 @@ class Game(val id: Int, playerIDs: List[Int], val duration: Int = Game.DefaultDu
   var tick = 0
 
   def update(deltaSeconds: Float): List[ScoreModification] = {
-    var modifications = List[ScoreModification]()
-
-    players.foreach { player => modifications :::= player.update(deltaSeconds, grid, players) }
+    var modifications = players.flatten {  _.update(deltaSeconds, grid, players) }
     modifications :::= viruses.update(grid, players)
     modifications :::= resources.update(grid, players)
     tick += 1

@@ -28,7 +28,7 @@ trait EntityContainer {
   }
 
   def handleCollision(entities: List[Entity],
-                      players: List[Player]): (List[Entity], List[ScoreModification]) ={
+                      players: List[Player]): (List[Entity], List[ScoreModification]) = {
     var entitiesReturn = List[Entity]()
     var modifications = List[ScoreModification]()
 
