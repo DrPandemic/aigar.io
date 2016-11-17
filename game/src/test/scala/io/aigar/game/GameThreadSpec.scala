@@ -1,6 +1,5 @@
 import io.aigar.game._
-import io.aigar.controller.response.{ SetRankedDurationCommand, StartThread }
-import com.github.jpbetz.subspace.Vector2
+import io.aigar.controller.response.{SetRankedDurationCommand, RestartThreadCommand}
 import io.aigar.score.{ ScoreModification, ScoreThread }
 import io.aigar.controller.response.Action
 import io.aigar.game.serializable.Position
@@ -11,79 +10,110 @@ import org.mockito.Matchers._
 import scala.collection.mutable.MutableList
 
 class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
-  "A GameThread" should "not have a ranked game state at first" in {
+  def createStartedGameThread(playerIDs: List[Int] = List()): GameThread = {
     val scoreThread = new ScoreThread(null)
-    val game = new GameThread(scoreThread, List())
+    val game = new GameThread(scoreThread)
+
+    game.adminCommandQueue.put(RestartThreadCommand(playerIDs))
+    game.transferAdminCommands
+
+    game
+  }
+
+  "A GameThread" should "not have a ranked game state at first" in {
+    val game = createStartedGameThread()
     game.gameState(Game.RankedGameId) shouldBe None
   }
 
   it should "have a ranked game state after a game update" in {
-    val scoreThread = new ScoreThread(null)
-    val game = new GameThread(scoreThread, List())
+    val game = createStartedGameThread()
     game.updateGames
     game.gameState(Game.RankedGameId) shouldBe defined
   }
 
   it should "not have a game with a bad ID" in {
-    val scoreThread = new ScoreThread(null)
-    val game = new GameThread(scoreThread, List())
+    val game = createStartedGameThread()
     game.updateGames
     game.gameState(1337) shouldBe empty
   }
 
   it should "create a ranked game with the right ID" in {
-    val scoreThread = new ScoreThread(null)
-    val game = new GameThread(scoreThread, List())
+    val game = createStartedGameThread()
     val ranked = game.createRankedGame
     ranked.id should equal (Game.RankedGameId)
   }
 
   it should "create a ranked game with the initial duration" in {
-    val scoreThread = new ScoreThread(null)
-    val game = new GameThread(scoreThread, List())
+    val game = createStartedGameThread()
     val ranked = game.games.find(_.id == Game.RankedGameId).get
 
     ranked.duration shouldBe Game.DefaultDuration
   }
 
-  it should "be created but not started" in {
+  it should "not be started" in {
     val scoreThread = new ScoreThread(null)
     val game = new GameThread(scoreThread)
 
     game.started shouldBe false
   }
 
-  "send StartThread" should "put started to true" {
+  "send RestartThreadCommand" should "put started to true" in {
     val scoreThread = new ScoreThread(null)
     val game = new GameThread(scoreThread)
-    game.adminCommandQueue.put(StartThread())
+    game.adminCommandQueue.put(RestartThreadCommand(List()))
     game.transferAdminCommands
 
-    game.started shouldBe(true)
+    game shouldBe 'started
   }
 
-  it should "empty queues" in {
+  it should "reset state" in {
     val scoreThread = new ScoreThread(null)
     val game = new GameThread(scoreThread)
     game.actionQueue.put(ActionQueryWithId(1, 1, List()))
     game.adminCommandQueue.put(SetRankedDurationCommand(10))
-    game.start(List())
+    game.playerIDs = List(42)
+    val oldGames = game.games
+
+    game.adminCommandQueue.put(RestartThreadCommand(List()))
+    game.transferAdminCommands
 
     game.actionQueue shouldBe empty
     game.adminCommandQueue shouldBe empty
+    game.playerIDs shouldBe empty
+    game.games should not be theSameInstanceAs(oldGames)
+  }
+
+  it should "keep the nextRankedDuration" in {
+    val scoreThread = new ScoreThread(null)
+    val game = new GameThread(scoreThread)
+    game.nextRankedDuration = 42
+
+    game.adminCommandQueue.put(RestartThreadCommand(List()))
+    game.transferAdminCommands
+
+    game.nextRankedDuration shouldBe 42
+  }
+
+  it should "apply the new player's ids" in {
+    val scoreThread = new ScoreThread(null)
+    val game = new GameThread(scoreThread)
+    game.playerIDs = List(0)
+
+    game.adminCommandQueue.put(RestartThreadCommand(List(42)))
+    game.transferAdminCommands
+
+    game.playerIDs shouldBe List(42)
   }
 
   "createRankedGame" should "use the duration from the game thread" in {
-    val scoreThread = new ScoreThread(null)
-    val game = new GameThread(scoreThread, List())
+    val game = createStartedGameThread()
     game.nextRankedDuration = 1337
     val ranked = game.createRankedGame
     ranked.duration should equal (1337)
   }
 
   "transferActions" should "empty the actionQueue" in {
-    val scoreThread = new ScoreThread(null)
-    val game = new GameThread(scoreThread, List())
+    val game = createStartedGameThread()
     game.actionQueue.put(ActionQueryWithId(1, 1, List()))
 
     game.transferActions
@@ -92,8 +122,7 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
   }
 
   it should "update cell's targets" in {
-    val scoreThread = new ScoreThread(null)
-    val game = new GameThread(scoreThread, List(1, 2))
+    val game = createStartedGameThread(List(1, 2))
 
     game.actionQueue.put(ActionQueryWithId(0, 1, List(Action(0, false, false, 0, Position(0f, 10f)))))
     game.actionQueue.put(ActionQueryWithId(0, 2, List(Action(0, false, false, 0, Position(20f, 0f)))))
@@ -109,8 +138,7 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
   }
 
   "transferAdminCommands" should "empty the adminCommandQueue" in {
-    val scoreThread = new ScoreThread(null)
-    val game = new GameThread(scoreThread, List())
+    val game = createStartedGameThread()
     game.adminCommandQueue.put(SetRankedDurationCommand(10))
 
     game.transferAdminCommands
@@ -119,8 +147,7 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
   }
 
   it should "sets the nextRankedDuration" in {
-    val scoreThread = new ScoreThread(null)
-    val game = new GameThread(scoreThread, List())
+    val game = createStartedGameThread()
     game.adminCommandQueue.put(SetRankedDurationCommand(1337))
 
     game.transferAdminCommands
@@ -130,7 +157,9 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
 
   "updateGames" should "put ScoreModifications from games into the ScoreThread only for the ranked game" in {
     val scoreThread = mock[ScoreThread]
-    val game = new GameThread(scoreThread, List(0))
+    val game = new GameThread(scoreThread)
+    game.adminCommandQueue.put(RestartThreadCommand(List(0)))
+    game.transferAdminCommands
     val ranked = mock[Game]
     val notRanked = mock[Game]
     game.games = List(ranked, notRanked)
@@ -152,7 +181,9 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
     when(ranked.id).thenReturn(Game.RankedGameId)
     when(ranked.startTime).thenReturn(0L)
     when(ranked.duration).thenReturn(0)
-    val game = new GameThread(scoreThread, List(0))
+    val game = new GameThread(scoreThread)
+    game.adminCommandQueue.put(RestartThreadCommand(List(0)))
+    game.transferAdminCommands
     game.games = List(ranked)
 
     game.updateGames

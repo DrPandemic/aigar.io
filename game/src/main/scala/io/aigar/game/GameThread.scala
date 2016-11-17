@@ -2,7 +2,7 @@ package io.aigar.game
 
 import com.typesafe.scalalogging.LazyLogging
 import scala.math.round
-import io.aigar.controller.response.{AdminCommand, SetRankedDurationCommand}
+import io.aigar.controller.response.{AdminCommand, SetRankedDurationCommand, RestartThreadCommand}
 import io.aigar.score.{ScoreModification, ScoreThread}
 import java.util.concurrent.LinkedBlockingQueue
 
@@ -38,14 +38,20 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
 
   var nextRankedDuration = Game.DefaultDuration
   private var states: Map[Int, serializable.GameState] = Map()
-  var games: List[Game] = List(createRankedGame)
+  var games: List[Game] = List()
 
   var running = true
   var started = false
   var previousTime = 0f
   var currentTime = GameThread.MillisecondsPerTick / GameThread.MillisecondsPerSecond // avoid having an initial 0 delta time
 
-  def start(playerIDs: List[Int]): Unit = {
+  def restart(playerIDs: List[Int]): Unit = {
+    actionQueue.clear
+    adminCommandQueue.clear
+    this.playerIDs = playerIDs
+    games = List(createRankedGame)
+
+    started = true
   }
 
   /**
@@ -88,6 +94,7 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
     while(!adminCommandQueue.isEmpty) {
       adminCommandQueue.take match {
         case command: SetRankedDurationCommand => nextRankedDuration = command.duration
+        case command: RestartThreadCommand => restart(command.playerIDs)
       }
     }
   }

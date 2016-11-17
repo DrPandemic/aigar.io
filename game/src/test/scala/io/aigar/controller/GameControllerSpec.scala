@@ -20,7 +20,9 @@ class GameControllerSpec extends MutableScalatraSpec
 
   val playerRepository = new PlayerRepository(None)
   val scoreThread = new ScoreThread(playerRepository)
-  val game = new GameThread(scoreThread, List(1))
+  val game = new GameThread(scoreThread)
+  game.adminCommandQueue.put(RestartThreadCommand(List(1)))
+  game.transferAdminCommands
   game.updateGames // run once to initialize the game states
 
   addServlet(new GameController(game, playerRepository), "/*")

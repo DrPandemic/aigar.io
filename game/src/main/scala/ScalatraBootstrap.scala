@@ -1,6 +1,7 @@
 import com.typesafe.scalalogging.LazyLogging
 import io.aigar.game.GameThread
 import io.aigar.controller._
+import io.aigar.controller.response.{RestartThreadCommand}
 import io.aigar.score.ScoreThread
 import org.scalatra._
 import javax.servlet.ServletContext
@@ -35,7 +36,7 @@ class ScalatraBootstrap extends LifeCycle
   def appInit(players: Option[PlayerRepository] = None): Unit = {
     playerRepository = players.getOrElse(new PlayerRepository(None))
     scoreThread = new ScoreThread(playerRepository)
-    game = new GameThread(scoreThread, fetchPlayerIDs)
+    game = new GameThread(scoreThread)
 
     launchThreads
   }
@@ -55,6 +56,8 @@ class ScalatraBootstrap extends LifeCycle
   def launchThreads: Unit = {
     new Thread(scoreThread).start
     new Thread(game).start
+
+    game.adminCommandQueue.put(RestartThreadCommand(fetchPlayerIDs))
   }
 
   def fetchPlayerIDs: List[Int] = {
