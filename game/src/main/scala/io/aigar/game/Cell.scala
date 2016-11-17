@@ -107,7 +107,7 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
     if (action.split) split
   }
 
-  def split(): Unit {
+  def split(): Unit = {
     if (mass < 2f * Cell.MinMass || player.cells.length >= Player.MaxCells) {
       return
     }
