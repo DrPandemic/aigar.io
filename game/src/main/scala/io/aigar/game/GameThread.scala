@@ -1,6 +1,7 @@
 package io.aigar.game
 
 import com.typesafe.scalalogging.LazyLogging
+import scala.math.round
 import io.aigar.controller.response.{ AdminCommand, SetRankedDurationCommand }
 import io.aigar.score.ScoreThread
 import java.util.concurrent.LinkedBlockingQueue
@@ -11,13 +12,16 @@ import java.util.concurrent.LinkedBlockingQueue
  * of the players.
  */
 object GameThread {
-  /**
-    * Current time, in seconds.
-    */
   final val NanoSecondsPerMillisecond = 1000000f
   final val MillisecondsPerSecond = 1000f
   final val NanoSecondsPerSecond = NanoSecondsPerMillisecond * MillisecondsPerSecond
 
+  final val TicksPerSecond = 15
+  final val MillisecondsPerTick = round(MillisecondsPerSecond / TicksPerSecond)
+
+  /**
+    * Current time, in seconds.
+    */
   def time: Float = {
     System.nanoTime / NanoSecondsPerSecond
   }
@@ -26,7 +30,6 @@ object GameThread {
 class GameThread(scoreThread: ScoreThread, playerIDs: List[Int]) extends Runnable
                                                                  with LazyLogging {
   logger.info("Starting Game thread.")
-  val MillisecondsPerTick = 16
 
   final val actionQueue = new LinkedBlockingQueue[ActionQueryWithId]()
   final val adminCommandQueue = new LinkedBlockingQueue[AdminCommand]()
@@ -37,7 +40,7 @@ class GameThread(scoreThread: ScoreThread, playerIDs: List[Int]) extends Runnabl
 
   var running = true
   var previousTime = 0f
-  var currentTime = MillisecondsPerTick / 1000f // avoid having an initial 0 delta time
+  var currentTime = GameThread.MillisecondsPerTick / GameThread.MillisecondsPerSecond // avoid having an initial 0 delta time
 
   /**
    * Safe way to get the game state of a particular game from another thread.
@@ -56,7 +59,7 @@ class GameThread(scoreThread: ScoreThread, playerIDs: List[Int]) extends Runnabl
       transferAdminCommands
       updateGames
 
-      Thread.sleep(MillisecondsPerTick)
+      Thread.sleep(GameThread.MillisecondsPerTick)
     }
   }
 
