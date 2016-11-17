@@ -103,6 +103,21 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
 
   def performAction(action: Action): Unit = {
     target = action.target.toVector
+
+    if (action.split) split
+  }
+
+  def split(): Unit = {
+    if (mass < 2f * Cell.MinMass || player.cells.length >= Player.MaxCells) {
+      return
+    }
+
+    val other = player.spawnCell(position)
+    other.target = target
+    other.mass = mass / 2f
+    mass /= 2f
+
+    other.position += Vector2(radius * 2f, radius * 2f) // TODO replace this with a pushing force
   }
 
   def state: serializable.Cell = {
