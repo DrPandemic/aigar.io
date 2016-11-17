@@ -112,11 +112,8 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
     target = action.target.toVector
 
     if (action.split) split
-    val massToTrade = min(action.trade, max(mass - Cell.MinMass, 0)).toInt
-    if (massToTrade > 0 && mass - massToTrade >= Cell.MinMass) {
-      return Some(tradeMass(massToTrade))
-    }
-    return None
+    val modifications = tradeMass(action.trade)
+    modifications
   }
 
   def split(): Unit = {
@@ -132,9 +129,16 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
     other.position += Vector2(radius * 2f, radius * 2f) // TODO replace this with a pushing force
   }
 
-  def tradeMass(massToTrade: Int): ScoreModification = {
-    mass -= massToTrade
-    new ScoreModification(player.id, massToTrade * Cell.MassToScoreRatio)
+  def tradeMass(massToTrade: Int): Option[ScoreModification] = {
+
+    val amount = min(massToTrade, max(mass - Cell.MinMass, 0)).toInt
+
+    if (amount > 0 && mass - amount >= Cell.MinMass) {
+      mass -= amount
+      return Some(ScoreModification(player.id, amount * Cell.MassToScoreRatio))
+    }
+
+    None
   }
 
   def state: serializable.Cell = {
