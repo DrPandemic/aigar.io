@@ -257,6 +257,10 @@ export function drawGame(gameState, canvas) {
   drawMiniMap(canvas);
 }
 
+function interpolate(prev, next, ratio) {
+  return (1 - ratio) * prev + ratio * next;
+}
+
 export function interpolateState(prev, next, ratio) {
   if(ratio <= 0) return prev;
   if(ratio >= 1) return next;
@@ -268,11 +272,11 @@ export function interpolateState(prev, next, ratio) {
       let nextCell = next.players.find(p => p.id === player.id).cells.find(c => c.id === cell.id);
       // Only interpolate position when the cell is not dead
       if(nextCell) {
-        cell.position.x = (1 - ratio) * cell.position.x + ratio * nextCell.position.x;
-        cell.position.y = (1 - ratio) * cell.position.y + ratio * nextCell.position.y;
-        cell.radius = (1 - ratio) * cell.radius + ratio * nextCell.radius;
+        cell.position.x = interpolate(cell.position.x, nextCell.position.x, ratio);
+        cell.position.y = interpolate(cell.position.y, nextCell.position.y, ratio);
+        cell.radius = interpolate(cell.radius, nextCell.radius, ratio);
       } else {
-        cell.radius = (1 - ratio) * cell.radius;
+        cell.radius = interpolate(cell.radius, 0, ratio);
       }
 
       return cell;
