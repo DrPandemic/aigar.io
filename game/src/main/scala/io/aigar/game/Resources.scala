@@ -83,10 +83,9 @@ class ResourceType(grid: Grid,
   var resources = List.fill(resourceMax)(new Resource(grid.randomPosition, resourceMass, resourceScore))
 
   def update(grid: Grid, players: List[Player]): List[ScoreModification] = {
-    val tupleReturn = handleCollision(resources, players)
+    val (resourcesReturn, modifications) = handleCollision(resources, players)
 
-    resources = tupleReturn._1.asInstanceOf[List[Resource]]
-    val modifications = tupleReturn._2
+    resources = resourcesReturn.asInstanceOf[List[Resource]]
 
     if (shouldRespawn(resources.size, resourceMin, resourceMax)) {
       getRespawnPosition(grid, players, Resource.RespawnRetryAttempts) match {
@@ -99,9 +98,9 @@ class ResourceType(grid: Grid,
 
   def onCellCollision(cell: Cell,
                       player: Player,
-                      entity: Entity): ScoreModification = {
+                      entity: Entity): (List[Entity], ScoreModification) = {
     reward(cell, entity.mass)
-    new ScoreModification(player.id, entity.scoreModification)
+    (List(entity), new ScoreModification(player.id, entity.scoreModification))
   }
 
   def randomPosition(grid: Grid): Vector2 = {

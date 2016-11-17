@@ -26,10 +26,9 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer
 
   def update(deltaSeconds: Float, grid: Grid, players: List[Player]): List[ScoreModification] = {
     opponents = players diff List(this)
-    val tupleReturn = handleCollision(cells, opponents)
+    val (cellsReturn, modifications) = handleCollision(cells, opponents)
 
-    cells = tupleReturn._1.asInstanceOf[List[Cell]]
-    val modifications = tupleReturn._2
+    cells = cellsReturn.asInstanceOf[List[Cell]]
 
     if (shouldRespawn(cells.size, 1)) {
       getRespawnPosition(grid, opponents, Cell.RespawnRetryAttempts) match {
@@ -45,14 +44,16 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer
 
   def onCellCollision(opponentCell: Cell,
                       player: Player,
-                      entity: Entity): ScoreModification = {
+                      entity: Entity): (List[Entity], ScoreModification) = {
     val cell = entity.asInstanceOf[Cell]
+    var entitiesReturn = List[Entity]()
 
     if (opponentCell.contains(cell.position) && opponentCell.mass >= Cell.MassDominanceRatio * cell.mass) {
       logger.info(s"Player ${player.id}'s ${opponentCell.id} (mass ${opponentCell.mass}) ate $id's ${cell.id} (mass ${cell.mass})")
+      entitiesReturn :::= List(entity)
       opponentCell.mass = opponentCell.mass + cell.mass
     }
-    new ScoreModification(player.id, 0)
+    (entitiesReturn,  ScoreModification(player.id, 0))
   }
 
   def spawnCell(position: Vector2): Cell = {

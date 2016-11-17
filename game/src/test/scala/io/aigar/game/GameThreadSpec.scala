@@ -111,8 +111,8 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
     when(ranked.startTime).thenReturn(GameThread.time)
     when(ranked.duration).thenReturn(Int.MaxValue)
     when(notRanked.id).thenReturn(Game.RankedGameId + 1)
-    when(ranked.update(any[Float])).thenReturn(MutableList(ScoreModification(Game.RankedGameId, 1)))
-    when(notRanked.update(any[Float])).thenReturn(MutableList(ScoreModification(Game.RankedGameId + 1, 2)))
+    when(ranked.update(any[Float])).thenReturn(List(ScoreModification(Game.RankedGameId, 1)))
+    when(notRanked.update(any[Float])).thenReturn(List(ScoreModification(Game.RankedGameId + 1, 2)))
 
     game.updateGames
 

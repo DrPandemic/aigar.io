@@ -36,8 +36,9 @@ trait EntityContainer {
       for (player <- players) {
         for (cell <- player.cells) {
           if (cell.overlaps(entity)) {
-            entitiesReturn ::= entity
-            modifications ::= onCellCollision(cell, player, entity)
+            val (entitiesToRemove, modificationsToAdd) = onCellCollision(cell, player, entity)
+            entitiesReturn :::= entitiesToRemove
+            modifications ::= modificationsToAdd
           }
         }
       }
@@ -47,5 +48,5 @@ trait EntityContainer {
 
   def onCellCollision(cell: Cell,
                       player: Player,
-                      entity: Entity): ScoreModification
+                      entity: Entity): (List[Entity], ScoreModification)
 }

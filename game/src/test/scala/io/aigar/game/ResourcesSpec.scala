@@ -3,7 +3,6 @@ package io.aigar.game
 import io.aigar.score._
 import com.github.jpbetz.subspace.Vector2
 import org.scalatest._
-import scala.collection.mutable.MutableList
 
 class ResourcesSpec extends FlatSpec with Matchers {
   "Resources" should "spawn at the right quantity" in {
@@ -101,12 +100,9 @@ class ResourcesSpec extends FlatSpec with Matchers {
       new Resource(p1.cells.head.position, Regular.Mass, Regular.Score),
       new Resource(p2.cells.head.position, Regular.Mass, Regular.Score))
 
-    val regularsReturn = resources.regulars.handleCollision(
-      resources.regulars.resources,
-      List(p1, p2),
-      Some(new MutableList[ScoreModification]()))
+    val tupleReturn = resources.regulars.handleCollision(resources.regulars.resources, List(p1, p2))
 
-    regularsReturn shouldBe empty
+    tupleReturn._1 shouldBe empty
   }
 
   it should "return the original list of entities when no collision occurs" in {
@@ -119,11 +115,8 @@ class ResourcesSpec extends FlatSpec with Matchers {
       new Resource(Vector2(25, 25), Regular.Mass, Regular.Score),
       new Resource(Vector2(30, 30), Regular.Mass, Regular.Score))
 
-    val regularsReturn = resources.regulars.handleCollision(
-      resources.regulars.resources,
-      List(p1, p2),
-      Some(new MutableList[ScoreModification]()))
+    val tupleReturn = resources.regulars.handleCollision(resources.regulars.resources, List(p1, p2))
 
-    regularsReturn should contain theSameElementsAs resources.regulars.resources
+    tupleReturn._1 should contain theSameElementsAs resources.regulars.resources
   }
 }

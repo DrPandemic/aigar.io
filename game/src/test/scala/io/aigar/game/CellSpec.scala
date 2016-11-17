@@ -253,27 +253,19 @@ class CellSpec extends FlatSpec with Matchers {
     val opponent = new Player(2, Vector2(10f, 10f))
     val largeCell = opponent.cells.head
 
-    largeCell.mass = 30
-    smallCell.mass = 26
+    largeCell.mass = Cell.MinMass * 2
+    smallCell.mass = Cell.MinMass
 
-    //The return is the entity to remove, hence the cell of the player if applicable
-    player.onCellCollision(opponent.cells.head, player, player.cells.head, None) should contain (smallCell.asInstanceOf[Entity])
+    player.cells = player.handleCollision(player.cells, List(opponent))._1.asInstanceOf[List[Cell]]
+
+    println(player.cells)
+    println(smallCell)
+
+    opponent.cells should contain(largeCell)
+    player.cells.isEmpty shouldBe true
   }
 
   it should "not be eaten by a cell between 90% to 100% of its mass" in {
-    val player = new Player(0, Vector2(10f, 10f))
-    val largeCell = player.cells.head
-    val opponent = new Player(2, Vector2(10f, 10f))
-    val smallCell = opponent.cells.head
-
-    largeCell.mass = Cell.MinMass + 1
-    smallCell.mass = Cell.MinMass
-
-    //The return is the entity to remove, hence the cell of the player if applicable
-    player.onCellCollision(opponent.cells.head, player, player.cells.head, None) shouldBe empty
-  }
-
-  it should "not be eaten by a smaller cell" in {
     val player = new Player(0, Vector2(10f, 10f))
     val smallCell = player.cells.head
     val opponent = new Player(2, Vector2(10f, 10f))
@@ -282,8 +274,23 @@ class CellSpec extends FlatSpec with Matchers {
     largeCell.mass = Cell.MinMass + 1
     smallCell.mass = Cell.MinMass
 
-    //The return is the entity to remove, hence the cell of the player if applicable
-    player.onCellCollision(opponent.cells.head, player, player.cells.head, None) shouldBe empty
+    player.handleCollision(player.cells, List(opponent))
+
+    player.cells should contain(smallCell)
+    opponent.cells should contain(largeCell)
+  }
+
+  it should "not be eaten by a smaller cell" in {
+    val player = new Player(0, Vector2(10f, 10f))
+    val largeCell = player.cells.head
+    val opponent = new Player(2, Vector2(10f, 10f))
+    val smallCell = opponent.cells.head
+
+    largeCell.mass = Cell.MinMass * 2
+    smallCell.mass = Cell.MinMass
+
+    player.cells should contain(largeCell)
+    opponent.cells should contain(smallCell)
   }
 
   it should "split into 2 cells with half the mass" in {

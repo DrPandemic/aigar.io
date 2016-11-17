@@ -36,10 +36,9 @@ class Viruses(grid: Grid) extends EntityContainer
   var viruses = List.fill(Virus.Max)(new Virus(grid.randomPosition))
 
   def update(grid: Grid, players: List[Player]): List[ScoreModification] = {
-    val tupleReturn = handleCollision(viruses, players)
+    val (virusesReturn, modifications) = handleCollision(viruses, players)
 
-    viruses = tupleReturn._1.asInstanceOf[List[Virus]]
-    val modifications = tupleReturn._2
+    viruses = virusesReturn.asInstanceOf[List[Virus]]
 
     if (shouldRespawn(viruses.size, Virus.Min, Virus.Max)) {
       getRespawnPosition(grid, players, Virus.RespawnRetryAttempts) match {
@@ -52,14 +51,16 @@ class Viruses(grid: Grid) extends EntityContainer
 
   def onCellCollision(cell: Cell,
                       player: Player,
-                      entity: Entity): ScoreModification = {
+                      entity: Entity): (List[Entity], ScoreModification) = {
+    var entitiesReturn = List[Entity]()
     if (cell.mass > Virus.Mass * Cell.MassDominanceRatio) {
       logger.info(s"Player ${player.id}'s ${cell.id} (mass ${cell.mass}) ate a virus.")
 
       cell.mass = cell.mass * Virus.ImpactOnMass
+      entitiesReturn :::= List(entity)
       // TODO Split the cell ;)
     }
-    new ScoreModification(player.id, 0)
+    (entitiesReturn, new ScoreModification(player.id, 0))
   }
 
   def randomPosition(grid: Grid): Vector2 = {
