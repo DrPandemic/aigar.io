@@ -1,6 +1,5 @@
 import io.aigar.game._
 import io.aigar.controller.response.{SetRankedDurationCommand, RestartThreadCommand}
-import com.github.jpbetz.subspace.Vector2
 import io.aigar.score.{ScoreModification, ScoreThread}
 import io.aigar.controller.response.Action
 import io.aigar.game.serializable.Position
@@ -8,7 +7,6 @@ import org.scalatest._
 import org.scalatest.mock.MockitoSugar
 import org.mockito.Mockito._
 import org.mockito.Matchers._
-import scala.collection.mutable.MutableList
 
 class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
   def createStartedGameThread(playerIDs: List[Int] = List()): GameThread = {
