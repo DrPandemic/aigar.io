@@ -25,6 +25,7 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer
   var opponents = List[Player]()
 
   def update(deltaSeconds: Float, grid: Grid, players: List[Player]): List[ScoreModification] = {
+    cells = merge(cells, this)
     opponents = players diff List(this)
     val (cellsReturn, modifications) = handleCollision(cells, opponents)
 
@@ -71,6 +72,21 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer
 
   def randomPosition(grid: Grid): Vector2 = {
     grid.randomPosition
+  }
+
+  def merge(cells: List[Cell], player: Player): List[Cell] ={
+    var cellsReturn = cells
+
+    for (cell <- cellsReturn) {
+      for (secondCell <- cellsReturn.filterNot(_.id == cell.id)) {
+        if (cell.id != secondCell.id && cell.overlaps(secondCell)) {
+          logger.info(s"Player ${player.id}'s ${cell.id} (mass ${cell.mass}) merged with ${secondCell.id} (mass ${secondCell.mass})")
+          cellsReturn = cellsReturn diff List(secondCell)
+          cell.mass += secondCell.mass
+        }
+      }
+    }
+    cellsReturn
   }
 
   def state: serializable.Player = {
