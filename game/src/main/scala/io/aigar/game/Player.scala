@@ -75,18 +75,20 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer
   }
 
   def merge(cells: List[Cell], player: Player): List[Cell] ={
-    var cellsReturn = cells
+    var cellsReturn = List[Cell]()
 
-    for (cell <- cellsReturn) {
-      for (secondCell <- cellsReturn.filterNot(_.id == cell.id)) {
-        if (cell.id != secondCell.id && cell.overlaps(secondCell)) {
+    for (cell <- cells) {
+      for (secondCell <- cells.filterNot(_.id == cell.id)) {
+        if (cell.id != secondCell.id
+          && cell.overlaps(secondCell)
+          && !cellsReturn.contains(cell)) {
           logger.info(s"Player ${player.id}'s ${cell.id} (mass ${cell.mass}) merged with ${secondCell.id} (mass ${secondCell.mass})")
-          cellsReturn = cellsReturn diff List(secondCell)
           cell.mass += secondCell.mass
+          cellsReturn ::= secondCell
         }
       }
     }
-    cellsReturn
+    cells diff cellsReturn
   }
 
   def state: serializable.Player = {
