@@ -26,6 +26,7 @@ class ScalatraBootstrapSpec extends FlatSpec with Matchers {
     val expectedIds = repo.getPlayers.map(_.id).flatten
 
     // let the game update once to set the state of the ranked game
+    bootstrap.game.transferAdminCommands
     bootstrap.game.updateGames
     val state = bootstrap.game.gameState(Game.RankedGameId)
     bootstrap.destroy(null)
