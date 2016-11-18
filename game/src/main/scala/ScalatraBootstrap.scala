@@ -57,10 +57,4 @@ class ScalatraBootstrap extends LifeCycle
     new Thread(scoreThread).start
     new Thread(game).start
   }
-
-  def fetchPlayerIDs: List[Int] = {
-    val players = playerRepository.getPlayers()
-
-    players.map(_.id).flatten  // only keep IDs that are not None
-  }
 }
