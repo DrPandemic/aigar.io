@@ -6,3 +6,10 @@ seedButton.onclick = () => {
     .then(() => alert("The DB was seeded"))
     .catch(e => alert(e));
 };
+
+const resetButton = document.getElementById("reset-button");
+resetButton.onclick = () => {
+  sendAdminRequest("competition", "put", {running: true})
+    .then(() => alert("The thread was reset"))
+    .catch(e => alert(e));
+};
