@@ -15,23 +15,16 @@ class ScalatraBootstrapSpec extends FlatSpec with Matchers {
     players should be theSameInstanceAs(repo)
   }
 
-  it should "create a game with the players from the player repository on init" in {
+  it should "not create a game" in {
     val repo = new PlayerRepository(None)
-    val player1 = repo.createPlayer(PlayerModel(None, "secret",  "player1", 20))
-    val player2 = repo.createPlayer(PlayerModel(None, "secret?", "player2", 10))
-    val player3 = repo.createPlayer(PlayerModel(None, "secret!", "player3", 30))
     val bootstrap = new ScalatraBootstrap
 
     bootstrap.appInit(Some(repo))
-    val expectedIds = repo.getPlayers.map(_.id).flatten
-
     // let the game update once to set the state of the ranked game
-    bootstrap.game.transferAdminCommands
     bootstrap.game.updateGames
-    val state = bootstrap.game.gameState(Game.RankedGameId)
+    val games = bootstrap.game.games
     bootstrap.destroy(null)
 
-    state should not be(None)
-    state.get.players.map(_.id) should contain theSameElementsAs(expectedIds)
+    games shouldBe empty
   }
 }

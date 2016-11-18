@@ -13,12 +13,9 @@ class ScalatraBootstrapSpec extends WholeAppTest {
   protected implicit val jsonFormats: Formats = DefaultFormats
 
   "Launching the whole application" should {
-    "launch a game thread that sets the state of the ranked game" in {
+    "launch a game thread without a game inside" in {
       get("/api/1/game/" + Game.RankedGameId.toString) {
-        status must be_==(200).eventually
-
-        val state = parse(body).extract[GameStateResponse].data
-        state.id must be_==(Game.RankedGameId)
+        status must be_==(404).eventually
       }
     }
   }

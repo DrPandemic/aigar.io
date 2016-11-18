@@ -56,8 +56,6 @@ class ScalatraBootstrap extends LifeCycle
   def launchThreads: Unit = {
     new Thread(scoreThread).start
     new Thread(game).start
-
-    game.adminCommandQueue.put(RestartThreadCommand(fetchPlayerIDs))
   }
 
   def fetchPlayerIDs: List[Int] = {
