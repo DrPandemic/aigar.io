@@ -11,7 +11,8 @@ export function fetchState(gameId) {
     })
     .then(response => {
       return response.data;
-    });
+    })
+    .catch(error => console.error(error));
 }
 
 export function fetchLeaderboardEntries() {
