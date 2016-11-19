@@ -15,32 +15,53 @@ trait AIState {
   def isActive: Boolean
 }
 
-class WanderingState(player: Player) extends AIState {
+abstract class WanderingState(player: Player) extends AIState {
   def isActive = false
-
-  var nextTargetTimeLeft = WanderingState.NewTargetDelay
-
-  /**
-   * Picks a random target. Picks a new one once the previous one is reached.
-   */
-  def update(deltaSeconds: Float, grid: Grid, cell: Cell): Vector2 = {
-    nextTargetTimeLeft -= deltaSeconds
-
-    if (cell.contains(cell.target) || nextTargetTimeLeft <= 0f) {
-      nextTargetTimeLeft = WanderingState.NewTargetDelay
-      grid.randomPosition
-    } else {
-      cell.target
-    }
-  }
 
   def onPlayerActivity: Unit = {
     player.aiState = new NullState(player)
   }
 }
+
+class SeekingState(player: Player) extends WanderingState(player) {
+  var wanderingTimeLeft = WanderingState.NewTargetDelay
+
+  /**
+    * Picks a random target. Go in sleep mode once the previous one is reached.
+    */
+  def update(deltaSeconds: Float, grid: Grid, cell: Cell): Vector2 = {
+    wanderingTimeLeft -= deltaSeconds
+
+    if (cell.contains(cell.target) || wanderingTimeLeft <= 0f) {
+      player.aiState = new SleepingState(player)
+    }
+
+    cell.target
+  }
+}
+
+class SleepingState(player: Player) extends WanderingState(player) {
+  var sleepingTimeLeft = WanderingState.SleepingDelay
+
+  /**
+    * Picks a random target. Go in sleep mode once the previous one is reached.
+    */
+  def update(deltaSeconds: Float, grid: Grid, cell: Cell): Vector2 = {
+    sleepingTimeLeft -= deltaSeconds
+
+    if (sleepingTimeLeft <= 0f) {
+      player.aiState = new SeekingState(player)
+      grid.randomPosition
+    } else {
+      cell.position
+    }
+  }
+}
+
 object WanderingState {
   // how long we have to wait to pick a new target (seconds)
-  final val NewTargetDelay = 10f
+  final val NewTargetDelay = 60f
+  final val SleepingDelay = 10f
 }
 
 /**
@@ -56,7 +77,7 @@ class NullState(player: Player) extends AIState {
   def update(deltaSeconds: Float, grid: Grid, cell: Cell): Vector2 = {
     inactivityTimeLeft -= deltaSeconds
     if (inactivityTimeLeft < 0f) {
-      player.aiState = new WanderingState(player)
+      player.aiState = new SleepingState(player)
     }
 
     cell.target
