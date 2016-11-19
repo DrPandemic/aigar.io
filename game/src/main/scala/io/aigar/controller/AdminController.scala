@@ -5,8 +5,11 @@ import io.aigar.controller.response.{
   SetRankedDurationCommand,
   SetRankedDurationQuery,
   SeedPlayersQuery,
+  CreatePlayerQuery,
   SuccessResponse
 }
+import scala.util.Success
+import scala.util.Try
 import io.aigar.game.GameThread
 import io.aigar.model.{
   PlayerRepository,
@@ -32,14 +35,12 @@ class AdminController(password: String, game: GameThread, playerRepository: Play
   }
 
   post("/player") {
-    try {
-      val query = parse(request.body).extract[SeedPlayersQuery]
-
-      if(query.seed) {
-        seed.seedPlayers(playerRepository)
-      }
-    } catch {
-      case e: MappingException => // Do the normal query
+    val result = parse(request.body)
+    Try(result.extract[SeedPlayersQuery])
+      .orElse(Try(result.extract[CreatePlayerQuery])) match {
+      case Success(query: SeedPlayersQuery) => if(query.seed) seed.seedPlayers(playerRepository)
+      case Success(query: CreatePlayerQuery) => println(query)
+      case _ => halt(422)
     }
 
     SuccessResponse("ok")

@@ -1,5 +1,5 @@
 import io.aigar.controller.AdminController
-import io.aigar.controller.response.SetRankedDurationCommand
+import io.aigar.controller.response.{ CreatePlayerResponse, SetRankedDurationCommand }
 import io.aigar.model.{ PlayerModel, PlayerRepository }
 import io.aigar.game.GameThread
 import io.aigar.score.ScoreThread
@@ -92,9 +92,28 @@ class AdminControllerSpec extends MutableScalatraSpec
 
     "not seed the players if the query doesn't contain seed" in {
       postJson("player", defaultActionJson) {
+        playerRepository.getPlayers.size must_== 1
+      }
+    }
+
+    "be able to create new player" in {
+      postJson("player", defaultActionJson ~ ("player_name" -> "foo")) {
         status must_== 200
 
-        playerRepository.getPlayers.size must_== 1
+        playerRepository.getPlayers.size must_== 2
+        playerRepository.getPlayers must contain((player:PlayerModel) => player.playerName == "foo")
+      }
+    }
+
+    "on success, return the new player secret" in {
+      postJson("player", defaultActionJson ~ ("player_name" -> "foo")) {
+        val secret = playerRepository.getPlayers.find(_.playerName == "foo").get.playerSecret
+        status must_== 200
+
+        parse(body).extract[CreatePlayerResponse] must not(throwAn[MappingException])
+
+        val parsedResponse = parse(body).extract[CreatePlayerResponse]
+        parsedResponse.data.player_secret must_== secret
       }
     }
   }
