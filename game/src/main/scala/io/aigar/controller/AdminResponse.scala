@@ -16,13 +16,13 @@ case class SeedPlayersQuery(
 
 case class CreatePlayerQuery(
   administrator_password: String,
-  player_name: Boolean
+  player_name: String
 )
-case class PlayerSecretResponse(
+case class PlayerSecret(
   player_secret: String
 )
 case class CreatePlayerResponse(
-  data: PlayerSecretResponse
+  data: PlayerSecret
 )
 
 /**

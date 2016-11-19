@@ -6,8 +6,11 @@ import io.aigar.controller.response.{
   SetRankedDurationQuery,
   SeedPlayersQuery,
   CreatePlayerQuery,
+  CreatePlayerResponse,
+  PlayerSecret,
   SuccessResponse
 }
+import io.aigar.model.PlayerModel
 import scala.util.Success
 import scala.util.Try
 import io.aigar.game.GameThread
@@ -34,16 +37,23 @@ class AdminController(password: String, game: GameThread, playerRepository: Play
     }
   }
 
+  private def createRandomSecret(): String = {
+    (new scala.util.Random(new java.security.SecureRandom())).alphanumeric.take(16).mkString
+  }
+
   post("/player") {
     val result = parse(request.body)
-    Try(result.extract[SeedPlayersQuery])
-      .orElse(Try(result.extract[CreatePlayerQuery])) match {
-      case Success(query: SeedPlayersQuery) => if(query.seed) seed.seedPlayers(playerRepository)
-      case Success(query: CreatePlayerQuery) => println(query)
+    Try(result.extract[SeedPlayersQuery]).orElse(Try(result.extract[CreatePlayerQuery])) match {
+      case Success(query: SeedPlayersQuery) => {
+        if(query.seed) seed.seedPlayers(playerRepository)
+        SuccessResponse("ok")
+      }
+      case Success(query: CreatePlayerQuery) => {
+        val player = playerRepository.createPlayer(PlayerModel(None, createRandomSecret, query.player_name, 0))
+        CreatePlayerResponse(PlayerSecret(player.playerSecret))
+      }
       case _ => halt(422)
     }
-
-    SuccessResponse("ok")
   }
 
   put("/ranked") {
