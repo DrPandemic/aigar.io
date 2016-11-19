@@ -31,15 +31,15 @@
 
     <div class="container">
       <div class="row">
-        <div class="col-sm-8 main">
-          <div class="game">
+        <div class="col-md-8 main">
+          <div class="game" id ="gameDiv">
             <!-- Test game Canvas -->
             <canvas id="screenCanvas" width="900" height="600"></canvas>
-            <button id="targetLinesBtn" type="button" class="btn btn-primary">show target lines</button>
           </div><!-- game -->
+          <button id="targetLinesBtn" type="button" class="btn btn-primary">show target lines</button>
         </div><!-- col -->
 
-        <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+        <div class="col-md-3 col-md-offset-1 blog-sidebar leaderBoardMargin">
           <div class="sidebar-module sidebar-module-inset">
             <div class="row">
               <table class="table table-striped leaderboard-table" id="leaderboard">
@@ -57,7 +57,9 @@
             </div><!-- row -->
           </div><!-- sidebar -->
         </div><!-- col -->
+
       </div><!-- row -->
+
     </div><!-- container -->
 
     <footer class="footer">
