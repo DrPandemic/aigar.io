@@ -57,8 +57,8 @@ class Viruses(grid: Grid) extends EntityContainer
       logger.info(s"Player ${player.id}'s ${cell.id} (mass ${cell.mass}) ate a virus.")
 
       cell.mass = cell.mass * Virus.ImpactOnMass
+      cell.split.foreach(_.split)
       entitiesReturn :::= List(entity)
-      // TODO Split the cell ;)
     }
     (entitiesReturn, new ScoreModification(player.id, 0))
   }

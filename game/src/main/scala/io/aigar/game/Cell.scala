@@ -116,9 +116,9 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
     modifications
   }
 
-  def split(): Unit = {
+  def split(): List[Cell] = {
     if (mass < 2f * Cell.MinMass || player.cells.length >= Player.MaxCells) {
-      return
+      return List(this)
     }
 
     val other = player.spawnCell(position)
@@ -127,6 +127,8 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
     mass /= 2f
 
     other.position += Vector2(radius * 2f, radius * 2f) // TODO replace this with a pushing force
+
+    List(this, other)
   }
 
   def tradeMass(massToTrade: Int): Option[ScoreModification] = {

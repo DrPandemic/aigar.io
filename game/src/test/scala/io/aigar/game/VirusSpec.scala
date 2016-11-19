@@ -66,4 +66,37 @@ class VirusSpec extends FlatSpec with Matchers {
 
     viruses.viruses.head.position should not be initialPosition
   }
+
+  "on collision" should "split the cell" in {
+    val viruses = new Viruses(new Grid(0, 0))
+    val virus = new Virus(new Vector2(5, 5))
+    val player = new Player(1, new Vector2(5, 5))
+    val cell = new Cell(1, player, new Vector2(5, 5))
+
+    viruses.viruses = List(virus)
+    // We make sure the cell is big enough to eat the virus
+    cell.mass = Virus.Mass * Cell.MassDominanceRatio + 1
+    player.cells = List(cell)
+
+    viruses.update(new Grid(0, 0), List(player))
+
+    player.cells should have size 4
+  }
+
+  it should "reduce the total mass" in {
+    val viruses = new Viruses(new Grid(0, 0))
+    val virus = new Virus(new Vector2(5, 5))
+    val player = new Player(1, new Vector2(5, 5))
+    val cell = new Cell(1, player, new Vector2(5, 5))
+
+    viruses.viruses = List(virus)
+    // We make sure the cell is big enough to eat the virus
+    cell.mass = Virus.Mass * Cell.MassDominanceRatio + 1
+    val oldMass = cell.mass
+    player.cells = List(cell)
+
+    viruses.update(new Grid(0, 0), List(player))
+
+    oldMass should be > player.cells.foldLeft(0f)((sum: Float, cell: Cell) => sum + cell.mass)
+  }
 }
