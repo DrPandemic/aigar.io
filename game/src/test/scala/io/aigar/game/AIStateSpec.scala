@@ -81,4 +81,37 @@ class AIStateSpec extends FlatSpec with Matchers {
 
     player.aiState shouldBe a [NullState]
   }
+
+  "SleepingBehavior" should "returns the cells's position as the new target" in {
+    val player = new Player(0, Vector2(0f, 0f))
+    val cell = player.cells.head
+    cell.target = Vector2(100f, 100f)
+    player.aiState = new SleepingState(player)
+
+    val target = player.aiState.update(1f, new Grid(0, 0), cell)
+
+    target should be theSameInstanceAs(cell.position)
+  }
+
+  it should "change cell's state to SeekingState after a certain delay" in {
+    val player = new Player(0, Vector2(0f, 0f))
+    val cell = player.cells.head
+    cell.target = Vector2(100f, 100f)
+    player.aiState = new SleepingState(player)
+
+    player.aiState.update(WanderingState.SleepingDelay + 1e-2f, new Grid(0, 0), cell)
+
+    player.aiState shouldBe a [SeekingState]
+  }
+
+  it should "change the cell's target after a certain delay" in {
+    val player = new Player(0, Vector2(0f, 0f))
+    val cell = player.cells.head
+    cell.target = Vector2(100f, 100f)
+    player.aiState = new SleepingState(player)
+
+    val target = player.aiState.update(WanderingState.SleepingDelay + 1e-2f, new Grid(0, 0), cell)
+
+    target shouldNot be theSameInstanceAs(cell.target)
+  }
 }
