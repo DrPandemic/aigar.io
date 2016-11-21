@@ -70,14 +70,27 @@ export function getPlayerColor(players, currentPlayer) {
 
 export function drawPlayersOnMap(players, canvas, drawNames) {
   const context = canvas.getContext("2d");
+  let cellArray = [];
+  let cellInfo;
   for(const player of players) {
     const color = getPlayerColor(players, player);
     for(const cell of player.cells) {
-      drawCircle(context, cell.position, cell.radius, color);
-      if (drawNames) writeCellTeamName(player.name, context, cell.position);
-      const targetLinesBtn = $("#targetLinesBtn")[0];
-      if (targetLinesBtn.className === "btn btn-primary") drawCellTargetLines(context, cell.position, cell.target, color);
+      cellInfo = {
+        position: cell.position,
+        radius: cell.radius,
+        color: color,
+        playerName: player.name,
+        target: cell.target
+      };
+      cellArray.push(cellInfo);
     }
+  }
+  const cellsToDraw = sort(cellArray, (a, b) => a.radius - b.radius);
+  for(const cell of cellsToDraw){
+    drawCircle(context, cell.position, cell.radius, cell.color);
+    if (drawNames) writeCellTeamName(cell.playerName, context, cell.position);
+    const targetLinesBtn = $("#targetLinesBtn")[0];
+    if (targetLinesBtn.className === "btn btn-primary") drawCellTargetLines(context, cell.position, cell.target, cell.color);
   }
 }
 
