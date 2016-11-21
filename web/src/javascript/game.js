@@ -27,6 +27,7 @@ let miniMapScreenPosWidth;
 let miniMapScreenPosHeight;
 
 let mouseIsDown = false;
+let playerFocused = null;
 
 function drawCircle(context, position, radius, color) {
   context.beginPath();
@@ -187,6 +188,13 @@ export function drawMiniMap(canvas) {
   screenCanvas.style.background = "#000";
 }
 
+function findMiniMapScreenPositionPlayer(players){
+  if(playerFocused != null){
+    let player = players.find(p => p.id === playerFocused);
+    setFocusScreen(findBiggestCell(player.cells).position);
+  }
+}
+
 function drawMiniMapScreenPos(canvas) {
   miniMapContext.strokeStyle = "#fff";
   const xMiniMapPos = miniMapWidth / canvas.width * xScreenPosOnMap;
@@ -194,7 +202,8 @@ function drawMiniMapScreenPos(canvas) {
   miniMapContext.strokeRect(xMiniMapPos, yMiniMapPos, miniMapScreenPosWidth, miniMapScreenPosHeight);
 }
 
-export function setFocusScreen(position) {
+export function setFocusScreen(position, id = playerFocused) {
+  playerFocused = id;
   let newPosition = {
     x: position.x - (screenWidth/2),
     y: position.y - (screenHeight/2)
@@ -202,6 +211,18 @@ export function setFocusScreen(position) {
   newPosition = keepInsideMap(newPosition, canvasWidth, screenWidth, canvasHeight, screenHeight);
   xScreenPosOnMap = newPosition.x;
   yScreenPosOnMap = newPosition.y;
+}
+
+export function findBiggestCell(cells) {
+  if (cells.length > 0){
+    let biggestCell = cells[0];
+    for(const cell of cells) {
+      if(cell.radius > biggestCell.radius){
+        biggestCell = cell;
+      }
+    }
+    return biggestCell;
+  }
 }
 
 function changeScreenPos(mousePos) {
@@ -241,6 +262,7 @@ function getMousePos(evt) {
 function mouseClick(e) {
   const mousePos = getMousePos(e);
   if (mousePos.x > miniMapPosX && mousePos.y < miniMapHeight) {
+    playerFocused = null;
     changeScreenPos(mousePos);
   }
 }
@@ -262,6 +284,7 @@ screenCanvas.onmousemove = function(e) {
 
 export function drawGame(gameState, canvas) {
   initMap(canvas, gameState.map);
+  findMiniMapScreenPositionPlayer(gameState.players);
   initMiniMap(canvas, gameState.players);
   drawResourcesOnMap(gameState.resources, canvas);
   drawVirusesOnMap(gameState.viruses, canvas);
