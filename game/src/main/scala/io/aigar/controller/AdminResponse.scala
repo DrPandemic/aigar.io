@@ -14,6 +14,17 @@ case class SeedPlayersQuery(
   seed: Boolean
 )
 
+case class CreatePlayerQuery(
+  administrator_password: String,
+  player_name: String
+)
+case class PlayerSecret(
+  player_secret: String
+)
+case class CreatePlayerResponse(
+  data: PlayerSecret
+)
+
 /**
   * Class used to transfer commands from the AdminController to the game thread.
   */
