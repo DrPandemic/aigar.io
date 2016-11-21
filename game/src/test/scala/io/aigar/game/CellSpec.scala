@@ -290,7 +290,7 @@ class CellSpec extends FlatSpec with Matchers {
     opponent.cells should contain(smallCell)
   }
 
-  it should "split into 2 cells with half the mass" in {
+  "Split" should "split into 2 cells with half the mass" in {
     val player = new Player(0, Vector2(0f, 0f))
     val cell = player.cells.head
     cell.mass = 100f
@@ -320,6 +320,26 @@ class CellSpec extends FlatSpec with Matchers {
     player.cells.head.split
 
     player.cells should have size Player.MaxCells
+  }
+
+  it should "returns a list with itself and the new cell" in {
+    val player = new Player(0, Vector2(0f, 0f))
+    val cell = player.cells.head
+    cell.mass = 100f
+
+    val cells = cell.split
+
+    cells should have size 2
+    cells should contain(cell)
+  }
+
+    it should "returns a list with only itself when the split didn't work" in {
+    val player = new Player(0, Vector2(0f, 0f))
+    player.cells = List.fill(Player.MaxCells)(player.spawnCell(Vector2(0f, 0f)))
+
+    val cells = player.cells.head.split
+
+    cells should contain only(player.cells.head)
   }
 
   "performAction" should "change target to match the one from the action" in {
