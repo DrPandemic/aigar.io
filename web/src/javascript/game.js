@@ -7,8 +7,8 @@ let canvasHeight = 0;
 
 const screenCanvas = $("#screenCanvas")[0];
 const screenContext = screenCanvas.getContext("2d");
-const screenWidth = screenCanvas.width;
-const screenHeight = screenCanvas.height;
+let screenWidth;
+let screenHeight;
 //Static position for tests for the screen window on the mini-map
 
 let xScreenPosOnMap = 0;
@@ -19,9 +19,9 @@ let screenToMapRatioHeight;
 
 const miniMapCanvas = document.createElement("canvas");
 const miniMapContext = miniMapCanvas.getContext("2d");
-const miniMapWidth = screenWidth / 4;
+let miniMapWidth;
 let miniMapHeight;
-const miniMapPosX = screenWidth - miniMapWidth;
+let miniMapPosX;
 
 let miniMapScreenPosWidth;
 let miniMapScreenPosHeight;
@@ -56,6 +56,12 @@ export function initMap(canvas, map) {
   canvasWidth = map.width;
   canvas.height = map.height;
   canvasHeight = map.height;
+  screenWidth = document.getElementById("gameDiv").offsetWidth - constants.scrollBarWidth;
+  screenHeight = screenWidth*constants.ratioHeight;
+  screenCanvas.width = screenWidth;
+  screenCanvas.height = screenHeight;
+  miniMapWidth = screenWidth / 4;
+  miniMapPosX = screenWidth - miniMapWidth;
 
   screenToMapRatioWidth = canvas.width/ screenCanvas.width;
   screenToMapRatioHeight = canvas.height/ screenCanvas.height;
