@@ -297,6 +297,14 @@ export function drawGame(gameState, canvas) {
   drawPlayersOnMap(gameState.players, canvas, true);
   drawMap(canvas);
   drawMiniMap(canvas);
+
+  updateTimeLeft(gameState.timeLeft);
+}
+
+function updateTimeLeft(timeLeft){
+  let myDate = new Date(timeLeft * 1000).toISOString().substr(11, 8);
+  
+  $("#timeLeft").text(myDate);
 }
 
 function interpolate(prev, next, ratio) {
