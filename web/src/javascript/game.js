@@ -4,11 +4,8 @@ import sort from "immutable-sort";
 let canvasWidth = 0;
 let canvasHeight = 0;
 
-const screenCanvas = document.getElementById("screenCanvas");
-const screenContext = screenCanvas.getContext("2d");
 let screenWidth;
 let screenHeight;
-//Static position for tests for the screen window on the mini-map
 
 let xScreenPosOnMap = 0;
 let yScreenPosOnMap = 0;
@@ -16,8 +13,6 @@ let yScreenPosOnMap = 0;
 let screenToMapRatioWidth;
 let screenToMapRatioHeight;
 
-const miniMapCanvas = document.createElement("canvas");
-const miniMapContext = miniMapCanvas.getContext("2d");
 let miniMapWidth;
 let miniMapHeight;
 let miniMapPosX;
@@ -25,7 +20,6 @@ let miniMapPosX;
 let miniMapScreenPosWidth;
 let miniMapScreenPosHeight;
 
-let mouseIsDown = false;
 let playerFocused = null;
 
 function drawCircle(context, position, radius, color) {
@@ -51,6 +45,7 @@ export function createGameCanvas() {
 }
 
 export function initMap(canvas, map) {
+  const screenCanvas = document.getElementById("screenCanvas");
   canvas.width = map.width;
   canvasWidth = map.width;
   canvas.height = map.height;
@@ -161,12 +156,20 @@ function drawVirusShape(virus, spikes, outerRadius, context, color){
 }
 
 export function drawMap(canvas) {
+  const screenCanvas = document.getElementById("screenCanvas");
+  const screenContext = screenCanvas.getContext("2d");
+  const screenWidth = screenCanvas.width;
+  const screenHeight = screenCanvas.height;
+
   screenContext.clearRect(0, 0, screenWidth, screenHeight);
   screenContext.drawImage(canvas, xScreenPosOnMap, yScreenPosOnMap, screenWidth, screenHeight, 0, 0, screenWidth, screenHeight);
 }
 
 export function initMiniMap(canvas, players) {
   const tempCanvas = document.createElement("canvas");
+  const miniMapCanvas = document.createElement("canvas");
+  const miniMapContext = miniMapCanvas.getContext("2d");
+
   miniMapHeight = miniMapWidth*canvas.height/canvas.width;
 
   //set dimensions
@@ -185,6 +188,10 @@ export function initMiniMap(canvas, players) {
 }
 
 export function drawMiniMap(canvas) {
+  const screenCanvas = document.getElementById("screenCanvas");
+  const screenContext = screenCanvas.getContext("2d");
+  const miniMapCanvas = document.createElement("canvas");
+
   drawMiniMapScreenPos(canvas);
   screenContext.drawImage(miniMapCanvas, miniMapPosX, 0);
   screenCanvas.style.background = "#000";
@@ -198,6 +205,9 @@ function findMiniMapScreenPositionPlayer(players){
 }
 
 function drawMiniMapScreenPos(canvas) {
+  const miniMapCanvas = document.createElement("canvas");
+  const miniMapContext = miniMapCanvas.getContext("2d");
+
   miniMapContext.strokeStyle = "#fff";
   const xMiniMapPos = miniMapWidth / canvas.width * xScreenPosOnMap;
   const yMiniMapPos = miniMapHeight / canvas.height * yScreenPosOnMap;
@@ -206,6 +216,10 @@ function drawMiniMapScreenPos(canvas) {
 
 export function setFocusScreen(position, id = playerFocused) {
   playerFocused = id;
+  const screenCanvas = document.getElementById("screenCanvas");
+  const screenWidth = screenCanvas.width;
+  const screenHeight = screenCanvas.height;
+
   let newPosition = {
     x: position.x - (screenWidth/2),
     y: position.y - (screenHeight/2)
@@ -228,6 +242,10 @@ export function findBiggestCell(cells) {
 }
 
 function changeScreenPos(mousePos) {
+  const screenCanvas = document.getElementById("screenCanvas");
+  const screenWidth = screenCanvas.width;
+  const screenHeight = screenCanvas.height;
+
   let miniMapPos = {
     x : (mousePos.x - miniMapPosX) - (miniMapScreenPosWidth / 2),
     y : mousePos.y - (miniMapScreenPosHeight / 2)
@@ -255,6 +273,7 @@ function keepInsideMap(pos, bigWidth, smallWidth, bigHeight, smallHeight) {
 
 export function initCanvas() {
   const screenCanvas = document.getElementById("screenCanvas");
+  let mouseIsDown = false;
 
   function getMousePos(evt) {
     const rect = screenCanvas.getBoundingClientRect();
@@ -304,8 +323,8 @@ export function drawGame(gameState, canvas) {
 
 function updateTimeLeft(timeLeft){
   let myDate = new Date(timeLeft * 1000).toISOString().substr(11, 8);
-  
-  $("#timeLeft").text(myDate);
+
+  document.getElementById("timeLeft").value(myDate);
 }
 
 function interpolate(prev, next, ratio) {

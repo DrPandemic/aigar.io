@@ -1,4 +1,4 @@
-export function initButtonOnClick() {
+export function initLineButton() {
   const targetLinesBtn = document.getElementById("targetLinesBtn");
   targetLinesBtn.onclick = function() {
     if (targetLinesBtn.className === "btn btn-primary") {
