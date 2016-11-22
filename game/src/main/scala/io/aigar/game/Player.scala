@@ -79,9 +79,10 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer
 
     for (cell <- cells) {
       if (!cellsToRemove.contains(cell)) {
-        for (secondCell <- cells.filterNot(_.id == cell.id)) {
-          if (cell.overlaps(secondCell)
-            && !cellsToRemove.contains(secondCell)) {
+        for (secondCell <- cells) {
+          if (cell.id != secondCell.id
+            && !cellsToRemove.contains(secondCell)
+            && cell.overlaps(secondCell)) {
             logger.info(s"Player ${player.id}'s ${cell.id} (mass ${cell.mass}) merged with ${secondCell.id} (mass ${secondCell.mass})")
             cell.mass += secondCell.mass
             cellsToRemove ::= secondCell
