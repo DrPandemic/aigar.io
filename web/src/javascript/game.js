@@ -1,11 +1,10 @@
-import $ from "jquery";
 import * as constants from "./constants";
 import sort from "immutable-sort";
 
 let canvasWidth = 0;
 let canvasHeight = 0;
 
-const screenCanvas = $("#screenCanvas")[0];
+const screenCanvas = document.getElementById("screenCanvas");
 const screenContext = screenCanvas.getContext("2d");
 let screenWidth;
 let screenHeight;
@@ -78,25 +77,23 @@ export function getPlayerColor(players, currentPlayer) {
 export function drawPlayersOnMap(players, canvas, drawNames) {
   const context = canvas.getContext("2d");
   let cellArray = [];
-  let cellInfo;
   for(const player of players) {
     const color = getPlayerColor(players, player);
     for(const cell of player.cells) {
-      cellInfo = {
+      cellArray.push({
         position: cell.position,
         radius: cell.radius,
         color: color,
         playerName: player.name,
         target: cell.target
-      };
-      cellArray.push(cellInfo);
+      });
     }
   }
   const cellsToDraw = sort(cellArray, (a, b) => a.radius - b.radius);
   for(const cell of cellsToDraw){
     drawCircle(context, cell.position, cell.radius, cell.color);
     if (drawNames) writeCellTeamName(cell.playerName, context, cell.position);
-    const targetLinesBtn = $("#targetLinesBtn")[0];
+    const targetLinesBtn = document.getElementById("targetLinesBtn");
     if (targetLinesBtn.className === "btn btn-primary") drawCellTargetLines(context, cell.position, cell.target, cell.color);
   }
 }
@@ -256,36 +253,41 @@ function keepInsideMap(pos, bigWidth, smallWidth, bigHeight, smallHeight) {
   return pos;
 }
 
-function getMousePos(evt) {
-  const rect = screenCanvas.getBoundingClientRect();
-  return {
-    x : (evt.clientX - rect.left) / (rect.right - rect.left) * screenCanvas.width,
-    y : (evt.clientY - rect.top) / (rect.bottom - rect.top) * screenCanvas.height
+export function initCanvas() {
+  const screenCanvas = document.getElementById("screenCanvas");
+
+  function getMousePos(evt) {
+    const rect = screenCanvas.getBoundingClientRect();
+    return {
+      x : (evt.clientX - rect.left) / (rect.right - rect.left) * screenCanvas.width,
+      y : (evt.clientY - rect.top) / (rect.bottom - rect.top) * screenCanvas.height
+    };
+  }
+
+  function mouseClick(e) {
+    const mousePos = getMousePos(e);
+    if (mousePos.x > miniMapPosX && mousePos.y < miniMapHeight) {
+      playerFocused = null;
+      changeScreenPos(mousePos);
+    }
+  }
+
+  screenCanvas.onmousedown = function(e) {
+    mouseIsDown = true;
+    mouseClick(e);
+  };
+
+  screenCanvas.onmouseup = function(e) {
+    if(mouseIsDown) mouseClick(e);
+    mouseIsDown = false;
+  };
+
+  screenCanvas.onmousemove = function(e) {
+    if(!mouseIsDown) return false;
+    mouseClick(e);
+    return false;
   };
 }
-
-function mouseClick(e) {
-  const mousePos = getMousePos(e);
-  if (mousePos.x > miniMapPosX && mousePos.y < miniMapHeight) {
-    playerFocused = null;
-    changeScreenPos(mousePos);
-  }
-}
-
-screenCanvas.onmousedown = function(e) {
-  mouseIsDown = true;
-  mouseClick(e);
-};
-screenCanvas.onmouseup = function(e) {
-  if(mouseIsDown) mouseClick(e);
-  mouseIsDown = false;
-};
-
-screenCanvas.onmousemove = function(e) {
-  if(!mouseIsDown) return false;
-  mouseClick(e);
-  return false;
-};
 
 export function drawGame(gameState, canvas) {
   initMap(canvas, gameState.map);

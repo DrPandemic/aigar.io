@@ -25,12 +25,12 @@ export function drawLeaderboard(state) {
 
   const old = document.getElementById("leaderboard-body");
   leaderboard.replaceChild(new_tbody, old);
-  cleanOld(old);
+  cleanEventListeners(old);
 }
 
-function cleanOld(old) {
-  for(const cell of old.cells) {
-    cell.onclick = null;
+function cleanEventListeners(old) {
+  for(const row of old.rows) {
+    row.onclick = null;
   }
 }
 
