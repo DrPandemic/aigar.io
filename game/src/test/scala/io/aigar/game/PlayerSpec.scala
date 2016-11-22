@@ -46,6 +46,28 @@ class PlayerSpec extends FlatSpec with Matchers {
     player.aiState shouldBe 'active
   }
 
+  it should "merge cells when they overlap" in {
+    val player = new Player(1, Vector2(10f, 10f))
+    player.cells = List(new Cell(1, player), new Cell(2, player))
+
+    player.cells = player.merge(player.cells, player)
+
+    player.cells should have size 1
+    player.cells.head.mass shouldBe (2 * Cell.MinMass)
+  }
+
+  it should "not merge cells when they don't overlap" in {
+    val player = new Player(1, Vector2(10f, 10f))
+    player.cells = List(new Cell(1, player), new Cell(2, player))
+    player.cells.head.position = Vector2(30f, 30f)
+
+    player.cells = player.merge(player.cells, player)
+
+    player.cells should have size 2
+    player.cells.head.mass shouldBe (Cell.MinMass)
+    player.cells(1).mass shouldBe (Cell.MinMass)
+  }
+
   "performAction" should "update cell's targets" in {
     val player = new Player(1, new Vector2(0f, 0f))
     player.cells = List(new Cell(0, player), new Cell(1, player))
