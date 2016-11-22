@@ -93,7 +93,7 @@ export function drawPlayersOnMap(players, canvas, drawNames) {
   }
 }
 
-export function drawCellTargetLines(context, position, target, color) {
+export function drawCellTargetLine(context, position, target, color) {
   context.beginPath();
   context.moveTo(position.x, position.y);
   context.lineTo(target.x, target.y);
