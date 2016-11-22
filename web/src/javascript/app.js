@@ -39,7 +39,7 @@ function canInterpolateStates() {
     states[0].timestamp < new Date().getTime() - gameDelay;
 }
 
-async function updateGame() {
+function updateGame() {
   const startTime = (new Date()).getTime();
   gameRunning = false;
   if(!canInterpolateStates()) return;

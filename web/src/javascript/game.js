@@ -170,7 +170,6 @@ export function drawMap(canvas) {
 
 export function initMiniMap(canvas, players) {
   const tempCanvas = document.createElement("canvas");
-  let context = tempCanvas.getContext("2d");
   miniMapHeight = miniMapWidth*canvas.height/canvas.width;
 
   //set dimensions

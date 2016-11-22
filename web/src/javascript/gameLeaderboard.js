@@ -25,6 +25,13 @@ export function drawLeaderboard(state) {
 
   const old = document.getElementById("leaderboard-body");
   leaderboard.replaceChild(new_tbody, old);
+  cleanOld(old);
+}
+
+function cleanOld(old) {
+  for(const cell of old.cells) {
+    cell.onclick = null;
+  }
 }
 
 function focusOnPlayer(player) {
