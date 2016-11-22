@@ -11,6 +11,7 @@ export const scrollBarWidth = 10;
 export const textColor = "#fff";
 export const textBorderColor = "#000";
 export const textStyle = "25px Arial";
+export const ratioHeight = 0.6;
 
 export const playerColors = [
   "#F44336",

@@ -56,7 +56,7 @@ export function initMap(canvas, map) {
   canvas.height = map.height;
   canvasHeight = map.height;
   screenWidth = document.getElementById("gameDiv").offsetWidth - constants.scrollBarWidth;
-  screenHeight = screenWidth*0.6;
+  screenHeight = screenWidth*constants.ratioHeight;
   screenCanvas.width = screenWidth;
   screenCanvas.height = screenHeight;
   miniMapWidth = screenWidth / 4;
