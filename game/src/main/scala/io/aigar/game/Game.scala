@@ -42,11 +42,16 @@ class Game(val id: Int, playerIDs: List[Int], val duration: Int = Game.DefaultDu
     modifications
   }
 
+  def time: Float = {
+    duration - GameThread.time - startTime
+  }
+
   def state = {
     //TODO really implement and update spec to add tests
     serializable.GameState(
         id,
         tick,
+        time,
         players.map(_.state),
         resources.state,
         grid.state,

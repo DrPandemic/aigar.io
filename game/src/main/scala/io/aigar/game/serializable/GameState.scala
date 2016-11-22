@@ -43,6 +43,7 @@ case class Virus(
 case class GameState(
   id: Int,
   tick: Int,
+  timeLeft: Float,
   players: List[Player],
   resources: Resources,
   map: Dimensions,
