@@ -16,9 +16,7 @@ object Player {
 
 class Player(val id: Int, startPosition: Vector2) extends EntityContainer
                                                   with LazyLogging {
-  var aiState: AIState = new NullState(this)
   private var currentCellId: Int = 0
-
   var cells: List[Cell] = List()
   spawnCell(startPosition)
 
@@ -125,13 +123,15 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer
    */
   def onExternalAction: Unit = {
     if (!isActive) logger.info(s"Player $id reconnected.")
-    aiState.onPlayerActivity
+    cells.foreach { _.aiState.onPlayerActivity }
   }
 
   /**
     * The player is active when there is an active cell.
     */
   def isActive(): Boolean = {
-    aiState.isActive
+    cells.map{ _.aiState.isActive }.fold(false) { (z, i) =>
+      z || i
+    }
   }
 }

@@ -82,7 +82,7 @@ class GameSpec extends FlatSpec with Matchers {
     val player = game.players.head
     player.cells.head.position = Vector2(40, 0)
     player.cells.head.target = Vector2(40, 0)
-    player.aiState = new NullState(player)
+    player.cells.head.aiState = new NullState(player.cells.head)
 
     val resourceModifications = game.update(0f)
 

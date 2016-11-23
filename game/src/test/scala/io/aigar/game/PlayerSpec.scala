@@ -39,11 +39,12 @@ class PlayerSpec extends FlatSpec with Matchers {
   it should "execute state callbacks when calling the external action callback" in {
     val player = new Player(1, new Vector2(0f, 0f))
     player.cells = List(new Cell(1, player), new Cell(2, player))
-    player.aiState = new TestState
+    val cell = player.cells.head
+    cell.aiState = new TestState
 
     player.onExternalAction
 
-    player.aiState shouldBe 'active
+    player.isActive() shouldBe true
   }
 
   it should "merge cells when they overlap" in {
@@ -64,8 +65,8 @@ class PlayerSpec extends FlatSpec with Matchers {
     player.cells = player.merge(player.cells, player)
 
     player.cells should have size 2
-    player.cells.head.mass shouldBe (Cell.MinMass)
-    player.cells(1).mass shouldBe (Cell.MinMass)
+    player.cells.head.mass shouldBe Cell.MinMass
+    player.cells(1).mass shouldBe Cell.MinMass
   }
 
   "performAction" should "update cell's targets" in {
@@ -82,13 +83,13 @@ class PlayerSpec extends FlatSpec with Matchers {
   it should "prevent player from going wandering" in {
     val player = new Player(1, new Vector2(0f, 0f))
     player.cells = List(new Cell(1, player), new Cell(2, player))
-    player.aiState = new TestState
+    player.cells.head.aiState = new TestState
 
     player.update(NullState.MaxInactivitySeconds * 0.9f, new Grid(0, 0), List(player))
     player.performAction(List(Action(0, false, false, 0, Position(0f, 10f))))
     player.update(NullState.MaxInactivitySeconds * 0.9f, new Grid(0, 0), List(player))
 
-    player.aiState shouldBe 'active
+    player.isActive() shouldBe true
   }
 
   "update" should "respawn one cell for itself if it has no mo' cell" in {

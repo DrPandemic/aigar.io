@@ -8,9 +8,9 @@ class AIStateSpec extends FlatSpec with Matchers {
     val player = new Player(0, Vector2(0f, 0f))
     val cell = player.cells.head
     cell.target = Vector2(10f, 10f)
-    player.aiState = new NullState(player)
+    cell.aiState = new NullState(cell)
 
-    val target = player.aiState.update(1f, new Grid(0, 0), cell)
+    val target = cell.aiState.update(1f, new Grid(0, 0))
 
     target should be theSameInstanceAs(cell.target)
   }
@@ -18,32 +18,32 @@ class AIStateSpec extends FlatSpec with Matchers {
   it should "switch to a wandering state after inactivity for too long" in {
     val player = new Player(0, Vector2(0f, 0f))
     val cell = player.cells.head
-    player.aiState = new NullState(player)
+    cell.aiState = new NullState(cell)
 
-    player.aiState.update(NullState.MaxInactivitySeconds + 1e-2f, new Grid(0, 0), cell)
+    cell.aiState.update(NullState.MaxInactivitySeconds + 1e-2f, new Grid(0, 0))
 
-    player.aiState shouldBe a [WanderingState]
+    cell.aiState shouldBe a [WanderingState]
   }
 
   it should "not switch to a wandering state after activity" in {
     val player = new Player(0, Vector2(0f, 0f))
     val cell = player.cells.head
-    player.aiState = new NullState(player)
+    cell.aiState = new NullState(cell)
 
-    player.aiState.update(NullState.MaxInactivitySeconds - 1e-2f, new Grid(0, 0), cell)
-    player.aiState.onPlayerActivity
-    player.aiState.update(NullState.MaxInactivitySeconds - 1e-2f, new Grid(0, 0), cell)
+    cell.aiState.update(NullState.MaxInactivitySeconds - 1e-2f, new Grid(0, 0))
+    cell.aiState.onPlayerActivity
+    cell.aiState.update(NullState.MaxInactivitySeconds - 1e-2f, new Grid(0, 0))
 
-    player.aiState shouldBe a [NullState]
+    cell.aiState shouldBe a [NullState]
   }
 
   "SeekingState" should "keep the current cell's target on creation" in {
     val player = new Player(0, Vector2(0f, 0f))
     val cell = player.cells.head
     cell.target = Vector2(100f, 100f)
-    player.aiState = new SeekingState(player)
+    cell.aiState = new SeekingState(cell)
 
-    val target = player.aiState.update(1f, new Grid(0, 0), cell)
+    val target = cell.aiState.update(1f, new Grid(0, 0))
 
     target should be theSameInstanceAs(cell.target)
   }
@@ -52,11 +52,11 @@ class AIStateSpec extends FlatSpec with Matchers {
     val player = new Player(0, Vector2(10f, 10f))
     val cell = player.cells.head
     cell.target = Vector2(10f, 10f)
-    player.aiState = new SeekingState(player)
+    cell.aiState = new SeekingState(cell)
 
-    player.aiState.update(1f, new Grid(0, 0), cell)
+    cell.aiState.update(1f, new Grid(0, 0))
 
-    player.aiState shouldBe a [SleepingState]
+    cell.aiState shouldBe a [SleepingState]
   }
 
   it should "change state to SleepingState after a certain delay" in {
@@ -64,31 +64,31 @@ class AIStateSpec extends FlatSpec with Matchers {
     val cell = player.cells.head
     val targetFar = Vector2(100000f, 100000f)
     cell.target = targetFar
-    player.aiState = new SeekingState(player)
+    cell.aiState = new SeekingState(cell)
 
-    val target = player.aiState.update(WanderingState.NewTargetDelay + 1e-2f, new Grid(0, 0), cell)
+    val target = cell.aiState.update(WanderingState.NewTargetDelay + 1e-2f, new Grid(0, 0))
 
     cell.position.distanceTo(targetFar) should be > 100f // make sure that we really changed because of time (not position)
-    player.aiState shouldBe a [SleepingState]
+    cell.aiState shouldBe a [SleepingState]
   }
 
   it should "change to null state on player activity" in {
     val player = new Player(0, Vector2(5f, 5f))
     val cell = player.cells.head
-    player.aiState = new SeekingState(player)
+    cell.aiState = new SeekingState(cell)
 
-    player.aiState.onPlayerActivity
+    cell.aiState.onPlayerActivity
 
-    player.aiState shouldBe a [NullState]
+    cell.aiState shouldBe a [NullState]
   }
 
   "SleepingBehavior" should "returns the cells's position as the new target" in {
     val player = new Player(0, Vector2(0f, 0f))
     val cell = player.cells.head
     cell.target = Vector2(100f, 100f)
-    player.aiState = new SleepingState(player)
+    cell.aiState = new SleepingState(cell)
 
-    val target = player.aiState.update(1f, new Grid(0, 0), cell)
+    val target = cell.aiState.update(1f, new Grid(0, 0))
 
     target should be theSameInstanceAs(cell.position)
   }
@@ -97,20 +97,20 @@ class AIStateSpec extends FlatSpec with Matchers {
     val player = new Player(0, Vector2(0f, 0f))
     val cell = player.cells.head
     cell.target = Vector2(100f, 100f)
-    player.aiState = new SleepingState(player)
+    cell.aiState = new SleepingState(cell)
 
-    player.aiState.update(WanderingState.SleepingDelay + 1e-2f, new Grid(0, 0), cell)
+    cell.aiState.update(WanderingState.SleepingDelay + 1e-2f, new Grid(0, 0))
 
-    player.aiState shouldBe a [SeekingState]
+    cell.aiState shouldBe a [SeekingState]
   }
 
   it should "change the cell's target after a certain delay" in {
     val player = new Player(0, Vector2(0f, 0f))
     val cell = player.cells.head
     cell.target = Vector2(100f, 100f)
-    player.aiState = new SleepingState(player)
+    cell.aiState = new SleepingState(cell)
 
-    val target = player.aiState.update(WanderingState.SleepingDelay + 1e-2f, new Grid(0, 0), cell)
+    val target = cell.aiState.update(WanderingState.SleepingDelay + 1e-2f, new Grid(0, 0))
 
     target shouldNot be theSameInstanceAs(cell.target)
   }
