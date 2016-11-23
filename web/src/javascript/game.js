@@ -46,12 +46,17 @@ export function createCanvas() {
 
 export function initMap(gameCanvas, map) {
   const screenCanvas = document.getElementById("screenCanvas");
+  const context = gameCanvas.getContext("2d");
 
   if(!started) {
     gameCanvas.width = map.width;
     canvasWidth = map.width;
     gameCanvas.height = map.height;
     canvasHeight = map.height;
+  } else {
+    context.rect(0, 0, canvasWidth, canvasHeight);
+    context.fillStyle = "rgba(0, 0, 0, 1)";
+    context.fill();
   }
 
   screenWidth = document.getElementById("gameDiv").offsetWidth - constants.scrollBarWidth;
@@ -109,12 +114,10 @@ export function drawResourcesOnMap(resources, gameCanvas) {
   const context = gameCanvas.getContext("2d");
   const drawResources = (resources, color, rgba, mass) => {
     for(const resource of resources) {
-      setTimeout(() => {
-        const grid = context.createRadialGradient(resource.x,resource.y, .5, resource.x, resource.y,constants.resourceMass);
-        grid.addColorStop(0,color);
-        grid.addColorStop(1, rgba);
-        drawCircle(context, resource, mass, grid);
-      });
+      const grid = context.createRadialGradient(resource.x,resource.y, .5, resource.x, resource.y,constants.resourceMass);
+      grid.addColorStop(0,color);
+      grid.addColorStop(1, rgba);
+      drawCircle(context, resource, mass, grid);
     }
   };
 
@@ -127,13 +130,11 @@ export function drawVirusesOnMap(viruses, gameCanvas) {
   const context = gameCanvas.getContext("2d");
 
   for(const virus of viruses) {
-    setTimeout(() => {
-      const position = virus.position;
-      const grad = context.createRadialGradient(position.x, position.y, 5, position.x, position.y, virus.radius);
-      grad.addColorStop(0, constants.virusColor);
-      grad.addColorStop(1, constants.virusEndColor);
-      drawVirusShape(position, constants.numberOfSpikes, virus.radius, context, grad);
-    });
+    const position = virus.position;
+    const grad = context.createRadialGradient(position.x, position.y, 5, position.x, position.y, virus.radius);
+    grad.addColorStop(0, constants.virusColor);
+    grad.addColorStop(1, constants.virusEndColor);
+    drawVirusShape(position, constants.numberOfSpikes, virus.radius, context, grad);
   }
 }
 
@@ -173,8 +174,7 @@ export function drawMap(gameCanvas) {
   screenContext.drawImage(gameCanvas, xScreenPosOnMap, yScreenPosOnMap, screenWidth, screenHeight, 0, 0, screenWidth, screenHeight);
 }
 
-export function initMiniMap(gameCanvas, miniMapCanvas, players) {
-  const tempCanvas = document.createElement("canvas");
+export function initMiniMap(gameCanvas, miniMapCanvas, miniMapTmpCanvas, players) {
   const miniMapContext = miniMapCanvas.getContext("2d");
 
   miniMapHeight = miniMapWidth*gameCanvas.height/gameCanvas.width;
@@ -183,18 +183,22 @@ export function initMiniMap(gameCanvas, miniMapCanvas, players) {
   if(!started) {
     miniMapCanvas.width = miniMapHeight;
     miniMapCanvas.height = miniMapHeight;
+    miniMapTmpCanvas.width = canvasWidth;
+    miniMapTmpCanvas.height = canvasHeight;
+  } else {
+    const tmpContext = miniMapTmpCanvas.getContext("2d");
+    tmpContext.rect(0, 0, canvasWidth, canvasHeight);
+    tmpContext.fillStyle = "rgba(0, 0, 0, 1)";
+    tmpContext.fill();
   }
-  // TODO: could we remove this?
-  tempCanvas.width = canvasWidth;
-  tempCanvas.height = canvasHeight;
 
   //MiniMap background
   miniMapContext.rect(0, 0, canvasWidth, canvasHeight);
   miniMapContext.fillStyle = "rgba(58, 58, 58, 0.85)";
   miniMapContext.fill();
 
-  drawPlayersOnMap(players, tempCanvas, false);
-  miniMapContext.drawImage(tempCanvas, 0, 0, miniMapWidth, miniMapHeight);
+  drawPlayersOnMap(players, miniMapTmpCanvas, false);
+  miniMapContext.drawImage(miniMapTmpCanvas, 0, 0, miniMapWidth, miniMapHeight);
 }
 
 export function drawMiniMap(gameCanvas, miniMapCanvas) {
@@ -316,9 +320,9 @@ export function initCanvas() {
   };
 }
 
-export function drawGame(gameState, gameCanvas, miniMapCanvas) {
+export function drawGame(gameState, gameCanvas, miniMapCanvas, miniMapTmpCanvas) {
   initMap(gameCanvas, gameState.map);
-  initMiniMap(gameCanvas, miniMapCanvas, gameState.players);
+  initMiniMap(gameCanvas, miniMapCanvas, miniMapTmpCanvas, gameState.players);
   drawResourcesOnMap(gameState.resources, gameCanvas);
   drawVirusesOnMap(gameState.viruses, gameCanvas);
   drawPlayersOnMap(gameState.players, gameCanvas, true);

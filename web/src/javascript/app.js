@@ -5,6 +5,7 @@ import {initLineButton} from "./gameInit";
 
 const gameCanvas = createCanvas();
 const miniMapCanvas = createCanvas();
+const miniMapTmpCanvas = createCanvas();
 let gameRunning = false;
 let leaderboardRunning = false;
 
@@ -53,7 +54,7 @@ function updateGame() {
 
   const currentState = interpolateState(prev, next, ratio);
   if(currentState.tick === next.tick) states.shift();
-  drawGame(currentState, gameCanvas, miniMapCanvas);
+  drawGame(currentState, gameCanvas, miniMapCanvas, miniMapTmpCanvas);
 
   const elapsed = (new Date()).getTime() - startTime;
   setTimeout(updateGame, 1000/gameRefresh - elapsed);
