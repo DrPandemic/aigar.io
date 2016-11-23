@@ -89,7 +89,7 @@
  </check>
  <check level="warning" class="org.scalastyle.scalariform.ImportGroupingChecker" enabled="true"></check>
 
- <!-- To replace the space after tokens, which I think is not working -->
+ <!-- To ensure a single space after those tokens. (eg. if (true)return // bad syntax) -->
  <check enabled="true" class="org.scalastyle.file.RegexChecker" level="warning">
    <parameters>
      <parameter name="regex">[\s|}](if|else|do|while|for|match|try|catch|finally|=>|=)\S</parameter>
