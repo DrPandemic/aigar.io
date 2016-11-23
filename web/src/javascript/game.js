@@ -1,5 +1,6 @@
 import * as constants from "./constants";
 import sort from "immutable-sort";
+import {updateTimeLeft, resizeCanvas} from "./gameUI";
 
 let canvasWidth = 0;
 let canvasHeight = 0;
@@ -22,20 +23,6 @@ let miniMapScreenPosHeight;
 
 let playerFocused = null;
 
-function resizeCanvas(canvas, width, height) {
-  let resized = false;
-  if(canvas.width !== width) {
-    canvas.width = width;
-    resized = true;
-  }
-  if(canvas.height !== height) {
-    canvas.height = height;
-    resized = true;
-  }
-
-  return resized;
-}
-
 function drawCircle(context, position, radius, color) {
   context.beginPath();
   context.arc(position.x, position.y, radius, 0, Math.PI * 2, false);
@@ -52,10 +39,6 @@ function writeCellTeamName(playerName, context, position) {
 
   context.fillText(playerName, position.x, position.y);
   context.strokeText(playerName, position.x, position.y);
-}
-
-export function createCanvas() {
-  return document.createElement("canvas");
 }
 
 export function initMap(gameCanvas, map) {
@@ -337,12 +320,6 @@ export function drawGame(gameState, gameCanvas, miniMapCanvas, miniMapTmpCanvas)
   drawMiniMap(gameCanvas, miniMapCanvas);
 
   updateTimeLeft(gameState.timeLeft);
-}
-
-function updateTimeLeft(timeLeft){
-  let myDate = new Date(timeLeft * 1000).toISOString().substr(11, 8);
-
-  document.getElementById("timeLeft").innerText = myDate;
 }
 
 function interpolate(prev, next, ratio) {

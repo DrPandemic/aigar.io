@@ -1,7 +1,7 @@
 import {drawLeaderboard} from "./gameLeaderboard";
-import {drawGame, createCanvas, interpolateState, initCanvas} from "./game";
+import {drawGame, interpolateState, initCanvas} from "./game";
 import {gameRefresh, leaderboardRefresh, gameDelay, maximumStoredStates} from "./constants";
-import {initLineButton} from "./gameInit";
+import {initLineButton, createCanvas} from "./gameUI";
 
 const gameCanvas = createCanvas();
 const miniMapCanvas = createCanvas();
