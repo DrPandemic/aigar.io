@@ -46,10 +46,14 @@ export function createCanvas() {
 
 export function initMap(gameCanvas, map) {
   const screenCanvas = document.getElementById("screenCanvas");
-  gameCanvas.width = map.width;
-  canvasWidth = map.width;
-  gameCanvas.height = map.height;
-  canvasHeight = map.height;
+
+  if(!started) {
+    gameCanvas.width = map.width;
+    canvasWidth = map.width;
+    gameCanvas.height = map.height;
+    canvasHeight = map.height;
+  }
+
   screenWidth = document.getElementById("gameDiv").offsetWidth - constants.scrollBarWidth;
   screenHeight = screenWidth*constants.ratioHeight;
   screenCanvas.width = screenWidth;
@@ -105,10 +109,12 @@ export function drawResourcesOnMap(resources, gameCanvas) {
   const context = gameCanvas.getContext("2d");
   const drawResources = (resources, color, rgba, mass) => {
     for(const resource of resources) {
-      const grid = context.createRadialGradient(resource.x,resource.y, .5, resource.x, resource.y,constants.resourceMass);
-      grid.addColorStop(0,color);
-      grid.addColorStop(1, rgba);
-      drawCircle(context, resource, mass, grid);
+      setTimeout(() => {
+        const grid = context.createRadialGradient(resource.x,resource.y, .5, resource.x, resource.y,constants.resourceMass);
+        grid.addColorStop(0,color);
+        grid.addColorStop(1, rgba);
+        drawCircle(context, resource, mass, grid);
+      });
     }
   };
 
@@ -121,11 +127,13 @@ export function drawVirusesOnMap(viruses, gameCanvas) {
   const context = gameCanvas.getContext("2d");
 
   for(const virus of viruses) {
-    const position = virus.position;
-    const grad = context.createRadialGradient(position.x, position.y, 5, position.x, position.y, virus.radius);
-    grad.addColorStop(0, constants.virusColor);
-    grad.addColorStop(1, constants.virusEndColor);
-    drawVirusShape(position, constants.numberOfSpikes, virus.radius, context, grad);
+    setTimeout(() => {
+      const position = virus.position;
+      const grad = context.createRadialGradient(position.x, position.y, 5, position.x, position.y, virus.radius);
+      grad.addColorStop(0, constants.virusColor);
+      grad.addColorStop(1, constants.virusEndColor);
+      drawVirusShape(position, constants.numberOfSpikes, virus.radius, context, grad);
+    });
   }
 }
 
@@ -172,8 +180,11 @@ export function initMiniMap(gameCanvas, miniMapCanvas, players) {
   miniMapHeight = miniMapWidth*gameCanvas.height/gameCanvas.width;
 
   //set dimensions
-  miniMapCanvas.width = miniMapHeight;
-  miniMapCanvas.height = miniMapHeight;
+  if(!started) {
+    miniMapCanvas.width = miniMapHeight;
+    miniMapCanvas.height = miniMapHeight;
+  }
+  // TODO: could we remove this?
   tempCanvas.width = canvasWidth;
   tempCanvas.height = canvasHeight;
 
