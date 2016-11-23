@@ -1,6 +1,6 @@
 import io.aigar.controller.AdminController
-import io.aigar.controller.response.{ CreatePlayerResponse, SetRankedDurationCommand }
-import io.aigar.model.{ PlayerModel, PlayerRepository }
+import io.aigar.controller.response.{CreatePlayerResponse, RestartThreadCommand, SetRankedDurationCommand}
+import io.aigar.model.{PlayerModel, PlayerRepository}
 import io.aigar.game.GameThread
 import io.aigar.score.ScoreThread
 
@@ -20,7 +20,9 @@ class AdminControllerSpec extends MutableScalatraSpec
 
   val playerRepository = new PlayerRepository(None)
   val scoreThread = new ScoreThread(playerRepository)
-  val game = new GameThread(scoreThread, List(1))
+  val game = new GameThread(scoreThread)
+  game.adminCommandQueue.put(RestartThreadCommand(List(1)))
+  game.transferAdminCommands
   game.updateGames // run once to initialize the game states
 
   addServlet(new AdminController("unicorn-revenge", game, playerRepository), "/*")

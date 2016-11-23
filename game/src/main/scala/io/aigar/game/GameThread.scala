@@ -2,7 +2,7 @@ package io.aigar.game
 
 import com.typesafe.scalalogging.LazyLogging
 import scala.math.round
-import io.aigar.controller.response.{AdminCommand, SetRankedDurationCommand}
+import io.aigar.controller.response.{AdminCommand, SetRankedDurationCommand, RestartThreadCommand}
 import io.aigar.score.{ScoreModification, ScoreThread}
 import java.util.concurrent.LinkedBlockingQueue
 
@@ -27,20 +27,32 @@ object GameThread {
   }
 }
 
-class GameThread(scoreThread: ScoreThread, playerIDs: List[Int]) extends Runnable
-                                                                 with LazyLogging {
+class GameThread(scoreThread: ScoreThread) extends Runnable
+                                           with LazyLogging {
   logger.info("Starting Game thread.")
 
   final val actionQueue = new LinkedBlockingQueue[ActionQueryWithId]()
   final val adminCommandQueue = new LinkedBlockingQueue[AdminCommand]()
 
+  var playerIDs: List[Int] = List()
+
   var nextRankedDuration = Game.DefaultDuration
   private var states: Map[Int, serializable.GameState] = Map()
-  var games: List[Game] = List(createRankedGame)
+  var games: List[Game] = List()
 
   var running = true
+  var started = false
   var previousTime = 0f
   var currentTime = GameThread.MillisecondsPerTick / GameThread.MillisecondsPerSecond // avoid having an initial 0 delta time
+
+  def restart(playerIDs: List[Int]): Unit = {
+    actionQueue.clear
+    adminCommandQueue.clear
+    this.playerIDs = playerIDs
+    games = List(createRankedGame)
+
+    started = true
+  }
 
   /**
    * Safe way to get the game state of a particular game from another thread.
@@ -55,9 +67,11 @@ class GameThread(scoreThread: ScoreThread, playerIDs: List[Int]) extends Runnabl
 
   def run: Unit = {
     while (running) {
-      transferActions
       transferAdminCommands
-      updateGames
+      if(started) {
+        transferActions
+        updateGames
+      }
 
       Thread.sleep(GameThread.MillisecondsPerTick)
     }
@@ -80,6 +94,7 @@ class GameThread(scoreThread: ScoreThread, playerIDs: List[Int]) extends Runnabl
     while(!adminCommandQueue.isEmpty) {
       adminCommandQueue.take match {
         case command: SetRankedDurationCommand => nextRankedDuration = command.duration
+        case command: RestartThreadCommand => restart(command.playerIDs)
       }
     }
   }

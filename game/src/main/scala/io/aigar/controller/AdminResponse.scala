@@ -31,5 +31,9 @@ case class CreatePlayerResponse(
 trait AdminCommand
 
 case class SetRankedDurationCommand(
-  val duration: Int
+  duration: Int
+) extends AdminCommand
+
+case class RestartThreadCommand(
+  playerIDs: List[Int]
 ) extends AdminCommand
