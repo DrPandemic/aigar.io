@@ -22,6 +22,20 @@ let miniMapScreenPosHeight;
 
 let playerFocused = null;
 
+function resizeCanvas(canvas, width, height) {
+  let resized = false;
+  if(canvas.width !== width) {
+    canvas.width = width;
+    resized = true;
+  }
+  if(canvas.height !== height) {
+    canvas.height = height;
+    resized = true;
+  }
+
+  return resized;
+}
+
 function drawCircle(context, position, radius, color) {
   context.beginPath();
   context.arc(position.x, position.y, radius, 0, Math.PI * 2, false);
@@ -46,17 +60,12 @@ export function createCanvas() {
 
 export function initMap(gameCanvas, map) {
   const screenCanvas = document.getElementById("screenCanvas");
-  const context = gameCanvas.getContext("2d");
 
-  if(!started) {
-    gameCanvas.width = map.width;
-    canvasWidth = map.width;
-    gameCanvas.height = map.height;
-    canvasHeight = map.height;
-  } else {
-    context.rect(0, 0, canvasWidth, canvasHeight);
-    context.fillStyle = "rgba(0, 0, 0, 1)";
-    context.fill();
+  canvasWidth = map.width;
+  canvasHeight = map.height;
+  if(!resizeCanvas(gameCanvas, canvasWidth, canvasHeight)) {
+    const context = gameCanvas.getContext("2d");
+    context.clearRect(0, 0, canvasWidth, canvasHeight);
   }
 
   screenWidth = document.getElementById("gameDiv").offsetWidth - constants.scrollBarWidth;
@@ -93,12 +102,13 @@ export function drawPlayersOnMap(players, gameCanvas, drawNames) {
       });
     }
   }
+
   const cellsToDraw = sort(cellArray, (a, b) => a.radius - b.radius);
   for(const cell of cellsToDraw){
     drawCircle(context, cell.position, cell.radius, cell.color);
     if (drawNames) writeCellTeamName(cell.playerName, context, cell.position);
     const targetLinesBtn = document.getElementById("targetLinesBtn");
-    if (targetLinesBtn.className === "btn btn-primary") drawCellTargetLines(context, cell.position, cell.target, cell.color);
+    if (targetLinesBtn.className === "btn btn-primary") drawCellTargetLine(context, cell.position, cell.target, cell.color);
   }
 }
 
@@ -180,19 +190,15 @@ export function initMiniMap(gameCanvas, miniMapCanvas, miniMapTmpCanvas, players
   miniMapHeight = miniMapWidth*gameCanvas.height/gameCanvas.width;
 
   //set dimensions
-  if(!started) {
-    miniMapCanvas.width = miniMapHeight;
-    miniMapCanvas.height = miniMapHeight;
-    miniMapTmpCanvas.width = canvasWidth;
-    miniMapTmpCanvas.height = canvasHeight;
-  } else {
+  resizeCanvas(miniMapCanvas, miniMapWidth, miniMapHeight);
+
+  if(!resizeCanvas(miniMapTmpCanvas, canvasWidth, canvasHeight)) {
     const tmpContext = miniMapTmpCanvas.getContext("2d");
-    tmpContext.rect(0, 0, canvasWidth, canvasHeight);
-    tmpContext.fillStyle = "rgba(0, 0, 0, 1)";
-    tmpContext.fill();
+    tmpContext.clearRect(0, 0, canvasWidth, canvasHeight);
   }
 
   //MiniMap background
+  miniMapContext.clearRect(0, 0, canvasWidth, canvasHeight);
   miniMapContext.rect(0, 0, canvasWidth, canvasHeight);
   miniMapContext.fillStyle = "rgba(58, 58, 58, 0.85)";
   miniMapContext.fill();
@@ -322,6 +328,7 @@ export function initCanvas() {
 
 export function drawGame(gameState, gameCanvas, miniMapCanvas, miniMapTmpCanvas) {
   initMap(gameCanvas, gameState.map);
+  findMiniMapScreenPositionPlayer(gameState.players);
   initMiniMap(gameCanvas, miniMapCanvas, miniMapTmpCanvas, gameState.players);
   drawResourcesOnMap(gameState.resources, gameCanvas);
   drawVirusesOnMap(gameState.viruses, gameCanvas);
@@ -335,7 +342,7 @@ export function drawGame(gameState, gameCanvas, miniMapCanvas, miniMapTmpCanvas)
 function updateTimeLeft(timeLeft){
   let myDate = new Date(timeLeft * 1000).toISOString().substr(11, 8);
 
-  document.getElementById("timeLeft").value(myDate);
+  document.getElementById("timeLeft").innerText = myDate;
 }
 
 function interpolate(prev, next, ratio) {
