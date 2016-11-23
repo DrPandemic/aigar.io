@@ -44,11 +44,11 @@ export function createCanvas() {
   return document.createElement("canvas");
 }
 
-export function initMap(canvas, map) {
+export function initMap(gameCanvas, map) {
   const screenCanvas = document.getElementById("screenCanvas");
-  canvas.width = map.width;
+  gameCanvas.width = map.width;
   canvasWidth = map.width;
-  canvas.height = map.height;
+  gameCanvas.height = map.height;
   canvasHeight = map.height;
   screenWidth = document.getElementById("gameDiv").offsetWidth - constants.scrollBarWidth;
   screenHeight = screenWidth*constants.ratioHeight;
@@ -57,8 +57,8 @@ export function initMap(canvas, map) {
   miniMapWidth = screenWidth / 4;
   miniMapPosX = screenWidth - miniMapWidth;
 
-  screenToMapRatioWidth = canvas.width/ screenCanvas.width;
-  screenToMapRatioHeight = canvas.height/ screenCanvas.height;
+  screenToMapRatioWidth = gameCanvas.width/ screenCanvas.width;
+  screenToMapRatioHeight = gameCanvas.height/ screenCanvas.height;
   miniMapScreenPosWidth = miniMapWidth/screenToMapRatioWidth;
   miniMapScreenPosHeight = miniMapHeight/screenToMapRatioHeight;
 }
@@ -69,8 +69,8 @@ export function getPlayerColor(players, currentPlayer) {
   return constants.playerColors[playerPosition];
 }
 
-export function drawPlayersOnMap(players, canvas, drawNames) {
-  const context = canvas.getContext("2d");
+export function drawPlayersOnMap(players, gameCanvas, drawNames) {
+  const context = gameCanvas.getContext("2d");
   let cellArray = [];
   for(const player of players) {
     const color = getPlayerColor(players, player);
@@ -101,8 +101,8 @@ export function drawCellTargetLine(context, position, target, color) {
   context.stroke();
 }
 
-export function drawResourcesOnMap(resources, canvas) {
-  const context = canvas.getContext("2d");
+export function drawResourcesOnMap(resources, gameCanvas) {
+  const context = gameCanvas.getContext("2d");
   const drawResources = (resources, color, rgba, mass) => {
     for(const resource of resources) {
       const grid = context.createRadialGradient(resource.x,resource.y, .5, resource.x, resource.y,constants.resourceMass);
@@ -117,8 +117,8 @@ export function drawResourcesOnMap(resources, canvas) {
   drawResources(resources.gold, constants.goldColor, constants.goldRGBColor,  constants.resourceMass);
 }
 
-export function drawVirusesOnMap(viruses, canvas) {
-  const context = canvas.getContext("2d");
+export function drawVirusesOnMap(viruses, gameCanvas) {
+  const context = gameCanvas.getContext("2d");
 
   for(const virus of viruses) {
     const position = virus.position;
@@ -155,21 +155,21 @@ function drawVirusShape(virus, spikes, outerRadius, context, color){
   context.fill();
 }
 
-export function drawMap(canvas) {
+export function drawMap(gameCanvas) {
   const screenCanvas = document.getElementById("screenCanvas");
   const screenContext = screenCanvas.getContext("2d");
   const screenWidth = screenCanvas.width;
   const screenHeight = screenCanvas.height;
 
   screenContext.clearRect(0, 0, screenWidth, screenHeight);
-  screenContext.drawImage(canvas, xScreenPosOnMap, yScreenPosOnMap, screenWidth, screenHeight, 0, 0, screenWidth, screenHeight);
+  screenContext.drawImage(gameCanvas, xScreenPosOnMap, yScreenPosOnMap, screenWidth, screenHeight, 0, 0, screenWidth, screenHeight);
 }
 
-export function initMiniMap(canvas, miniMapCanvas, players) {
+export function initMiniMap(gameCanvas, miniMapCanvas, players) {
   const tempCanvas = document.createElement("canvas");
   const miniMapContext = miniMapCanvas.getContext("2d");
 
-  miniMapHeight = miniMapWidth*canvas.height/canvas.width;
+  miniMapHeight = miniMapWidth*gameCanvas.height/gameCanvas.width;
 
   //set dimensions
   miniMapCanvas.width = miniMapHeight;
@@ -186,11 +186,11 @@ export function initMiniMap(canvas, miniMapCanvas, players) {
   miniMapContext.drawImage(tempCanvas, 0, 0, miniMapWidth, miniMapHeight);
 }
 
-export function drawMiniMap(canvas, miniMapCanvas) {
+export function drawMiniMap(gameCanvas, miniMapCanvas) {
   const screenCanvas = document.getElementById("screenCanvas");
   const screenContext = screenCanvas.getContext("2d");
 
-  drawMiniMapScreenPos(canvas, miniMapCanvas);
+  drawMiniMapScreenPos(gameCanvas, miniMapCanvas);
   screenContext.drawImage(miniMapCanvas, miniMapPosX, 0);
   screenCanvas.style.background = "#000";
 }
@@ -305,15 +305,14 @@ export function initCanvas() {
   };
 }
 
-export function drawGame(gameState, canvas, miniMapCanvas) {
-  initMap(canvas, gameState.map);
-  findMiniMapScreenPositionPlayer(gameState.players);
-  initMiniMap(canvas, miniMapCanvas, gameState.players);
-  drawResourcesOnMap(gameState.resources, canvas);
-  drawVirusesOnMap(gameState.viruses, canvas);
-  drawPlayersOnMap(gameState.players, canvas, true);
-  drawMap(canvas);
-  drawMiniMap(canvas, miniMapCanvas);
+export function drawGame(gameState, gameCanvas, miniMapCanvas) {
+  initMap(gameCanvas, gameState.map);
+  initMiniMap(gameCanvas, miniMapCanvas, gameState.players);
+  drawResourcesOnMap(gameState.resources, gameCanvas);
+  drawVirusesOnMap(gameState.viruses, gameCanvas);
+  drawPlayersOnMap(gameState.players, gameCanvas, true);
+  drawMap(gameCanvas);
+  drawMiniMap(gameCanvas, miniMapCanvas);
 
   updateTimeLeft(gameState.timeLeft);
 }
