@@ -119,4 +119,18 @@ class AdminControllerSpec extends MutableScalatraSpec
       }
     }
   }
+
+  "PUT /competition" should {
+    "put the action in the admin queue" in {
+      game.adminCommandQueue.isEmpty() must beTrue
+      putJson("competition", defaultActionJson ~ ("running" -> true)) {
+        status must_== 200
+
+        game.adminCommandQueue.isEmpty() must beFalse
+        val command = game.adminCommandQueue.take()
+        command must haveClass[RestartThreadCommand]
+        command.asInstanceOf[RestartThreadCommand].playerIDs must be_==(List(1))
+      }
+    }
+  }
 }

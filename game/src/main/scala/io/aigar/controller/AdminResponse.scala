@@ -25,6 +25,11 @@ case class CreatePlayerResponse(
   data: PlayerSecret
 )
 
+case class RestartThreadQuery(
+  administrator_password: String,
+  running: Boolean
+)
+
 /**
   * Class used to transfer commands from the AdminController to the game thread.
   */
