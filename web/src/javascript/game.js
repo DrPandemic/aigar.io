@@ -40,7 +40,7 @@ function writeCellTeamName(playerName, context, position) {
   context.strokeText(playerName, position.x, position.y);
 }
 
-export function createGameCanvas() {
+export function createCanvas() {
   return document.createElement("canvas");
 }
 
@@ -165,9 +165,8 @@ export function drawMap(canvas) {
   screenContext.drawImage(canvas, xScreenPosOnMap, yScreenPosOnMap, screenWidth, screenHeight, 0, 0, screenWidth, screenHeight);
 }
 
-export function initMiniMap(canvas, players) {
+export function initMiniMap(canvas, miniMapCanvas, players) {
   const tempCanvas = document.createElement("canvas");
-  const miniMapCanvas = document.createElement("canvas");
   const miniMapContext = miniMapCanvas.getContext("2d");
 
   miniMapHeight = miniMapWidth*canvas.height/canvas.width;
@@ -187,12 +186,11 @@ export function initMiniMap(canvas, players) {
   miniMapContext.drawImage(tempCanvas, 0, 0, miniMapWidth, miniMapHeight);
 }
 
-export function drawMiniMap(canvas) {
+export function drawMiniMap(canvas, miniMapCanvas) {
   const screenCanvas = document.getElementById("screenCanvas");
   const screenContext = screenCanvas.getContext("2d");
-  const miniMapCanvas = document.createElement("canvas");
 
-  drawMiniMapScreenPos(canvas);
+  drawMiniMapScreenPos(canvas, miniMapCanvas);
   screenContext.drawImage(miniMapCanvas, miniMapPosX, 0);
   screenCanvas.style.background = "#000";
 }
@@ -204,8 +202,7 @@ function findMiniMapScreenPositionPlayer(players){
   }
 }
 
-function drawMiniMapScreenPos(canvas) {
-  const miniMapCanvas = document.createElement("canvas");
+function drawMiniMapScreenPos(canvas, miniMapCanvas) {
   const miniMapContext = miniMapCanvas.getContext("2d");
 
   miniMapContext.strokeStyle = "#fff";
@@ -308,15 +305,15 @@ export function initCanvas() {
   };
 }
 
-export function drawGame(gameState, canvas) {
+export function drawGame(gameState, canvas, miniMapCanvas) {
   initMap(canvas, gameState.map);
   findMiniMapScreenPositionPlayer(gameState.players);
-  initMiniMap(canvas, gameState.players);
+  initMiniMap(canvas, miniMapCanvas, gameState.players);
   drawResourcesOnMap(gameState.resources, canvas);
   drawVirusesOnMap(gameState.viruses, canvas);
   drawPlayersOnMap(gameState.players, canvas, true);
   drawMap(canvas);
-  drawMiniMap(canvas);
+  drawMiniMap(canvas, miniMapCanvas);
 
   updateTimeLeft(gameState.timeLeft);
 }

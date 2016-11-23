@@ -1,9 +1,10 @@
 import {drawLeaderboard} from "./gameLeaderboard";
-import {drawGame, createGameCanvas, interpolateState, initCanvas} from "./game";
+import {drawGame, createCanvas, interpolateState, initCanvas} from "./game";
 import {gameRefresh, leaderboardRefresh, gameDelay, maximumStoredStates} from "./constants";
 import {initLineButton} from "./gameInit";
 
-const gameCanvas = createGameCanvas();
+const gameCanvas = createCanvas();
+const miniMapCanvas = createCanvas();
 let gameRunning = false;
 let leaderboardRunning = false;
 
@@ -52,7 +53,7 @@ function updateGame() {
 
   const currentState = interpolateState(prev, next, ratio);
   if(currentState.tick === next.tick) states.shift();
-  drawGame(currentState, gameCanvas);
+  drawGame(currentState, gameCanvas, miniMapCanvas);
 
   const elapsed = (new Date()).getTime() - startTime;
   setTimeout(updateGame, 1000/gameRefresh - elapsed);
