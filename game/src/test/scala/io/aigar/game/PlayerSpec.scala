@@ -15,7 +15,9 @@ class PlayerSpec extends FlatSpec with Matchers {
   it should "move its cells on updates" in {
     val player = new Player(0, new Vector2(0f, 0f))
     val target = new Vector2(100f, 100f)
-    player.cells.head.target = target
+    val cell = player.cells.head
+    cell.aiState = new NullState(cell)
+    cell.target = target
     val grid = new Grid(100, 100)
 
     player.update(1f, grid, List(player))

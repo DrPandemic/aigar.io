@@ -108,5 +108,5 @@ class TestState extends AIState {
     active = true
   }
 
-  def isActive = false
+  def isActive = active
 }

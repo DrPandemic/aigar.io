@@ -24,6 +24,7 @@ class CellSpec extends FlatSpec with Matchers {
   it should "move towards its target when it is away from itself" in {
     val player = new Player(0, Vector2(42f, 42f))
     val cell = player.cells.head
+    cell.aiState = new NullState(cell)
     cell.target = new Vector2(1000f, 1000f)
     val grid = new Grid(100, 100)
 
