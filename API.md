@@ -152,9 +152,10 @@ Every query will need to contain the key `administratorPassword` with the right 
 ```
 
 ### Launch competition
-Note that putting running to `false` won't have any effect.
+Note that putting running to `false` won't have any effect. Every time this will be called
+the game thread will be restarted.
 
-`PATCH /admin/competition`
+`PUT /admin/competition`
 
 **Request**
 ```json
@@ -172,7 +173,7 @@ Note that putting running to `false` won't have any effect.
 ### Set ranked game duration
 This will set the next ranked game duration(seconds).
 
-`PATCH /admin/ranked`
+`PUT /admin/ranked`
 
 **Request**
 ```json

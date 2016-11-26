@@ -3,7 +3,9 @@ package io.aigar.controller
 import io.aigar.controller.response.{
   AdminQuery,
   SetRankedDurationCommand,
+  RestartThreadCommand,
   SetRankedDurationQuery,
+  RestartThreadQuery,
   SeedPlayersQuery,
   CreatePlayerQuery,
   CreatePlayerResponse,
@@ -63,7 +65,26 @@ class AdminController(password: String, game: GameThread, playerRepository: Play
       game.adminCommandQueue.put(command)
     } catch {
       case e: MappingException => halt(422)
-      case e: java.lang.NumberFormatException => halt(400)
+    }
+
+    SuccessResponse("ok")
+  }
+
+  def fetchPlayerIDs: List[Int] = {
+    val players = playerRepository.getPlayers()
+
+    players.map(_.id).flatten  // only keep IDs that are not None
+  }
+
+  put("/competition") {
+    try {
+      val query = parse(request.body).extract[RestartThreadQuery]
+      if(query.running) {
+        val command = RestartThreadCommand(fetchPlayerIDs)
+        game.adminCommandQueue.put(command)
+      }
+    } catch {
+      case e: MappingException => halt(422)
     }
 
     SuccessResponse("ok")
