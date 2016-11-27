@@ -53,7 +53,7 @@ object Cell {
 }
 
 class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
-  private var velocity = new Vector2(0f, 0f)
+  var velocity = new Vector2(0f, 0f)
   var target = position
   _mass = Cell.MinMass
   val scoreModification = 0
