@@ -1,8 +1,11 @@
 import {drawLeaderboard} from "./gameLeaderboard";
-import {drawGame, createGameCanvas, interpolateState} from "./game";
+import {drawGame, interpolateState, initCanvas} from "./game";
 import {gameRefresh, leaderboardRefresh, gameDelay, maximumStoredStates} from "./constants";
+import {initLineButton, createCanvas} from "./gameUI";
 
-const gameCanvas = createGameCanvas();
+const gameCanvas = createCanvas();
+const miniMapCanvas = createCanvas();
+const miniMapTmpCanvas = createCanvas();
 let gameRunning = false;
 let leaderboardRunning = false;
 
@@ -39,7 +42,7 @@ function canInterpolateStates() {
     states[0].timestamp < new Date().getTime() - gameDelay;
 }
 
-async function updateGame() {
+function updateGame() {
   const startTime = (new Date()).getTime();
   gameRunning = false;
   if(!canInterpolateStates()) return;
@@ -51,7 +54,7 @@ async function updateGame() {
 
   const currentState = interpolateState(prev, next, ratio);
   if(currentState.tick === next.tick) states.shift();
-  drawGame(currentState, gameCanvas);
+  drawGame(currentState, gameCanvas, miniMapCanvas, miniMapTmpCanvas);
 
   const elapsed = (new Date()).getTime() - startTime;
   setTimeout(updateGame, 1000/gameRefresh - elapsed);
@@ -69,18 +72,7 @@ function updateLeaderBoard() {
   setTimeout(updateLeaderBoard, 1000/leaderboardRefresh - elapsed);
 }
 
-function initButtonOnClick() {
-  const targetLinesBtn = $("#targetLinesBtn")[0];
-  targetLinesBtn.onclick = function() {
-    if (targetLinesBtn.className === "btn btn-primary") {
-      document.getElementById("targetLinesBtn").className = "btn btn-default";
-    }
-    else{
-      document.getElementById("targetLinesBtn").className = "btn btn-primary";
-    }
-  };
-}
-
-initButtonOnClick();
+initCanvas();
+initLineButton();
 updateGame();
 updateLeaderBoard();
