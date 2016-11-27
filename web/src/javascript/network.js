@@ -43,6 +43,6 @@ export function sendAdminRequest(url, method, data = {}) {
   }).then(response => response.json())
     .then(response => {
       if (!response.data) throw "The server didn't return a success";
-      else response.data;
+      else return response.data;
     });
 }
