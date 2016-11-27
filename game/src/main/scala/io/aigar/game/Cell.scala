@@ -40,13 +40,20 @@ object Cell {
 
   final val RespawnRetryAttempts = 15
 
+  /**
+   * When the velocity of a cell goes above its "max speed", a "drag" force is
+   * simulated to remove a ratio of the velocity excess. This constant controls
+   * what ratio is removed from the excess, per second.
+   */
+  final val ExcessVelocityReductionPerSec = 0.25f
+
   def radius(mass: Float): Float = {
     4f + sqrt(mass).toFloat * 3f
   }
 }
 
 class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
-  private var _velocity = new Vector2(0f, 0f)
+  private var velocity = new Vector2(0f, 0f)
   var target = position
   _mass = Cell.MinMass
   val scoreModification = 0
@@ -58,11 +65,6 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
   def maxSpeed: Float = {
     max(Cell.MaxMaximumSpeed - mass*Cell.SpeedLimitReductionPerMassUnit,
       Cell.MinMaximumSpeed)
-  }
-
-  def velocity: Vector2 = _velocity
-  def velocity_=(vel:Vector2): Unit = {
-    _velocity = if (vel.magnitude < maxSpeed) vel else vel.normalize * maxSpeed
   }
 
   override def mass_=(m: Float): Unit = {
@@ -82,6 +84,7 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
     keepInGrid(grid)
 
     velocity += steering.truncate(maxSpeed) * deltaSeconds
+    velocity += drag(deltaSeconds)
   }
 
   def keepInGrid(grid: Grid): Unit = {
@@ -97,6 +100,16 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
 
   def decayedMass(deltaSeconds: Float): Float = {
     mass * pow(1f - Cell.MassDecayPerSecond, deltaSeconds).toFloat
+  }
+
+  def drag(deltaSeconds: Float): Vector2 = {
+    val overspeed = velocity.magnitude - maxSpeed
+    if (overspeed <= 0) {
+      return Vector2(0f, 0f)
+    }
+
+    -velocity.normalize * overspeed *
+      pow(Cell.ExcessVelocityReductionPerSec, deltaSeconds).toFloat
   }
 
   /**
