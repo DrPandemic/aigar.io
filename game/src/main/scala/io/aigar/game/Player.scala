@@ -130,8 +130,6 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer
     * The player is active when there is an active cell.
     */
   def isActive(): Boolean = {
-    cells.map{ _.aiState.isActive }.fold(false) { (z, i) =>
-      z || i
-    }
+    cells.exists(_.aiState.isActive)
   }
 }

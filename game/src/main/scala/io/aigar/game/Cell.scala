@@ -48,7 +48,7 @@ object Cell {
 class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
   private var _velocity = new Vector2(0f, 0f)
   var target = position
-  var aiState: AIState = defineAiState //new NullState(this)
+  var aiState: AIState = defineAiState
   _mass = Cell.MinMass
   val scoreModification = 0
 
