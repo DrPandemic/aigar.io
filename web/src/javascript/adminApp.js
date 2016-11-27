@@ -4,7 +4,7 @@ const seedButton = document.getElementById("seedButton");
 seedButton.onclick = () => {
   sendAdminRequest("player", "post", {seed: true})
     .then(() => alert("The DB was seeded"))
-    .catch(() => window.location.href = "/web/adminLogin.html");
+    .catch(e => alert(e));
 };
 
 const resetButton = document.getElementById("reset-button");
