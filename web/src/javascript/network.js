@@ -36,14 +36,13 @@ export function sendAdminRequest(url, method, data = {}) {
       "Content-Type": "application/json",
     }),
     body: JSON.stringify(data),
+  }).then(response => {
+    if (response.status === 403) 
+      window.location.href = "/web/adminLogin.html";
+    return response;
   }).then(response => response.json())
     .then(response => {
-      if(response.data !== "ok"){
-        if(response.error === "forbidden")
-          window.location.href = "/web/adminLogin.html";
-        throw "The server didn't return a success";
-      }
-      else
-        return response.data;
+      if (!response.data) throw "The server didn't return a success";
+      else response.data;
     });
 }
