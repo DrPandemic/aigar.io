@@ -369,8 +369,8 @@ class CellSpec extends FlatSpec with Matchers {
   "Burst" should "give a velocity boost on update" in {
     val grid = new Grid(1000, 1000)
     val player = new Player(0, Vector2(0f, 0f))
-    val bursting = new Cell(1, player, Vector2(0f, 100f))
-    val normal = new Cell(2, player, Vector2(0f, 0f))
+    val bursting = new Cell(1, player, Vector2(1f, 100f))
+    val normal = new Cell(2, player, Vector2(1f, 1f))
     player.cells = List(bursting, normal)
     bursting.mass += 10 // give enough mass to afford a burst
     normal.mass += 10 // share the same mass to be comparable
