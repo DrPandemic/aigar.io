@@ -37,8 +37,10 @@ export function sendAdminRequest(url, method, data = {}) {
     }),
     body: JSON.stringify(data),
   }).then(response => {
-    if (response.status === 403) 
+    if (response.status === 403) {
       window.location.href = "/web/adminLogin.html";
+      throw "Access denied";
+    }
     return response;
   }).then(response => response.json())
     .then(response => {

@@ -9,7 +9,7 @@ import io.aigar.controller.response.{
   SeedPlayersQuery,
   CreatePlayerQuery,
   CreatePlayerResponse,
-  PlayerSecret,
+  PlayerResult,
   SuccessResponse
 }
 import io.aigar.model.PlayerModel
@@ -47,12 +47,12 @@ class AdminController(password: String, game: GameThread, playerRepository: Play
     val result = parse(request.body)
     Try(result.extract[SeedPlayersQuery]).orElse(Try(result.extract[CreatePlayerQuery])) match {
       case Success(query: SeedPlayersQuery) => {
-        if(query.seed) seed.seedPlayers(playerRepository)
+        if (query.seed) seed.seedPlayers(playerRepository)
         SuccessResponse("ok")
       }
       case Success(query: CreatePlayerQuery) => {
         val player = playerRepository.createPlayer(PlayerModel(None, createRandomSecret, query.player_name, 0))
-        CreatePlayerResponse(PlayerSecret(player.playerSecret))
+        CreatePlayerResponse(PlayerResult(player.playerSecret, player.id.get))
       }
       case _ => halt(422)
     }
@@ -79,7 +79,7 @@ class AdminController(password: String, game: GameThread, playerRepository: Play
   put("/competition") {
     try {
       val query = parse(request.body).extract[RestartThreadQuery]
-      if(query.running) {
+      if (query.running) {
         val command = RestartThreadCommand(fetchPlayerIDs)
         game.adminCommandQueue.put(command)
       }

@@ -107,15 +107,18 @@ class AdminControllerSpec extends MutableScalatraSpec
       }
     }
 
-    "on success, return the new player secret" in {
+    "on success, return the new player information" in {
       postJson("player", defaultActionJson ~ ("player_name" -> "foo")) {
-        val secret = playerRepository.getPlayers.find(_.playerName == "foo").get.playerSecret
+        val player = playerRepository.getPlayers.find(_.playerName == "foo").get
+        val secret = player.playerSecret
+        val id = player.id.get
         status must_== 200
 
         parse(body).extract[CreatePlayerResponse] must not(throwAn[MappingException])
 
         val parsedResponse = parse(body).extract[CreatePlayerResponse]
         parsedResponse.data.player_secret must_== secret
+        parsedResponse.data.player_id must_== id
       }
     }
   }

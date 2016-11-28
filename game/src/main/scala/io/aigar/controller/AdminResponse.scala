@@ -18,11 +18,12 @@ case class CreatePlayerQuery(
   administrator_password: String,
   player_name: String
 )
-case class PlayerSecret(
-  player_secret: String
+case class PlayerResult(
+  player_secret: String,
+  player_id: Int
 )
 case class CreatePlayerResponse(
-  data: PlayerSecret
+  data: PlayerResult
 )
 
 case class RestartThreadQuery(
