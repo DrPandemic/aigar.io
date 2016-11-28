@@ -73,6 +73,8 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
   _mass = Cell.MinMass
   val scoreModification = 0
 
+  var burstActive = false
+
   /**
    * The maximum speed (length of the velocity) for the cell, in units per
    * second.
@@ -99,6 +101,7 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
     keepInGrid(grid)
 
     velocity += movement(deltaSeconds)
+    if (burstActive) applyBurst(deltaSeconds)
     velocity += drag(deltaSeconds)
   }
 
@@ -153,7 +156,12 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
     if (mass < Cell.MinMass + Cell.BurstMassCost) return
 
     mass -= Cell.BurstMassCost
+    burstActive = true
+  }
+
+  def applyBurst(deltaSeconds: Float): Unit = {
     velocity += movement(Cell.BurstSecondsOfMovement)
+    burstActive = false
   }
 
   def split(): List[Cell] = {

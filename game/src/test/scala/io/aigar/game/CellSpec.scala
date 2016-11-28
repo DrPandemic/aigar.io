@@ -52,7 +52,7 @@ class CellSpec extends FlatSpec with Matchers {
 
     cell.drag(1f).magnitude should be > 0f
   }
-  
+
   it should "apply a drag force with a huge velocity on update" in {
     val player = new Player(0, Vector2(0f, 0f))
     val cell = player.cells.head
