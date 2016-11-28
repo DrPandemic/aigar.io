@@ -47,6 +47,20 @@ object Cell {
    */
   final val ExcessVelocityReductionPerSec = 0.25f
 
+  /**
+   * How much mass is required to gain a small burst of movement.
+   *
+   * IMPORTANT keep this value in sync with the client documentation
+   */
+  final val BurstMassCost = 1f
+
+  /**
+   * Bursting works by adding a certain amount of times the force that is
+   * normally applied when moving. This value controls how many "seconds" of
+   * movement force are added to the velocity on burst.
+   */
+  final val BurstSecondsOfMovement = 5f
+
   def radius(mass: Float): Float = {
     4f + sqrt(mass).toFloat * 3f
   }
@@ -84,7 +98,7 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
     position += velocity * deltaSeconds
     keepInGrid(grid)
 
-    velocity += steering.truncate(maxSpeed) * deltaSeconds
+    velocity += movement(deltaSeconds)
     velocity += drag(deltaSeconds)
   }
 
@@ -122,12 +136,24 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
     targetVelocity - velocity
   }
 
+  def movement(deltaSeconds: Float): Vector2 = {
+    steering.truncate(maxSpeed) * deltaSeconds
+  }
+
   def performAction(action: Action): Option[ScoreModification] = {
     target = action.target.toVector
 
     if (action.split) split
+    if (action.burst) burst
     val modifications = tradeMass(action.trade)
     modifications
+  }
+
+  def burst(): Unit = {
+    if (mass < Cell.MinMass + Cell.BurstMassCost) return
+
+    mass -= Cell.BurstMassCost
+    velocity += movement(Cell.BurstSecondsOfMovement)
   }
 
   def split(): List[Cell] = {
