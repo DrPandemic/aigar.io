@@ -9,7 +9,7 @@ import io.aigar.model.PlayerRepository
 import io.aigar.score.ScoreThread
 
 object ScalatraBootstrap {
-  final val passwordLength = 28
+  final val PasswordLength = 28
 }
 
 class ScalatraBootstrap extends LifeCycle
@@ -18,7 +18,7 @@ class ScalatraBootstrap extends LifeCycle
   var playerRepository: PlayerRepository = null
   var game: GameThread = null
   var scoreThread: ScoreThread = null
-  final val adminPassword = (new scala.util.Random(new java.security.SecureRandom())).alphanumeric.take(ScalatraBootstrap.passwordLength).mkString
+  final val adminPassword = (new scala.util.Random(new java.security.SecureRandom())).alphanumeric.take(ScalatraBootstrap.PasswordLength).mkString
   final val path = "/api/1"
 
   override def init(context: ServletContext): Unit = {
