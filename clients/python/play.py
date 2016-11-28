@@ -5,7 +5,7 @@ import sys
 from game.game_loop import update_game
 from game.api import API
 from game.models import Game
-from ai import step
+from ai import AI
 
 
 UpdatesPerSecond = 3  # how many times we should contact the server per second
@@ -16,9 +16,10 @@ def main():
 
     player_id, player_secret = read_config()
     api = API(player_id, player_secret)
+    ai = AI()
 
     while True:
-        update_game(api, game_id, step)
+        update_game(api, game_id, ai.step)
 
         sleep(1 / UpdatesPerSecond)
 

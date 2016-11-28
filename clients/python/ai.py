@@ -3,23 +3,27 @@ This is the file that should be used to code your AI.
 """
 
 
-def step(game):
-    """
-    Given the state of the 'game', decide what your cells ('game.me.cells')
-    should do.
+class AI:
+    def __init__(self):
+        pass
 
-    :param game: Game object
-    """
+    def step(self, game):
+        """
+        Given the state of the 'game', decide what your cells ('game.me.cells')
+        should do.
 
-    resources = (game.resources.gold + game.resources.silver +
-                 game.resources.regular)
+        :param game: Game object
+        """
 
-    for cell in game.me.cells:
-        def distance_to_me(position):
-            return cell.position.distance_to(position)
+        resources = (game.resources.gold + game.resources.silver +
+                     game.resources.regular)
 
-        if resources:
-            closest = sorted(resources, key=distance_to_me)[0]
-            cell.move(closest)
+        for cell in game.me.cells:
+            def distance_to_me(position):
+                return cell.position.distance_to(position)
 
-        cell.split()
+            if resources:
+                closest = sorted(resources, key=distance_to_me)[0]
+                cell.move(closest)
+
+            cell.split()
