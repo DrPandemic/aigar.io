@@ -33,14 +33,37 @@ class CellSpec extends FlatSpec with Matchers {
     cell.velocity.magnitude should be > 0f
   }
 
-  it should "have a maximal velocity" in {
+  it should "not have a drag force with a small velocity" in {
     val player = new Player(0, Vector2(0f, 0f))
     val cell = player.cells.head
 
-    val hugeVelocity = new Vector2(1000f, 1000f)
+    val smallVelocity = new Vector2(1f, 0f)
+    cell.velocity = smallVelocity
+
+    cell.drag(1f).magnitude should equal(0f)
+  }
+
+  it should "have a drag force with a huge velocity" in {
+    val player = new Player(0, Vector2(0f, 0f))
+    val cell = player.cells.head
+
+    val hugeVelocity = new Vector2(100000f, 0f)
     cell.velocity = hugeVelocity
 
-    cell.velocity.magnitude should be < hugeVelocity.magnitude
+    cell.drag(1f).magnitude should be > 0f
+  }
+  
+  it should "apply a drag force with a huge velocity on update" in {
+    val player = new Player(0, Vector2(0f, 0f))
+    val cell = player.cells.head
+    val grid = new Grid(100000, 100000)
+
+    val hugeVelocity = new Vector2(1000f, 0f)
+    cell.velocity = hugeVelocity
+
+    cell.update(1f, grid)
+
+    cell.velocity.magnitude should be <(hugeVelocity.magnitude)
   }
 
   it should "move faster when it has a small mass" in {
