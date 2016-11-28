@@ -388,7 +388,7 @@ class CellSpec extends FlatSpec with Matchers {
 
   it should "not burst when the cell is at its minimum mass" in {
     val player = new Player(0, Vector2(0f, 0f))
-    val cell = player.cell.head
+    val cell = player.cells.head
     cell.mass = Cell.MinMass
 
     cell.burstActive should equal(false)
