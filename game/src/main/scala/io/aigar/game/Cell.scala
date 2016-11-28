@@ -16,6 +16,11 @@ object Cell {
   final val MinMass = 20f
 
   /**
+    * The cell can't go above this limit.
+    */
+  final val MaxMass = 10000f
+
+  /**
    * Ratio of mass lost per second.
    */
   final val MassDecayPerSecond = 0.005f
@@ -69,7 +74,7 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
   }
 
   override def mass_=(m: Float): Unit = {
-    _mass = max(m, Cell.MinMass)
+    _mass = min(max(m, Cell.MinMass), Cell.MaxMass)
   }
 
   def radius: Float = {
