@@ -93,18 +93,31 @@ class GameControllerSpec extends MutableScalatraSpec
   }
 
   "POST / on GameController" should {
-    "return an URL to watch the game" in {
-      post("/") {
+    "returns the new game's id" in {
+      post("/", ("player_secret" -> "EdgQWhJ!v&")) {
         status must_== 200
 
         val result = parse(body).extract[GameCreationResponse].data
-        result.url must startWith("http://")
+        result.id must_!= Game.RankedGameId
+        result.id must_== game.games.last.id
+      }
+    }
+
+    "deletes the previous game by this user" in {
+      post("/", ("player_secret" -> "EdgQWhJ!v&")) {
+        failure
+      }
+    }
+
+    "returns a 403 if the secret doesn't match" in {
+      post("/", ("player_secret" -> "")) {
+        status must_== 403
       }
     }
   }
 
   "POST /:id/action on GameController" should {
-    "return a success" in {
+    "returns a success" in {
       postJson("/1/action", defaultActionJson) {
         status must_== 200
 
@@ -113,7 +126,7 @@ class GameControllerSpec extends MutableScalatraSpec
       }
     }
 
-    "put the action in the game queue" in {
+    "puts the action in the game queue" in {
       game.actionQueue.isEmpty() must be_==(true)
       postJson("/1/action", defaultActionJson) {
         status must_== 200

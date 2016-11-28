@@ -11,12 +11,18 @@ import io.aigar.controller.response.Action
  */
 object Game {
   final val RankedGameId = 0
+  final val RankedOwnerId = -1
   final val DefaultDuration = 60 * 20
 }
 
-class Game(val id: Int, playerIDs: List[Int], val duration: Int = Game.DefaultDuration) extends LazyLogging {
+class Game(val id: Int,
+           playerIds: List[Int],
+           val duration: Int = Game.DefaultDuration,
+           val ownerId: Int = Game.RankedOwnerId)
+    extends LazyLogging {
   logger.info(s"Launching game with ID $id.")
-  val grid = new Grid(playerIDs.length * Grid.WidthPerPlayer, playerIDs.length * Grid.HeightPerPlayer)
+
+  val grid = new Grid(playerIds.length * Grid.WidthPerPlayer, playerIds.length * Grid.HeightPerPlayer)
   val players = createPlayers
   val viruses = new Viruses(grid)
   val resources = new Resources(grid)
@@ -61,7 +67,7 @@ class Game(val id: Int, playerIDs: List[Int], val duration: Int = Game.DefaultDu
   }
 
   def createPlayers: List[Player] = {
-    playerIDs.map { new Player(_, spawnPosition) }
+    playerIds.map { new Player(_, spawnPosition) }
   }
 
   def spawnPosition: Vector2 = {

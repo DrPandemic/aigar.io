@@ -37,7 +37,7 @@ class GameController(game: GameThread, playerRepository: PlayerRepository)
   }
 
   post("/") {
-    GameCreationResponse(GameCreation(42, "http://somewherekindasafe.xyz"))
+    GameCreationResponse(GameCreation(42))
   }
 
   post("/:id/action") {
