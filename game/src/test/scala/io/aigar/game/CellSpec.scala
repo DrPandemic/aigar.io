@@ -99,6 +99,15 @@ class CellSpec extends FlatSpec with Matchers {
     cell.mass should equal(Cell.MinMass)
   }
 
+  it should "enforce a maximum mass" in {
+    val player = new Player(0, Vector2(0f, 0f))
+    val cell = player.cells.head
+
+    cell.mass = Cell.MaxMass + 1f
+
+    cell.mass should equal(Cell.MaxMass)
+  }
+
   it should "lose mass per update" in {
     val player = new Player(0, Vector2(0f, 0f))
     val cell = player.cells.head
