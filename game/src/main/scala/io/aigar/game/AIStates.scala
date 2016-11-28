@@ -10,47 +10,47 @@ trait AIState {
   /**
    * Determines what the next target of a cell should be.
    */
-  def update(deltaSeconds: Float, grid: Grid, cell: Cell): Vector2
+  def update(deltaSeconds: Float, grid: Grid): Vector2
   def onPlayerActivity: Unit
   def isActive: Boolean
 }
 
-abstract class WanderingState(player: Player) extends AIState {
+abstract class WanderingState(cell: Cell) extends AIState {
   def isActive = false
 
   def onPlayerActivity: Unit = {
-    player.aiState = new NullState(player)
+    cell.aiState = new NullState(cell)
   }
 }
 
-class SeekingState(player: Player) extends WanderingState(player) {
+class SeekingState(cell: Cell) extends WanderingState(cell) {
   var wanderingTimeLeft = WanderingState.NewTargetDelay
 
   /**
     * Picks a random target. Go in sleep mode once the previous one is reached.
     */
-  def update(deltaSeconds: Float, grid: Grid, cell: Cell): Vector2 = {
+  def update(deltaSeconds: Float, grid: Grid): Vector2 = {
     wanderingTimeLeft -= deltaSeconds
 
     if (cell.contains(cell.target) || wanderingTimeLeft <= 0f) {
-      player.aiState = new SleepingState(player)
+      cell.aiState = new SleepingState(cell)
     }
 
     cell.target
   }
 }
 
-class SleepingState(player: Player) extends WanderingState(player) {
+class SleepingState(cell: Cell) extends WanderingState(cell) {
   var sleepingTimeLeft = WanderingState.SleepingDelay
 
   /**
     * Picks a random target. Go in sleep mode once the previous one is reached.
     */
-  def update(deltaSeconds: Float, grid: Grid, cell: Cell): Vector2 = {
+  def update(deltaSeconds: Float, grid: Grid): Vector2 = {
     sleepingTimeLeft -= deltaSeconds
 
     if (sleepingTimeLeft <= 0f) {
-      player.aiState = new SeekingState(player)
+      cell.aiState = new SeekingState(cell)
       grid.randomPosition
     } else {
       cell.position
@@ -69,15 +69,15 @@ object WanderingState {
  *
  * Use this when an entity is not controlled by the server.
  */
-class NullState(player: Player) extends AIState {
+class NullState(cell: Cell) extends AIState {
   var inactivityTimeLeft = NullState.MaxInactivitySeconds
 
   def isActive = true
 
-  def update(deltaSeconds: Float, grid: Grid, cell: Cell): Vector2 = {
+  def update(deltaSeconds: Float, grid: Grid): Vector2 = {
     inactivityTimeLeft -= deltaSeconds
     if (inactivityTimeLeft < 0f) {
-      player.aiState = new SleepingState(player)
+      cell.aiState = new SleepingState(cell)
     }
 
     cell.target
@@ -99,7 +99,7 @@ class TestState extends AIState {
   var updated = false
   var active = false
 
-  def update(deltaSeconds: Float, grid: Grid, cell: Cell): Vector2 = {
+  def update(deltaSeconds: Float, grid: Grid): Vector2 = {
     updated = true
     new Vector2(0f, 0f)
   }
@@ -108,5 +108,5 @@ class TestState extends AIState {
     active = true
   }
 
-  def isActive = false
+  def isActive = active
 }

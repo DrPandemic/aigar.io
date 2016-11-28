@@ -48,6 +48,7 @@ object Cell {
 class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
   private var _velocity = new Vector2(0f, 0f)
   var target = position
+  var aiState: AIState = defineAiState
   _mass = Cell.MinMass
   val scoreModification = 0
 
@@ -76,7 +77,7 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
   def update(deltaSeconds: Float, grid: Grid): Unit = {
     mass = decayedMass(deltaSeconds)
 
-    target = player.aiState.update(deltaSeconds, grid, this)
+    target = aiState.update(deltaSeconds, grid)
 
     position += velocity * deltaSeconds
     keepInGrid(grid)
@@ -143,10 +144,15 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
     None
   }
 
+  def defineAiState: AIState = {
+    if (player.isActive()) new NullState(this)
+    else new SleepingState(this)
+  }
+
   def state: serializable.Cell = {
     serializable.Cell(id,
                       round(mass),
-                      round(radius).toInt,
+                      round(radius),
                       position.state,
                       target.state)
   }
