@@ -1,5 +1,6 @@
 package io.aigar.game
 
+import com.github.jpbetz.subspace.Vector2
 import com.typesafe.scalalogging.LazyLogging
 import io.aigar.score.ScoreModification
 import io.aigar.controller.response.Action
@@ -43,10 +44,10 @@ class Game(val id: Int, playerIDs: List[Int], val duration: Int = Game.DefaultDu
   }
 
   def time: Float = {
-    duration - GameThread.time - startTime
+    duration - (GameThread.time - startTime)
   }
 
-  def state = {
+  def state: serializable.GameState = {
     //TODO really implement and update spec to add tests
     serializable.GameState(
         id,
@@ -59,11 +60,11 @@ class Game(val id: Int, playerIDs: List[Int], val duration: Int = Game.DefaultDu
       )
   }
 
-  def createPlayers = {
+  def createPlayers: List[Player] = {
     playerIDs.map { new Player(_, spawnPosition) }
   }
 
-  def spawnPosition = {
+  def spawnPosition: Vector2 = {
     grid.randomPosition
   }
 }
