@@ -88,7 +88,7 @@ class NullState(cell: Cell) extends AIState {
   }
 }
 object NullState {
-  final val MaxInactivitySeconds = 2f
+  final val MaxInactivitySeconds = 5f
 }
 
 
