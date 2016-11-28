@@ -1,9 +1,16 @@
 package io.aigar.game
 
+import scala.util.Random
+import scala.math.{Pi, cos, sin}
 import com.github.jpbetz.subspace._
 import io.aigar.game.serializable.Position
 
 object Vector2Utils {
+  def randomUnitVector: Vector2 = {
+    val angle = Random.nextFloat * 2f * Pi.toFloat
+    Vector2(cos(angle).toFloat, sin(angle).toFloat)
+  }
+
   implicit class Vector2Addons(val vector: Vector2) {
     def state = {
       serializable.Position(vector.x, vector.y)

@@ -1,3 +1,4 @@
+import io.aigar.game.Vector2Utils
 import io.aigar.game.Vector2Utils._
 import io.aigar.game.Position2Utils._
 import io.aigar.game.serializable.Position
@@ -41,6 +42,12 @@ class Vector2UtilsSpec extends FlatSpec with Matchers {
     val vector = new Vector2(100f, 98f)
 
     vector.safeNormalize should equal(vector.normalize)
+  }
+
+  it should "return a random unit vector with a length of 1" in {
+    val vector = Vector2Utils.randomUnitVector
+
+    vector.magnitude should equal(1f)
   }
 
   "Position" should "generate a vector with the right coordinates" in {
