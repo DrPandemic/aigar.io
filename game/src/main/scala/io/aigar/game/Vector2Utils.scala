@@ -23,6 +23,13 @@ object Vector2Utils {
     def safeNormalize: Vector2 = {
       if (vector.magnitude > 0f) vector.normalize else vector
     }
+
+    /**
+     * Perpendicular (clockwise) version of the vector.
+     */
+    def perpendicular: Vector2 = {
+      return Vector2(-vector.y, vector.x)
+    }
   }
 }
 
