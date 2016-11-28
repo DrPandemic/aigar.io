@@ -357,13 +357,33 @@ class CellSpec extends FlatSpec with Matchers {
     cells should contain(cell)
   }
 
-    it should "returns a list with only itself when the split didn't work" in {
+  it should "returns a list with only itself when the split didn't work" in {
     val player = new Player(0, Vector2(0f, 0f))
     player.cells = List.fill(Player.MaxCells)(player.spawnCell(Vector2(0f, 0f)))
 
     val cells = player.cells.head.split
 
     cells should contain only(player.cells.head)
+  }
+
+  "Burst" should "give a velocity boost on update" in {
+    val grid = new Grid(1000, 1000)
+    val player = new Player(0, Vector2(0f, 0f))
+    val bursting = new Cell(1, player, Vector2(0f, 100f))
+    val normal = new Cell(2, player, Vector2(0f, 0f))
+    player.cells = List(bursting, normal)
+    bursting.mass += 10 // give enough mass to afford a burst
+    normal.mass += 10 // share the same mass to be comparable
+    bursting.target = Vector2(100f, 100f)
+    normal.target = Vector2(100f, 0f)
+
+    player.update(1f, grid, List())
+    bursting.velocity.magnitude should equal(normal.velocity.magnitude)
+
+    bursting.burst()
+    player.update(1f, grid, List())
+
+    bursting.velocity.magnitude should be > normal.velocity.magnitude
   }
 
   "performAction" should "change target to match the one from the action" in {
