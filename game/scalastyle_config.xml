@@ -92,13 +92,19 @@
  <!-- To ensure a single space after those tokens. (eg. if (true)return // bad syntax) -->
  <check enabled="true" class="org.scalastyle.file.RegexChecker" level="warning">
    <parameters>
-     <parameter name="regex">[\s|}](if|else|do|while|for|match|try|catch|finally|=>|=)\S</parameter>
+     <parameter name="regex">\b(if|else|do|while|for|match|try|catch|finally|=>)\b\S</parameter>
    </parameters>
    <customMessage>No space after token</customMessage>
  </check>
+ <check enabled="true" class="org.scalastyle.file.RegexChecker" level="warning">
+   <parameters>
+     <parameter name="regex">=[^\s>=]</parameter>
+   </parameters>
+   <customMessage>No space after =</customMessage>
+ </check>
  <check level="warning" class="org.scalastyle.scalariform.EnsureSingleSpaceBeforeTokenChecker" enabled="true">
    <parameters>
-     <parameter name="tokens">ARROW, EQUALS, ELSE, TRY, CATCH, FINALLY, LARROW, RARROW</parameter>
+     <parameter name="tokens">ARROW, EQUALS, IF, ELSE, TRY, CATCH, FINALLY, LARROW, RARROW</parameter>
    </parameters>
  </check>
 
