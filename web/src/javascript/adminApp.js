@@ -25,6 +25,7 @@ document.getElementById("new-player-button").onclick = () => {
   sendAdminRequest("player", "post", {player_name: playerName})
     .then(response => {
       document.getElementById("new-player-secret").value = response.player_secret;
+      document.getElementById("new-player-id").value = response.player_id;
       alert("A new player was created");
     })
     .catch(e => alert(e));
@@ -32,5 +33,9 @@ document.getElementById("new-player-button").onclick = () => {
 
 document.getElementById("new-player-secret-button").onclick = () => {
   document.getElementById("new-player-secret").select();
+  document.execCommand("copy");
+};
+document.getElementById("new-player-id-button").onclick = () => {
+  document.getElementById("new-player-id").select();
   document.execCommand("copy");
 };
