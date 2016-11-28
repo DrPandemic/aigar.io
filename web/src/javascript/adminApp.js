@@ -16,7 +16,7 @@ resetButton.onclick = () => {
 
 const durationButton = document.getElementById("duration-button");
 durationButton.onclick = () => {
-  const duration = parseInt(document.getElementById("duration-input").value);
+  const duration = parseInt(document.getElementById("duration-input").value) * 60;
   sendAdminRequest("ranked", "put", {duration})
     .then(() => alert("The duration was set"))
     .catch(e => alert(e));
