@@ -11,14 +11,12 @@ import io.aigar.controller.response.Action
  */
 object Game {
   final val RankedGameId = 0
-  final val RankedOwnerId = -1
   final val DefaultDuration = 60 * 20
 }
 
 class Game(val id: Int,
            playerIds: List[Int],
-           val duration: Int = Game.DefaultDuration,
-           val ownerId: Int = Game.RankedOwnerId)
+           val duration: Int = Game.DefaultDuration)
     extends LazyLogging {
   logger.info(s"Launching game with ID $id.")
 
