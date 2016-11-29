@@ -14,8 +14,8 @@ UpdatesPerSecond = 3  # how many times we should contact the server per second
 def main():
     game_id = Game.RankedGameId
 
-    player_id, player_secret = read_config()
-    api = API(player_id, player_secret)
+    player_id, player_secret, api_url = read_config()
+    api = API(player_id, player_secret, api_url)
     ai = AI()
 
     while True:
@@ -34,12 +34,13 @@ def read_config():
             data = json.load(f)
             id_ = data["player_id"]
             secret = data["player_secret"]
+            api_url = data["api_url"]
 
-            if id_ == DefaultConfigValue or secret == DefaultConfigValue:
+            if id_ == DefaultConfigValue or secret == DefaultConfigValue or api_url == DefaultConfigValue:
                 print("WARNING: Did you forget to change your player "
-                      " id/secret in '%s'?" % ConfigFile, file=sys.stderr)
+                      " id/secret/api_url in '%s'?" % ConfigFile, file=sys.stderr)
 
-            return int(id_), secret
+            return int(id_), secret, api_url
 
     except FileNotFoundError:
         print("ERROR: Could not find '%s'. "

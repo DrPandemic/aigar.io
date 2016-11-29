@@ -1,4 +1,5 @@
 {
     "player_id": "REPLACEME",
-    "player_secret": "REPLACEME"
+    "player_secret": "REPLACEME",
+    "api_url": "REPLACEME"
 }

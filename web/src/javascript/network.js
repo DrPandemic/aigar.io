@@ -1,8 +1,9 @@
 import {LeaderboardEntry} from "./leaderboardEntry";
-
-const stateApiURL = "http://localhost:1337/api/1/game/";
-const adminApiURL = "http://localhost:1337/api/1/admin/";
-const leaderboardApiURL = "http://localhost:1337/api/1/leaderboard/";
+import {
+  adminApiURL,
+  leaderboardApiURL,
+  stateApiURL,
+} from "./constants";
 
 export function fetchState(gameId) {
   return fetch(`${stateApiURL}${gameId}`, {method: "get"})

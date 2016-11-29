@@ -4,11 +4,11 @@ from .models import Game
 
 
 class API:
-    URL = "http://localhost:1337/api/1/game/"
-
-    def __init__(self, player_id, player_secret):
+    def __init__(self, player_id, player_secret, api_url):
         self.player_id = player_id
         self.player_secret = player_secret
+        self.api_url = api_url + "/api/1/game/"
+
 
     def fetch_game_state(self, game_id):
         """
@@ -17,7 +17,7 @@ class API:
         :param game_id: ID of a game
         :returns:       Game object
         """
-        response = get("%s%d" % (API.URL, game_id))
+        response = get("%s%d" % (self.api_url, game_id))
         data = self._extract_data(response)
         return Game.parse(data, self.player_id)
 
@@ -33,7 +33,7 @@ class API:
                     } for actions in cell_actions]
                 }
 
-        post("%s%d/action" % (API.URL, game_id), json=data)
+        post("%s%d/action" % (self.api_url, game_id), json=data)
 
     def _extract_data(self, response):
         """
