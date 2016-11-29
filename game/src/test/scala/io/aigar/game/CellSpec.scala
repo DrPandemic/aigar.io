@@ -335,6 +335,17 @@ class CellSpec extends FlatSpec with Matchers {
     player.cells(1).mass should equal(50f)
   }
 
+  it should "launch the 2 cells in distinct directions" in {
+    val player = new Player(0, Vector2(0f, 0f))
+    val cell = player.cells.head
+    cell.mass = 100f
+
+    val cells = cell.split
+
+    player.cells should have size 2
+    player.cells(0).velocity.distanceTo(player.cells(1).velocity) should be > 0f
+  }
+
   it should "not split when it does not have enough mass" in {
     val player = new Player(0, Vector2(0f, 0f))
     val cell = player.cells.head
