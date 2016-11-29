@@ -1,6 +1,7 @@
 package io.aigar.controller.response
 
-import io.aigar.game.serializable.{ GameState, Position }
+import io.aigar.controller.response.AdminCommand
+import io.aigar.game.serializable.{GameState, Position}
 
 case class ErrorResponse(error: String)
 
@@ -8,6 +9,9 @@ case class GameStateResponse(data: GameState)
 
 case class GameCreation(id: Int)
 case class GameCreationResponse(data: GameCreation)
+case class GameCreationCommand(
+  ownerId: Int
+) extends AdminCommand
 
 case class SuccessResponse(data: String)
 

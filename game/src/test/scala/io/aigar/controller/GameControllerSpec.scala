@@ -93,24 +93,27 @@ class GameControllerSpec extends MutableScalatraSpec
   }
 
   "POST / on GameController" should {
-    "returns the new game's id" in {
-      post("/", ("player_secret" -> "EdgQWhJ!v&")) {
+    "returns a success" in {
+      postJson("/", ("player_secret" -> "EdgQWhJ!v&")) {
         status must_== 200
 
-        val result = parse(body).extract[GameCreationResponse].data
-        result.id must_!= Game.RankedGameId
-        result.id must_== game.games.last.id
+        parse(body).extract[GameCreationResponse] must not(throwAn[MappingException])
       }
     }
 
-    "deletes the previous game by this user" in {
-      post("/", ("player_secret" -> "EdgQWhJ!v&")) {
-        failure
+    "puts the action in the admin queue" in {
+      game.adminCommandQueue.isEmpty() must be_==(true)
+      postJson("/", ("player_secret" -> "EdgQWhJ!v&")) {
+        status must_== 200
+
+        game.adminCommandQueue.isEmpty() must be_==(false)
+        val action = game.adminCommandQueue.take().asInstanceOf[GameCreationCommand]
+        action.ownerId must_== 1
       }
     }
 
-    "returns a 403 if the secret doesn't match" in {
-      post("/", ("player_secret" -> "")) {
+    "403 when player's secret doesn't match" in {
+      post("/", ("player_secret" -> "nope")) {
         status must_== 403
       }
     }
