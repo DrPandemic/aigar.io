@@ -10,7 +10,7 @@ import io.aigar.controller.response.Action
  * (e.g. the ranked game or a private test game).
  */
 object Game {
-  final val RankedGameId = 0
+  final val RankedGameId = -1
   final val DefaultDuration = 60 * 20
 }
 
