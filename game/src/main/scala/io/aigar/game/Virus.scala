@@ -16,7 +16,7 @@ object Virus {
   /**
     * Impact on the mass of the cell eating the Virus
     */
-  final val ImpactOnMass = 0.75f
+  final val ImpactOnMass = 0.60f
 }
 
 class Virus(var position: Vector2 = new Vector2(0f, 0f)) extends Entity {

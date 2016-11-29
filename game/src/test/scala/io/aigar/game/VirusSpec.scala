@@ -74,8 +74,7 @@ class VirusSpec extends FlatSpec with Matchers {
     val cell = new Cell(1, player, new Vector2(5, 5))
 
     viruses.viruses = List(virus)
-    // We make sure the cell is big enough to eat the virus
-    cell.mass = Virus.Mass * Cell.MassDominanceRatio + 1
+    cell.mass = 1000f
     player.cells = List(cell)
 
     viruses.update(new Grid(0, 0), List(player))

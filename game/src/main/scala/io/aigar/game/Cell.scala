@@ -41,7 +41,7 @@ object Cell {
 
   final val MinMaximumSpeed = 25f
   final val MaxMaximumSpeed = 50f
-  final val SpeedLimitReductionPerMassUnit = 0.02f
+  final val SpeedLimitReductionPerMassUnit = 0.05f
 
   final val RespawnRetryAttempts = 15
 
