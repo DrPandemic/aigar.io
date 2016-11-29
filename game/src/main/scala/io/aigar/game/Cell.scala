@@ -57,7 +57,7 @@ object Cell {
   }
 }
 
-class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
+class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
   var velocity = new Vector2(0f, 0f)
   var target = position
   var aiState: AIState = defineAiState
@@ -163,7 +163,7 @@ class Cell(val id: Int, player: Player, var position: Vector2 = new Vector2(0f, 
   }
 
   def defineAiState: AIState = {
-    if (player.isActive()) new NullState(this)
+    if (player.active) new NullState(this)
     else new SleepingState(this)
   }
 

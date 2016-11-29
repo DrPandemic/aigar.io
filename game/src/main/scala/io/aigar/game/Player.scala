@@ -17,6 +17,20 @@ object Player {
 class Player(val id: Int, startPosition: Vector2) extends EntityContainer
                                                   with LazyLogging {
   private var currentCellId: Int = 0
+  private var _active = true
+
+  def active: Boolean = {
+    _active
+  }
+  def active_=(value: Boolean): Unit = {
+    if (value != _active) {
+      _active = value
+      for (cell <- cells) {
+        cell.aiState = cell.defineAiState
+      }
+    }
+  }
+
   var cells: List[Cell] = List()
   spawnCell(startPosition)
 
@@ -96,7 +110,7 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer
     serializable.Player(id,
                         id.toString,
                         mass,
-                        isActive,
+                        active,
                         cells.map(_.state)
     )
   }
@@ -122,14 +136,7 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer
    * command coming from the AI of a player).
    */
   def onExternalAction: Unit = {
-    if (!isActive) logger.info(s"Player $id reconnected.")
+    if (!active) logger.info(s"Player $id reconnected.")
     cells.foreach { _.aiState.onPlayerActivity }
-  }
-
-  /**
-    * The player is active when there is an active cell.
-    */
-  def isActive(): Boolean = {
-    cells.exists(_.aiState.isActive)
   }
 }

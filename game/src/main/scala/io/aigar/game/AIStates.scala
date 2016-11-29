@@ -11,15 +11,12 @@ trait AIState {
    * Determines what the next target of a cell should be.
    */
   def update(deltaSeconds: Float, grid: Grid): Vector2
-  def onPlayerActivity: Unit
-  def isActive: Boolean
+  def onPlayerActivity(): Unit
 }
 
 abstract class WanderingState(cell: Cell) extends AIState {
-  def isActive = false
-
   def onPlayerActivity: Unit = {
-    cell.aiState = new NullState(cell)
+    cell.player.active = true
   }
 }
 
@@ -72,12 +69,10 @@ object WanderingState {
 class NullState(cell: Cell) extends AIState {
   var inactivityTimeLeft = NullState.MaxInactivitySeconds
 
-  def isActive = true
-
   def update(deltaSeconds: Float, grid: Grid): Vector2 = {
     inactivityTimeLeft -= deltaSeconds
     if (inactivityTimeLeft < 0f) {
-      cell.aiState = new SleepingState(cell)
+      cell.player.active = false
     }
 
     cell.target
@@ -107,6 +102,4 @@ class TestState extends AIState {
   def onPlayerActivity: Unit = {
     active = true
   }
-
-  def isActive = active
 }
