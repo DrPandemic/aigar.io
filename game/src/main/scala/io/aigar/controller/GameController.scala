@@ -5,7 +5,7 @@ import io.aigar.model.PlayerRepository
 import io.aigar.controller.response._
 import org.json4s.MappingException
 import org.scalatra.json._
-import scala.util.Try
+import scala.util.{Success, Try }
 
 class GameController(game: GameThread, playerRepository: PlayerRepository)
   extends AigarStack with JacksonJsonSupport {
@@ -37,7 +37,19 @@ class GameController(game: GameThread, playerRepository: PlayerRepository)
   }
 
   post("/") {
-    GameCreationResponse(GameCreation(42, "http://somewherekindasafe.xyz"))
+    Try(parse(request.body).extract[GameCreationQuery]) match {
+      case Success(query: GameCreationQuery) => {
+        playerRepository.readPlayerBySecret(query.player_secret) match {
+          case Some(player) => {
+            val command = GameCreationCommand(player.id.get)
+            game.adminCommandQueue.put(command)
+            GameCreationResponse(GameCreation(player.id.get))
+          }
+          case None => halt(403)
+        }
+      }
+      case _ => halt(422)
+    }
   }
 
   post("/:id/action") {

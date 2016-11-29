@@ -123,12 +123,12 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
   it should "update cell's targets" in {
     val game = createStartedGameThread(List(1, 2))
 
-    game.actionQueue.put(ActionQueryWithId(0, 1, List(Action(0, false, false, 0, Position(0f, 10f)))))
-    game.actionQueue.put(ActionQueryWithId(0, 2, List(Action(0, false, false, 0, Position(20f, 0f)))))
+    game.actionQueue.put(ActionQueryWithId(Game.RankedGameId, 1, List(Action(0, false, false, 0, Position(0f, 10f)))))
+    game.actionQueue.put(ActionQueryWithId(Game.RankedGameId, 2, List(Action(0, false, false, 0, Position(20f, 0f)))))
     game.transferActions
     game.updateGames
 
-    val state = game.gameState(0).get
+    val state = game.gameState(Game.RankedGameId).get
     val p1 = state.players.find(_.id == 1).get
     val p2 = state.players.find(_.id == 2).get
 

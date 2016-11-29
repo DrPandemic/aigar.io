@@ -29,6 +29,7 @@ class GameControllerSpec extends MutableScalatraSpec
 
   def cleanState = {
     game.actionQueue.clear()
+    game.adminCommandQueue.clear()
     playerRepository.dropSchema
     playerRepository.createSchema
 
@@ -93,18 +94,36 @@ class GameControllerSpec extends MutableScalatraSpec
   }
 
   "POST / on GameController" should {
-    "return an URL to watch the game" in {
-      post("/") {
+    "returns a success" in {
+      postJson("/", ("player_secret" -> "EdgQWhJ!v&")) {
         status must_== 200
 
-        val result = parse(body).extract[GameCreationResponse].data
-        result.url must startWith("http://")
+        val response = parse(body).extract[GameCreationResponse]
+        // Which is the player's id
+        response.data.id must_== 1
+      }
+    }
+
+    "puts the action in the admin queue" in {
+      game.adminCommandQueue.isEmpty() must be_==(true)
+      postJson("/", ("player_secret" -> "EdgQWhJ!v&")) {
+        status must_== 200
+
+        game.adminCommandQueue.isEmpty() must be_==(false)
+        val action = game.adminCommandQueue.take().asInstanceOf[GameCreationCommand]
+        action.ownerId must_== 1
+      }
+    }
+
+    "403 when player's secret doesn't match" in {
+      postJson("/", ("player_secret" -> "nope")) {
+        status must_== 403
       }
     }
   }
 
   "POST /:id/action on GameController" should {
-    "return a success" in {
+    "returns a success" in {
       postJson("/1/action", defaultActionJson) {
         status must_== 200
 
@@ -113,7 +132,7 @@ class GameControllerSpec extends MutableScalatraSpec
       }
     }
 
-    "put the action in the game queue" in {
+    "puts the action in the game queue" in {
       game.actionQueue.isEmpty() must be_==(true)
       postJson("/1/action", defaultActionJson) {
         status must_== 200
