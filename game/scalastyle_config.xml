@@ -57,7 +57,7 @@
  <check level="warning" class="org.scalastyle.scalariform.MethodLengthChecker" enabled="true"></check>
  <check level="warning" class="org.scalastyle.scalariform.MethodNamesChecker" enabled="true">
   <parameters>
-   <parameter name="regex"><![CDATA[^[a-z][A-Za-z0-9]*$]]></parameter>
+   <parameter name="regex"><![CDATA[^[a-z][A-Za-z0-9]*(_=)?$]]></parameter>
   </parameters>
  </check>
  <check level="warning" class="org.scalastyle.scalariform.PublicMethodsHaveTypeChecker" enabled="true"></check>
@@ -98,7 +98,7 @@
  </check>
  <check enabled="true" class="org.scalastyle.file.RegexChecker" level="warning">
    <parameters>
-     <parameter name="regex">=[^\s>=]</parameter>
+     <parameter name="regex">[^_]=[^\s>=]</parameter>
    </parameters>
    <customMessage>No space after =</customMessage>
  </check>

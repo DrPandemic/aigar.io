@@ -53,7 +53,7 @@ object PlayerDAO extends TableQuery(new Players(_)) {
     )
   }
 
-  def addScore(db: Database, player_id: Int, value: Float): Unit ={
+  def addScore(db: Database, player_id: Int, value: Float): Unit = {
     val sql = sqlu"""update PLAYERS
                      set score = score + ${value}
                      where id = ${player_id}"""
@@ -66,7 +66,7 @@ object PlayerDAO extends TableQuery(new Players(_)) {
     )
   }
 
-  def updatePlayer(db: Database, player: PlayerModel): Option[PlayerModel] ={
+  def updatePlayer(db: Database, player: PlayerModel): Option[PlayerModel] = {
     Await.result(
       db.run(
         players.filter(_.id === player.id)

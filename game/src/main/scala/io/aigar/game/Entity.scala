@@ -20,9 +20,12 @@ object Entity {
 trait Entity {
   var position: Vector2
   protected var _mass = 0f
-  
+
   // Score to be added to the player when it collides with the entity
-  val scoreModification: Int
+  val _scoreModification: Float = 0f
+  def scoreModification(): Float = {
+    _scoreModification
+  }
 
   def mass: Float = _mass
   def mass_=(m: Float): Unit = {

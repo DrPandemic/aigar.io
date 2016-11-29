@@ -13,7 +13,7 @@ object Regular {
 
   // IMPORTANT: keep those values in sync with the client documentation
   final val Mass = 1
-  final val Score = 1
+  final val Score = 0.1f
 }
 
 object Silver {
@@ -22,16 +22,16 @@ object Silver {
 
   // IMPORTANT: keep those values in sync with the client documentation
   final val Mass = 3
-  final val Score = 3
+  final val Score = 1f
 }
 
 object Gold {
-  final val Max = 10
-  final val Min = 5
+  final val Max = 3
+  final val Min = 1
 
   // IMPORTANT: keep those values in sync with the client documentation
   final val Mass = 0
-  final val Score = 10
+  final val Score = 10f
 }
 
 class Resources(grid: Grid) {
@@ -76,7 +76,7 @@ class Resources(grid: Grid) {
 
 class ResourceType(grid: Grid,
                    resourceMass: Float,
-                   resourceScore: Int,
+                   resourceScore: Float,
                    resourceMin: Int,
                    resourceMax: Int
                   ) extends EntityContainer {
@@ -118,7 +118,7 @@ class ResourceType(grid: Grid,
 
 class Resource(var position: Vector2 = new Vector2(0f, 0f),
                val resourceMass: Float,
-               val scoreModification: Int = 0) extends Entity {
+               override val _scoreModification: Float = 0.0f) extends Entity {
   _mass = resourceMass
 
   def radius: Float = 1

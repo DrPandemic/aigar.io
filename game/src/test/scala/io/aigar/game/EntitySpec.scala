@@ -1,13 +1,13 @@
-import io.aigar.game._
-import org.scalatest._
-import com.github.jpbetz.subspace._
+import com.github.jpbetz.subspace.Vector2
+import io.aigar.game.Entity
+import org.scalatest.{FlatSpec, Matchers}
 
 class EntitySpec extends FlatSpec with Matchers {
   class FakeEntity(rad: Float, pos: Vector2 = Vector2(0f, 0f)) extends Entity {
     def radius: Float = rad
     def position: Vector2 = pos
-    def position_=(v: Vector2) {}
-    val scoreModification: Int = 0
+    def position_=(v: Vector2): Unit = {}
+    override val _scoreModification: Float = 0f
   }
 
   "An Entity" should "contain a position inside its radius" in {

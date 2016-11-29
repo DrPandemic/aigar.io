@@ -25,8 +25,6 @@ class VirusSpec extends FlatSpec with Matchers {
     viruses.viruses = List(virus)
     // We make sure the cell is small enough so it doesn't eat the virus
     cell.mass = Virus.Mass * Cell.MassDominanceRatio - 1
-    println(cell.mass)
-    println(viruses.viruses.head.mass)
     player.cells = List(cell)
 
     viruses.update(new Grid(0, 0), List(player))
