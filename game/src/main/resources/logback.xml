@@ -17,7 +17,7 @@
     <logger name="com" level="OFF" />
     <logger name="org" level="OFF" />
 
-    <root level="info">
+    <root level="off">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE" />
     </root>
