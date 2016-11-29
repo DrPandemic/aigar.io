@@ -376,12 +376,16 @@ class CellSpec extends FlatSpec with Matchers {
     normal.mass += 10 // share the same mass to be comparable
     bursting.target = Vector2(100f, 100f)
     normal.target = Vector2(100f, 0f)
+    bursting.aiState = new NullState(bursting)
+    normal.aiState = new NullState(normal)
 
-    player.update(1f, grid, List())
-    bursting.velocity.magnitude should equal(normal.velocity.magnitude)
+    player.update(0.5f, grid, List())
+    bursting.velocity.magnitude should be > 0f
+    normal.velocity.magnitude should be > 0f
+    bursting.velocity.magnitude should equal(normal.velocity.magnitude +- 0.002f)
 
     bursting.burst()
-    player.update(1f, grid, List())
+    player.update(0.5f, grid, List())
 
     bursting.velocity.magnitude should be > normal.velocity.magnitude
   }
@@ -391,9 +395,8 @@ class CellSpec extends FlatSpec with Matchers {
     val cell = player.cells.head
     cell.mass = Cell.MinMass
 
-    cell.burstActive should equal(false)
     cell.burst()
-    cell.burstActive should equal(true)
+    cell.burstActive should equal(false)
   }
 
   "performAction" should "change target to match the one from the action" in {
