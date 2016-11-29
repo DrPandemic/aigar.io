@@ -102,8 +102,8 @@ To eat an enemy cell, a cell must almost completely overlap its enemy and be
              The cell must be at least twice the minimum mass for this call to
              have an effect.
 
-- `burst()`: Exchanges a fixed amount of the cell's mass to gain a temporary
-             speed boost.
+- `burst()`: Exchanges a fixed amount (1) of the cell's mass to gain a
+             temporary speed boost.
              If the cell is too small to afford the price, this call has no
              effect.
 
