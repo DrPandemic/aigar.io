@@ -7,6 +7,7 @@ case class ErrorResponse(error: String)
 
 case class GameStateResponse(data: GameState)
 
+case class GameCreationQuery(player_secret: String)
 case class GameCreation(id: Int)
 case class GameCreationResponse(data: GameCreation)
 case class GameCreationCommand(

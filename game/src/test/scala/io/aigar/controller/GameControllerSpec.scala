@@ -29,6 +29,7 @@ class GameControllerSpec extends MutableScalatraSpec
 
   def cleanState = {
     game.actionQueue.clear()
+    game.adminCommandQueue.clear()
     playerRepository.dropSchema
     playerRepository.createSchema
 
@@ -97,7 +98,9 @@ class GameControllerSpec extends MutableScalatraSpec
       postJson("/", ("player_secret" -> "EdgQWhJ!v&")) {
         status must_== 200
 
-        parse(body).extract[GameCreationResponse] must not(throwAn[MappingException])
+        val response = parse(body).extract[GameCreationResponse]
+        // Which is the player's id
+        response.data.id must_== 1
       }
     }
 
@@ -113,7 +116,7 @@ class GameControllerSpec extends MutableScalatraSpec
     }
 
     "403 when player's secret doesn't match" in {
-      post("/", ("player_secret" -> "nope")) {
+      postJson("/", ("player_secret" -> "nope")) {
         status must_== 403
       }
     }
