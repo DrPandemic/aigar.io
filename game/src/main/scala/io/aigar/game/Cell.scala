@@ -66,6 +66,8 @@ object Cell {
    */
   final val BurstSecondsOfMovement = 5f
 
+  final val SplitPushSecondsOfMovement = 10f
+
   def radius(mass: Float): Float = {
     4f + sqrt(mass).toFloat * 3f
   }
@@ -179,9 +181,27 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
     other.mass = mass / 2f
     mass /= 2f
 
-    other.position += Vector2(radius * 2f, radius * 2f) // TODO replace this with a pushing force
+    applySplitPushBack(other)
 
     List(this, other)
+  }
+
+  def applySplitPushBack(other: Cell) {
+    var direction = velocity.safeNormalize
+    if (direction.magnitude == 0f) {
+      direction = Vector2Utils.randomUnitVector
+    }
+    val pushDirection = direction.perpendicular
+
+    // position so that they don't overlap
+    position += pushDirection * radius
+    other.position -= pushDirection * radius
+
+    val pushForce = pushDirection * maxSpeed * Cell.SplitPushSecondsOfMovement
+
+    other.velocity = velocity
+    velocity += pushForce
+    other.velocity -= pushForce
   }
 
   def tradeMass(massToTrade: Int): Option[ScoreModification] = {
