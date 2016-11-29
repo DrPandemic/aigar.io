@@ -74,6 +74,7 @@ class AIStateSpec extends FlatSpec with Matchers {
 
   it should "change to null state on player activity" in {
     val player = new Player(0, Vector2(5f, 5f))
+    player.active = false
     val cell = player.cells.head
     cell.aiState = new SeekingState(cell)
 
