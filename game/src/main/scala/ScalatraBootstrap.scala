@@ -1,12 +1,16 @@
-import com.typesafe.scalalogging.LazyLogging
-import io.aigar.game.GameThread
-import io.aigar.controller._
-import io.aigar.controller.response.{RestartThreadCommand}
-import io.aigar.score.ScoreThread
-import org.scalatra._
 import javax.servlet.ServletContext
 
+import com.typesafe.scalalogging.LazyLogging
+import org.scalatra.{LifeCycle}
+
+import io.aigar.controller.{AdminController, GameController, LeaderboardController}
+import io.aigar.game.GameThread
 import io.aigar.model.PlayerRepository
+import io.aigar.score.ScoreThread
+
+object ScalatraBootstrap {
+  final val PasswordLength = 28
+}
 
 class ScalatraBootstrap extends LifeCycle
                         with LazyLogging {
@@ -14,16 +18,16 @@ class ScalatraBootstrap extends LifeCycle
   var playerRepository: PlayerRepository = null
   var game: GameThread = null
   var scoreThread: ScoreThread = null
-  final val adminPassword = (new scala.util.Random(new java.security.SecureRandom())).alphanumeric.take(28).mkString
+  final val adminPassword = (new scala.util.Random(new java.security.SecureRandom())).alphanumeric.take(ScalatraBootstrap.PasswordLength).mkString
   final val path = "/api/1"
 
   override def init(context: ServletContext): Unit = {
     appInit()
 
-    println("****************************")
-    println("***Administrator password***")
-    println(adminPassword)
-    println("****************************")
+    logger.info("****************************")
+    logger.info("***Administrator password***")
+    logger.info(adminPassword)
+    logger.info("****************************")
 
     context.mount(new AdminController(adminPassword, game, playerRepository), s"$path/admin/*")
     context.mount(new LeaderboardController(playerRepository), s"$path/leaderboard/*")
