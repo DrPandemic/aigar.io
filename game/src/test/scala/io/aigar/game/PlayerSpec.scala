@@ -46,7 +46,7 @@ class PlayerSpec extends FlatSpec with Matchers {
 
     player.onExternalAction
 
-    player.isActive() shouldBe true
+    player shouldBe 'active
   }
 
   it should "merge cells when they overlap" in {
@@ -91,7 +91,7 @@ class PlayerSpec extends FlatSpec with Matchers {
     player.performAction(List(Action(0, false, false, 0, Position(0f, 10f))))
     player.update(NullState.MaxInactivitySeconds * 0.9f, new Grid(0, 0), List(player))
 
-    player.isActive() shouldBe true
+    player shouldBe 'active
   }
 
   "update" should "respawn one cell for itself if it has no mo' cell" in {
