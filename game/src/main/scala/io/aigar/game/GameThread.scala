@@ -67,7 +67,9 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
   }
 
   def createPrivateGame(gameId: Int): Game = {
-    new Game(gameId, playerIDs, Game.PrivateGameDuration)
+    // We add the game's id since it's also the player's id at the same time
+    val playerIds = gameId :: ((-1 * Game.PrivateGameBotQuantity) to -1).toList
+    new Game(gameId, playerIds, Game.PrivateGameDuration)
   }
 
   def run: Unit = {

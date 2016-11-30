@@ -127,7 +127,7 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
     gameThread.adminCommandQueue.put(GameCreationCommand(42))
     gameThread.transferAdminCommands
 
-    game shouldBe theSameInstanceAs(gameThread.games(42))
+    game should not be theSameInstanceAs(gameThread.games(42))
   }
 
   "createRankedGame" should "use the duration from the game thread" in {
