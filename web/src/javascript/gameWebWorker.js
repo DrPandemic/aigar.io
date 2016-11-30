@@ -1,10 +1,10 @@
 import {fetchState} from "./network";
-import {networkRefresh} from "./constants";
+import {networkRefresh, rankedGameId} from "./constants";
 
 async function updateLoop() {
   const startTime = (new Date()).getTime();
 
-  const result = await fetchState(0);
+  const result = await fetchState(rankedGameId);
   if(result) {
     postMessage(result);
   }
