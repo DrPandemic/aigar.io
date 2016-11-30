@@ -11,7 +11,7 @@ case class GameCreationQuery(player_secret: String)
 case class GameCreation(id: Int)
 case class GameCreationResponse(data: GameCreation)
 case class GameCreationCommand(
-  ownerId: Int
+  gameId: Int
 ) extends AdminCommand
 
 case class SuccessResponse(data: String)

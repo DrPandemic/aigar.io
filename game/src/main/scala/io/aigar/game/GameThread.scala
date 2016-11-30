@@ -1,6 +1,7 @@
 package io.aigar.game
 
 import com.typesafe.scalalogging.LazyLogging
+import io.aigar.controller.response.GameCreationCommand
 import scala.math.round
 import io.aigar.controller.response.{AdminCommand, SetRankedDurationCommand, RestartThreadCommand}
 import io.aigar.score.{ScoreModification, ScoreThread}
@@ -38,7 +39,7 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
 
   var nextRankedDuration = Game.DefaultDuration
   private var states: Map[Int, serializable.GameState] = Map()
-  var games: List[Game] = List()
+  var games: Map[Int, Game] = Map()
 
   var running = true
   var started = false
@@ -49,7 +50,7 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
     actionQueue.clear
     adminCommandQueue.clear
     this.playerIDs = playerIDs
-    games = List(createRankedGame)
+    games = Map(Game.RankedGameId -> createRankedGame)
 
     started = true
   }
@@ -63,6 +64,10 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
 
   def createRankedGame: Game = {
     new Game(Game.RankedGameId, playerIDs, nextRankedDuration)
+  }
+
+  def createPrivateGame(gameId: Int): Game = {
+    new Game(gameId, playerIDs, Game.PrivateGameDuration)
   }
 
   def run: Unit = {
@@ -80,11 +85,11 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
   def transferActions: Unit = {
     while (!actionQueue.isEmpty) {
       val action = actionQueue.take
-      games.find(_.id == action.game_id) match {
+      games.get(action.game_id) match {
         case Some(game) => {
           val modifications = game.performAction(action.player_id, action.actions)
           applyScoreModifications(game, modifications)
-          }
+        }
         case None =>
       }
     }
@@ -95,17 +100,18 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
       adminCommandQueue.take match {
         case command: SetRankedDurationCommand => nextRankedDuration = command.duration
         case command: RestartThreadCommand => restart(command.playerIDs)
+        case command: GameCreationCommand => games = games + (command.gameId -> createPrivateGame(command.gameId))
       }
     }
   }
 
   private def resetRankedGameIfExpired: Unit = {
-    games.find(_.id == Game.RankedGameId) match {
+    games.get(Game.RankedGameId) match {
       case Some(ranked) => {
         val elapsed = GameThread.time - ranked.startTime
         if(ranked.duration < elapsed) {
-          games = games diff List(ranked)
-          games = createRankedGame :: games
+          games = games - Game.RankedGameId
+          games = games + (Game.RankedGameId -> createRankedGame)
         }
       }
       case None =>
@@ -115,7 +121,7 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
   def updateGames: Unit = {
     resetRankedGameIfExpired
 
-    for (game <- games) {
+    for (game <- games.values) {
       val deltaTime = currentTime - previousTime
       val modifications = game.update(deltaTime)
       applyScoreModifications(game, modifications)
