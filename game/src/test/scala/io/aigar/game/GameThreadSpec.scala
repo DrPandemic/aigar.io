@@ -1,4 +1,5 @@
 import io.aigar.game._
+import io.aigar.controller.response.GameCreationCommand
 import io.aigar.controller.response.{SetRankedDurationCommand, RestartThreadCommand}
 import io.aigar.score.{ScoreModification, ScoreThread}
 import io.aigar.controller.response.Action
@@ -44,7 +45,7 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
 
   it should "create a ranked game with the initial duration" in {
     val game = createStartedGameThread()
-    val ranked = game.games.find(_.id == Game.RankedGameId).get
+    val ranked = game.games.get(Game.RankedGameId).get
 
     ranked.duration shouldBe Game.DefaultDuration
   }
@@ -56,7 +57,7 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
     game.started shouldBe false
   }
 
-  "send RestartThreadCommand" should "put started to true" in {
+  "sending RestartThreadCommand" should "put started to true" in {
     val scoreThread = new ScoreThread(null)
     val game = new GameThread(scoreThread)
     game.adminCommandQueue.put(RestartThreadCommand(List()))
@@ -104,6 +105,31 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
     game.playerIDs shouldBe List(42)
   }
 
+  "sendig GameCreationCommand" should "create a new game" in {
+    val gameThread = createStartedGameThread()
+    gameThread.adminCommandQueue.put(GameCreationCommand(42))
+    gameThread.transferAdminCommands
+
+    val game = gameThread.games(42)
+
+    game.id shouldBe 42
+    game.players should have length Game.PrivateGameBotQuantity + 1
+    game.duration shouldBe Game.PrivateGameDuration
+  }
+
+  it should "replace the game when it already exists" in {
+    val gameThread = createStartedGameThread()
+    gameThread.adminCommandQueue.put(GameCreationCommand(42))
+    gameThread.transferAdminCommands
+
+    val game = gameThread.games(42)
+
+    gameThread.adminCommandQueue.put(GameCreationCommand(42))
+    gameThread.transferAdminCommands
+
+    game should not be theSameInstanceAs(gameThread.games(42))
+  }
+
   "createRankedGame" should "use the duration from the game thread" in {
     val game = createStartedGameThread()
     game.nextRankedDuration = 1337
@@ -145,13 +171,23 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
     game.adminCommandQueue shouldBe empty
   }
 
-  it should "sets the nextRankedDuration" in {
+  it should "set the nextRankedDuration" in {
     val game = createStartedGameThread()
     game.adminCommandQueue.put(SetRankedDurationCommand(1337))
 
     game.transferAdminCommands
 
     game.nextRankedDuration shouldBe 1337
+  }
+
+  it should "create a private game" in {
+    val game = createStartedGameThread()
+    game.games.toList should have length 1
+    game.adminCommandQueue.put(GameCreationCommand(42))
+
+    game.transferAdminCommands
+
+    game.games.toList should have length 2
   }
 
   "updateGames" should "put ScoreModifications from games into the ScoreThread only for the ranked game" in {
@@ -161,7 +197,7 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
     game.transferAdminCommands
     val ranked = mock[Game]
     val notRanked = mock[Game]
-    game.games = List(ranked, notRanked)
+    game.games = Map(Game.RankedGameId -> ranked, Game.RankedGameId + 1 -> notRanked)
     when(ranked.id).thenReturn(Game.RankedGameId)
     when(ranked.startTime).thenReturn(GameThread.time)
     when(ranked.duration).thenReturn(Int.MaxValue)
@@ -183,11 +219,11 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
     val game = new GameThread(scoreThread)
     game.adminCommandQueue.put(RestartThreadCommand(List(0)))
     game.transferAdminCommands
-    game.games = List(ranked)
+    game.games = Map(Game.RankedGameId -> ranked)
 
     game.updateGames
 
-    game.games.find(_.id == Game.RankedGameId) should not be None
-    game.games.find(_.id == Game.RankedGameId).get should not be theSameInstanceAs(ranked)
+    game.games.get(Game.RankedGameId) should not be None
+    game.games.get(Game.RankedGameId).get should not be theSameInstanceAs(ranked)
   }
 }

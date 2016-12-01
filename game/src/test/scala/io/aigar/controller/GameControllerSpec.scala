@@ -111,7 +111,7 @@ class GameControllerSpec extends MutableScalatraSpec
 
         game.adminCommandQueue.isEmpty() must be_==(false)
         val action = game.adminCommandQueue.take().asInstanceOf[GameCreationCommand]
-        action.ownerId must_== 1
+        action.gameId must_== 1
       }
     }
 
