@@ -1,5 +1,5 @@
 import he from "he";
-import {getPlayerColor, setFocusScreen, findBiggestCell} from "./game";
+import {getPlayerColor, setFocusScreen, cellFocused, findNextCell} from "./game";
 import sort from "immutable-sort";
 
 export function drawLeaderboard(state) {
@@ -35,8 +35,8 @@ function cleanEventListeners(old) {
 }
 
 function focusOnPlayer(player) {
-  let cellToFocus = findBiggestCell(player.cells);
-  if(cellToFocus) {
-    setFocusScreen(cellToFocus.position, player.id);
+  findNextCell(player.cells, player.id);
+  if(cellFocused) {
+    setFocusScreen(cellFocused.position);
   }
 }
