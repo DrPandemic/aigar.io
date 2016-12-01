@@ -11,6 +11,7 @@ export const scrollBarWidth = 20;
 export const textColor = "#fff";
 export const highlightColor = "#fff";
 export const highlightThickness = 8;
+export const targetLineThickness = 1;
 export const textBorderColor = "#000";
 export const textBorderThickness = 1;
 export const textStyle = "25px Arial";

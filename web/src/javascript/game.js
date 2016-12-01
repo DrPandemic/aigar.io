@@ -113,6 +113,7 @@ export function drawCellTargetLine(context, position, target, color) {
   context.beginPath();
   context.moveTo(position.x, position.y);
   context.lineTo(target.x, target.y);
+  context.lineWidth = constants.targetLineThickness;
   context.strokeStyle = color;
   context.stroke();
 }
