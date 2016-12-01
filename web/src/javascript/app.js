@@ -1,6 +1,6 @@
 import {drawLeaderboard} from "./gameLeaderboard";
-import {drawGame, interpolateState, initCanvas} from "./game";
-import {gameRefresh, leaderboardRefresh, gameDelay, maximumStoredStates} from "./constants";
+import {drawGame, interpolateState, initCanvas, getCurrentGameId} from "./game";
+import {gameRefresh, leaderboardRefresh, gameDelay, maximumStoredStates, rankedGameId} from "./constants";
 import {initLineButton, createCanvas} from "./gameUI";
 
 const gameCanvas = createCanvas();
@@ -12,6 +12,8 @@ let leaderboardRunning = false;
 const states = [];
 
 const networkWorker = new Worker("javascript/gameWebWorker.bundle.js");
+const gameId = getCurrentGameId();
+networkWorker.postMessage(gameId === null ? rankedGameId : gameId);
 networkWorker.onmessage = message => {
   states.push({
     ...message.data,

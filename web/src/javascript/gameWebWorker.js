@@ -1,16 +1,23 @@
 import {fetchState} from "./network";
-import {networkRefresh, rankedGameId} from "./constants";
+import {networkRefresh} from "./constants";
 
-async function updateLoop() {
+let started = false;
+onmessage = (e) => {
+  if(!started) {
+    started = true;
+    updateLoop(e.data);
+  }
+};
+
+async function updateLoop(gameId) {
   const startTime = (new Date()).getTime();
 
-  const result = await fetchState(rankedGameId);
+  const result = await fetchState(gameId);
   if(result) {
     postMessage(result);
   }
 
   const elapsed = (new Date()).getTime() - startTime;
-  setTimeout(updateLoop, 1000/networkRefresh - elapsed);
+  setTimeout(() => updateLoop(gameId), 1000/networkRefresh - elapsed);
 }
 
-updateLoop();
