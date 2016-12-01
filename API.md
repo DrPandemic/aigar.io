@@ -27,7 +27,7 @@ Every error will contain a root element named `error` with an error message.
 [{
 	"player_id": "string", 
 	"name": "string",
-	"score": "int"
+	"score": "float"
 }]
 ```
 

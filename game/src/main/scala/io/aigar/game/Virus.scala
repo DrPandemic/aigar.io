@@ -21,7 +21,7 @@ object Virus {
 
 class Virus(var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
   _mass = Virus.Mass
-  val scoreModification = 0
+  override val  _scoreModification: Float = 0f
   def radius: Float = Cell.radius(mass)
 
   def state: serializable.Virus = {

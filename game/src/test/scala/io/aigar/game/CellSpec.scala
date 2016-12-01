@@ -1,12 +1,12 @@
 import io.aigar.game._
 import io.aigar.game.serializable.Position
-import io.aigar.game.Vector2Utils._
+import io.aigar.game.Vector2Utils.Vector2Addons
 import io.aigar.controller.response.Action
-import org.scalatest._
-import com.github.jpbetz.subspace._
+import com.github.jpbetz.subspace.Vector2
 import io.aigar.score.ScoreModification
+import org.scalatest.{FlatSpec, Matchers}
 
-import scala.math._
+import scala.math.round
 
 class CellSpec extends FlatSpec with Matchers {
   "A Cell" should "not initiate movement when its target is on itself" in {
@@ -449,5 +449,22 @@ class CellSpec extends FlatSpec with Matchers {
     val modification = cell.performAction(Action(cell.id, false, false, massToTrade, Position(0f, 10f)))
 
     modification shouldBe empty
+  }
+
+  "scoreModification" should "give 1 score" in {
+    val player = new Player(1, Vector2(12f, 12f))
+    val cell = player.cells.head
+    cell.mass = Cell.MinMass
+
+    cell.scoreModification should equal(1)
+  }
+
+  it should "give a reasonable score for a mass of 1000" in {
+    val player = new Player(1, Vector2(12f, 12f))
+    val cell = player.cells.head
+    cell.mass = 1000
+
+    cell.scoreModification should be < 100f
+    cell.scoreModification should be > 1f
   }
 }

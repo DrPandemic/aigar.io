@@ -5,7 +5,7 @@ import io.aigar.score.ScoreModification
 import io.aigar.game.Vector2Utils.Vector2Addons
 import io.aigar.game.Position2Utils.PositionAddon
 import com.github.jpbetz.subspace.Vector2
-import scala.math._
+import scala.math.{log, max, min, sqrt, round, pow}
 
 object Cell {
   /**
@@ -23,7 +23,7 @@ object Cell {
   /**
    * Ratio of mass lost per second.
    */
-  final val MassDecayPerSecond = 0.005f
+  final val MassDecayPerSecond = 0.003f
 
   /**
    * How much bigger a cell must be to eat an enemy cell (ratio).
@@ -76,7 +76,6 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
   var target = position
   var aiState: AIState = defineAiState
   _mass = Cell.MinMass
-  val scoreModification = 0
 
   var burstActive = false
 
@@ -95,6 +94,10 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
 
   def radius: Float = {
     Cell.radius(mass)
+  }
+
+  override def scoreModification(): Float = {
+    (1 + log(mass) - log(Cell.MinMass)).toFloat
   }
 
   def update(deltaSeconds: Float, grid: Grid): Unit = {
