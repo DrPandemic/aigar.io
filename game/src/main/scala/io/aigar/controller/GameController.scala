@@ -14,9 +14,7 @@ class GameController(game: GameThread, playerRepository: PlayerRepository)
     GameStateResponse(
       Try(params("id").toInt).toOption match {
         case Some(id) => game.gameState(id) match {
-          case Some(state) => {
-            fillPlayerName(state)
-          }
+          case Some(state) => fillPlayerName(state)
           case None => halt(404)
         }
         case None => halt(400)
@@ -30,6 +28,7 @@ class GameController(game: GameThread, playerRepository: PlayerRepository)
                  (player) => {
                    val name = players.find(_.id.get == player.id) match {
                      case Some(player) => player.playerName
+                     case None if player.id < 0 => "Bot " + math.abs(player.id)
                      case None => halt(500)
                    }
                    player.copy(name = name)
