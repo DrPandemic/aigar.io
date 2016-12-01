@@ -45,5 +45,6 @@ export const networkRefresh = 3;
 export const maximumStoredStates = 10;
 
 export const stateApiURL = "/api/1/game/";
+export const rankedGameId = -1;
 export const adminApiURL = "/api/1/admin/";
 export const leaderboardApiURL = "/api/1/leaderboard/";
