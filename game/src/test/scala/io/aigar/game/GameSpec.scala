@@ -1,9 +1,9 @@
 import io.aigar.controller.response.Action
-import io.aigar.game._
-import io.aigar.score.ScoreModification
+import io.aigar.game.{Game, NullState, Regular, Resource, Virus}
 import io.aigar.game.serializable.Position
-import org.scalatest._
-import com.github.jpbetz.subspace._
+import io.aigar.score.ScoreModification
+import org.scalatest.{FlatSpec, Matchers}
+import com.github.jpbetz.subspace.Vector2
 
 class GameSpec extends FlatSpec with Matchers {
   "A Game" should "generate a new state object every time (thread-safety)" in {
@@ -16,7 +16,7 @@ class GameSpec extends FlatSpec with Matchers {
     val game = new Game(42, List())
     game.tick should equal(0)
 
-    game.update(1f)
+    game.update
 
     game.tick should equal(1)
   }
@@ -54,7 +54,7 @@ class GameSpec extends FlatSpec with Matchers {
     cell.position = Vector2(0, 0)
     cell.target = new Vector2(100f, 100f)
 
-    game.update(1f)
+    game.update
 
     cell.velocity.magnitude should be > 0f
   }
@@ -94,7 +94,10 @@ class GameSpec extends FlatSpec with Matchers {
     player.cells.head.target = Vector2(40, 0)
     player.cells.head.aiState = new NullState(player.cells.head)
 
-    val resourceModifications = game.update(0f)
+    // This is to ensure no movement
+    game.currentTime = 0
+    game.previousTime = 0
+    val resourceModifications = game.update
 
     resourceModifications should contain (ScoreModification(player.id, Regular.Score))
   }

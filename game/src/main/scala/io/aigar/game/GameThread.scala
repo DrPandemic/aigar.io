@@ -95,7 +95,7 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
   private def resetGames: Unit = {
     games = games.filter {
       case (Game.RankedGameId, _) => true
-      case (_, game) => game.time > 0f
+      case (_, game) => game.timeLeft > 0f
     }
 
     games.get(Game.RankedGameId) match {
@@ -125,4 +125,3 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
     }
   }
 }
-fix-multiple-games
