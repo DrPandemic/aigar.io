@@ -12,9 +12,9 @@ UpdatesPerSecond = 3  # how many times we should contact the server per second
 
 
 def main():
-    game_id = Game.RankedGameId
-
+    in_private_game = "--join-private" in sys.argv or "-j" in sys.argv
     player_id, player_secret, api_url = read_config()
+    game_id = player_id if in_private_game else Game.RANKED_GAME_ID
     api = API(player_id, player_secret, api_url)
     ai = AI()
 
