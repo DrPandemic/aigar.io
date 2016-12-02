@@ -23,7 +23,8 @@ class Game(val id: Int,
     extends LazyLogging {
   logger.info(s"Launching game with ID $id.")
 
-  val grid = new Grid(playerIds.length * Grid.WidthPerPlayer, playerIds.length * Grid.HeightPerPlayer)
+  val grid = new Grid(math.max(Game.MinimumNumberOfPlayerModificator, playerIds.length) * Grid.WidthPerPlayer,
+                      math.max(Game.MinimumNumberOfPlayerModificator, playerIds.length) * Grid.HeightPerPlayer)
   val players = createPlayers
   val viruses = new Viruses(grid, math.max(Game.MinimumNumberOfPlayerModificator, playerIds.length))
   val resources = new Resources(grid)

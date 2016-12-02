@@ -61,10 +61,18 @@ class GameSpec extends FlatSpec with Matchers {
 
   it should "create a bigger grid if there are more players" in {
     val game1 = new Game(42, List(1))
-    val game2 = new Game(42, 1 to 10 toList)
+    val game2 = new Game(42, 1 to Game.MinimumNumberOfPlayerModificator + 1 toList)
 
     game2.grid.width should be > game1.grid.width
     game2.grid.height should be > game1.grid.height
+  }
+
+  it should "create a grid of at least 10 players" in {
+    val game1 = new Game(42, List(1))
+    val game2 = new Game(42, 1 to Game.MinimumNumberOfPlayerModificator toList)
+
+    game2.grid.width shouldBe game1.grid.width
+    game2.grid.height shouldBe game1.grid.height
   }
 
   it should "create a state with the right info" in {
