@@ -107,13 +107,17 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
     }
   }
 
-  private def resetRankedGameIfExpired: Unit = {
+  private def resetGames: Unit = {
+    games = games.filter {
+      case (Game.RankedGameId, _) => true
+      case (_, game) => game.time > 0f
+    }
+
     games.get(Game.RankedGameId) match {
       case Some(ranked) => {
         val elapsed = GameThread.time - ranked.startTime
-        if(ranked.duration < elapsed) {
-          games = games - Game.RankedGameId
-          games = games + (Game.RankedGameId -> createRankedGame)
+        if (ranked.duration < elapsed) {
+          games += (Game.RankedGameId -> createRankedGame)
         }
       }
       case None =>
@@ -121,7 +125,7 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
   }
 
   def updateGames: Unit = {
-    resetRankedGameIfExpired
+    resetGames
 
     for (game <- games.values) {
       val deltaTime = currentTime - previousTime
