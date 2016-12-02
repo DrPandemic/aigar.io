@@ -23,18 +23,27 @@ let miniMapScreenPosHeight;
 
 let playerFocused = null;
 
-function drawCircle(context, position, radius, color) {
+export let cellFocused = null;
+
+function drawCircle(context, position, radius, color, drawBorder = false) {
   context.beginPath();
   context.arc(position.x, position.y, radius, 0, Math.PI * 2, false);
+  if(drawBorder){
+    context.lineWidth = constants.highlightThickness;
+    context.strokeStyle = constants.highlightColor;
+    context.stroke();
+  }
   context.fillStyle = color;
   context.fill();
 }
 
 function writeCellTeamName(playerName, context, position) {
+  context.beginPath();
   context.fillStyle = constants.textColor;
   context.font = constants.textStyle;
   context.textAlign="center";
   context.textBaseline = "middle";
+  context.lineWidth = constants.textBorderThickness;
   context.strokeStyle = constants.textBorderColor;
 
   context.fillText(playerName, position.x, position.y);
@@ -81,14 +90,19 @@ export function drawPlayersOnMap(players, gameCanvas, drawNames) {
         radius: cell.radius,
         color: color,
         playerName: player.name,
-        target: cell.target
+        target: cell.target,
+        playerId: player.id,
+        id: cell.id
       });
     }
   }
 
   const cellsToDraw = sort(cellArray, (a, b) => a.radius - b.radius);
   for(const cell of cellsToDraw){
-    drawCircle(context, cell.position, cell.radius, cell.color);
+    if(cell.playerId === playerFocused && cell.id === cellFocused.id)
+      drawCircle(context, cell.position, cell.radius, cell.color, true);
+    else
+      drawCircle(context, cell.position, cell.radius, cell.color);
     if (drawNames) writeCellTeamName(cell.playerName, context, cell.position);
     const targetLinesBtn = document.getElementById("targetLinesBtn");
     if (targetLinesBtn.className === "btn btn-primary") drawCellTargetLine(context, cell.position, cell.target, cell.color);
@@ -99,6 +113,7 @@ export function drawCellTargetLine(context, position, target, color) {
   context.beginPath();
   context.moveTo(position.x, position.y);
   context.lineTo(target.x, target.y);
+  context.lineWidth = constants.targetLineThickness;
   context.strokeStyle = color;
   context.stroke();
 }
@@ -202,7 +217,37 @@ export function drawMiniMap(gameCanvas, miniMapCanvas) {
 function findMiniMapScreenPositionPlayer(players){
   if(playerFocused != null){
     let player = players.find(p => p.id === playerFocused);
-    setFocusScreen(findBiggestCell(player.cells).position);
+    checkIfCellFocusedStillExists(player.cells);
+    setFocusScreen(cellFocused.position);
+  }
+}
+
+export function findNextCell(cells, playerId){
+  let cell = cells[0];
+  if(playerFocused === playerId){
+    for(let i = 0; i<cells.length; i++){
+      if(cellFocused.id === cells[i].id){
+        cell = cells[i+1];
+
+        if(!cell)
+          cell = cells[0];
+        break;
+      }
+    }
+  }
+  else{
+    playerFocused = playerId;
+  }
+  cellFocused = cell;
+}
+
+function checkIfCellFocusedStillExists(cells){
+  let cell = cells.find(p => p.id === cellFocused.id);
+  if(!cell){
+    cellFocused = cells[0];
+  }
+  else{
+    cellFocused = cell;
   }
 }
 
@@ -215,8 +260,7 @@ function drawMiniMapScreenPos(canvas, miniMapCanvas) {
   miniMapContext.strokeRect(xMiniMapPos, yMiniMapPos, miniMapScreenPosWidth, miniMapScreenPosHeight);
 }
 
-export function setFocusScreen(position, id = playerFocused) {
-  playerFocused = id;
+export function setFocusScreen(position) {
   const screenCanvas = document.getElementById("screenCanvas");
   const screenWidth = screenCanvas.width;
   const screenHeight = screenCanvas.height;
@@ -228,18 +272,6 @@ export function setFocusScreen(position, id = playerFocused) {
   newPosition = keepInsideMap(newPosition, canvasWidth, screenWidth, canvasHeight, screenHeight);
   xScreenPosOnMap = newPosition.x;
   yScreenPosOnMap = newPosition.y;
-}
-
-export function findBiggestCell(cells) {
-  if (cells.length > 0){
-    let biggestCell = cells[0];
-    for(const cell of cells) {
-      if(cell.radius > biggestCell.radius){
-        biggestCell = cell;
-      }
-    }
-    return biggestCell;
-  }
 }
 
 function changeScreenPos(mousePos) {
