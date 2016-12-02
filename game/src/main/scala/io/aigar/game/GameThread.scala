@@ -1,9 +1,12 @@
 package io.aigar.game
 
 import com.typesafe.scalalogging.LazyLogging
-import io.aigar.controller.response.GameCreationCommand
-import scala.math.round
-import io.aigar.controller.response.{AdminCommand, SetRankedDurationCommand, RestartThreadCommand}
+import io.aigar.controller.response.{
+  AdminCommand,
+  GameCreationCommand,
+  SetRankedDurationCommand,
+  RestartThreadCommand
+}
 import io.aigar.score.{ScoreModification, ScoreThread}
 import java.util.concurrent.LinkedBlockingQueue
 
@@ -12,22 +15,6 @@ import java.util.concurrent.LinkedBlockingQueue
  * takes care of updating the individual games and processing the queued inputs
  * of the players.
  */
-object GameThread {
-  final val NanoSecondsPerMillisecond = 1000000f
-  final val MillisecondsPerSecond = 1000f
-  final val NanoSecondsPerSecond = NanoSecondsPerMillisecond * MillisecondsPerSecond
-
-  final val TicksPerSecond = 15
-  final val MillisecondsPerTick = round(MillisecondsPerSecond / TicksPerSecond)
-
-  /**
-    * Current time, in seconds.
-    */
-  def time: Float = {
-    System.nanoTime / NanoSecondsPerSecond
-  }
-}
-
 class GameThread(scoreThread: ScoreThread) extends Runnable
                                            with LazyLogging {
   logger.info("Starting Game thread.")
@@ -43,8 +30,6 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
 
   var running = true
   var started = false
-  var previousTime = 0f
-  var currentTime = GameThread.MillisecondsPerTick / GameThread.MillisecondsPerSecond // avoid having an initial 0 delta time
 
   def restart(playerIDs: List[Int]): Unit = {
     actionQueue.clear
@@ -75,12 +60,12 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
   def run: Unit = {
     while (running) {
       transferAdminCommands
-      if(started) {
+      if (started) {
         transferActions
         updateGames
       }
 
-      Thread.sleep(GameThread.MillisecondsPerTick)
+      Thread.sleep(Game.MillisecondsPerTick)
     }
   }
 
@@ -98,7 +83,7 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
   }
 
   def transferAdminCommands: Unit = {
-    while(!adminCommandQueue.isEmpty) {
+    while (!adminCommandQueue.isEmpty) {
       adminCommandQueue.take match {
         case command: SetRankedDurationCommand => nextRankedDuration = command.duration
         case command: RestartThreadCommand => restart(command.playerIDs)
@@ -115,7 +100,7 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
 
     games.get(Game.RankedGameId) match {
       case Some(ranked) => {
-        val elapsed = GameThread.time - ranked.startTime
+        val elapsed = Game.time - ranked.startTime
         if (ranked.duration < elapsed) {
           games += (Game.RankedGameId -> createRankedGame)
         }
@@ -128,21 +113,16 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
     resetGames
 
     for (game <- games.values) {
-      val deltaTime = currentTime - previousTime
-      val modifications = game.update(deltaTime)
+      val modifications = game.update
       applyScoreModifications(game, modifications)
-
-      game.update(deltaTime)
       states = states + (game.id -> game.state)
-
-      previousTime = currentTime
-      currentTime = GameThread.time
     }
   }
 
   def applyScoreModifications(game: Game, modifications: List[ScoreModification]): Unit = {
-    if(game.id == Game.RankedGameId) {
+    if (game.id == Game.RankedGameId) {
       modifications.foreach { scoreThread.addScoreModification(_) }
     }
   }
 }
+fix-multiple-games
