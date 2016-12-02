@@ -39,7 +39,7 @@ trait AigarStack
     returnError(500, "internal server error")
   }
 
-  def returnError(statusCode: Int, message: String): ErrorResponse  = {
+  def returnError(statusCode: Int, message: String): ErrorResponse = {
     status = statusCode
     contentType = formats("json")
     ErrorResponse(message)
