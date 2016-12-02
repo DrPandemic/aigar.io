@@ -14,6 +14,7 @@ object Game {
   final val DefaultDuration = 60 * 20
   final val PrivateGameDuration = 60 * 10
   final val PrivateGameBotQuantity = 5
+  final val MinimumNumberOfPlayerModificator = 10
 }
 
 class Game(val id: Int,
@@ -24,7 +25,7 @@ class Game(val id: Int,
 
   val grid = new Grid(playerIds.length * Grid.WidthPerPlayer, playerIds.length * Grid.HeightPerPlayer)
   val players = createPlayers
-  val viruses = new Viruses(grid)
+  val viruses = new Viruses(grid, math.max(Game.MinimumNumberOfPlayerModificator, playerIds.length))
   val resources = new Resources(grid)
   val startTime = GameThread.time
   var tick = 0

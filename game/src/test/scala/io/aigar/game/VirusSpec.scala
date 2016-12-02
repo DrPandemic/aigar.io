@@ -17,7 +17,7 @@ class VirusSpec extends FlatSpec with Matchers {
   }
 
   it should "not detect a collision when being into a smaller cell" in {
-    val viruses = new Viruses(new Grid(0, 0))
+    val viruses = new Viruses(new Grid(0, 0), 15)
     val virus = new Virus(new Vector2(5, 5))
     val player = new Player(1, new Vector2(5, 5))
     val cell = new Cell(1, player, new Vector2(5, 5))
@@ -33,7 +33,7 @@ class VirusSpec extends FlatSpec with Matchers {
   }
 
   it should "detect a collision when being into a larger cell" in {
-    val viruses = new Viruses(new Grid(0, 0))
+    val viruses = new Viruses(new Grid(0, 0), 15)
     val virus = new Virus(new Vector2(5, 5))
     val player = new Player(1, new Vector2(5, 5))
     val cell = new Cell(1, player, new Vector2(5, 5))
@@ -51,7 +51,7 @@ class VirusSpec extends FlatSpec with Matchers {
   it should "not respawn on a cell" in {
     val grid = new Grid(1000, 1000)
     val initialPosition = new Vector2(5, 5)
-    val viruses = new Viruses(new Grid(0, 0))
+    val viruses = new Viruses(new Grid(0, 0), 15)
     val virus = new Virus(initialPosition)
     val player = new Player(1, initialPosition)
     val cell = new Cell(1, player, initialPosition)
@@ -66,7 +66,7 @@ class VirusSpec extends FlatSpec with Matchers {
   }
 
   "on collision" should "split the cell" in {
-    val viruses = new Viruses(new Grid(0, 0))
+    val viruses = new Viruses(new Grid(0, 0), 15)
     val virus = new Virus(new Vector2(5, 5))
     val player = new Player(1, new Vector2(5, 5))
     val cell = new Cell(1, player, new Vector2(5, 5))
@@ -81,7 +81,7 @@ class VirusSpec extends FlatSpec with Matchers {
   }
 
   it should "reduce the total mass" in {
-    val viruses = new Viruses(new Grid(0, 0))
+    val viruses = new Viruses(new Grid(0, 0), 15)
     val virus = new Virus(new Vector2(5, 5))
     val player = new Player(1, new Vector2(5, 5))
     val cell = new Cell(1, player, new Vector2(5, 5))
@@ -95,5 +95,11 @@ class VirusSpec extends FlatSpec with Matchers {
     viruses.update(new Grid(0, 0), List(player))
 
     oldMass should be > player.cells.foldLeft(0f)((sum: Float, cell: Cell) => sum + cell.mass)
+  }
+
+  "Viruses" should "create the right number of viruses" in {
+    val viruses = new Viruses(new Grid(0, 0), 42)
+
+    viruses.viruses should have size 42
   }
 }

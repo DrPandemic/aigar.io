@@ -3,12 +3,10 @@ package io.aigar.game
 import scala.math.round
 import com.typesafe.scalalogging.LazyLogging
 import com.github.jpbetz.subspace.Vector2
-import io.aigar.game.serializable.Position
 import io.aigar.score.ScoreModification
 import io.aigar.game.Vector2Utils.Vector2Addons
 
 object Virus {
-  final val Max = 15
   final val Min = 10
   final val Mass = 100
   final val RespawnRetryAttempts = 15
@@ -31,16 +29,16 @@ class Virus(var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
   }
 }
 
-class Viruses(grid: Grid) extends EntityContainer
-                          with LazyLogging {
-  var viruses = List.fill(Virus.Max)(new Virus(grid.randomPosition))
+class Viruses(grid: Grid, val MaximumNumberOfViruses: Int)
+    extends EntityContainer with LazyLogging {
+  var viruses = List.fill(MaximumNumberOfViruses)(new Virus(grid.randomPosition))
 
   def update(grid: Grid, players: List[Player]): List[ScoreModification] = {
     val (virusesReturn, modifications) = handleCollision(viruses, players)
 
     viruses = virusesReturn.asInstanceOf[List[Virus]]
 
-    if (shouldRespawn(viruses.size, Virus.Min, Virus.Max)) {
+    if (shouldRespawn(viruses.size, Virus.Min, MaximumNumberOfViruses)) {
       getRespawnPosition(grid, players, Virus.RespawnRetryAttempts) match {
         case Some(position) => viruses ::= new Virus(position)
         case _ =>
