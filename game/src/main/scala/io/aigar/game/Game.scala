@@ -1,5 +1,6 @@
 package io.aigar.game
 
+import scala.math.round
 import com.github.jpbetz.subspace.Vector2
 import com.typesafe.scalalogging.LazyLogging
 import io.aigar.score.ScoreModification
@@ -14,6 +15,20 @@ object Game {
   final val DefaultDuration = 60 * 20
   final val PrivateGameDuration = 60 * 10
   final val PrivateGameBotQuantity = 5
+
+  final val NanoSecondsPerMillisecond = 1000000f
+  final val MillisecondsPerSecond = 1000f
+  final val NanoSecondsPerSecond = NanoSecondsPerMillisecond * MillisecondsPerSecond
+
+  final val TicksPerSecond = 15
+  final val MillisecondsPerTick = round(MillisecondsPerSecond / TicksPerSecond)
+
+  /**
+    * Current time, in seconds.
+    */
+  def time: Float = {
+    System.nanoTime / NanoSecondsPerSecond
+  }
 }
 
 class Game(val id: Int,
@@ -26,15 +41,20 @@ class Game(val id: Int,
   val players = createPlayers
   val viruses = new Viruses(grid)
   val resources = new Resources(grid)
-  val startTime = GameThread.time
+  val startTime = Game.time
+  var previousTime = 0f
+  var currentTime = Game.MillisecondsPerTick / Game.MillisecondsPerSecond // avoid having an initial 0 delta time
   var tick = 0
 
-  def update(deltaSeconds: Float): List[ScoreModification] = {
+  def update: List[ScoreModification] = {
+    val deltaSeconds = currentTime - previousTime
     var modifications = players.flatten {  _.update(deltaSeconds, grid, players) }
     modifications :::= viruses.update(grid, players)
     modifications :::= resources.update(grid, players)
     tick += 1
 
+    previousTime = currentTime
+    currentTime = Game.time
     modifications
   }
 
@@ -49,16 +69,15 @@ class Game(val id: Int,
     modifications
   }
 
-  def time: Float = {
-    duration - (GameThread.time - startTime)
+  def timeLeft: Float = {
+    duration - (Game.time - startTime)
   }
 
   def state: serializable.GameState = {
-    //TODO really implement and update spec to add tests
     serializable.GameState(
         id,
         tick,
-        time,
+        timeLeft,
         players.map(_.state),
         resources.state,
         grid.state,
