@@ -11,9 +11,14 @@
 ## Joining the Ranked Game
 `python ./play.py`
 
-## Joining a private Game
+## Joining your private Game
+The private game need to already exist.
 `python ./play.py --join-private` or `python ./play.py -j`
-Note that you can have a maximum of only one private game at any given time.
+
+## Creating and joining your private game
+Note that you can have a maximum of one private game at any given time.
+If your private game already exists, it will destroy it and create a new one.
+`python ./play.py --create-private` or `python ./play.py -c`
 
 ## Running the Tests (developers of the game)
 `python -m unittest discover -p "*_test.py"`

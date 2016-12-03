@@ -35,6 +35,18 @@ class API:
 
         post("%s%d/action" % (self.api_url, game_id), json=data)
 
+    def create_private(self):
+        """
+        Creates a private game.
+
+        :returns:       The new game's ID
+        """
+        data = {
+                "player_secret": self.player_secret
+                }
+
+        return self._extract_data(post(self.api_url, json=data))["id"]
+
     def _extract_data(self, response):
         """
         Extracts the application data from a requests Response object.
