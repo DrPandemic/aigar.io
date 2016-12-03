@@ -1,7 +1,9 @@
 import {drawLeaderboard} from "./gameLeaderboard";
 import {drawGame, interpolateState, initCanvas, getCurrentGameId} from "./game";
 import {gameRefresh, leaderboardRefresh, gameDelay, maximumStoredStates, rankedGameId} from "./constants";
-import {initLineButton, createCanvas} from "./gameUI";
+import {initLineButton, createCanvas, displayLoading, hideLoading} from "./gameUI";
+
+let gameLoadingHandle = displayLoading();
 
 const gameCanvas = createCanvas();
 const miniMapCanvas = createCanvas();
@@ -35,7 +37,14 @@ function triggerStart() {
   if(!canInterpolateStates()) return;
 
   // Initiate the update loops for the game and leaderboard
-  if(!gameRunning) updateGame();
+  if(!gameRunning) {
+    if(gameLoadingHandle) {
+      hideLoading(gameLoadingHandle);
+      gameLoadingHandle = undefined;
+    }
+
+    updateGame();
+  }
   if(!leaderboardRunning) updateLeaderBoard();
 }
 
@@ -46,6 +55,7 @@ function canInterpolateStates() {
 
 function updateGame() {
   const startTime = (new Date()).getTime();
+
   gameRunning = false;
   if(!canInterpolateStates()) return;
   gameRunning = true;
