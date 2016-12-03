@@ -219,6 +219,13 @@ table {
   height: 10px;
 }
 
+.playerLink:hover {
+  color: blue;
+}
+.playerLink {
+  text-decoration: underline;
+}
+
 .inactive-player {
   color: red !important;
 }
