@@ -7,7 +7,7 @@ class UnknownPlayerIdException(Exception):
 
 
 class Game:
-    RankedGameId = -1
+    RANKED_GAME_ID = -1
 
     def __init__(self, id_, tick, player_id, players,
                  resources, map_, viruses):

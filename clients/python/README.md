@@ -11,6 +11,10 @@
 ## Joining the Ranked Game
 `python ./play.py`
 
+## Joining a private Game
+`python ./play.py --join-private` or `python ./play.py -j`
+Note that you can have a maximum of only one private game at any given time.
+
 ## Running the Tests (developers of the game)
 `python -m unittest discover -p "*_test.py"`
 
