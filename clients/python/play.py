@@ -12,11 +12,18 @@ UpdatesPerSecond = 3  # how many times we should contact the server per second
 
 
 def main():
-    in_private_game = "--join-private" in sys.argv or "-j" in sys.argv
+    create_private = "--create-private" in sys.argv or "-c" in sys.argv
+    join_private = "--join-private" in sys.argv or "-j" in sys.argv
+
     player_id, player_secret, api_url = read_config()
-    game_id = player_id if in_private_game else Game.RANKED_GAME_ID
+    game_id = player_id if join_private else Game.RANKED_GAME_ID
     api = API(player_id, player_secret, api_url)
     ai = AI()
+
+    if(create_private):
+        game_id = api.create_private()
+        # This is useful since the game creation is not instant
+        sleep(0.5)
 
     while True:
         update_game(api, game_id, ai.step)
