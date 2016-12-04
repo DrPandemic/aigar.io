@@ -7,7 +7,7 @@ function displayEntries(entries) {
     const row = leaderboard.insertRow(0);
     row.insertCell(0).innerHTML = he.encode(entry.player_id.toString());
     row.insertCell(1).innerHTML = he.encode(entry.name);
-    row.insertCell(2).innerHTML = he.encode(entry.score.toString());
+    row.insertCell(2).innerHTML = he.encode(entry.score.toFixed(2).toString());
   }
 }
 
