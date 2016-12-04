@@ -12,7 +12,7 @@
 `python ./play.py`
 
 ## Joining your private Game
-The private game need to already exist.
+The private game needs to already exist.
 `python ./play.py --join-private` or `python ./play.py -j`
 
 ## Creating and joining your private game

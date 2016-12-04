@@ -12,7 +12,7 @@ UpdatesPerSecond = 3  # how many times we should contact the server per second
 
 
 def main():
-    create_private = "--create-priavte" in sys.argv or "-c" in sys.argv
+    create_private = "--create-private" in sys.argv or "-c" in sys.argv
     join_private = "--join-private" in sys.argv or "-j" in sys.argv
 
     player_id, player_secret, api_url = read_config()
