@@ -37,7 +37,7 @@ export function resizeCanvas(canvas, width, height) {
 }
 
 export function displayLoading() {
-  let state = "Loading";
+  let state = "Loading ";
   return setInterval(() => {
     const screenCanvas = document.getElementById("screenCanvas");
     const context = screenCanvas.getContext("2d");
@@ -55,6 +55,9 @@ export function displayLoading() {
     context.fillText(state, screenWidth / 2, screenHeight / 2);
 
     state += ".";
+    if(state === "Loading ....") {
+      state = "Loading ";
+    }
   }, 333);
 }
 
