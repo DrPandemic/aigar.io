@@ -1,3 +1,5 @@
+import * as constants from "./constants";
+
 export function initLineButton() {
   const targetLinesBtn = document.getElementById("targetLinesBtn");
   targetLinesBtn.onclick = function() {
@@ -32,4 +34,33 @@ export function resizeCanvas(canvas, width, height) {
   }
 
   return resized;
+}
+
+export function displayLoading() {
+  let state = "Loading ";
+  return setInterval(() => {
+    const screenCanvas = document.getElementById("screenCanvas");
+    const context = screenCanvas.getContext("2d");
+    const screenWidth = screenCanvas.width;
+    const screenHeight = screenCanvas.height;
+
+    context.clearRect(0, 0, screenWidth, screenHeight);
+    context.beginPath();
+    context.fillStyle = constants.textBorderColor;
+    context.font = constants.textStyle;
+    context.textAlign="center";
+    context.textBaseline = "middle";
+    context.lineWidth = constants.textBorderThickness;
+
+    context.fillText(state, screenWidth / 2, screenHeight / 2);
+
+    state += ".";
+    if(state === "Loading ....") {
+      state = "Loading ";
+    }
+  }, 333);
+}
+
+export function hideLoading(handle) {
+  clearInterval(handle);
 }
