@@ -78,6 +78,7 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
   _mass = Cell.MinMass
 
   var burstActive = false
+  var sendBurst = false;
 
   /**
    * The maximum speed (length of the velocity) for the cell, in units per
@@ -101,6 +102,7 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
   }
 
   def update(deltaSeconds: Float, grid: Grid): Unit = {
+    sendBurst = false
     mass = decayedMass(deltaSeconds)
 
     target = aiState.update(deltaSeconds, grid)
@@ -109,7 +111,10 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
     keepInGrid(grid)
 
     velocity += movement(deltaSeconds)
-    if (burstActive) applyBurst(deltaSeconds)
+    sendBurst = burstActive
+    if (burstActive) {
+      applyBurst(deltaSeconds)
+    }
     velocity += drag(deltaSeconds)
   }
 
@@ -209,6 +214,7 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
                       round(mass),
                       round(radius),
                       position.state,
-                      target.state)
+                      target.state,
+                      sendBurst)
   }
 }

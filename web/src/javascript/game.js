@@ -73,6 +73,51 @@ function drawCircle(context, position, radius, color, drawBorder = false) {
   context.drawImage(canvas, position.x - diff, position.y - diff);
 }
 
+function drawBurst(context, position, radius, color, target) {
+  let v = {
+    x: target.x - position.x,
+    y: target.y - position.y
+  };
+  let dir = {
+    x: v.x / Math.sqrt(Math.pow(v.x, 2) + Math.pow(v.y, 2)),
+    y: v.y / Math.sqrt(Math.pow(v.x, 2) + Math.pow(v.y, 2))
+  };
+
+  let lineStart = calculateLineStartOrEnd(-1, 1, dir, radius, constants.burstLineDistance, position);
+  let lineEnd = calculateLineStartOrEnd(-1, 1, dir, radius, constants.burstLineDistance + constants.burstLineLength, position);
+  drawLine(context, lineStart, lineEnd);
+
+  lineStart = calculateLineStartOrEnd(-1, 1, dir, (radius / 2), constants.burstLineDistance + radius, position);
+  lineEnd = calculateLineStartOrEnd(-1, 1, dir, (radius / 2), constants.burstLineDistance + constants.burstLineLength + radius, position);
+  drawLine(context, lineStart, lineEnd);
+
+  lineStart = calculateLineStartOrEnd(1, -1, dir, (radius / 2), constants.burstLineDistance + radius, position);
+  lineEnd = calculateLineStartOrEnd(1, -1, dir, (radius / 2), constants.burstLineDistance + constants.burstLineLength + radius, position);
+  drawLine(context, lineStart, lineEnd);
+
+  lineStart = calculateLineStartOrEnd(1, -1, dir, radius, constants.burstLineDistance, position);
+  lineEnd = calculateLineStartOrEnd(1, -1, dir, radius, constants.burstLineDistance + constants.burstLineLength, position);
+  drawLine(context, lineStart, lineEnd);
+}
+
+function calculateLineStartOrEnd(dirxMul, diryMul, dir, radius, length, position) {
+  let linePos = {
+    x: (position.x + (diryMul * dir.y * radius)) + (-dir.x * length),
+    y: (position.y + (dirxMul * dir.x * radius)) + (-dir.y * length)
+  };
+
+  return linePos;
+}
+
+function drawLine(context, lineStart, lineEnd){
+  context.beginPath();
+  context.moveTo(lineStart.x, lineStart.y);
+  context.lineTo(lineEnd.x, lineEnd.y);
+  context.lineWidth = constants.burstLineThickness;
+  context.strokeStyle = constants.highlightColor;
+  context.stroke();
+}
+
 function writeCellTeamName(playerName, mapContext, position) {
   let canvas = nameCache[playerName];
   if (!canvas) {
@@ -143,7 +188,8 @@ export function drawPlayersOnMap(players, gameCanvas, onMinimap, ratio = 1) {
         playerName: player.name,
         target: cell.target,
         playerId: player.id,
-        id: cell.id
+        id: cell.id,
+        burst: cell.burstActive
       });
     }
   }
@@ -156,9 +202,15 @@ export function drawPlayersOnMap(players, gameCanvas, onMinimap, ratio = 1) {
     else {
       drawCircle(context, cell.position, cell.radius, cell.color);
     }
+
     if (!onMinimap) {
       writeCellTeamName(cell.playerName, context, cell.position);
     }
+
+    if(cell.burst){
+      drawBurst(context, cell.position, cell.radius, cell.color, cell.target);
+    }
+
     const targetLinesBtn = document.getElementById("targetLinesBtn");
     if (targetLinesBtn.className === "btn btn-primary" && !onMinimap) {
       drawLine(context, cell.position, cell.target, cell.color);
