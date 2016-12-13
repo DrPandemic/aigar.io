@@ -1,13 +1,13 @@
-import io.aigar.game._
 import io.aigar.controller.response.GameCreationCommand
 import io.aigar.controller.response.{SetRankedDurationCommand, RestartThreadCommand}
+import io.aigar.game.{ActionQueryWithId, Game, GameThread}
 import io.aigar.score.{ScoreModification, ScoreThread}
 import io.aigar.controller.response.Action
 import io.aigar.game.serializable.Position
-import org.scalatest._
+import org.scalatest.{FlatSpec, Matchers}
 import org.scalatest.mock.MockitoSugar
-import org.mockito.Mockito._
-import org.mockito.Matchers._
+import org.mockito.Mockito.{verify, when}
+import org.mockito.Matchers.any
 
 class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
   def createStartedGameThread(playerIDs: List[Int] = List()): GameThread = {
@@ -199,11 +199,11 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
     val notRanked = mock[Game]
     game.games = Map(Game.RankedGameId -> ranked, Game.RankedGameId + 1 -> notRanked)
     when(ranked.id).thenReturn(Game.RankedGameId)
-    when(ranked.startTime).thenReturn(GameThread.time)
+    when(ranked.startTime).thenReturn(Game.time)
     when(ranked.duration).thenReturn(Int.MaxValue)
     when(notRanked.id).thenReturn(Game.RankedGameId + 1)
-    when(ranked.update(any[Float])).thenReturn(List(ScoreModification(Game.RankedGameId, 1)))
-    when(notRanked.update(any[Float])).thenReturn(List(ScoreModification(Game.RankedGameId + 1, 2)))
+    when(ranked.update).thenReturn(List(ScoreModification(Game.RankedGameId, 1)))
+    when(notRanked.update).thenReturn(List(ScoreModification(Game.RankedGameId + 1, 2)))
 
     game.updateGames
 
