@@ -342,8 +342,8 @@ class CellSpec extends FlatSpec with Matchers {
 
     val cells = cell.split
 
-    player.cells should have size 2
-    player.cells(0).velocity.distanceTo(player.cells(1).velocity) should be > 0f
+    cells should have size 2
+    cells(0).velocity.distanceTo(cells(1).velocity) should be > 0f
   }
 
   it should "not split when it does not have enough mass" in {
@@ -384,6 +384,30 @@ class CellSpec extends FlatSpec with Matchers {
     val cells = player.cells.head.split
 
     cells should contain only(player.cells.head)
+  }
+
+  "applySplitPushBack" should "push the cell to distinct positions" in {
+    val player = new Player(0, Vector2(0f, 0f))
+    val cell = player.cells.head
+    cell.velocity = Vector2(0f, 1f)
+    val other = new Cell(1, player, Vector2(0f, 0f))
+    val radius = cell.radius
+
+    cell.applySplitPushBack(other)
+
+    cell.position.distanceTo(Vector2(-radius, 0f)) should equal(0f +- 0.001f)
+    other.position.distanceTo(Vector2(radius, 0f)) should equal(0f +- 0.001f)
+  }
+  it should "give to the cells a distinct non-empty velocity" in {
+    val player = new Player(0, Vector2(0f, 0f))
+    val cell = player.cells.head
+    val other = new Cell(1, player, Vector2(0f, 0f))
+
+    cell.applySplitPushBack(other)
+
+    cell.velocity.magnitude should be > 0f
+    other.velocity.magnitude should be > 0f
+    cell.velocity.distanceTo(other.velocity) should be > 0f
   }
 
   "Burst" should "give a velocity boost on update" in {
