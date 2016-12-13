@@ -1,4 +1,3 @@
-import io.aigar.game.Vector2Utils
 import io.aigar.game.Vector2Utils._
 import io.aigar.game.Position2Utils._
 import io.aigar.game.serializable.Position
@@ -45,7 +44,7 @@ class Vector2UtilsSpec extends FlatSpec with Matchers {
   }
 
   it should "return a random unit vector with a length of 1" in {
-    val vector = Vector2Utils.randomUnitVector
+    val vector = randomUnitVector
 
     vector.magnitude should equal(1f +- 0.001f)
   }
