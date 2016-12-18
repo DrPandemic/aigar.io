@@ -18,9 +18,9 @@ export const textStyle = "25px Arial";
 export const ratioHeight = 0.6;
 
 export const playerColors = [
+  "#3F51B5",
   "#F44336",
   "#9C27B0",
-  "#3F51B5",
   "#03A9F4",
   "#009688",
   "#8BC34A",
