@@ -5,6 +5,7 @@ import io.aigar.score.ScoreModification
 
 trait EntityContainer {
   def shouldRespawn(size: Int, min: Int, max: Int): Boolean = {
+    return false
     val ratio = (size - min).toFloat / (max - min)
     scala.util.Random.nextFloat >= ratio
   }

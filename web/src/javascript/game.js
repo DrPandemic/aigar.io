@@ -209,8 +209,8 @@ export function drawMiniMap(gameCanvas, miniMapCanvas) {
   const screenCanvas = document.getElementById("screenCanvas");
   const screenContext = screenCanvas.getContext("2d");
 
-  drawMiniMapScreenPos(gameCanvas, miniMapCanvas);
-  screenContext.drawImage(miniMapCanvas, miniMapPosX, 0);
+  // drawMiniMapScreenPos(gameCanvas, miniMapCanvas);
+  // screenContext.drawImage(miniMapCanvas, miniMapPosX, 0);
   screenCanvas.style.background = "#000";
 }
 
@@ -349,6 +349,7 @@ export function drawGame(gameState, gameCanvas, miniMapCanvas, miniMapTmpCanvas)
   drawVirusesOnMap(gameState.viruses, gameCanvas);
   drawPlayersOnMap(gameState.players, gameCanvas, true);
   drawMap(gameCanvas);
+  console.log('yol4');
   drawMiniMap(gameCanvas, miniMapCanvas);
 
   updateTimeLeft(gameState.timeLeft);

@@ -15,7 +15,7 @@ object Game {
   final val DefaultDuration = 60 * 20
   final val PrivateGameDuration = 60 * 10
   final val PrivateGameBotQuantity = 5
-  final val MinimumNumberOfPlayerModificator = 10
+  final val MinimumNumberOfPlayerModificator = 20
 
   final val NanoSecondsPerMillisecond = 1000000f
   final val MillisecondsPerSecond = 1000f
@@ -40,12 +40,13 @@ class Game(val id: Int,
 
   val grid = new Grid(math.max(Game.MinimumNumberOfPlayerModificator, playerIds.length) * Grid.WidthPerPlayer,
                       math.max(Game.MinimumNumberOfPlayerModificator, playerIds.length) * Grid.HeightPerPlayer)
+  logger.info(s"Grid is ${grid.width} x ${grid.height}")
   val players = createPlayers
-  val viruses = new Viruses(grid, math.max(Game.MinimumNumberOfPlayerModificator, playerIds.length))
+  val viruses = new Viruses(grid, 0)//math.max(Game.MinimumNumberOfPlayerModificator, playerIds.length))
   val resources = new Resources(grid)
   val startTime = Game.time
-  var previousTime = 0f
-  var currentTime = Game.MillisecondsPerTick / Game.MillisecondsPerSecond // avoid having an initial 0 delta time
+  var currentTime = startTime + Game.MillisecondsPerTick / Game.MillisecondsPerSecond // avoid having an initial 0 delta time
+  var previousTime = startTime 
   var tick = 0
 
   def update: List[ScoreModification] = {

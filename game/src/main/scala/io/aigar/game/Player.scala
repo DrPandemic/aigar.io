@@ -32,7 +32,7 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer
   }
 
   var cells: List[Cell] = List()
-  spawnCell(startPosition)
+  spawnCell(Vector2(0f, 0f))
 
   var opponents = List[Player]()
 
@@ -83,6 +83,7 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer
   def shouldRespawn(size: Int, min: Int): Boolean = size < min
 
   def randomPosition(grid: Grid): Vector2 = {
+    return Vector2(0f, 0f)
     grid.randomPosition
   }
 

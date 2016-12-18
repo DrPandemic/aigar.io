@@ -39,8 +39,8 @@ object Cell {
     */
   final val MassToScoreRatio = 0.5f
 
-  final val MinMaximumSpeed = 25f
-  final val MaxMaximumSpeed = 50f
+  final val MinMaximumSpeed = 75f
+  final val MaxMaximumSpeed = 125f
   final val SpeedLimitReductionPerMassUnit = 0.05f
 
   final val RespawnRetryAttempts = 15
@@ -100,10 +100,19 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
     (1 + log(mass) - log(Cell.MinMass)).toFloat
   }
 
+  var total = 0f
+
   def update(deltaSeconds: Float, grid: Grid): Unit = {
-    mass = decayedMass(deltaSeconds)
+    total += deltaSeconds
+    // mass = decayedMass(deltaSeconds)
 
     target = aiState.update(deltaSeconds, grid)
+    if (total > 10f) {
+      target = Vector2(grid.width, grid.height)
+    } else {
+      position = Vector2(0f, 0f)
+      target = position
+    }
 
     position += velocity * deltaSeconds
     keepInGrid(grid)
