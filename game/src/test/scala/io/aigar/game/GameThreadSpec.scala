@@ -1,13 +1,12 @@
 import io.aigar.controller.response.GameCreationCommand
 import io.aigar.controller.response.{SetRankedDurationCommand, RestartThreadCommand}
-import io.aigar.game.{ActionQueryWithId, Game, GameThread}
+import io.aigar.game.{ActionQueryWithId, Game, GameThread, serializable}
 import io.aigar.score.{ScoreModification, ScoreThread}
 import io.aigar.controller.response.Action
 import io.aigar.game.serializable.Position
 import org.scalatest.{FlatSpec, Matchers}
 import org.scalatest.mock.MockitoSugar
 import org.mockito.Mockito.{verify, when}
-import org.mockito.Matchers.any
 
 class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
   def createStartedGameThread(playerIDs: List[Int] = List()): GameThread = {
@@ -202,8 +201,10 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
     when(ranked.startTime).thenReturn(Game.time)
     when(ranked.duration).thenReturn(Int.MaxValue)
     when(notRanked.id).thenReturn(Game.RankedGameId + 1)
-    when(ranked.update).thenReturn(List(ScoreModification(Game.RankedGameId, 1)))
-    when(notRanked.update).thenReturn(List(ScoreModification(Game.RankedGameId + 1, 2)))
+    when(ranked.update).thenReturn((List(ScoreModification(Game.RankedGameId, 1)),
+                                    serializable.GameState(0,0,0f,List(), serializable.Resources(List(), List(), List()), serializable.Dimensions(0, 0), List())))
+    when(notRanked.update).thenReturn((List(ScoreModification(Game.RankedGameId + 1, 2)),
+                                       serializable.GameState(0,0,0f,List(), serializable.Resources(List(), List(), List()), serializable.Dimensions(0, 0), List())))
 
     game.updateGames
 
@@ -247,12 +248,14 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
     game.games.get(Game.RankedGameId + 1) shouldBe None
   }
 
-  it should "remove finished private game state" in {
+  it should "remove finished private game's state" in {
     val game = createStartedGameThread()
     val id = Game.RankedGameId + 1
     val privateGame = mock[Game]
     when(privateGame.id).thenReturn(id)
     when(privateGame.timeLeft).thenReturn(50)
+    when(privateGame.update).thenReturn((List(),
+                                         serializable.GameState(0,0,0f,List(), serializable.Resources(List(), List(), List()), serializable.Dimensions(0, 0), List())))
     game.games += (id -> privateGame)
 
     game.updateGames

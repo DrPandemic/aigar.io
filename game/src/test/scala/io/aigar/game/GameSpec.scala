@@ -97,7 +97,7 @@ class GameSpec extends FlatSpec with Matchers {
     // This is to ensure no movement
     game.currentTime = 0
     game.previousTime = 0
-    val resourceModifications = game.update
+    val (resourceModifications, _) = game.update
 
     resourceModifications should contain (ScoreModification(player.id, Regular.Score))
   }

@@ -121,9 +121,9 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
     resetGames
 
     for (game <- games.values) {
-      val modifications = game.update
+      val (modifications, state) = game.update
       applyScoreModifications(game, modifications)
-      states = states + (game.id -> game.state)
+      states = states + (game.id -> state)
     }
   }
 
