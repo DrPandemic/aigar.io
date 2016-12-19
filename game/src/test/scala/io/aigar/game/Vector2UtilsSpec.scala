@@ -43,6 +43,21 @@ class Vector2UtilsSpec extends FlatSpec with Matchers {
     vector.safeNormalize should equal(vector.normalize)
   }
 
+  it should "return a random unit vector with a length of 1" in {
+    val vector = randomUnitVector
+
+    vector.magnitude should equal(1f +- 0.001f)
+  }
+
+  "perpendicular" should "return a clockwise perpendicular vector" in {
+    val vector = Vector2(1f, 2f)
+
+    val perpendicular = vector.perpendicular
+
+    perpendicular.x should equal(-2f)
+    perpendicular.y should equal(1f)
+  }
+
   "Position" should "generate a vector with the right coordinates" in {
     val position = new Position(100f, 200f)
 
