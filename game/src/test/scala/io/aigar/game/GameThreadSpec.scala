@@ -246,4 +246,20 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
 
     game.games.get(Game.RankedGameId + 1) shouldBe None
   }
+
+  it should "remove finished private game state" in {
+    val game = createStartedGameThread()
+    val id = Game.RankedGameId + 1
+    val privateGame = mock[Game]
+    when(privateGame.id).thenReturn(id)
+    when(privateGame.timeLeft).thenReturn(50)
+    game.games += (id -> privateGame)
+
+    game.updateGames
+    game.gameState(id) should not be None
+
+    when(privateGame.timeLeft).thenReturn(0)
+    game.updateGames
+    game.gameState(id) shouldBe None
+  }
 }

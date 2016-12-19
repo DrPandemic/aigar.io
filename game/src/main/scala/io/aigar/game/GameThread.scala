@@ -87,17 +87,25 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
       adminCommandQueue.take match {
         case command: SetRankedDurationCommand => nextRankedDuration = command.duration
         case command: RestartThreadCommand => restart(command.playerIDs)
-        case command: GameCreationCommand => games = games + (command.gameId -> createPrivateGame(command.gameId))
+        case command: GameCreationCommand => games += (command.gameId -> createPrivateGame(command.gameId))
       }
     }
   }
 
   private def resetGames: Unit = {
+    // Remove games
     games = games.filter {
       case (Game.RankedGameId, _) => true
       case (_, game) => game.timeLeft > 0f
     }
 
+    // Remove states
+    states = states.filter {
+      case (id, _) if games.contains(id) => true
+      case _ => false
+    }
+
+    // Reset ranked
     games.get(Game.RankedGameId) match {
       case Some(ranked) => {
         val elapsed = Game.time - ranked.startTime
