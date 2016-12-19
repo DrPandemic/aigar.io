@@ -8,8 +8,8 @@ object Resource {
 }
 
 object Regular {
-  final val Max = 0
-  final val Min = 0
+  final val Max = 250
+  final val Min = 100
 
   // IMPORTANT: keep those values in sync with the client documentation
   final val Mass = 3
@@ -80,8 +80,7 @@ class ResourceType(grid: Grid,
                    resourceMin: Int,
                    resourceMax: Int
                   ) extends EntityContainer {
-  // var resources = List.map(resourceMax)(new Resource(grid.randomPosition, resourceMass, resourceScore))
-  var resources = List.range(0, resourceMax).map(i => new Resource(Vector2(grid.width / 2f + grid.width * i / 2f / resourceMax, grid.height / 2f + grid.height * i / 2f / resourceMax), resourceMass, resourceScore))
+  var resources = List.fill(resourceMax)(new Resource(grid.randomPosition, resourceMass, resourceScore))
 
   def update(grid: Grid, players: List[Player]): List[ScoreModification] = {
     val (resourcesReturn, modifications) = handleCollision(resources, players)

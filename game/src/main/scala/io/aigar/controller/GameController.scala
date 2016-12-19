@@ -27,11 +27,8 @@ class GameController(game: GameThread, playerRepository: PlayerRepository)
     state.copy(players = state.players.map(
                  (player) => {
                    val name = player.id match {
-                     case 0 => "Player"
-                     case 1 => "Bot 1"
-                     case 2 => "Bot 2"
-                     case 3 => "Bot 3"
-                     case 4 => "Bot 4"
+                     case 1 => "Cloud9"
+                     case 2 => "TSM"
                    }
                    // val name = players.find(_.id.get == player.id) match {
                    //   case Some(player) => player.playerName

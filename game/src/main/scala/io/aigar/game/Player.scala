@@ -77,7 +77,7 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer
     val cell = new Cell(currentCellId, this, position)
     cells ::= cell
 
-    cell.mass = 400f
+    cell.mass = 50f
 
     logger.info(s"Player $id respawned with cell ${cell.id} at (${cell.position.x}, ${cell.position.y})")
 

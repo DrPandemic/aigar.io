@@ -108,10 +108,7 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
     total += deltaSeconds
     // mass = decayedMass(deltaSeconds)
 
-    // target = aiState.update(deltaSeconds, grid)
-    if (total > 10f) {
-      target = Vector2(700f, 500f)
-    }
+    target = aiState.update(deltaSeconds, grid)
 
     position += velocity * deltaSeconds
     keepInGrid(grid)

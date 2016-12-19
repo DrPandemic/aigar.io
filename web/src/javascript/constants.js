@@ -17,13 +17,14 @@ export const textBorderThickness = 1;
 export const textStyle = "25px Arial";
 export const ratioHeight = 0.6;
 
+console.log('hello2');
 export const playerColors = [
-  "#3F51B5",
-  "#F44336",
-  "#9C27B0",
-  "#03A9F4",
-  "#009688",
+  "#F44336", 
   "#8BC34A",
+  "#009688",
+  "#9C27B0",
+  "#3F51B5",
+  "#03A9F4",
   "#FFEB3B",
   "#FF9800",
   "#795548",

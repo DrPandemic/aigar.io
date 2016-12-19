@@ -42,7 +42,7 @@ class Game(val id: Int,
                       math.max(Game.MinimumNumberOfPlayerModificator, playerIds.length) * Grid.HeightPerPlayer)
   logger.info(s"Grid is ${grid.width} x ${grid.height}")
   val players = createPlayers
-  val viruses = new Viruses(grid, 1)//math.max(Game.MinimumNumberOfPlayerModificator, playerIds.length))
+  val viruses = new Viruses(grid, 0)//math.max(Game.MinimumNumberOfPlayerModificator, playerIds.length))
   val resources = new Resources(grid)
   val startTime = Game.time
   var currentTime = startTime + Game.MillisecondsPerTick / Game.MillisecondsPerSecond // avoid having an initial 0 delta time
