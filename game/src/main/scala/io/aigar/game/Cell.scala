@@ -103,16 +103,22 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
   }
 
   var total = 0f
+  var hasStartedMoving = false
+  var hasSplit = false
 
   def update(deltaSeconds: Float, grid: Grid): Unit = {
     total += deltaSeconds
     // mass = decayedMass(deltaSeconds)
 
-    target = aiState.update(deltaSeconds, grid)
-    if (total > 10f && player.id == 0) {
-      target = Vector2(grid.width, grid.height)
-    } else {
-      target = position
+    // target = aiState.update(deltaSeconds, grid)
+    if (id == 0 && total > 10f && !hasStartedMoving) {
+      target = Vector2(position.x, position.y - 300f)
+      hasStartedMoving = true
+    } else if (id == 0 && total > 11f && !hasSplit) {
+      val cells = split()
+      cells(0).target = cells(1).position
+      cells(1).target = cells(1).position
+      hasSplit = true
     }
 
     position += velocity * deltaSeconds

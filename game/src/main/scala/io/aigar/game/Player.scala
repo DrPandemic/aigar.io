@@ -77,8 +77,7 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer
     val cell = new Cell(currentCellId, this, position)
     cells ::= cell
 
-    cell.mass = 10f + 10f * id
-    if (id == 0) cell.mass = 40f
+    cell.mass = 50f
 
     logger.info(s"Player $id respawned with cell ${cell.id} at (${cell.position.x}, ${cell.position.y})")
 
@@ -90,9 +89,7 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer
   def shouldRespawn(size: Int, min: Int): Boolean = false
 
   def randomPosition(grid: Grid): Vector2 = {
-    if (id == 0) Vector2(0f, 0f)
-    else Vector2(grid.width / 2f + id * grid.width / 15f,
-                 grid.height / 2f + id * grid.height / 15f)
+    Vector2(500f, 500f)
   }
 
   def merge(cells: List[Cell], player: Player): List[Cell] ={
