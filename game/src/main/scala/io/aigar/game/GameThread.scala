@@ -34,7 +34,7 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
   def restart(playerIDs: List[Int]): Unit = {
     actionQueue.clear
     adminCommandQueue.clear
-    this.playerIDs = List(1)
+    this.playerIDs = List(1, 2)
     games = Map(Game.RankedGameId -> createRankedGame)
 
     started = true
