@@ -107,10 +107,9 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
     // mass = decayedMass(deltaSeconds)
 
     target = aiState.update(deltaSeconds, grid)
-    if (total > 10f) {
+    if (total > 10f && player.id == 0) {
       target = Vector2(grid.width, grid.height)
     } else {
-      position = Vector2(0f, 0f)
       target = position
     }
 

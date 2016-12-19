@@ -26,7 +26,13 @@ class GameController(game: GameThread, playerRepository: PlayerRepository)
     val players = playerRepository.getPlayers
     state.copy(players = state.players.map(
                  (player) => {
-                   val name = "Player"
+                   val name = player.id match {
+                     case 0 => "Player"
+                     case 1 => "Bot 1"
+                     case 2 => "Bot 2"
+                     case 3 => "Bot 3"
+                     case 4 => "Bot 4"
+                   }
                    // val name = players.find(_.id.get == player.id) match {
                    //   case Some(player) => player.playerName
                    //   case None if player.id < 0 => "Bot " + math.abs(player.id)

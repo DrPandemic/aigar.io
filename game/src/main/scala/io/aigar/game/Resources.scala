@@ -8,7 +8,7 @@ object Resource {
 }
 
 object Regular {
-  final val Max = 75
+  final val Max = 0
   final val Min = 0
 
   // IMPORTANT: keep those values in sync with the client documentation
