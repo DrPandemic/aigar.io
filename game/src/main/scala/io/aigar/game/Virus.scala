@@ -31,7 +31,7 @@ class Virus(var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
 
 class Viruses(grid: Grid, val MaximumNumberOfViruses: Int)
     extends EntityContainer with LazyLogging {
-  var viruses = List.fill(MaximumNumberOfViruses)(new Virus(grid.randomPosition))
+  var viruses = List.fill(MaximumNumberOfViruses)(new Virus(randomPosition(grid)))
 
   def update(grid: Grid, players: List[Player]): List[ScoreModification] = {
     val (virusesReturn, modifications) = handleCollision(viruses, players)
@@ -62,7 +62,7 @@ class Viruses(grid: Grid, val MaximumNumberOfViruses: Int)
   }
 
   def randomPosition(grid: Grid): Vector2 = {
-    grid.randomRadiusPosition
+    Vector2(700f, 500f)
   }
 
   def state: List[serializable.Virus] = {
