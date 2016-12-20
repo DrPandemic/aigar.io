@@ -82,9 +82,7 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
 
     val futures = actions.toList.map(action =>
       games.get(action.game_id) match {
-        case Some(game) => {
-          (game, game.performAction(action.player_id, action.actions))
-        }
+        case Some(game) => (game, game.performAction(action.player_id, action.actions))
       }
     )
 
@@ -92,7 +90,7 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
       case(game, future) => {
         Try(Await.result(future, Game.MillisecondsPerTick milliseconds)) match {
           case Success(result) => applyScoreModifications(game, result)
-          case Failure(error) => logger.error(s"Game with id $game.id failed to update with $error.getGessage")
+          case Failure(error) => logger.error(s"Game with id $game.id failed to perform actions with $error.getGessage")
         }
       }
     }
@@ -136,10 +134,18 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
   def updateGames: Unit = {
     resetGames
 
-    for (game <- games.values) {
-      val (modifications, state) = game.update
-      applyScoreModifications(game, modifications)
-      states = states + (game.id -> state)
+    val futures = games.values.map(game => (game, game.update))
+
+    futures.foreach {
+      case (game, future) => {
+        Try(Await.result(future, Game.MillisecondsPerTick milliseconds)) match {
+          case Success((modifications, state)) => {
+            applyScoreModifications(game, modifications)
+            states = states + (game.id -> state)
+          }
+          case Failure(error) => logger.error(s"Game with id $game.id failed to update with $error.getGessage")
+        }
+      }
     }
   }
 

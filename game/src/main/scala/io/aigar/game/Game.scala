@@ -51,17 +51,18 @@ class Game(val id: Int,
   var currentTime = Game.MillisecondsPerTick / Game.MillisecondsPerSecond // avoid having an initial 0 delta time
   var tick = 0
 
-  def update: (List[ScoreModification], serializable.GameState) = {
-    val deltaSeconds = currentTime - previousTime
-//    logger.info(s"$deltaSeconds")
-    var modifications = players.flatten {  _.update(deltaSeconds, grid, players) }
-    modifications :::= viruses.update(grid, players)
-    modifications :::= resources.update(grid, players)
-    tick += 1
+  def update: Future[(List[ScoreModification], serializable.GameState)] = {
+    Future {
+      val deltaSeconds = currentTime - previousTime
+      var modifications = players.flatten {  _.update(deltaSeconds, grid, players) }
+      modifications :::= viruses.update(grid, players)
+      modifications :::= resources.update(grid, players)
+      tick += 1
 
-    previousTime = currentTime
-    currentTime = Game.time
-    (modifications, state)
+      previousTime = currentTime
+      currentTime = Game.time
+      (modifications, state)
+    }
   }
 
   def performAction(player_id: Int, actions: List[Action]): Future[List[ScoreModification]] = {
