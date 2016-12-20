@@ -53,25 +53,29 @@ class Game(val id: Int,
 
   def update: Future[(List[ScoreModification], serializable.GameState)] = {
     Future {
-      val deltaSeconds = currentTime - previousTime
-      var modifications = players.flatten {  _.update(deltaSeconds, grid, players) }
-      modifications :::= viruses.update(grid, players)
-      modifications :::= resources.update(grid, players)
-      tick += 1
+      this.synchronized {
+        val deltaSeconds = currentTime - previousTime
+        var modifications = players.flatten {  _.update(deltaSeconds, grid, players) }
+        modifications :::= viruses.update(grid, players)
+        modifications :::= resources.update(grid, players)
+        tick += 1
 
-      previousTime = currentTime
-      currentTime = Game.time
-      (modifications, state)
+        previousTime = currentTime
+        currentTime = Game.time
+        (modifications, state)
+      }
     }
   }
 
   def performAction(player_id: Int, actions: List[Action]): Future[List[ScoreModification]] = {
     Future {
-      players.find(_.id == player_id) match {
-        case Some(player) => {
-          player.performAction(actions)
+      this.synchronized {
+        players.find(_.id == player_id) match {
+          case Some(player) => {
+            player.performAction(actions)
+          }
+          case None => List()
         }
-        case None => List()
       }
     }
   }
