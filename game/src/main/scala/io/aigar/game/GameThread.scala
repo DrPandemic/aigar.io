@@ -7,6 +7,13 @@ import io.aigar.controller.response.{
   SetRankedDurationCommand,
   RestartThreadCommand
 }
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
+import scala.concurrent.duration._
+import scala.concurrent.Await
+import scala.concurrent.Future
+import scala.collection.JavaConversions._
 import io.aigar.score.{ScoreModification, ScoreThread}
 import java.util.concurrent.LinkedBlockingQueue
 
@@ -70,14 +77,23 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
   }
 
   def transferActions: Unit = {
-    while (!actionQueue.isEmpty) {
-      val action = actionQueue.take
+    var actions = new java.util.ArrayList[ActionQueryWithId]()
+    actionQueue.drainTo(actions)
+
+    val futures = actions.toList.map(action =>
       games.get(action.game_id) match {
         case Some(game) => {
-          val modifications = game.performAction(action.player_id, action.actions)
-          applyScoreModifications(game, modifications)
+          (game, game.performAction(action.player_id, action.actions))
         }
-        case None =>
+      }
+    )
+
+    futures.foreach {
+      case(game, future) => {
+        Try(Await.result(future, Game.MillisecondsPerTick milliseconds)) match {
+          case Success(result) => applyScoreModifications(game, result)
+          case Failure(error) => logger.error(s"Game with id $game.id failed to update with $error.getGessage")
+        }
       }
     }
   }
