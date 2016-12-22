@@ -4,6 +4,7 @@ import io.aigar.game.{ActionQueryWithId, Game, GameThread, serializable}
 import io.aigar.score.{ScoreModification, ScoreThread}
 import io.aigar.controller.response.Action
 import io.aigar.game.serializable.Position
+import scala.concurrent.Future
 import org.scalatest.{FlatSpec, Matchers}
 import org.scalatest.mock.MockitoSugar
 import org.mockito.Mockito.{verify, when}
@@ -138,11 +139,18 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
 
   "transferActions" should "empty the actionQueue" in {
     val game = createStartedGameThread()
-    game.actionQueue.put(ActionQueryWithId(1, 1, List()))
+    game.actionQueue.put(ActionQueryWithId(Game.RankedGameId, 1, List()))
 
     game.transferActions
 
     game.actionQueue shouldBe empty
+  }
+
+  it should "ignore with bad game's id" in {
+    val game = createStartedGameThread()
+    game.actionQueue.put(ActionQueryWithId(9001, 1, List()))
+
+    noException should be thrownBy game.transferActions
   }
 
   it should "update cell's targets" in {
@@ -201,10 +209,12 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
     when(ranked.startTime).thenReturn(Game.time)
     when(ranked.duration).thenReturn(Int.MaxValue)
     when(notRanked.id).thenReturn(Game.RankedGameId + 1)
-    when(ranked.update).thenReturn((List(ScoreModification(Game.RankedGameId, 1)),
-                                    serializable.GameState(0,0,0f,List(), serializable.Resources(List(), List(), List()), serializable.Dimensions(0, 0), List())))
-    when(notRanked.update).thenReturn((List(ScoreModification(Game.RankedGameId + 1, 2)),
-                                       serializable.GameState(0,0,0f,List(), serializable.Resources(List(), List(), List()), serializable.Dimensions(0, 0), List())))
+    val rankedFuture = Future.successful((List(ScoreModification(Game.RankedGameId, 1)),
+                                          serializable.GameState(0,0,0f,List(), serializable.Resources(List(), List(), List()), serializable.Dimensions(0, 0), List())))
+    val notRankedFuture = Future.successful((List(ScoreModification(Game.RankedGameId + 1, 2)),
+                                             serializable.GameState(0,0,0f,List(), serializable.Resources(List(), List(), List()), serializable.Dimensions(0, 0), List())))
+    when(ranked.update).thenReturn(rankedFuture)
+    when(notRanked.update).thenReturn(notRankedFuture)
 
     game.updateGames
 
@@ -254,7 +264,7 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
     val privateGame = mock[Game]
     when(privateGame.id).thenReturn(id)
     when(privateGame.timeLeft).thenReturn(50)
-    when(privateGame.update).thenReturn((List(),
+    when(privateGame.update).thenReturn(Future.successful(List(),
                                          serializable.GameState(0,0,0f,List(), serializable.Resources(List(), List(), List()), serializable.Dimensions(0, 0), List())))
     game.games += (id -> privateGame)
 

@@ -2,6 +2,7 @@ package io.aigar.game
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.blocking
 import scala.math.round
 import com.github.jpbetz.subspace.Vector2
 import com.typesafe.scalalogging.LazyLogging
@@ -54,15 +55,17 @@ class Game(val id: Int,
   def update: Future[(List[ScoreModification], serializable.GameState)] = {
     Future {
       this.synchronized {
-        val deltaSeconds = currentTime - previousTime
-        var modifications = players.flatten {  _.update(deltaSeconds, grid, players) }
-        modifications :::= viruses.update(grid, players)
-        modifications :::= resources.update(grid, players)
-        tick += 1
+        blocking {
+          val deltaSeconds = currentTime - previousTime
+          var modifications = players.flatten {  _.update(deltaSeconds, grid, players) }
+          modifications :::= viruses.update(grid, players)
+          modifications :::= resources.update(grid, players)
+          tick += 1
 
-        previousTime = currentTime
-        currentTime = Game.time
-        (modifications, state)
+          previousTime = currentTime
+          currentTime = Game.time
+          (modifications, state)
+        }
       }
     }
   }
@@ -70,11 +73,13 @@ class Game(val id: Int,
   def performAction(player_id: Int, actions: List[Action]): Future[List[ScoreModification]] = {
     Future {
       this.synchronized {
-        players.find(_.id == player_id) match {
-          case Some(player) => {
-            player.performAction(actions)
+        blocking {
+          players.find(_.id == player_id) match {
+            case Some(player) => {
+              player.performAction(actions)
+            }
+            case None => List()
           }
-          case None => List()
         }
       }
     }

@@ -80,7 +80,9 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
     var actions = new java.util.ArrayList[ActionQueryWithId]()
     actionQueue.drainTo(actions)
 
-    val futures = actions.toList.map(action =>
+    val futures = actions.toList
+      .filter(action => games.contains(action.game_id))
+      .map(action =>
       games.get(action.game_id) match {
         case Some(game) => (game, game.performAction(action.player_id, action.actions))
       }

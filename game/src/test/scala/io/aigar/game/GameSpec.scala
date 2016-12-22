@@ -2,10 +2,15 @@ import io.aigar.controller.response.Action
 import io.aigar.game.{Game, NullState, Regular, Resource, Virus}
 import io.aigar.game.serializable.Position
 import io.aigar.score.ScoreModification
+import scala.concurrent.duration._
+import scala.concurrent.Await
 import org.scalatest.{FlatSpec, Matchers}
 import com.github.jpbetz.subspace.Vector2
 
 class GameSpec extends FlatSpec with Matchers {
+  // This shouldn't slow test. It will only take this long when there's an issue with the test
+  val AwaitTime = 1 seconds
+
   "A Game" should "generate a new state object every time (thread-safety)" in {
     val game = new Game(42, List())
     val state1 = game.state
@@ -16,7 +21,7 @@ class GameSpec extends FlatSpec with Matchers {
     val game = new Game(42, List())
     game.tick should equal(0)
 
-    game.update
+    Await.result(game.update, AwaitTime)
 
     game.tick should equal(1)
   }
@@ -54,7 +59,7 @@ class GameSpec extends FlatSpec with Matchers {
     cell.position = Vector2(0, 0)
     cell.target = new Vector2(100f, 100f)
 
-    game.update
+    Await.result(game.update, AwaitTime)
 
     cell.velocity.magnitude should be > 0f
   }
@@ -97,24 +102,28 @@ class GameSpec extends FlatSpec with Matchers {
     // This is to ensure no movement
     game.currentTime = 0
     game.previousTime = 0
-    val (resourceModifications, _) = game.update
+    val (resourceModifications, _) = Await.result(game.update, AwaitTime)
 
     resourceModifications should contain (ScoreModification(player.id, Regular.Score))
   }
 
   "performAction" should "update cell's targets" in {
     val game = new Game(0, List(1, 2, 3))
-    game.performAction(1, List(Action(0, false, false, 0, Position(0f, 10f))))
-    game.performAction(2, List(Action(0, false, false, 0, Position(20f, 10f))))
-    game.performAction(3, List(Action(0, false, false, 0, Position(50f, 1f))))
+    val f0 = game.performAction(1, List(Action(0, false, false, 0, Position(0f, 10f))))
+    val f1 = game.performAction(2, List(Action(0, false, false, 0, Position(20f, 10f))))
+    val f2 = game.performAction(3, List(Action(0, false, false, 0, Position(50f, 1f))))
+
+    Await.result(f0, AwaitTime)
+    Await.result(f1, AwaitTime)
+    Await.result(f2, AwaitTime)
 
     val state = game.state
-    val p1 = state.players.find(_.id == 1).get
-    val p2 = state.players.find(_.id == 2).get
-    val p3 = state.players.find(_.id == 3).get
+    val p0 = state.players.find(_.id == 1).get
+    val p1 = state.players.find(_.id == 2).get
+    val p2 = state.players.find(_.id == 3).get
 
-    p1.cells.find(_.id == 0).get.target should equal(Position(0f, 10f))
-    p2.cells.find(_.id == 0).get.target should equal(Position(20f, 10f))
-    p3.cells.find(_.id == 0).get.target should equal(Position(50f, 1f))
+    p0.cells.find(_.id == 0).get.target should equal(Position(0f, 10f))
+    p1.cells.find(_.id == 0).get.target should equal(Position(20f, 10f))
+    p2.cells.find(_.id == 0).get.target should equal(Position(50f, 1f))
   }
 }
