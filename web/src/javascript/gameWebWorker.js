@@ -1,23 +1,29 @@
 import {fetchState} from "./network";
-import {networkRefresh} from "./constants";
+import {networkRefresh, failsBeforeNotExisting} from "./constants";
 
 let started = false;
 onmessage = (e) => {
   if(!started) {
     started = true;
-    updateLoop(e.data);
+    updateLoop(e.data, 0);
   }
 };
 
-async function updateLoop(gameId) {
+async function updateLoop(gameId, successCount) {
   const startTime = (new Date()).getTime();
 
   const result = await fetchState(gameId);
+
   if(result) {
+    successCount = Math.min(failsBeforeNotExisting,successCount + 1);
     postMessage(result);
+  } else if(successCount === 0) {
+    postMessage(null);
+  } else {
+    --successCount;
   }
 
   const elapsed = (new Date()).getTime() - startTime;
-  setTimeout(() => updateLoop(gameId), 1000/networkRefresh - elapsed);
+  setTimeout(() => updateLoop(gameId, successCount), 1000/networkRefresh - elapsed);
 }
 

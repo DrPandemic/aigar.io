@@ -8,7 +8,13 @@ import {
   maximumStoredStates,
   rankedGameId,
 } from "./constants";
-import {initLineButton, createCanvas, displayLoading, hideLoading} from "./gameUI";
+import {
+  initLineButton,
+  createCanvas,
+  displayLoading,
+  hideLoading,
+  displayDoesntExist
+} from "./gameUI";
 
 let gameLoadingHandle = displayLoading();
 
@@ -24,9 +30,17 @@ const networkWorker = new Worker("javascript/gameWebWorker.bundle.js");
 const gameId = getCurrentGameId();
 networkWorker.postMessage(gameId === null ? rankedGameId : gameId);
 networkWorker.onmessage = message => {
+  if(!message.data) {
+    hideLoading(gameLoadingHandle);
+    gameRunning = false;
+    leaderboardRunning = false;
+    displayDoesntExist();
+    return;
+  }
+
   states.push({
     ...message.data,
-    timestamp: (new Date()).getTime(),
+    timestamp: new Date().getTime(),
   });
 
   if(states.length > maximumStoredStates) {
@@ -45,6 +59,7 @@ function triggerStart() {
 
   // Initiate the update loops for the game and leaderboard
   if(!gameRunning) {
+    gameRunning = true;
     if(gameLoadingHandle) {
       hideLoading(gameLoadingHandle);
       gameLoadingHandle = undefined;
@@ -52,7 +67,10 @@ function triggerStart() {
 
     updateGame();
   }
-  if(!leaderboardRunning) updateLeaderboard();
+  if(!leaderboardRunning) {
+    leaderboardRunning = true;
+    updateLeaderboard();
+  }
 }
 
 function canInterpolateStates() {
@@ -62,6 +80,9 @@ function canInterpolateStates() {
 
 function updateGame() {
   try {
+    if(!gameRunning) {
+      return;
+    }
     const startTime = (new Date()).getTime();
 
     gameRunning = false;
@@ -88,7 +109,11 @@ function updateGame() {
 
 function updateLeaderboard() {
   try {
+    if(!leaderboardRunning) {
+      return;
+    }
     const startTime = (new Date()).getTime();
+
     leaderboardRunning = false;
     if(!canInterpolateStates()) return;
     leaderboardRunning = true;

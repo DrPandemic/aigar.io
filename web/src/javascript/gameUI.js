@@ -36,24 +36,30 @@ export function resizeCanvas(canvas, width, height) {
   return resized;
 }
 
+function print(str) {
+  const screenCanvas = document.getElementById("screenCanvas");
+  const context = screenCanvas.getContext("2d");
+  const screenWidth = screenCanvas.width;
+  const screenHeight = screenCanvas.height;
+
+  context.clearRect(0, 0, screenWidth, screenHeight);
+  context.rect(0, 0, screenWidth, screenHeight);
+  context.fillStyle = "#ffffff";
+  context.fill();
+  context.beginPath();
+  context.fillStyle = constants.textBorderColor;
+  context.font = constants.textStyle;
+  context.textAlign="center";
+  context.textBaseline = "middle";
+  context.lineWidth = constants.textBorderThickness;
+
+  context.fillText(str, screenWidth / 2, screenHeight / 2);
+}
+
 export function displayLoading() {
   let state = "Loading ";
   return setInterval(() => {
-    const screenCanvas = document.getElementById("screenCanvas");
-    const context = screenCanvas.getContext("2d");
-    const screenWidth = screenCanvas.width;
-    const screenHeight = screenCanvas.height;
-
-    context.clearRect(0, 0, screenWidth, screenHeight);
-    context.beginPath();
-    context.fillStyle = constants.textBorderColor;
-    context.font = constants.textStyle;
-    context.textAlign="center";
-    context.textBaseline = "middle";
-    context.lineWidth = constants.textBorderThickness;
-
-    context.fillText(state, screenWidth / 2, screenHeight / 2);
-
+    print(state);
     state += ".";
     if(state === "Loading ....") {
       state = "Loading ";
@@ -63,4 +69,8 @@ export function displayLoading() {
 
 export function hideLoading(handle) {
   clearInterval(handle);
+}
+
+export function displayDoesntExist() {
+  print("This game is not currently running.");
 }
