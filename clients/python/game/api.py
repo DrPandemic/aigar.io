@@ -1,4 +1,5 @@
 from requests import get, post
+from urllib.parse import urljoin
 
 from .models import Game
 
@@ -7,7 +8,7 @@ class API:
     def __init__(self, player_id, player_secret, api_url):
         self.player_id = player_id
         self.player_secret = player_secret
-        self.api_url = api_url + "/api/1/game/"
+        self.api_url = urljoin(api_url, "/api/1/game/")
 
 
     def fetch_game_state(self, game_id):
