@@ -3,8 +3,18 @@
 - Python 3
 
 ## Setup
+### Linux
 1. `pip install -r ./requirements.txt`
 2. Rename `player.default.json` to `player.json` and replace
+   `player_id`, `player_secret` and `api_url` by the values that were given to you by the
+   organisers
+
+### Windows
+1. Download and extract the planar library at
+`https://bitbucket.org/caseman/planar/get/9f8615991edd.zip`
+2. Go into the `planar` folder and run `python setup.py build_py install --skip-build`
+3. `pip install 'requests>=2.4.2'`
+4. Rename `player.default.json` to `player.json` and replace
    `player_id`, `player_secret` and `api_url` by the values that were given to you by the
    organisers
 
