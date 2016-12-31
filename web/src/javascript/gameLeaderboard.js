@@ -40,7 +40,7 @@ function createTable(players, oldBounding, firstTime) {
 
     row.insertCell(0).innerHTML = `<div class="color-box" style="background-color: ${color};"></div>`;
     row.insertCell(1).innerHTML = he.encode(player.id.toString());
-    row.insertCell(2).innerHTML = he.encode(player.name);
+    row.insertCell(2).innerHTML = `<div class="playerLink">${he.encode(player.name)}</div>`;
     row.insertCell(3).innerHTML = he.encode(player.total_mass.toString());
 
     if(!firstTime) {
