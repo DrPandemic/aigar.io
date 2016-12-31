@@ -1,5 +1,6 @@
 package io.aigar.game
 
+import scala.math.round
 import com.typesafe.scalalogging.LazyLogging
 import io.aigar.controller.response.{
   AdminCommand,
@@ -18,6 +19,9 @@ import java.util.concurrent.LinkedBlockingQueue
 class GameThread(scoreThread: ScoreThread) extends Runnable
                                            with LazyLogging {
   logger.info("Starting Game thread.")
+
+  var previousTime = Game.time
+  var currentTime = previousTime + Game.MillisecondsPerTick / Game.MillisecondsPerSecond // avoid having an initial 0 delta time
 
   final val actionQueue = new LinkedBlockingQueue[ActionQueryWithId]()
   final val adminCommandQueue = new LinkedBlockingQueue[AdminCommand]()
@@ -65,7 +69,9 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
         updateGames
       }
 
-      Thread.sleep(Game.MillisecondsPerTick)
+      Thread.sleep(math.max(0, round(Game.MillisecondsPerTick - (currentTime - previousTime) * Game.MillisecondsPerSecond)))
+      previousTime = currentTime
+      currentTime = Game.time
     }
   }
 

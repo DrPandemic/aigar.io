@@ -39,8 +39,8 @@ object Cell {
     */
   final val MassToScoreRatio = 0.5f
 
-  final val MinMaximumSpeed = 25f
-  final val MaxMaximumSpeed = 50f
+  final val MinMaximumSpeed = 50f
+  final val MaxMaximumSpeed = 100f
   final val SpeedLimitReductionPerMassUnit = 0.05f
 
   final val RespawnRetryAttempts = 15
