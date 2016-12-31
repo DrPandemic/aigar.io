@@ -44,8 +44,8 @@ class Game(val id: Int,
   val viruses = new Viruses(grid, math.max(Game.MinimumNumberOfPlayerModificator, playerIds.length))
   val resources = new Resources(grid)
   val startTime = Game.time
-  var previousTime = 0f
-  var currentTime = Game.MillisecondsPerTick / Game.MillisecondsPerSecond // avoid having an initial 0 delta time
+  var previousTime = startTime
+  var currentTime = startTime + Game.MillisecondsPerTick / Game.MillisecondsPerSecond // avoid having an initial 0 delta time
   var tick = 0
 
   def update: List[ScoreModification] = {
