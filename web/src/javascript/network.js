@@ -3,6 +3,7 @@ import {
   adminApiURL,
   leaderboardApiURL,
   stateApiURL,
+  debug,
 } from "./constants";
 
 export function fetchState(gameId) {
@@ -13,7 +14,9 @@ export function fetchState(gameId) {
     .then(response => {
       return response.data;
     })
-    .catch(error => console.error(error));
+    .catch(error => {
+      if(debug) console.error(error);
+    });
 }
 
 export function fetchLeaderboardEntries() {
@@ -25,7 +28,10 @@ export function fetchLeaderboardEntries() {
         entry.player_id,
         entry.name,
         entry.score)).sort((a, b) => a.score - b.score);
-    }).catch(err => console.error(err));
+    })
+    .catch(error => {
+      if(debug) console.error(error);
+    });
 }
 
 export function sendAdminRequest(url, method, data = {}) {

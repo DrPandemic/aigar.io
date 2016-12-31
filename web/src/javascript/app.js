@@ -1,6 +1,13 @@
 import {drawLeaderboard} from "./gameLeaderboard";
 import {drawGame, interpolateState, initCanvas, getCurrentGameId} from "./game";
-import {gameRefresh, leaderboardRefresh, gameDelay, maximumStoredStates, rankedGameId} from "./constants";
+import {
+  debug,
+  gameDelay,
+  gameRefresh,
+  leaderboardRefresh,
+  maximumStoredStates,
+  rankedGameId,
+} from "./constants";
 import {initLineButton, createCanvas, displayLoading, hideLoading} from "./gameUI";
 
 let gameLoadingHandle = displayLoading();
@@ -45,7 +52,7 @@ function triggerStart() {
 
     updateGame();
   }
-  if(!leaderboardRunning) updateLeaderBoard();
+  if(!leaderboardRunning) updateLeaderboard();
 }
 
 function canInterpolateStates() {
@@ -54,37 +61,49 @@ function canInterpolateStates() {
 }
 
 function updateGame() {
-  const startTime = (new Date()).getTime();
+  try {
+    const startTime = (new Date()).getTime();
 
-  gameRunning = false;
-  if(!canInterpolateStates()) return;
-  gameRunning = true;
+    gameRunning = false;
+    if(!canInterpolateStates()) return;
+    gameRunning = true;
 
-  const prev = states[0];
-  const next = states[1];
-  const ratio = (startTime - gameDelay - prev.timestamp) / (next.timestamp - prev.timestamp);
+    const prev = states[0];
+    const next = states[1];
+    const ratio = (startTime - gameDelay - prev.timestamp) / (next.timestamp - prev.timestamp);
 
-  const currentState = interpolateState(prev, next, ratio);
-  if(currentState.tick === next.tick) states.shift();
-  drawGame(currentState, gameCanvas, miniMapCanvas, miniMapTmpCanvas);
+    const currentState = interpolateState(prev, next, ratio);
+    if(currentState.tick === next.tick) states.shift();
+    drawGame(currentState, gameCanvas, miniMapCanvas, miniMapTmpCanvas);
 
-  const elapsed = (new Date()).getTime() - startTime;
-  setTimeout(updateGame, 1000/gameRefresh - elapsed);
+    const elapsed = (new Date()).getTime() - startTime;
+    setTimeout(updateGame, 1000/gameRefresh - elapsed);
+  } catch(error) {
+    gameRunning = false;
+    if(debug) {
+      console.error(error);
+    }
+  }
 }
 
-function updateLeaderBoard() {
-  const startTime = (new Date()).getTime();
-  leaderboardRunning = false;
-  if(!canInterpolateStates()) return;
-  leaderboardRunning = true;
+function updateLeaderboard() {
+  try {
+    const startTime = (new Date()).getTime();
+    leaderboardRunning = false;
+    if(!canInterpolateStates()) return;
+    leaderboardRunning = true;
 
-  drawLeaderboard(states[0]);
+    drawLeaderboard(states[0]);
 
-  const elapsed = (new Date()).getTime() - startTime;
-  setTimeout(updateLeaderBoard, 1000/leaderboardRefresh - elapsed);
+    const elapsed = (new Date()).getTime() - startTime;
+    setTimeout(updateLeaderboard, 1000/leaderboardRefresh - elapsed);
+  } catch(error) {
+    leaderboardRunning = false;
+    if(debug) {
+      console.error(error);
+    }
+  }
 }
 
 initCanvas();
 initLineButton();
-updateGame();
-updateLeaderBoard();
