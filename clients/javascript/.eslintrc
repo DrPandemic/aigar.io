@@ -40,6 +40,10 @@
     ],
     "no-var": [
       "error"
+    ],
+    "no-constant-condition": [
+      "error",
+      { "checkLoops": false }
     ]
   }
 }
