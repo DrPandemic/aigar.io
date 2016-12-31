@@ -54,15 +54,21 @@ gulp.task("html", ["webpack", "vendor", "sass"], function() {
     .pipe(gulp.dest(destination));
 });
 
+gulp.task("icon", ["html"], function() {
+  const target = gulp.src("src/favicon.ico");
+
+  return target.pipe(gulp.dest(destination));
+});
+
 gulp.task("clean", function () {
   return gulp.src("dist/*", {read: false})
              .pipe(clean());
 });
 
-gulp.task("watch", ["html"], function () {
-  gulp.watch("src/javascript/**/*.js", ["html"]);
-  gulp.watch("src/scss/**/*.scss", ["html"]);
-  gulp.watch("src/*.html", ["html"]);
+gulp.task("watch", ["icon"], function () {
+  gulp.watch("src/javascript/**/*.js", ["icon"]);
+  gulp.watch("src/scss/**/*.scss", ["icon"]);
+  gulp.watch("src/*.html", ["icon"]);
 });
 
-gulp.task("default", ["html"]);
+gulp.task("default", ["icon"]);
