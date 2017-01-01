@@ -1,4 +1,7 @@
 class Game {
+  constructor() {
+  }
+
   static get RANKED_GAME_ID() {
     return -1;
   }

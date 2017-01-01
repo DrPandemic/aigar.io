@@ -161,17 +161,8 @@ is safe to hide under a virus if the cell is smaller.
 
 - `position`: Position (`Vec2` object) of the virus
 
-### Vec2
-A 2D vector from the [`planar`](https://pypi.python.org/pypi/planar) Python
+### Vector
+A 2D vector from the [`victor.js`](http://victorjs.org/#documentation) Javascript
 library. Refer to
-[its documentation](http://pythonhosted.org/planar/vectorref.html#planar.Vec2)
+[its documentation](http://victorjs.org/#documentation)
 for details.
-
-#### Interesting Methods
-- `distance_to`: Calculates the distance between two `Vec2`s
-
-- `almost_equals`: Check if two `Vec2`s have similar values (helps with
-                   floating point equality comparisons)
-
-- `angle_to`: Gives the smallest angle between two `Vec2`s (can be used to
-              compare the directions of two cells, for example)

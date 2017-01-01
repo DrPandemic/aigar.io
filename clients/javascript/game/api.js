@@ -1,17 +1,20 @@
-class API {
-  constructor(playerId, playerSecret, apiUrl) {
+module.exports = class API {
+  constructor(playerId, playerSecret, apiUrl, fetch) {
     this.playerId = playerId;
     this.playerSecret = playerSecret;
     this.apiUrl = apiUrl;
-  }
-
-  createPrivate() {
-    return 1;
+    this.fetch = fetch;
   }
 
   fetchGameState(gameId) {
     return {};
   }
-}
 
-module.exports = API;
+  sendActions(gameId, cellActions) {
+
+  }
+
+  createPrivate() {
+    return 1;
+  }
+};
