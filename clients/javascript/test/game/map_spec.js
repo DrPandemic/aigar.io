@@ -1,6 +1,4 @@
 const chai = require('chai');
-const chaiAsPromised = require('chai-as-promised');
-chai.use(chaiAsPromised);
 const expect = chai.expect;
 
 const responseExample = require('./state_response_example.json');

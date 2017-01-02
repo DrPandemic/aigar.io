@@ -10,6 +10,9 @@ scala:
 python:
   - 3.4
 
+node_js:
+  - 6.1.0
+
 notifications:
   email: false
 
@@ -24,4 +27,4 @@ install:
 script:
     - pushd game && sbt clean test it:test && popd
     - pushd clients/python && python3 -m unittest discover -p "*_test.py" && popd
-    - pushd clients/javascript && sbt clean test it:test && popd
+    - pushd clients/javascript && npm test && popd
