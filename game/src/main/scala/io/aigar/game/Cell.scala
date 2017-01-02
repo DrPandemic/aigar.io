@@ -71,6 +71,8 @@ object Cell {
   def radius(mass: Float): Float = {
     4f + sqrt(mass).toFloat * 3f
   }
+
+  var game: Game = null
 }
 
 class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(0f, 0f)) extends Entity {
@@ -109,13 +111,17 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
     // mass = decayedMass(deltaSeconds)
 
     // target = aiState.update(deltaSeconds, grid)
-    if (total > 10f) {
-      target = position + (total.toInt % 4 match {
+    if (total > 10f && player.id == 2) {
+      target = position + (total.toInt % 2 match {
         case 0 => Vector2(500f, 0f)
-        case 1 => Vector2(0f, 500f)
-        case 2 => Vector2(-500f, 0f)
-        case 3 => Vector2(0f, -500f)
+        case 1 => Vector2(-500f, 0f)
       })
+    } else if (total > 10f && player.id == 1 && Cell.game.players.find(_.id == 2).get.cells.size > 0) {
+      target = Cell.game.players.find(_.id == 2).get.cells.head.position
+    } else if (total > 12f && Cell.game.players.find(_.id == 2).get.cells.size == 0) {
+      val resources = Cell.game.resources.regulars.resources
+      val closest = resources.reduceLeft((a, b) => if (a.position.distanceTo(position) < b.position.distanceTo(position)) a else b)
+      target = closest.position
     }
 
     position += velocity * deltaSeconds

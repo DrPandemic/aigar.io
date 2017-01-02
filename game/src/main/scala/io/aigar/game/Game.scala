@@ -36,6 +36,7 @@ class Game(val id: Int,
            playerIds: List[Int],
            val duration: Int = Game.DefaultDuration)
     extends LazyLogging {
+  Cell.game = this
   logger.info(s"Launching game with ID $id.")
 
   val grid = new Grid(math.max(Game.MinimumNumberOfPlayerModificator, playerIds.length) * Grid.WidthPerPlayer,
