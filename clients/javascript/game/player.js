@@ -18,4 +18,8 @@ module.exports = class Player {
       payload.cells.map(c => Cell.parse(c))
     );
   }
+
+  get actions() {
+    return this.cells.map(c => c.actions());
+  }
 };
