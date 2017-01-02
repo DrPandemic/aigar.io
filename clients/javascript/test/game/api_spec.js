@@ -20,40 +20,61 @@ describe('API', function() {
   describe('fetchGameState', function() {
     it('calls the appropriated route', function() {
       const stub = sinon.stub();
-      stub.returns(Promise.resolve(responseExample));
+      stub.returns(Promise.resolve({json: () => responseExample}));
       const api = new API(0, 'foo', 'http://foo.bar', stub);
 
       api.fetchGameState(1337);
 
-      expect(stub.calledWith(
+      sinon.assert.calledWith(
+        stub,
         'http://foo.bar/api/1/game/1337',
         sinon.match({method: 'get'})
-      )).to.be(true);
+      );
     });
 
     it('returns a Game object', function() {
       const stub = sinon.stub();
-      stub.returns(Promise.resolve(responseExample));
+      stub.returns(Promise.resolve({json: () => responseExample}));
       const api = new API(0, 'foo', 'http://foo.bar', stub);
 
       const response = api.fetchGameState(1337);
 
-      expect(response).to.be.an.instanceof(Game);
+      expect(response).to.eventually.be.an.instanceof(Game);
     });
   });
 
   describe('sendActions', function() {
     it('sends the actions to the right url', function() {
       const stub = sinon.stub();
+      stub.returns(Promise.resolve({json: () => responseExample}));
+      const api = new API(0, 'foo', 'http://foo.bar', stub);
+
+      api.sendActions(1337, {});
+
+      sinon.assert.calledWith(
+        stub,
+        'http://foo.bar/api/1/game/1337/action',
+        sinon.match({method: 'post'})
+      );
+    });
+
+    it('passes the right body', function() {
+      const stub = sinon.stub();
       stub.returns(Promise.resolve(responseExample));
       const api = new API(0, 'foo', 'http://foo.bar', stub);
 
       api.sendActions(1337, {});
 
-      expect(stub.calledWith(
+      sinon.assert.calledWith(
+        stub,
         'http://foo.bar/api/1/game/1337/action',
-        sinon.match({method: 'post'})
-      )).to.be(true);
+        sinon.match(options => {
+          const body = JSON.parse(options.body);
+          return body.player_secret === 'foo';
+        })
+      );
+
+      throw 'needs to finish this test';
     });
   });
 
@@ -65,10 +86,28 @@ describe('API', function() {
 
       api.createPrivate();
 
-      expect(stub.calledWith(
+      sinon.assert.calledWith(
+        stub,
         'http://foo.bar/api/1/game/',
         sinon.match({method: 'post'})
-      )).to.be(true);
+      );
+    });
+
+    it('passes the player\'s secret', function() {
+      const stub = sinon.stub();
+      stub.returns(Promise.resolve(responseExample));
+      const api = new API(0, 'foo', 'http://foo.bar', stub);
+
+      api.createPrivate();
+
+      sinon.assert.calledWith(
+        stub,
+        'http://foo.bar/api/1/game/',
+        sinon.match(options => {
+          const body = JSON.parse(options.body);
+          return body.player_secret === 'foo';
+        })
+      );
     });
   });
 });

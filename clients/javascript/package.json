@@ -17,7 +17,9 @@
   },
   "dependencies": {
     "minimist": "^1.2.0",
+    "node-fetch": "^1.6.3",
     "sleep": "^5.0.0",
+    "url-join": "^1.1.0",
     "victor": "^1.1.0"
   }
 }
