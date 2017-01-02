@@ -17,8 +17,11 @@ before_install:  # see http://stackoverflow.com/a/30496307/395386
     - sudo apt-get update
     - sudo apt-get install python3 python3-pip
 
-install: pip3 install --user -r clients/python/requirements.txt
+install:
+    - pip3 install --user -r clients/python/requirements.txt
+    - npm install --prefix clients/javascript/ clients/javascript/
 
 script:
     - pushd game && sbt clean test it:test && popd
     - pushd clients/python && python3 -m unittest discover -p "*_test.py" && popd
+    - pushd clients/javascript && sbt clean test it:test && popd
