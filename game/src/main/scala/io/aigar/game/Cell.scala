@@ -113,7 +113,7 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
     // mass = decayedMass(deltaSeconds)
 
     // target = aiState.update(deltaSeconds, grid)
-    if (total > 12f && player.id == 2 && player.cells.size == 1 && !Cell.done) {
+    if (total > 11.5f && player.id == 2 && player.cells.size == 1 && !Cell.done) {
       split()
       Cell.done = true
     }
