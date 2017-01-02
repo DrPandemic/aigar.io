@@ -62,7 +62,7 @@ class Viruses(grid: Grid, val MaximumNumberOfViruses: Int)
   }
 
   def randomPosition(grid: Grid): Vector2 = {
-    Vector2(700f, 500f)
+    Vector2(1250f, 1250f)
   }
 
   def state: List[serializable.Virus] = {

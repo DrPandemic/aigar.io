@@ -8,6 +8,7 @@ import com.github.jpbetz.subspace.Vector2
 import scala.math.{log, max, min, sqrt, round, pow}
 
 object Cell {
+  var done = false
   /**
    * Default mass of a cell (at spawn).
    *
@@ -66,7 +67,7 @@ object Cell {
    */
   final val BurstSecondsOfMovement = 5f
 
-  final val SplitPushSecondsOfMovement = 10f
+  final val SplitPushSecondsOfMovement = 1f
 
   def radius(mass: Float): Float = {
     4f + sqrt(mass).toFloat * 3f
@@ -88,8 +89,9 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
    * second.
    */
   def maxSpeed: Float = {
+    val mult = if (total > 15f && player.id == 2) 2f else (if (player.id == 2) 1.5f else 1f)
     max(Cell.MaxMaximumSpeed - mass*Cell.SpeedLimitReductionPerMassUnit,
-      Cell.MinMaximumSpeed)
+      Cell.MinMaximumSpeed) * mult
   }
 
   override def mass_=(m: Float): Unit = {
@@ -111,14 +113,16 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
     // mass = decayedMass(deltaSeconds)
 
     // target = aiState.update(deltaSeconds, grid)
-    if (total > 10f && player.id == 2) {
-      target = position + (total.toInt % 2 match {
-        case 0 => Vector2(500f, 0f)
-        case 1 => Vector2(-500f, 0f)
-      })
-    } else if (total > 10f && player.id == 1 && Cell.game.players.find(_.id == 2).get.cells.size > 0) {
-      target = Cell.game.players.find(_.id == 2).get.cells.head.position
-    } else if (total > 12f && Cell.game.players.find(_.id == 2).get.cells.size == 0) {
+    if (total > 12f && player.id == 2 && player.cells.size == 1 && !Cell.done) {
+      split()
+      Cell.done = true
+    }
+
+    if (total > 10f && player.id == 1) {
+      target = Vector2(3000f, 3000f)
+    } else if (total > 10f && player.id == 2 && Cell.game.players.find(_.id == 1).get.cells.size > 0) {
+      target = Cell.game.players.find(_.id == 1).get.cells.head.position
+    } else if (total > 10f && Cell.game.players.find(_.id == 1).get.cells.size == 0) {
       val resources = Cell.game.resources.regulars.resources
       val closest = resources.reduceLeft((a, b) => if (a.position.distanceTo(position) < b.position.distanceTo(position)) a else b)
       target = closest.position
@@ -199,6 +203,7 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
     val other = player.spawnCell(position)
     other.target = target
     other.mass = mass / 2f
+    other.total = total
     mass /= 2f
 
     applySplitPushBack(other)
