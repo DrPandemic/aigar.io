@@ -45,6 +45,6 @@ module.exports = class Cell {
 
     this.actions_ = new CellAction(this.id);
 
-    return actions;
+    return actions.export();
   }
 };

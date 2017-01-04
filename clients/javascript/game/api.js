@@ -14,17 +14,21 @@ module.exports = class API {
   fetchGameState(gameId, playerId) {
     return this.fetch(urlJoin(this.apiUrl, gameId), {method: 'get'})
       .then(res => res.json())
-      .then(res => Game.parse(res, playerId));
+      .then(res => Game.parse(res.data, playerId));
   }
 
   sendActions(gameId, cellActions) {
-    cellActions.player_secret = this.playerSecret;
+    const data = {
+      player_secret: this.playerSecret,
+      actions: cellActions
+    };
+
     return this.fetch(
       urlJoin(this.apiUrl, gameId, '/action'),
       {
         method: 'post',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(cellActions)
+        body: JSON.stringify(data)
       });
   }
 

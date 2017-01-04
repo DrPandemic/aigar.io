@@ -16,4 +16,20 @@ describe('Player', function() {
     expect(p0).to.have.property('cells').to.have.lengthOf(1);
     expect(p0.cells[0]).to.be.an.instanceof(Cell);
   });
+
+  it('exports correctly', function() {
+    const player = Player.parse(responseExample.data.players[0]);
+
+    player.cells[0].burst();
+
+    const actions = player.actions;
+
+    expect(actions[0]).to.contain.all.keys({
+      cell_id: 0,
+      target: null,
+      burst: true,
+      split: false,
+      trade: 0
+    });
+  });
 });

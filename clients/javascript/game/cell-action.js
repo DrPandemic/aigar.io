@@ -45,7 +45,7 @@ module.exports = class CellAction {
 
     return {
       cell_id: this.cellId,
-      target: this.target,
+      target: this.target ? this.target.toObject() : null,
       burst: this.burst,
       split: this.split,
       trade: this.trade
