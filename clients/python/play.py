@@ -18,6 +18,7 @@ def main():
     player_id, player_secret, api_url = read_config()
     game_id = player_id if join_private else Game.RANKED_GAME_ID
     api = API(player_id, player_secret, api_url)
+    previous_tick = -1
     ai = AI()
 
     if(create_private):
@@ -26,7 +27,13 @@ def main():
         sleep(0.5)
 
     while True:
-        update_game(api, game_id, ai.step)
+        game = api.fetch_game_state(game_id)
+
+        if(game.tick < previous_tick):  # After a game reset, it reinstanciates the AI object
+            ai = AI()
+        previous_tick = game.tick
+
+        update_game(api, game, ai.step)
 
         sleep(1 / UpdatesPerSecond)
 

@@ -19,15 +19,12 @@ class GameLoopTests(TestCase):
         cells[1].trade(3)
 
         class MockApi:
-            def fetch_game_state(self, game_id):
-                return game
-
             def send_actions(self, game_id, actions):
                 self.actions = actions
 
         api = MockApi()
 
-        update_game(api, 0, lambda x: None)
+        update_game(api, game, lambda x: None)
 
         self.assertTrue(
             api.actions[0].target.almost_equals(Vec2(2, 2)))
