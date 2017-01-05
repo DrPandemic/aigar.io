@@ -47,7 +47,7 @@ function loop(gameId, playerId, api, ai, previousTick) {
   api.fetchGameState(gameId, playerId)
     .then(game => {
       if(game.tick < previousTick) {
-        ai = AI();
+        ai = new AI();
       }
       game = ai.step(game);
       api.sendActions(game.id, game.actions);

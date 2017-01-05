@@ -18,30 +18,27 @@ module.exports = class API {
   }
 
   sendActions(gameId, cellActions) {
-    const data = {
-      player_secret: this.playerSecret,
-      actions: cellActions
-    };
-
     return this.fetch(
       urlJoin(this.apiUrl, gameId, '/action'),
       {
         method: 'post',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(data)
+        body: JSON.stringify({
+          player_secret: this.playerSecret,
+          actions: cellActions
+        })
       });
   }
 
   createPrivate() {
-    const body = {
-      player_secret: this.playerSecret
-    };
     return this.fetch(
       this.apiUrl,
       {
         method: 'post',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(body)
+        body: JSON.stringify({
+          player_secret: this.playerSecret
+        })
       });
   }
 };
