@@ -65,7 +65,7 @@ function triggerStart() {
       gameLoadingHandle = undefined;
     }
 
-    updateGame();
+    updateGame(getGameState());
   }
   if(!leaderboardRunning) {
     leaderboardRunning = true;
@@ -78,40 +78,39 @@ function canInterpolateStates() {
     states[0].timestamp < new Date().getTime() - gameDelay;
 }
 
-function updateGame() {
+function updateGame(currentState) {
+  if(!gameRunning) return;
   try {
-    if(!gameRunning) {
-      return;
-    }
     const startTime = (new Date()).getTime();
 
     gameRunning = false;
     if(!canInterpolateStates()) return;
     gameRunning = true;
 
-    const prev = states[0];
-    const next = states[1];
-    const ratio = (startTime - gameDelay - prev.timestamp) / (next.timestamp - prev.timestamp);
-
-    const currentState = interpolateState(prev, next, ratio);
-    if(currentState.tick === next.tick) states.shift();
     drawGame(currentState, gameCanvas, miniMapCanvas, miniMapTmpCanvas);
 
-    const elapsed = (new Date()).getTime() - startTime;
-    setTimeout(updateGame, 1000/gameRefresh - elapsed);
+    const elapsed = new Date().getTime() - startTime;
+    setTimeout(() => updateGame(getGameState(startTime)), 1000/gameRefresh - elapsed);
   } catch(error) {
     gameRunning = false;
-    if(debug) {
-      console.error(error);
-    }
+    if(debug) console.error(error);
   }
 }
 
+function getGameState(startTime = new Date().getTime()) {
+  const prev = states[0];
+  const next = states[1];
+  const ratio = (startTime - gameDelay - prev.timestamp) / (next.timestamp - prev.timestamp);
+
+  const currentState = interpolateState(prev, next, ratio);
+  if(currentState.tick === next.tick) states.shift();
+
+  return currentState;
+}
+
 function updateLeaderboard() {
+  if(!leaderboardRunning) return;
   try {
-    if(!leaderboardRunning) {
-      return;
-    }
     const startTime = (new Date()).getTime();
 
     leaderboardRunning = false;
@@ -120,13 +119,11 @@ function updateLeaderboard() {
 
     drawLeaderboard(states[0]);
 
-    const elapsed = (new Date()).getTime() - startTime;
+    const elapsed = new Date().getTime() - startTime;
     setTimeout(updateLeaderboard, 1000/leaderboardRefresh - elapsed);
   } catch(error) {
     leaderboardRunning = false;
-    if(debug) {
-      console.error(error);
-    }
+    if(debug) console.error(error);
   }
 }
 
