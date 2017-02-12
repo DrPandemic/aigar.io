@@ -11,10 +11,10 @@ module.exports = class API {
     this.fetch = fetch;
   }
 
-  fetchGameState(gameId) {
+  fetchGameState(gameId, playerId) {
     return this.fetch(urlJoin(this.apiUrl, gameId), {method: 'get'})
       .then(res => res.json())
-      .then(res => Game.parse(res));
+      .then(res => Game.parse(res, playerId));
   }
 
   sendActions(gameId, cellActions) {
