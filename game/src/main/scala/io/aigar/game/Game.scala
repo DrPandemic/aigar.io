@@ -1,5 +1,8 @@
 package io.aigar.game
 
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.blocking
 import scala.math.round
 import com.github.jpbetz.subspace.Vector2
 import com.typesafe.scalalogging.LazyLogging
@@ -43,32 +46,43 @@ class Game(val id: Int,
   val players = createPlayers
   val viruses = new Viruses(grid, math.max(Game.MinimumNumberOfPlayerModificator, playerIds.length))
   val resources = new Resources(grid)
+
   val startTime = Game.time
   var previousTime = startTime
   var currentTime = startTime + Game.MillisecondsPerTick / Game.MillisecondsPerSecond // avoid having an initial 0 delta time
   var tick = 0
 
-  def update: List[ScoreModification] = {
-    val deltaSeconds = currentTime - previousTime
-    var modifications = players.flatten {  _.update(deltaSeconds, grid, players) }
-    modifications :::= viruses.update(grid, players)
-    modifications :::= resources.update(grid, players)
-    tick += 1
+  def update: Future[(List[ScoreModification], serializable.GameState)] = {
+    Future {
+      this.synchronized {
+        blocking {
+          val deltaSeconds = currentTime - previousTime
+          var modifications = players.flatten {  _.update(deltaSeconds, grid, players) }
+          modifications :::= viruses.update(grid, players)
+          modifications :::= resources.update(grid, players)
+          tick += 1
 
-    previousTime = currentTime
-    currentTime = Game.time
-    modifications
+          previousTime = currentTime
+          currentTime = Game.time
+          (modifications, state)
+        }
+      }
+    }
   }
 
-  def performAction(player_id: Int, actions: List[Action]): List[ScoreModification] = {
-    var modifications = List[ScoreModification]()
-    players.find(_.id == player_id) match {
-      case Some(player) => {
-        modifications = player.performAction(actions)
+  def performAction(player_id: Int, actions: List[Action]): Future[List[ScoreModification]] = {
+    Future {
+      this.synchronized {
+        blocking {
+          players.find(_.id == player_id) match {
+            case Some(player) => {
+              player.performAction(actions)
+            }
+            case None => List()
+          }
+        }
       }
-      case None =>
     }
-    modifications
   }
 
   def timeLeft: Float = {

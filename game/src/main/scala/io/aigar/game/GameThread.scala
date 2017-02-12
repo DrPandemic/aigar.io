@@ -8,6 +8,13 @@ import io.aigar.controller.response.{
   SetRankedDurationCommand,
   RestartThreadCommand
 }
+import scala.util.Failure
+import scala.util.Success
+import scala.util.Try
+import scala.concurrent.duration._
+import scala.concurrent.Await
+import scala.concurrent.Future
+import scala.collection.JavaConversions._
 import io.aigar.score.{ScoreModification, ScoreThread}
 import java.util.concurrent.LinkedBlockingQueue
 
@@ -76,14 +83,23 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
   }
 
   def transferActions: Unit = {
-    while (!actionQueue.isEmpty) {
-      val action = actionQueue.take
+    var actions = new java.util.ArrayList[ActionQueryWithId]()
+    actionQueue.drainTo(actions)
+
+    val futures = actions.toList
+      .filter(action => games.contains(action.game_id))
+      .map(action =>
       games.get(action.game_id) match {
-        case Some(game) => {
-          val modifications = game.performAction(action.player_id, action.actions)
-          applyScoreModifications(game, modifications)
+        case Some(game) => (game, game.performAction(action.player_id, action.actions))
+      }
+    )
+
+    futures.foreach {
+      case(game, future) => {
+        Try(Await.result(future, Game.MillisecondsPerTick milliseconds)) match {
+          case Success(result) => applyScoreModifications(game, result)
+          case Failure(error) => logger.error(s"Game with id $game.id failed to perform actions with $error.getGessage")
         }
-        case None =>
       }
     }
   }
@@ -93,17 +109,25 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
       adminCommandQueue.take match {
         case command: SetRankedDurationCommand => nextRankedDuration = command.duration
         case command: RestartThreadCommand => restart(command.playerIDs)
-        case command: GameCreationCommand => games = games + (command.gameId -> createPrivateGame(command.gameId))
+        case command: GameCreationCommand => games += (command.gameId -> createPrivateGame(command.gameId))
       }
     }
   }
 
   private def resetGames: Unit = {
+    // Remove games
     games = games.filter {
       case (Game.RankedGameId, _) => true
       case (_, game) => game.timeLeft > 0f
     }
 
+    // Remove states
+    states = states.filter {
+      case (id, _) if games.contains(id) => true
+      case _ => false
+    }
+
+    // Reset ranked
     games.get(Game.RankedGameId) match {
       case Some(ranked) => {
         val elapsed = Game.time - ranked.startTime
@@ -118,10 +142,18 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
   def updateGames: Unit = {
     resetGames
 
-    for (game <- games.values) {
-      val modifications = game.update
-      applyScoreModifications(game, modifications)
-      states = states + (game.id -> game.state)
+    val futures = games.values.map(game => (game, game.update))
+
+    futures.foreach {
+      case (game, future) => {
+        Try(Await.result(future, Game.MillisecondsPerTick milliseconds)) match {
+          case Success((modifications, state)) => {
+            applyScoreModifications(game, modifications)
+            states = states + (game.id -> state)
+          }
+          case Failure(error) => logger.error(s"Game with id $game.id failed to update with $error.getGessage")
+        }
+      }
     }
   }
 
