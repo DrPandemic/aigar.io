@@ -5,6 +5,8 @@ const sinon = require('sinon');
 const API = require('../../game/api.js');
 const Game = require('../../game/game.js');
 const responseExample = require('./state_response_example.json');
+const Vector = require('victor');
+const Utils = require('../../game/utils.js');
 
 describe('API', function() {
   it('concatenate correctly urls', function() {
@@ -18,7 +20,7 @@ describe('API', function() {
   describe('fetchGameState', function() {
     it('calls the appropriated route', function() {
       const stub = sinon.stub();
-      stub.returns(Promise.resolve({json: () => responseExample.data}));
+      stub.returns(Promise.resolve({json: () => responseExample}));
       const api = new API(0, 'foo', 'http://foo.bar', stub);
 
       return api.fetchGameState(1337, 1)
@@ -33,7 +35,7 @@ describe('API', function() {
 
     it('returns a Game object', function() {
       const stub = sinon.stub();
-      stub.returns(Promise.resolve({json: () => responseExample.data}));
+      stub.returns(Promise.resolve({json: () => responseExample}));
       const api = new API(0, 'foo', 'http://foo.bar', stub);
 
       return api.fetchGameState(1337, 1)
@@ -60,19 +62,31 @@ describe('API', function() {
 
     });
 
-    xit('passes the right body', function() {
+    it('passes the right body', function() {
       const stub = sinon.stub();
       stub.returns(Promise.resolve());
       const api = new API(0, 'foo', 'http://foo.bar', stub);
 
-      return api.sendActions(1337, {})
+      const game = Game.parse(responseExample.data, 1);
+      game.me.cells[0].target = new Vector(42, 42);
+
+      return api.sendActions(1337, game.actions)
         .then(() => {
           sinon.assert.calledWith(
             stub,
             'http://foo.bar/api/1/game/1337/action',
             sinon.match(options => {
               const body = JSON.parse(options.body);
-              return body.player_secret === 'foo';
+
+              const target = Vector.fromObject(body.actions[0].target);
+              return body.player_secret === 'foo'
+                && Utils.almostEqual(target, new Vector(42, 42))
+                && expect(body.actions[0]).to.contain.all.keys({
+                  cell_id: 0,
+                  burst: true,
+                  split: false,
+                  trade: 0
+                });
             })
           );
         });

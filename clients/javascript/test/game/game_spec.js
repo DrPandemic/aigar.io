@@ -43,7 +43,7 @@ describe('Game', function() {
 
     const actions = game.actions;
     expect(actions).to.have.lengthOf(1);
-    expect(actions[0].export()).to.contain.all.keys({
+    expect(actions[0]).to.contain.all.keys({
       cell_id: 0,
       burst: true,
       split: false,

@@ -9,6 +9,7 @@ module.exports = class Cell {
     this.radius = radius;
     this.position = position;
     this.target = target;
+    this.target_ = target;
 
     this.actions_ = new CellAction(id);
   }
@@ -41,10 +42,12 @@ module.exports = class Cell {
 
   actions() {
     const actions = this.actions_;
-    actions.target = this.target;
+    if(this.target !== this.target_) {
+      actions.target = this.target;
+    }
 
     this.actions_ = new CellAction(this.id);
 
-    return actions;
+    return actions.export();
   }
 };
