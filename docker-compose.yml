@@ -35,4 +35,5 @@ services:
     volumes:
       - ./game/project/:/game/project/
       - ./game/src/:/game/src/
+      - ./game/target/:/game/target/
     command: [sbt, "~;jetty:stop;jetty:start"]

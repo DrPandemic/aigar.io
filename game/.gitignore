@@ -72,3 +72,5 @@ jrebel.lic
 
 # H2
 *.log
+
+ensime.sbt
