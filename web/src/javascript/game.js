@@ -25,11 +25,12 @@ let playerFocused = null;
 
 export let cellFocused = null;
 
-const resourceCacheAsCanvas = [
+const resourceCache = [
   [constants.regularColor, constants.regularRGBColor, constants.regularResourceMass],
   [constants.silverColor, constants.silverRGBColor, constants.resourceMass],
   [constants.goldColor, constants.goldRGBColor, constants.resourceMass],
 ].map(([c, r, m]) => prerenderResource(c, r, m));
+const virusCache = {};
 
 function prerenderResource(color, rgba, radius) {
   const canvas = createCanvas();
@@ -145,47 +146,55 @@ export function drawResourcesOnMap(resources, gameCanvas) {
     }
   };
 
-  drawResources(resources.regular, resourceCacheAsCanvas[0]);
-  drawResources(resources.silver, resourceCacheAsCanvas[1]);
-  drawResources(resources.gold, resourceCacheAsCanvas[2]);
+  drawResources(resources.regular, resourceCache[0]);
+  drawResources(resources.silver, resourceCache[1]);
+  drawResources(resources.gold, resourceCache[2]);
 }
 
 export function drawVirusesOnMap(viruses, gameCanvas) {
   const context = gameCanvas.getContext("2d");
 
   for(const virus of viruses) {
-    const position = virus.position;
-    const grad = context.createRadialGradient(position.x, position.y, 5, position.x, position.y, virus.radius);
-    grad.addColorStop(0, constants.virusColor);
-    grad.addColorStop(1, constants.virusEndColor);
-    drawVirusShape(position, constants.numberOfSpikes, virus.radius, context, grad);
+    let canvas = virusCache[virus.radius];
+    if (!canvas) {
+      canvas = drawVirusShape(virus.radius);
+      virusCache[virus.radius] = canvas;
+    }
+    context.drawImage(canvas, virus.position.x, virus.position.y);
   }
 }
 
-function drawVirusShape(virus, spikes, outerRadius, context, color){
+function drawVirusShape(radius) {
+  const canvas = createCanvas();
+  resizeCanvas(canvas, radius * 2 + 5, radius * 2 + 5);
+  const context = canvas.getContext("2d");
+  const color = context.createRadialGradient(radius, radius, 5, radius, radius, radius);
+  color.addColorStop(0, constants.virusColor);
+  color.addColorStop(1, constants.virusEndColor);
   let rot = Math.PI / 2 * 3;
-  let x = virus.x;
-  let y = virus.y;
-  let step = Math.PI / spikes;
-  let innerRadius = outerRadius - 5;
+  let x = radius;
+  let y = radius;
+  let step = Math.PI / constants.numberOfSpikes;
+  let innerRadius = radius - 5;
 
   context.beginPath();
-  context.moveTo(virus.x, virus.y - outerRadius);
-  for (let i = 0; i < spikes; i++) {
-    x = virus.x + Math.cos(rot) * outerRadius;
-    y = virus.y + Math.sin(rot) * outerRadius;
+  context.moveTo(radius, 0);
+  for (let i = 0; i < constants.numberOfSpikes; i++) {
+    x = radius + Math.cos(rot) * radius;
+    y = radius + Math.sin(rot) * radius;
     context.lineTo(x, y);
     rot += step;
 
-    x = virus.x + Math.cos(rot) * innerRadius;
-    y = virus.y + Math.sin(rot) * innerRadius;
+    x = radius + Math.cos(rot) * innerRadius;
+    y = radius + Math.sin(rot) * innerRadius;
     context.lineTo(x, y);
     rot += step;
   }
-  context.lineTo(virus.x, virus.y - outerRadius);
+  context.lineTo(radius, 0);
   context.closePath();
   context.fillStyle = color;
   context.fill();
+  return canvas;
 }
 
 export function drawMap(gameCanvas) {
