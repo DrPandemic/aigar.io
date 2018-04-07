@@ -47,7 +47,7 @@ function prerenderResource(color, rgba, radius) {
 
 function drawCircle(context, position, radius, color, drawBorder = false) {
   context.beginPath();
-  context.arc(position.x, position.y, radius, 0, Math.PI * 2, false);
+  context.arc(Math.floor(position.x), Math.floor(position.y), radius, 0, Math.PI * 2, false);
   if(drawBorder){
     context.lineWidth = constants.highlightThickness;
     context.strokeStyle = constants.highlightColor;
@@ -131,8 +131,8 @@ export function drawPlayersOnMap(players, gameCanvas, drawNames) {
 
 export function drawCellTargetLine(context, position, target, color) {
   context.beginPath();
-  context.moveTo(position.x, position.y);
-  context.lineTo(target.x, target.y);
+  context.moveTo(Math.floor(position.x), Math.floor(position.y));
+  context.lineTo(Math.floor(target.x), Math.floor(target.y));
   context.lineWidth = constants.targetLineThickness;
   context.strokeStyle = color;
   context.stroke();
@@ -182,12 +182,12 @@ function drawVirusShape(radius) {
   for (let i = 0; i < constants.numberOfSpikes; i++) {
     x = radius + Math.cos(rot) * radius;
     y = radius + Math.sin(rot) * radius;
-    context.lineTo(x, y);
+    context.lineTo(Math.floor(x), Math.floor(y));
     rot += step;
 
     x = radius + Math.cos(rot) * innerRadius;
     y = radius + Math.sin(rot) * innerRadius;
-    context.lineTo(x, y);
+    context.lineTo(Math.floor(x), Math.floor(y));
     rot += step;
   }
   context.lineTo(radius, 0);
