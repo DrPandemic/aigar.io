@@ -41,7 +41,7 @@ function writeCellTeamName(playerName, context, position) {
   context.beginPath();
   context.fillStyle = constants.textColor;
   context.font = constants.textStyle;
-  context.textAlign="center";
+  context.textAlign = "center";
   context.textBaseline = "middle";
   context.lineWidth = constants.textBorderThickness;
   context.strokeStyle = constants.textBorderColor;
@@ -61,16 +61,16 @@ export function initMap(gameCanvas, map) {
   }
 
   screenWidth = document.getElementById("gameDiv").offsetWidth - constants.scrollBarWidth;
-  screenHeight = screenWidth*constants.ratioHeight;
+  screenHeight = screenWidth * constants.ratioHeight;
   screenCanvas.width = screenWidth;
   screenCanvas.height = screenHeight;
   miniMapWidth = screenWidth / 4;
   miniMapPosX = screenWidth - miniMapWidth;
 
-  screenToMapRatioWidth = gameCanvas.width/ screenCanvas.width;
-  screenToMapRatioHeight = gameCanvas.height/ screenCanvas.height;
-  miniMapScreenPosWidth = miniMapWidth/screenToMapRatioWidth;
-  miniMapScreenPosHeight = miniMapHeight/screenToMapRatioHeight;
+  screenToMapRatioWidth = gameCanvas.width / screenCanvas.width;
+  screenToMapRatioHeight = gameCanvas.height / screenCanvas.height;
+  miniMapScreenPosWidth = miniMapWidth / screenToMapRatioWidth;
+  miniMapScreenPosHeight = miniMapHeight / screenToMapRatioHeight;
 }
 
 export function getPlayerColor(players, currentPlayer) {
@@ -122,8 +122,8 @@ export function drawResourcesOnMap(resources, gameCanvas) {
   const context = gameCanvas.getContext("2d");
   const drawResources = (resources, color, rgba, mass) => {
     for(const resource of resources) {
-      const grid = context.createRadialGradient(resource.x,resource.y, .5, resource.x, resource.y,constants.resourceMass);
-      grid.addColorStop(0,color);
+      const grid = context.createRadialGradient(resource.x, resource.y, .5, resource.x, resource.y, constants.resourceMass);
+      grid.addColorStop(0, color);
       grid.addColorStop(1, rgba);
       drawCircle(context, resource, mass, grid);
     }
@@ -151,7 +151,7 @@ function drawVirusShape(virus, spikes, outerRadius, context, color){
   let x = virus.x;
   let y = virus.y;
   let step = Math.PI / spikes;
-  let innerRadius = outerRadius-5;
+  let innerRadius = outerRadius - 5;
 
   context.beginPath();
   context.moveTo(virus.x, virus.y - outerRadius);
@@ -168,7 +168,7 @@ function drawVirusShape(virus, spikes, outerRadius, context, color){
   }
   context.lineTo(virus.x, virus.y - outerRadius);
   context.closePath();
-  context.fillStyle=color;
+  context.fillStyle = color;
   context.fill();
 }
 
@@ -185,7 +185,7 @@ export function drawMap(gameCanvas) {
 export function initMiniMap(gameCanvas, miniMapCanvas, miniMapTmpCanvas, players) {
   const miniMapContext = miniMapCanvas.getContext("2d");
 
-  miniMapHeight = miniMapWidth*gameCanvas.height/gameCanvas.width;
+  miniMapHeight = miniMapWidth * gameCanvas.height / gameCanvas.width;
 
   //set dimensions
   resizeCanvas(miniMapCanvas, miniMapWidth, miniMapHeight);
@@ -225,9 +225,9 @@ function findMiniMapScreenPositionPlayer(players){
 export function findNextCell(cells, playerId){
   let cell = cells[0];
   if(playerFocused === playerId){
-    for(let i = 0; i<cells.length; i++){
+    for(let i = 0; i < cells.length; i++){
       if(cellFocused.id === cells[i].id){
-        cell = cells[i+1];
+        cell = cells[i + 1];
 
         if(!cell)
           cell = cells[0];
@@ -266,8 +266,8 @@ export function setFocusScreen(position) {
   const screenHeight = screenCanvas.height;
 
   let newPosition = {
-    x: position.x - (screenWidth/2),
-    y: position.y - (screenHeight/2)
+    x: position.x - (screenWidth / 2),
+    y: position.y - (screenHeight / 2)
   };
   newPosition = keepInsideMap(newPosition, canvasWidth, screenWidth, canvasHeight, screenHeight);
   xScreenPosOnMap = newPosition.x;
@@ -285,8 +285,8 @@ function changeScreenPos(mousePos) {
   };
   miniMapPos = keepInsideMap(miniMapPos, miniMapWidth, miniMapScreenPosWidth, miniMapHeight, miniMapScreenPosHeight);
 
-  xScreenPosOnMap = miniMapPos.x * screenToMapRatioWidth * (screenWidth/miniMapWidth);
-  yScreenPosOnMap = miniMapPos.y * screenToMapRatioHeight * (screenHeight/miniMapHeight);
+  xScreenPosOnMap = miniMapPos.x * screenToMapRatioWidth * (screenWidth / miniMapWidth);
+  yScreenPosOnMap = miniMapPos.y * screenToMapRatioHeight * (screenHeight / miniMapHeight);
 }
 
 function keepInsideMap(pos, bigWidth, smallWidth, bigHeight, smallHeight) {

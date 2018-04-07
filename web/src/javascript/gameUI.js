@@ -49,7 +49,7 @@ function print(str) {
   context.beginPath();
   context.fillStyle = constants.textBorderColor;
   context.font = constants.textStyle;
-  context.textAlign="center";
+  context.textAlign = "center";
   context.textBaseline = "middle";
   context.lineWidth = constants.textBorderThickness;
 

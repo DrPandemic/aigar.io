@@ -15,7 +15,7 @@ async function updateLoop(gameId, successCount) {
   const result = await fetchState(gameId);
 
   if(result) {
-    successCount = Math.min(failsBeforeNotExisting,successCount + 1);
+    successCount = Math.min(failsBeforeNotExisting, successCount + 1);
     postMessage(result);
   } else if(successCount === 0) {
     postMessage(null);
@@ -24,6 +24,6 @@ async function updateLoop(gameId, successCount) {
   }
 
   const elapsed = (new Date()).getTime() - startTime;
-  setTimeout(() => updateLoop(gameId, successCount), 1000/networkRefresh - elapsed);
+  setTimeout(() => updateLoop(gameId, successCount), 1000 / networkRefresh - elapsed);
 }
 

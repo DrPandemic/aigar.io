@@ -10,7 +10,7 @@
       "experimentalObjectRestSpread": true
     },
     "sourceType": "module",
-    "ecmaVersion": 8 // or 2017
+    "ecmaVersion": 8
   },
   "rules": {
     "comma-dangle": [
@@ -22,24 +22,12 @@
         "allow": ["warn", "error", "log"]
       }
     ],
-    "indent": [
-      "error",
-      2
-    ],
-    "linebreak-style": [
-      "error",
-      "unix"
-    ],
-    "quotes": [
-      "error",
-      "double"
-    ],
-    "semi": [
-      "error",
-      "always"
-    ],
-    "no-var": [
-      "error"
-    ]
+    "indent": ["error", 2],
+    "linebreak-style": ["error", "unix"],
+    "quotes": ["error", "double"],
+    "semi": ["error", "always"],
+    "no-var": ["error"],
+    "space-infix-ops": ["error"],
+    "comma-spacing": ["error", { "before": false, "after": true }]
   }
 }

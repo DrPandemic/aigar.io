@@ -52,7 +52,7 @@ networkWorker.onmessage = message => {
 
 // This is to prevent Chrome's GC from deleting the worker.
 // It's happening on Chrome but not on FF.
-setTimeout(() => networkWorker,1000);
+setTimeout(() => networkWorker, 1000);
 
 function triggerStart() {
   if(!canInterpolateStates()) return;
@@ -90,7 +90,7 @@ function updateGame(currentState) {
     drawGame(currentState, gameCanvas, miniMapCanvas, miniMapTmpCanvas);
 
     const elapsed = new Date().getTime() - startTime;
-    setTimeout(() => updateGame(getGameState(startTime)), 1000/gameRefresh - elapsed);
+    setTimeout(() => updateGame(getGameState(startTime)), 1000 / gameRefresh - elapsed);
   } catch(error) {
     gameRunning = false;
     if(debug) console.error(error);
@@ -120,7 +120,7 @@ function updateLeaderboard() {
     drawLeaderboard(states[0]);
 
     const elapsed = new Date().getTime() - startTime;
-    setTimeout(updateLeaderboard, 1000/leaderboardRefresh - elapsed);
+    setTimeout(updateLeaderboard, 1000 / leaderboardRefresh - elapsed);
   } catch(error) {
     leaderboardRunning = false;
     if(debug) console.error(error);
