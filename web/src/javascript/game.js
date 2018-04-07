@@ -31,6 +31,7 @@ const resourceCache = [
   [constants.goldColor, constants.goldRGBColor, constants.resourceMass],
 ].map(([c, r, m]) => prerenderResource(c, r, m));
 const virusCache = {};
+const nameCache = {};
 
 function prerenderResource(color, rgba, radius) {
   const canvas = createCanvas();
@@ -57,17 +58,26 @@ function drawCircle(context, position, radius, color, drawBorder = false) {
   context.fill();
 }
 
-function writeCellTeamName(playerName, context, position) {
-  context.beginPath();
-  context.fillStyle = constants.textColor;
-  context.font = constants.textStyle;
-  context.textAlign = "center";
-  context.textBaseline = "middle";
-  context.lineWidth = constants.textBorderThickness;
-  context.strokeStyle = constants.textBorderColor;
+function writeCellTeamName(playerName, mapContext, position) {
+  let canvas = nameCache[playerName];
+  if (!canvas) {
+    canvas = createCanvas();
+    const context = canvas.getContext("2d");
+    resizeCanvas(canvas, 700, 30);
 
-  context.fillText(playerName, position.x, position.y);
-  context.strokeText(playerName, position.x, position.y);
+    context.beginPath();
+    context.fillStyle = constants.textColor;
+    context.font = constants.textStyle;
+    context.textAlign = "center";
+    context.textBaseline = "middle";
+    context.lineWidth = constants.textBorderThickness;
+    context.strokeStyle = constants.textBorderColor;
+    context.fillText(playerName, 350, 13);
+    context.strokeText(playerName, 350, 13);
+
+    nameCache[playerName] = canvas;
+  }
+  mapContext.drawImage(canvas, position.x - 350, position.y - 13);
 }
 
 export function initMap(gameCanvas, map) {

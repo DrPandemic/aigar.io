@@ -13,7 +13,7 @@ case class PlayerModel(id: Option[Int], playerSecret: String, playerName: String
 class Players(tag: Tag) extends Table[PlayerModel](tag, "PLAYERS") {
   def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
   def playerSecret = column[String]("PLAYER_SECRET")
-  def playerName = column[String]("PLAYER_NAME")
+  def playerName = column[String]("PLAYER_NAME", O.SqlType("VARCHAR(50)"))
   def score = column[Float]("SCORE", O.Default(0f))
   def * = (id.?, playerSecret, playerName, score) <> (PlayerModel.tupled, PlayerModel.unapply)
 }
@@ -117,6 +117,3 @@ object PlayerDAO extends TableQuery(new Players(_)) {
     )
   }
 }
-
-
-

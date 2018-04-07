@@ -14,7 +14,7 @@ export const highlightThickness = 8;
 export const targetLineThickness = 1;
 export const textBorderColor = "#000";
 export const textBorderThickness = 1;
-export const textStyle = "25px Arial";
+export const textStyle = "bold 25px Arial";
 export const ratioHeight = 0.6;
 
 export const playerColors = [
