@@ -1,6 +1,6 @@
 import * as constants from "./constants";
 import sort from "immutable-sort";
-import {updateTimeLeft, resizeCanvas} from "./gameUI";
+import {updateTimeLeft, resizeCanvas, createCanvas} from "./gameUI";
 
 let canvasWidth = 0;
 let canvasHeight = 0;
@@ -24,6 +24,25 @@ let miniMapScreenPosHeight;
 let playerFocused = null;
 
 export let cellFocused = null;
+
+const resourceCacheAsCanvas = [
+  [constants.regularColor, constants.regularRGBColor, constants.regularResourceMass],
+  [constants.silverColor, constants.silverRGBColor, constants.resourceMass],
+  [constants.goldColor, constants.goldRGBColor, constants.resourceMass],
+].map(([c, r, m]) => prerenderResource(c, r, m));
+
+function prerenderResource(color, rgba, radius) {
+  const canvas = createCanvas();
+  resizeCanvas(canvas, radius * 2, radius * 2);
+  const context = canvas.getContext("2d");
+
+  const grid = context.createRadialGradient(radius, radius, .5, radius, radius, constants.resourceMass);
+  grid.addColorStop(0, color);
+  grid.addColorStop(1, rgba);
+  drawCircle(context, {x: radius, y: radius}, radius, grid);
+
+  return canvas;
+}
 
 function drawCircle(context, position, radius, color, drawBorder = false) {
   context.beginPath();
@@ -120,18 +139,15 @@ export function drawCellTargetLine(context, position, target, color) {
 
 export function drawResourcesOnMap(resources, gameCanvas) {
   const context = gameCanvas.getContext("2d");
-  const drawResources = (resources, color, rgba, mass) => {
+  const drawResources = (resources, resourceCanvas) => {
     for(const resource of resources) {
-      const grid = context.createRadialGradient(resource.x, resource.y, .5, resource.x, resource.y, constants.resourceMass);
-      grid.addColorStop(0, color);
-      grid.addColorStop(1, rgba);
-      drawCircle(context, resource, mass, grid);
+      context.drawImage(resourceCanvas, resource.x, resource.y);
     }
   };
 
-  drawResources(resources.regular, constants.regularColor, constants.regularRGBColor, constants.regularResourceMass);
-  drawResources(resources.silver, constants.silverColor, constants.silverRGBColor, constants.resourceMass);
-  drawResources(resources.gold, constants.goldColor, constants.goldRGBColor,  constants.resourceMass);
+  drawResources(resources.regular, resourceCacheAsCanvas[0]);
+  drawResources(resources.silver, resourceCacheAsCanvas[1]);
+  drawResources(resources.gold, resourceCacheAsCanvas[2]);
 }
 
 export function drawVirusesOnMap(viruses, gameCanvas) {
