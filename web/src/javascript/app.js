@@ -1,5 +1,5 @@
 import {drawLeaderboard} from "./gameLeaderboard";
-import {drawGame, interpolateState, initCanvas, getCurrentGameId} from "./game";
+import {drawGame, interpolateState, initCanvas} from "./game";
 import {
   debug,
   gameDelay,
@@ -13,7 +13,8 @@ import {
   createCanvas,
   displayLoading,
   hideLoading,
-  displayDoesntExist
+  displayDoesntExist,
+  getCurrentGameId,
 } from "./gameUI";
 
 let gameLoadingHandle = displayLoading();
@@ -79,12 +80,16 @@ function canInterpolateStates() {
 }
 
 function updateGame(currentState) {
-  if(!gameRunning) return;
+  if(!gameRunning) {
+    return;
+  }
   try {
     const startTime = (new Date()).getTime();
 
     gameRunning = false;
-    if(!canInterpolateStates()) return;
+    if(!canInterpolateStates()) {
+      return;
+    }
     gameRunning = true;
 
     drawGame(currentState, gameCanvas, miniMapCanvas, miniMapTmpCanvas);
@@ -93,7 +98,9 @@ function updateGame(currentState) {
     setTimeout(() => updateGame(getGameState(startTime)), 1000 / gameRefresh - elapsed);
   } catch(error) {
     gameRunning = false;
-    if(debug) console.error(error);
+    if(debug) {
+      console.error(error);
+    }
   }
 }
 
@@ -103,18 +110,24 @@ function getGameState(startTime = new Date().getTime()) {
   const ratio = (startTime - gameDelay - prev.timestamp) / (next.timestamp - prev.timestamp);
 
   const currentState = interpolateState(prev, next, ratio);
-  if(currentState.tick === next.tick) states.shift();
+  if(currentState.tick === next.tick) {
+    states.shift();
+  }
 
   return currentState;
 }
 
 function updateLeaderboard() {
-  if(!leaderboardRunning) return;
+  if(!leaderboardRunning) {
+    return;
+  }
   try {
     const startTime = (new Date()).getTime();
 
     leaderboardRunning = false;
-    if(!canInterpolateStates()) return;
+    if(!canInterpolateStates()) {
+      return;
+    }
     leaderboardRunning = true;
 
     drawLeaderboard(states[0]);
@@ -123,7 +136,9 @@ function updateLeaderboard() {
     setTimeout(updateLeaderboard, 1000 / leaderboardRefresh - elapsed);
   } catch(error) {
     leaderboardRunning = false;
-    if(debug) console.error(error);
+    if(debug) {
+      console.error(error);
+    }
   }
 }
 
