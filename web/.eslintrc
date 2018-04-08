@@ -28,6 +28,7 @@
     "semi": ["error", "always"],
     "no-var": ["error"],
     "space-infix-ops": ["error"],
-    "comma-spacing": ["error", { "before": false, "after": true }]
+    "comma-spacing": ["error", { "before": false, "after": true }],
+    "curly": ["error"]
   }
 }

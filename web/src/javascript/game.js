@@ -25,6 +25,7 @@ let playerFocused = null;
 
 export let cellFocused = null;
 
+const circleCache = {};
 const resourceCache = [
   [constants.regularColor, constants.regularRGBColor, constants.regularResourceMass],
   [constants.silverColor, constants.silverRGBColor, constants.resourceMass],
@@ -47,15 +48,29 @@ function prerenderResource(color, rgba, radius) {
 }
 
 function drawCircle(context, position, radius, color, drawBorder = false) {
-  context.beginPath();
-  context.arc(Math.floor(position.x), Math.floor(position.y), radius, 0, Math.PI * 2, false);
-  if(drawBorder){
-    context.lineWidth = constants.highlightThickness;
-    context.strokeStyle = constants.highlightColor;
-    context.stroke();
+  const key = JSON.stringify([radius, color, drawBorder]);
+  let canvas = circleCache[key];
+  let diff = radius;
+  if (drawBorder) {
+    diff += constants.highlightThickness;
   }
-  context.fillStyle = color;
-  context.fill();
+  if (!canvas) {
+    canvas = createCanvas();
+    resizeCanvas(canvas, diff * 2, diff * 2);
+    circleCache[key] = canvas;
+    const newContext = canvas.getContext("2d");
+    newContext.beginPath();
+    newContext.arc(diff, diff, radius, 0, Math.PI * 2, false);
+    if(drawBorder){
+      newContext.lineWidth = constants.highlightThickness;
+      newContext.strokeStyle = constants.highlightColor;
+      newContext.stroke();
+    }
+    newContext.fillStyle = color;
+    newContext.fill();
+  }
+
+  context.drawImage(canvas, Math.floor(position.x - diff), Math.floor(position.y - diff));
 }
 
 function writeCellTeamName(playerName, mapContext, position) {
@@ -109,7 +124,7 @@ export function getPlayerColor(players, currentPlayer) {
   return constants.playerColors[playerPosition];
 }
 
-export function drawPlayersOnMap(players, gameCanvas, drawNames) {
+export function drawPlayersOnMap(players, gameCanvas, onMinimap) {
   const context = gameCanvas.getContext("2d");
   let cellArray = [];
   for(const player of players) {
@@ -129,13 +144,19 @@ export function drawPlayersOnMap(players, gameCanvas, drawNames) {
 
   const cellsToDraw = sort(cellArray, (a, b) => a.radius - b.radius);
   for(const cell of cellsToDraw){
-    if(cell.playerId === playerFocused && cell.id === cellFocused.id)
+    if(cell.playerId === playerFocused && cell.id === cellFocused.id) {
       drawCircle(context, cell.position, cell.radius, cell.color, true);
-    else
+    }
+    else {
       drawCircle(context, cell.position, cell.radius, cell.color);
-    if (drawNames) writeCellTeamName(cell.playerName, context, cell.position);
+    }
+    if (!onMinimap) {
+      writeCellTeamName(cell.playerName, context, cell.position);
+    }
     const targetLinesBtn = document.getElementById("targetLinesBtn");
-    if (targetLinesBtn.className === "btn btn-primary") drawCellTargetLine(context, cell.position, cell.target, cell.color);
+    if (targetLinesBtn.className === "btn btn-primary" && !onMinimap) {
+      drawCellTargetLine(context, cell.position, cell.target, cell.color);
+    }
   }
 }
 
@@ -236,7 +257,7 @@ export function initMiniMap(gameCanvas, miniMapCanvas, miniMapTmpCanvas, players
   miniMapContext.fillStyle = "rgba(58, 58, 58, 0.85)";
   miniMapContext.fill();
 
-  drawPlayersOnMap(players, miniMapTmpCanvas, false);
+  drawPlayersOnMap(players, miniMapTmpCanvas, true);
   miniMapContext.drawImage(miniMapTmpCanvas, 0, 0, miniMapWidth, miniMapHeight);
 }
 
@@ -264,8 +285,9 @@ export function findNextCell(cells, playerId){
       if(cellFocused.id === cells[i].id){
         cell = cells[i + 1];
 
-        if(!cell)
+        if(!cell) {
           cell = cells[0];
+        }
         break;
       }
     }
@@ -365,12 +387,16 @@ export function initCanvas() {
   };
 
   screenCanvas.onmouseup = function(e) {
-    if(mouseIsDown) mouseClick(e);
+    if(mouseIsDown) {
+      mouseClick(e);
+    }
     mouseIsDown = false;
   };
 
   screenCanvas.onmousemove = function(e) {
-    if(!mouseIsDown) return false;
+    if(!mouseIsDown) {
+      return false;
+    }
     mouseClick(e);
     return false;
   };
@@ -382,7 +408,7 @@ export function drawGame(gameState, gameCanvas, miniMapCanvas, miniMapTmpCanvas)
   initMiniMap(gameCanvas, miniMapCanvas, miniMapTmpCanvas, gameState.players);
   drawResourcesOnMap(gameState.resources, gameCanvas);
   drawVirusesOnMap(gameState.viruses, gameCanvas);
-  drawPlayersOnMap(gameState.players, gameCanvas, true);
+  drawPlayersOnMap(gameState.players, gameCanvas, false);
   drawMap(gameCanvas);
   drawMiniMap(gameCanvas, miniMapCanvas);
 
@@ -394,8 +420,12 @@ function interpolate(prev, next, ratio) {
 }
 
 export function interpolateState(prev, next, ratio) {
-  if(ratio <= 0) return prev;
-  if(ratio >= 1) return next;
+  if(ratio <= 0) {
+    return prev;
+  }
+  if(ratio >= 1) {
+    return next;
+  }
 
   const current = JSON.parse(JSON.stringify(prev));
 
@@ -423,11 +453,14 @@ export function interpolateState(prev, next, ratio) {
 export function getCurrentGameId() {
   function getParameterByName(name) {
     const url = window.location.href;
-    name = name.replace(/[\[\]]/g, "\\$&");
+    name = name.replace(/[[\]]/g, "\\$&");
     const regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)");
     const results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return "";
+    if (!results) {
+      return null;
+    } else if (!results[2]) {
+      return "";
+    }
     return decodeURIComponent(results[2].replace(/\+/g, " "));
   }
 
