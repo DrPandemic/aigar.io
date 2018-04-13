@@ -158,16 +158,16 @@ export function drawPlayersOnMap(players, gameCanvas, onMinimap, ratio = 1) {
     }
     const targetLinesBtn = document.getElementById("targetLinesBtn");
     if (targetLinesBtn.className === "btn btn-primary" && !onMinimap) {
-      drawCellTargetLine(context, cell.position, cell.target, cell.color);
+      drawLine(context, cell.position, cell.target, cell.color);
     }
   }
 }
 
-export function drawCellTargetLine(context, position, target, color) {
+export function drawLine(context, position, target, color, width = constants.targetLineThickness) {
   context.beginPath();
   context.moveTo(Math.floor(position.x), Math.floor(position.y));
   context.lineTo(Math.floor(target.x), Math.floor(target.y));
-  context.lineWidth = constants.targetLineThickness;
+  context.lineWidth = width;
   context.strokeStyle = color;
   context.stroke();
 }
@@ -231,13 +231,27 @@ function drawVirusShape(radius) {
   return canvas;
 }
 
+function drawBackgroud(screenCanvas) {
+  const screenContext = screenCanvas.getContext("2d");
+  const screenWidth = screenCanvas.width;
+  const screenHeight = screenCanvas.height;
+  screenContext.fillStyle = "#fafafa";
+  screenContext.fillRect(0, 0, screenWidth, screenHeight);
+
+  for (let i = -xScreenPosOnMap % constants.pixelBetweenBackgroundLines; i <= screenWidth; i += constants.pixelBetweenBackgroundLines) {
+    drawLine(screenContext, {x: i, y: 0}, {x: i, y: screenHeight}, "#000", constants.backgroundLineThickness);
+  }
+  for (let i = -yScreenPosOnMap % constants.pixelBetweenBackgroundLines; i <= screenHeight; i += constants.pixelBetweenBackgroundLines) {
+    drawLine(screenContext, {x: 0, y: i}, {x: screenWidth, y: i}, "#000", constants.backgroundLineThickness);
+  }
+}
+
 export function drawMap(gameCanvas) {
   const screenCanvas = document.getElementById("screenCanvas");
   const screenContext = screenCanvas.getContext("2d");
   const screenWidth = screenCanvas.width;
   const screenHeight = screenCanvas.height;
-
-  screenContext.clearRect(0, 0, screenWidth, screenHeight);
+  drawBackgroud(screenCanvas);
   screenContext.drawImage(gameCanvas, xScreenPosOnMap, yScreenPosOnMap, screenWidth, screenHeight, 0, 0, screenWidth, screenHeight);
 }
 
@@ -251,7 +265,7 @@ export function initMiniMap(gameCanvas, miniMapCanvas, miniMapTmpCanvas, players
   const miniMapContext = miniMapCanvas.getContext("2d");
   miniMapContext.clearRect(0, 0, canvasWidth, canvasHeight);
   miniMapContext.rect(0, 0, miniMapWidth, miniMapHeight);
-  miniMapContext.fillStyle = "rgba(58, 58, 58, 0.85)";
+  miniMapContext.fillStyle = constants.miniMapColor;
   miniMapContext.fill();
 
   drawPlayersOnMap(players, miniMapCanvas, true, gameCanvas.width / miniMapWidth);
@@ -263,7 +277,6 @@ export function drawMiniMap(gameCanvas, miniMapCanvas) {
 
   drawMiniMapScreenPos(gameCanvas, miniMapCanvas);
   screenContext.drawImage(miniMapCanvas, miniMapPosX, 0);
-  screenCanvas.style.background = "#000";
 }
 
 function findMiniMapScreenPositionPlayer(players){

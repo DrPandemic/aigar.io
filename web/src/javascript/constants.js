@@ -1,7 +1,7 @@
 export const regularColor = "#00B200";
-export const regularRGBColor = "rgba(0, 70, 0, 0.3)";
-export const silverColor = "#ACACAC";
-export const silverRGBColor = "rgba(67, 67, 67, 0.1)";
+export const regularRGBColor = "rgba(0, 60, 0, 0.1)";
+export const silverColor = "#454545";
+export const silverRGBColor = "rgba(40, 40, 40, 0.3)";
 export const goldColor = "#FFD700";
 export const goldRGBColor = "rgba(100, 84, 0, 0.1)";
 export const resourceMass = 9;
@@ -9,13 +9,17 @@ export const regularResourceMass = 6;
 export const scrollBarWidth = 20;
 
 export const textColor = "#fff";
-export const highlightColor = "#fff";
+export const highlightColor = "#555";
 export const highlightThickness = 8;
 export const targetLineThickness = 1;
 export const textBorderColor = "#000";
 export const textBorderThickness = 1;
 export const textStyle = "bold 25px Arial";
 export const ratioHeight = 0.6;
+
+export const backgroundLineThickness = 0.2;
+export const pixelBetweenBackgroundLines = 50;
+export const miniMapColor = "#33333399";
 
 export const playerColors = [
   "#F44336",

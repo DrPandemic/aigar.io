@@ -1,10 +1,15 @@
-$primary-color: #333;
-$secondary-color: #fff;
+$primary-color: rgb(238, 238, 238);
+$primary-dark-color: rgb(216, 216, 216);
+$primary-darker-color: rgb(185, 185, 185);
+$secondary-color: rgb(24, 24, 24);
+$dark-text-color: #232323;
+$primary-vivid-color: rgb(145, 84, 214);
+$primary-vivid-dark-color: rgb(124, 72, 184);
+$primary-vivid-darker-color: rgb(97, 56, 145);
 
 /*
  * Globals
  */
-
 body {
   font-family: Georgia, "Times New Roman", Times, serif;
   color: #555;
@@ -19,13 +24,12 @@ h6, .h6 {
   margin-top: 0;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: normal;
-  color: $primary-color;
+  color: $secondary-color;
 }
 
 /*
  * Override Bootstrap's default container.
  */
-
 .container {
    width: 100%;
 }
@@ -52,14 +56,12 @@ h6, .h6 {
 /*
  * Main column and sidebar layout
  */
-
 .main {
   font-size: 18px;
   line-height: 1.5;
 }
 
 /* Sidebar modules for boxing content */
-
 .leaderBoardMargin{
   margin-left: 0px;
 }
@@ -82,7 +84,6 @@ h6, .h6 {
 /*
  * game window
  */
-
 .game {
   margin-bottom: 0px;
 }
@@ -101,90 +102,60 @@ body {
   padding-bottom: 30px;
 }
 
-/* Sticky footer styles
--------------------------------------------------- */
-html {
-  position: relative;
-  min-height: 100%;
-}
-body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
-}
-.footer {
-  position: absolute;
-  text-align: center;
-  bottom: 0;
-  width: 100%;
-  /* Set the fixed height of the footer here */
-  height: 30px;
-  background-color: #f5f5f5;
-}
-
 /* btn override */
-
 $primary-btn-color: #e6e6e6;
 $primary-btn-border-color: #adadad;
+
+.btn-primary {
+  background-color: $primary-vivid-color;
+  border-color: rgb(82, 77, 92);
+}
+
+.btn-primary:focus,
+.btn-primary.focus,
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary.active {
+  background-color: $primary-vivid-dark-color;
+  border-color: rgb(100, 95, 110);
+}
+
+.btn-primary:active:hover,
+.btn-primary.active:hover {
+  background-color: $primary-vivid-darker-color;
+  border-color: rgb(82, 77, 92);
+}
 
 .btn-default {
   color: $secondary-color;
   background-color: $primary-color;
   border-color: #ccc;
 }
-.btn-default:focus,
-.btn-default.focus {
-  color: $primary-btn-color;
-  background-color: $primary-color;
-  border-color: $primary-btn-border-color;
-}
-.btn-default:hover {
-  color: $primary-btn-color;
-  background-color: $primary-color;
-  border-color: $primary-btn-border-color;
-}
 .btn-default:active,
 .btn-default.active,
-.open > .dropdown-toggle.btn-default {
-  color: $primary-btn-color;
-  background-color: $primary-color;
+.btn-default:hover,
+.btn-default:focus,
+.btn-default.focus {
+  color: $secondary-color;
+  background-color: $primary-dark-color;
   border-color: $primary-btn-border-color;
 }
 .btn-default:active:hover,
-.btn-default.active:hover,
-.open > .dropdown-toggle.btn-default:hover,
-.btn-default:active:focus,
-.btn-default.active:focus,
-.open > .dropdown-toggle.btn-default:focus,
-.btn-default:active.focus,
-.btn-default.active.focus,
-.open > .dropdown-toggle.btn-default.focus {
-  color: #d4d4d4;
-  background-color: $primary-color;
+.btn-default.active:hover {
+  color: $secondary-color;
+  background-color: $primary-darker-color;
   border-color: $primary-btn-border-color;
-}
-.btn-default.disabled:hover,
-.btn-default[disabled]:hover,
-fieldset[disabled] .btn-default:hover,
-.btn-default.disabled:focus,
-.btn-default[disabled]:focus,
-fieldset[disabled] .btn-default:focus,
-.btn-default.disabled.focus,
-.btn-default[disabled].focus,
-fieldset[disabled] .btn-default.focus {
-  background-color: $primary-color;
-  border-color: #ccc;
 }
 
 
 /* Override Table */
-
-$primary-table-color: #3b3b3b;
-$secondary-table-color: #4a4a4a;
+$primary-table-color: #f7f7f7;
+$secondary-table-color: #d4d4d4;
 
 .table th {
   width:100%;
   background-color: $primary-table-color;
-  color: $secondary-color;
+  color: $dark-text-color;
 
   &.leaderboardwidth {
     width:50px;
@@ -194,7 +165,7 @@ $secondary-table-color: #4a4a4a;
 table {
   width:100%;
   background-color: $primary-table-color;
-  color: $secondary-color;
+  color: $dark-text-color;
   margin-bottom: 0px;
 }
 
@@ -207,11 +178,14 @@ table {
 .table-striped > tbody > tr:nth-of-type(odd) {
   width:100%;
   background-color: $secondary-table-color;
-  color: $secondary-color;
+  color: $dark-text-color;
 }
 
 .leaderboard-table > tbody > tr > td {
   vertical-align: middle;
+}
+.leaderboard-table > tbody > tr > td:hover {
+  cursor: pointer;
 }
 
 .color-box {
