@@ -70,7 +70,7 @@ function drawCircle(context, position, radius, color, drawBorder = false) {
     newContext.fill();
   }
 
-  context.drawImage(canvas, Math.floor(position.x - diff), Math.floor(position.y - diff));
+  context.drawImage(canvas, position.x - diff, position.y - diff);
 }
 
 function writeCellTeamName(playerName, mapContext, position) {
@@ -165,8 +165,8 @@ export function drawPlayersOnMap(players, gameCanvas, onMinimap, ratio = 1) {
 
 export function drawLine(context, position, target, color, width = constants.targetLineThickness) {
   context.beginPath();
-  context.moveTo(Math.floor(position.x), Math.floor(position.y));
-  context.lineTo(Math.floor(target.x), Math.floor(target.y));
+  context.moveTo(position.x, position.y);
+  context.lineTo(target.x, target.y);
   context.lineWidth = width;
   context.strokeStyle = color;
   context.stroke();
@@ -216,12 +216,12 @@ function drawVirusShape(radius) {
   for (let i = 0; i < constants.numberOfSpikes; i++) {
     x = radius + Math.cos(rot) * radius;
     y = radius + Math.sin(rot) * radius;
-    context.lineTo(Math.floor(x), Math.floor(y));
+    context.lineTo(x, y);
     rot += step;
 
     x = radius + Math.cos(rot) * innerRadius;
     y = radius + Math.sin(rot) * innerRadius;
-    context.lineTo(Math.floor(x), Math.floor(y));
+    context.lineTo(x, y);
     rot += step;
   }
   context.lineTo(radius, 0);
