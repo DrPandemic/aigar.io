@@ -1,5 +1,5 @@
 import {drawLeaderboard} from "./gameLeaderboard";
-import {drawGame, interpolateState, initCanvas} from "./game";
+import {drawGame, interpolateState, initCanvas, prepareCanvases} from "./game";
 import {
   debug,
   gameDelay,
@@ -56,7 +56,9 @@ networkWorker.onmessage = message => {
 setTimeout(() => networkWorker, 1000);
 
 function triggerStart() {
-  if(!canInterpolateStates()) return;
+  if(!canInterpolateStates()) {
+    return;
+  }
 
   // Initiate the update loops for the game and leaderboard
   if(!gameRunning) {
@@ -79,12 +81,15 @@ function canInterpolateStates() {
     states[0].timestamp < new Date().getTime() - gameDelay;
 }
 
-function updateGame(currentState) {
+function updateGame(previousState) {
   if(!gameRunning) {
     return;
   }
   try {
     const startTime = (new Date()).getTime();
+    drawGame(previousState, gameCanvas, miniMapCanvas);
+
+    const currentState = getGameState(startTime);
 
     gameRunning = false;
     if(!canInterpolateStates()) {
@@ -92,10 +97,10 @@ function updateGame(currentState) {
     }
     gameRunning = true;
 
-    drawGame(currentState, gameCanvas, miniMapCanvas, miniMapTmpCanvas);
+    prepareCanvases(currentState, gameCanvas, miniMapCanvas, miniMapTmpCanvas);
 
     const elapsed = new Date().getTime() - startTime;
-    setTimeout(() => updateGame(getGameState(startTime)), 1000 / gameRefresh - elapsed);
+    setTimeout(() => updateGame(currentState), 1000 / gameRefresh - elapsed);
   } catch(error) {
     gameRunning = false;
     if(debug) {

@@ -95,15 +95,11 @@ function writeCellTeamName(playerName, mapContext, position) {
   mapContext.drawImage(canvas, position.x - 350, position.y - 13);
 }
 
-export function initMap(gameCanvas, map) {
+function initGlobals(gameCanvas, map) {
   const screenCanvas = document.getElementById("screenCanvas");
 
   canvasWidth = map.width;
   canvasHeight = map.height;
-  if(!resizeCanvas(gameCanvas, canvasWidth, canvasHeight)) {
-    const context = gameCanvas.getContext("2d");
-    context.clearRect(0, 0, canvasWidth, canvasHeight);
-  }
 
   screenWidth = document.getElementById("gameDiv").offsetWidth - constants.scrollBarWidth;
   screenHeight = screenWidth * constants.ratioHeight;
@@ -116,6 +112,13 @@ export function initMap(gameCanvas, map) {
   screenToMapRatioHeight = gameCanvas.height / screenCanvas.height;
   miniMapScreenPosWidth = miniMapWidth / screenToMapRatioWidth;
   miniMapScreenPosHeight = miniMapHeight / screenToMapRatioHeight;
+}
+
+export function initMap(gameCanvas) {
+  if(!resizeCanvas(gameCanvas, canvasWidth, canvasHeight)) {
+    const context = gameCanvas.getContext("2d");
+    context.clearRect(0, 0, canvasWidth, canvasHeight);
+  }
 }
 
 export function getPlayerColor(players, currentPlayer) {
@@ -411,17 +414,21 @@ export function initCanvas() {
   };
 }
 
-export function drawGame(gameState, gameCanvas, miniMapCanvas, miniMapTmpCanvas) {
+export function prepareCanvases(gameState, gameCanvas, miniMapCanvas, miniMapTmpCanvas) {
   initMap(gameCanvas, gameState.map);
   findMiniMapScreenPositionPlayer(gameState.players);
   initMiniMap(gameCanvas, miniMapCanvas, miniMapTmpCanvas, gameState.players);
   drawResourcesOnMap(gameState.resources, gameCanvas);
   drawVirusesOnMap(gameState.viruses, gameCanvas);
   drawPlayersOnMap(gameState.players, gameCanvas, false);
-  drawMap(gameCanvas);
-  drawMiniMap(gameCanvas, miniMapCanvas);
 
   updateTimeLeft(gameState.timeLeft);
+}
+
+export function drawGame(gameState, gameCanvas, miniMapCanvas) {
+  initGlobals(gameCanvas, gameState.map);
+  drawMap(gameCanvas);
+  drawMiniMap(gameCanvas, miniMapCanvas);
 }
 
 function interpolate(prev, next, ratio) {
