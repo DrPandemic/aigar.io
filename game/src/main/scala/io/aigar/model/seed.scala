@@ -5,7 +5,7 @@ object seed {
     playerRepository.dropSchema
     playerRepository.createSchema
 
-    for(id <- 1 to 15) {
+    for(id <- 1 to 30) {
       playerRepository.createPlayer(PlayerModel(None, "EdgQWhJ!v&" + id, "player" + id, 0f))
     }
   }

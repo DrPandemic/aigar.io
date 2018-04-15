@@ -39,7 +39,19 @@ export const playerColors = [
   "#FF5722",
   "#607D8B",
   "#2196F3",
-  "#00BCD4"
+  "#00BCD4",
+  "#FF8A80",
+  "#FF80AB",
+  "#EA80FC",
+  "#B388FF",
+  "#8C9EFF",
+  "#82B1FF",
+  "#80D8FF",
+  "#84FFFF",
+  "#A7FFEB",
+  "#B9F6CA",
+  "#CCFF90",
+  "#FFE57F",
 ];
 export const virusColor = "#00ff00";
 export const virusEndColor = "#004e00";
