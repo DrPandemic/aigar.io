@@ -2,21 +2,27 @@ import {sendAdminRequest} from "./network";
 
 const seedButton = document.getElementById("seed-button");
 seedButton.onclick = () => {
-  sendAdminRequest("player", "post", {seed: true})
-    .then(() => alert("The DB was seeded"))
-    .catch(e => alert(e));
+  if(confirm("This will delete everything from the database.")) {
+    if(confirm("Are you really sure???")) {
+      sendAdminRequest("player", "post", {seed: true})
+        .then(() => alert("The DB was seeded."))
+        .catch(e => alert(e));
+    }
+  }
 };
 
 document.getElementById("reset-button").onclick = () => {
-  sendAdminRequest("competition", "put", {running: true})
-    .then(() => alert("The thread was reset"))
-    .catch(e => alert(e));
+  if(confirm("This will stop the current game a start a new one.")) {
+    sendAdminRequest("competition", "put", {running: true})
+      .then(() => alert("The thread was reset."))
+      .catch(e => alert(e));
+  }
 };
 
 document.getElementById("duration-button").onclick = () => {
   const duration = parseInt(document.getElementById("duration-input").value) * 60;
   sendAdminRequest("ranked", "put", {duration})
-    .then(() => alert("The duration was set"))
+    .then(() => alert("The duration was set."))
     .catch(e => alert(e));
 };
 
@@ -26,7 +32,7 @@ document.getElementById("new-player-button").onclick = () => {
     .then(response => {
       document.getElementById("new-player-secret").value = response.player_secret;
       document.getElementById("new-player-id").value = response.player_id;
-      alert("A new player was created");
+      alert("A new player was created.");
     })
     .catch(e => alert(e));
 };
