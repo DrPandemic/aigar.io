@@ -100,7 +100,7 @@ class ResourceType(grid: Grid,
                       player: Player,
                       entity: Entity): (List[Entity], ScoreModification) = {
     reward(cell, entity.mass)
-    (List(entity), new ScoreModification(player.id, entity.scoreModification))
+    (List(entity), new ScoreModification(player.id, if(player.active) entity.scoreModification else 0))
   }
 
   def randomPosition(grid: Grid): Vector2 = {

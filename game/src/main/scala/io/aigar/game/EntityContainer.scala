@@ -32,7 +32,7 @@ trait EntityContainer {
     var entitiesReturn = List[Entity]()
     var modifications = List[ScoreModification]()
 
-    for (entity <- entities){
+    for (entity <- entities) {
       for (player <- players) {
         for (cell <- player.cells) {
           if (cell.overlaps(entity)) {
