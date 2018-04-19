@@ -32,9 +32,11 @@ services:
     command: [npm, run, watch]
 
   game:
-    image: drpandemic/aigario-game-dev
+    build: ./game/
     expose:
       - 8080
+    ports:
+      - 1090:1090
     volumes:
       - ./game/project/:/game/project/
       - ./game/src/:/game/src/
