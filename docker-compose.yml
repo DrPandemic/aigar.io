@@ -36,7 +36,7 @@ services:
     expose:
       - 8080
     ports:
-      - 1090:1090
+      - 1099:1099
     volumes:
       - ./game/project/:/game/project/
       - ./game/src/:/game/src/

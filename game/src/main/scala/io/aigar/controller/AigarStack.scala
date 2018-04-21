@@ -11,7 +11,7 @@ trait AigarStack
     extends ScalatraServlet
     with ScalateSupport
     with JacksonJsonSupport
-    with GZipSupport
+    with ContentEncodingSupport
 {
   protected implicit val jsonFormats: Formats = DefaultFormats
 

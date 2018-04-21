@@ -11,7 +11,7 @@ object AigarBuild extends Build {
   val Name = "aigar"
   val Version = "0.1.0-SNAPSHOT"
   val ScalaVersion = "2.11.8"
-  val ScalatraVersion = "2.4.1"
+  val ScalatraVersion = "2.6.3"
 
   lazy val project = Project ("aigar", file("."))
     .configs(IntegrationTest)
@@ -30,7 +30,13 @@ object AigarBuild extends Build {
       resolvers += "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
       libraryDependencies ++= deps,
       testOptions += Tests.Setup(_ => sys.props("testing") = "true"),
-      scalateTemplates)
+      scalateTemplates,
+      javaOptions ++= Seq(
+        "-Dcom.sun.management.jmxremote=true",
+        "-Dcom.sun.management.jmxremote.port=1099",
+        "-Dcom.sun.management.jmxremote.authenticate=false",
+        "-Dcom.sun.management.jmxremote.ssl=false"
+      ))
 
   lazy val deps = Seq(
     "org.scalatra" %% "scalatra" % ScalatraVersion,
@@ -38,10 +44,12 @@ object AigarBuild extends Build {
     "org.scalatra" %% "scalatra-specs2" % ScalatraVersion % "test,it",
     "org.slf4j" % "slf4j-api" % "1.7.13" % "provided",
     "org.slf4j" % "slf4j-nop" % "1.7.13" % "test,it",
+    "org.eclipse.jetty" % "jetty-plus" % "9.2.17.v20160517" % "container;provided",
     "org.eclipse.jetty" % "jetty-webapp" % "9.2.15.v20160210" % "container",
+    "org.eclipse.jetty.websocket" % "websocket-server" % "9.2.17.v20160517" % "container;provided",
     "javax.servlet" % "javax.servlet-api" % "3.1.0" % "provided",
-    "org.json4s" %% "json4s-jackson" % "3.3.0.RC2",
-    "org.scalatra" %% "scalatra-json" % "2.4.0-RC2-2",
+    "org.json4s" %% "json4s-jackson" % "3.5.2",
+    "org.scalatra" %% "scalatra-json" % ScalatraVersion,
     "com.typesafe.slick" %% "slick" % "3.1.1",
     "com.h2database" % "h2" % "1.4.192",
     "com.mchange" % "c3p0" % "0.9.5.1",
