@@ -11,7 +11,8 @@ object AigarBuild extends Build {
   val Name = "aigar"
   val Version = "0.1.0-SNAPSHOT"
   val ScalaVersion = "2.11.8"
-  val ScalatraVersion = "2.6.3"
+  val ScalatraVersion = "2.5.4"
+  val JettyVersion = "9.4.9.v20180320"
 
   lazy val project = Project ("aigar", file("."))
     .configs(IntegrationTest)
@@ -44,10 +45,11 @@ object AigarBuild extends Build {
     "org.scalatra" %% "scalatra-specs2" % ScalatraVersion % "test,it",
     "org.slf4j" % "slf4j-api" % "1.7.13" % "provided",
     "org.slf4j" % "slf4j-nop" % "1.7.13" % "test,it",
-    "org.eclipse.jetty" % "jetty-plus" % "9.2.17.v20160517" % "container;provided",
-    "org.eclipse.jetty" % "jetty-webapp" % "9.2.15.v20160210" % "container",
-    "org.eclipse.jetty.websocket" % "websocket-server" % "9.2.17.v20160517" % "container;provided",
-    "javax.servlet" % "javax.servlet-api" % "3.1.0" % "provided",
+    "org.eclipse.jetty" % "jetty-plus" % JettyVersion % "container;provided",
+    "org.eclipse.jetty" % "jetty-webapp" % JettyVersion % "container",
+    "org.eclipse.jetty" % "jetty-continuation" % JettyVersion % "container;provided",
+    "org.eclipse.jetty.websocket" % "websocket-server" % JettyVersion % "container;provided",
+    "javax.servlet" % "javax.servlet-api" % "3.1.0" % "container;provided;test" artifacts Artifact("javax.servlet-api", "jar", "jar"),
     "org.json4s" %% "json4s-jackson" % "3.5.2",
     "org.scalatra" %% "scalatra-json" % ScalatraVersion,
     "com.typesafe.slick" %% "slick" % "3.1.1",
@@ -58,7 +60,8 @@ object AigarBuild extends Build {
     "com.github.jpbetz" % "subspace" % "0.1.0",
     "org.mockito" % "mockito-all" % "1.8.4" % "test, it",
     "com.typesafe.scala-logging" %% "scala-logging" % "3.1.0",
-    "ch.qos.logback" % "logback-classic" % "1.1.2"
+    "ch.qos.logback" % "logback-classic" % "1.2.3",
+    "org.scalatra" %% "scalatra-atmosphere" % ScalatraVersion
   )
 
   lazy val scalateTemplates =

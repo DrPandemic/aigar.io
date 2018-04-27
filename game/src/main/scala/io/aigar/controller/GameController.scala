@@ -7,8 +7,11 @@ import org.json4s.MappingException
 import org.scalatra.json._
 import scala.util.{Success, Try }
 
+import org.scalatra.atmosphere._
+import scala.concurrent.ExecutionContext.Implicits.global
+
 class GameController(game: GameThread, playerRepository: PlayerRepository)
-  extends AigarStack with JacksonJsonSupport {
+  extends AigarStack with AtmosphereSupport {
 
   get("/:id") {
     GameStateResponse(
@@ -67,5 +70,17 @@ class GameController(game: GameThread, playerRepository: PlayerRepository)
     }
 
     SuccessResponse("ok")
+  }
+
+  atmosphere("/the-chat") {
+    new AtmosphereClient {
+      def receive = {
+        case Connected =>
+        case Disconnected(disconnector, Some(error)) =>
+        case Error(Some(error)) =>
+        case TextMessage(text) => send("ECHO: " + text)
+        case JsonMessage(json) => broadcast(json)
+      }
+    }
   }
 }

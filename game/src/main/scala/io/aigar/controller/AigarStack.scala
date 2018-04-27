@@ -8,10 +8,10 @@ import org.json4s.{DefaultFormats, Formats}
 import org.scalatra.json._
 
 trait AigarStack
-    extends ScalatraServlet
-    with ScalateSupport
-    with JacksonJsonSupport
-    with ContentEncodingSupport
+  extends ScalatraServlet
+  with ScalateSupport
+  with JacksonJsonSupport
+  with ContentEncodingSupport
 {
   protected implicit val jsonFormats: Formats = DefaultFormats
 

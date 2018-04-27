@@ -1,4 +1,4 @@
-FROM cusspvz/node:latest
+FROM node:alpine
 
 RUN mkdir /src
 RUN mkdir /src/dist

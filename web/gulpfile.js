@@ -13,14 +13,14 @@ const destination = "dist/web/";
 
 gulp.task("sass", function () {
   return gulp.src("src/scss/**/*.scss")
-             .pipe(plumber(function (error) {
-               gutil.log(error.message);
-               this.emit("end");
-             }))
-             .pipe(sourcemaps.init({ loadMaps: true }))
-             .pipe(sass().on("error", sass.logError))
-             .pipe(sourcemaps.write())
-             .pipe(gulp.dest(destination + "css"));
+    .pipe(plumber(function (error) {
+      gutil.log(error.message);
+      this.emit("end");
+    }))
+    .pipe(sourcemaps.init({ loadMaps: true }))
+    .pipe(sass().on("error", sass.logError))
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest(destination + "css"));
 });
 
 gulp.task("webpack", function(callback) {
@@ -28,7 +28,9 @@ gulp.task("webpack", function(callback) {
 
   // run webpack
   webpack(myConfig, function(err, stats) {
-    if (err) throw new gutil.PluginError("webpack", err);
+    if (err) {
+      throw new gutil.PluginError("webpack", err);
+    }
     gutil.log("[webpack]", stats.toString({
       colors: true,
       progress: true
@@ -62,7 +64,7 @@ gulp.task("icon", ["html"], function() {
 
 gulp.task("clean", function () {
   return gulp.src("dist/*", {read: false})
-             .pipe(clean());
+    .pipe(clean());
 });
 
 gulp.task("watch", ["icon"], function () {
