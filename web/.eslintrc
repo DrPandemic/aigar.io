@@ -5,6 +5,9 @@
     "jquery": true
   },
   "extends": "eslint:recommended",
+  "globals": {
+    "atmosphere": true
+  },
   "parserOptions": {
     "ecmaFeatures": {
       "experimentalObjectRestSpread": true

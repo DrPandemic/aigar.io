@@ -3,7 +3,7 @@ import javax.servlet.ServletContext
 import com.typesafe.scalalogging.LazyLogging
 import org.scalatra.{LifeCycle}
 
-import io.aigar.controller.{AdminController, GameController, LeaderboardController}
+import io.aigar.controller.{AdminController, GameController, LeaderboardController, WebsocketController}
 import io.aigar.game.GameThread
 import io.aigar.model.PlayerRepository
 import io.aigar.score.ScoreThread
@@ -19,7 +19,9 @@ class ScalatraBootstrap extends LifeCycle
   var game: GameThread = null
   var scoreThread: ScoreThread = null
   final val adminPassword = (new scala.util.Random(new java.security.SecureRandom())).alphanumeric.take(ScalatraBootstrap.PasswordLength).mkString
-  final val path = "/api/1"
+  final val version = "/1"
+  final val path = s"/api$version"
+  final val websocketPath = s"/websocket$version"
 
   override def init(context: ServletContext): Unit = {
     appInit()
@@ -32,6 +34,7 @@ class ScalatraBootstrap extends LifeCycle
     context.mount(new AdminController(adminPassword, game, playerRepository), s"$path/admin/*")
     context.mount(new LeaderboardController(playerRepository), s"$path/leaderboard/*")
     context.mount(new GameController(game, playerRepository), s"$path/game/*")
+    context.mount(new WebsocketController(game, playerRepository), s"$websocketPath/*")
   }
 
   /*
