@@ -147,40 +147,5 @@ function updateLeaderboard() {
   }
 }
 
-function initWebSocket() {
-  const request = new atmosphere.AtmosphereRequest();
-  request.url = `${window.location.origin}/websocket/1/`;
-  request.contentType = "application/json";
-  request.transport = "websocket";
-  request.fallbackTransport = "long-polling";
-
-  request.onOpen = function(response) {
-    console.log("onOpen", response);
-  };
-
-  request.onReconnect = function (request, response) {
-    console.log("onReconnect", response);
-  };
-
-  request.onMessage = function (response) {
-    const message = response.responseBody;
-    let json;
-    try {
-      json = JSON.parse(message);
-    } catch (e) {
-      console.log("Error: ", message.data);
-      return;
-    }
-    console.log("onMessage", json);
-  };
-
-  request.onError = function(response) {
-    console.log("onError", response);
-  };
-  const subSocket = atmosphere.subscribe(request);
-  subSocket.push("some data");
-}
-
 initCanvas();
 initLineButton();
-initWebSocket();

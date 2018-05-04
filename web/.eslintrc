@@ -6,7 +6,8 @@
   },
   "extends": "eslint:recommended",
   "globals": {
-    "atmosphere": true
+    "atmosphere": true,
+    "importScripts": true
   },
   "parserOptions": {
     "ecmaFeatures": {
