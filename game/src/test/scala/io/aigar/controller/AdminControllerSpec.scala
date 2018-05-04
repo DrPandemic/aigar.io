@@ -84,11 +84,11 @@ class AdminControllerSpec extends MutableScalatraSpec
   }
 
   "POST /player" should {
-    "seed the players if the query contains seed" in {
-      postJson("player", defaultActionJson ~ ("seed" -> true)) {
+    "can seed a custom number of player" in {
+      postJson("player", defaultActionJson ~ ("seed" -> true) ~ ("playerCount" -> 12)) {
         status must_== 200
 
-        playerRepository.getPlayers.size must_== 15
+        playerRepository.getPlayers.size must_== 12
       }
     }
 

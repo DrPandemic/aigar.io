@@ -26,4 +26,3 @@ async function updateLoop(gameId, successCount) {
   const elapsed = (new Date()).getTime() - startTime;
   setTimeout(() => updateLoop(gameId, successCount), 1000 / networkRefresh - elapsed);
 }
-

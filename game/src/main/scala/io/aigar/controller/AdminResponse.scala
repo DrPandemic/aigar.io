@@ -11,7 +11,8 @@ case class SetRankedDurationQuery(
 
 case class SeedPlayersQuery(
   administrator_password: String,
-  seed: Boolean
+  seed: Boolean,
+  playerCount: Int
 )
 
 case class CreatePlayerQuery(
