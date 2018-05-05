@@ -1,4 +1,4 @@
-import {fetchState} from "./network";
+import {fetchState, openGameStateWebsocket} from "./network";
 import {networkRefresh, failsBeforeNotExisting} from "./constants";
 
 let started = false;
@@ -26,3 +26,7 @@ async function updateLoop(gameId, successCount) {
   const elapsed = (new Date()).getTime() - startTime;
   setTimeout(() => updateLoop(gameId, successCount), 1000 / networkRefresh - elapsed);
 }
+
+const socket = openGameStateWebsocket(event => {
+  console.log("Message from server ", event.data);
+});

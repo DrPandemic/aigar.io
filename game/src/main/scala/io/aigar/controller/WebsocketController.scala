@@ -13,7 +13,6 @@ import com.typesafe.scalalogging.LazyLogging
 
 class WebsocketController(game: GameThread, playerRepository: PlayerRepository)
   extends AigarStack with AtmosphereSupport with LazyLogging {
-
   atmosphere("/") {
     new AtmosphereClient {
       def receive = {

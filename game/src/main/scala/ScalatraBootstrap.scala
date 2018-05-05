@@ -7,6 +7,7 @@ import io.aigar.controller.{AdminController, GameController, LeaderboardControll
 import io.aigar.game.GameThread
 import io.aigar.model.PlayerRepository
 import io.aigar.score.ScoreThread
+import io.aigar.websocket.WebsocketThread
 
 object ScalatraBootstrap {
   final val PasswordLength = 28
@@ -18,6 +19,7 @@ class ScalatraBootstrap extends LifeCycle
   var playerRepository: PlayerRepository = null
   var game: GameThread = null
   var scoreThread: ScoreThread = null
+  var websocketThread: WebsocketThread = null
   final val adminPassword = (new scala.util.Random(new java.security.SecureRandom())).alphanumeric.take(ScalatraBootstrap.PasswordLength).mkString
   final val version = "/1"
   final val path = s"/api$version"
@@ -43,7 +45,8 @@ class ScalatraBootstrap extends LifeCycle
   def appInit(players: Option[PlayerRepository] = None): Unit = {
     playerRepository = players.getOrElse(new PlayerRepository(None))
     scoreThread = new ScoreThread(playerRepository)
-    game = new GameThread(scoreThread)
+    websocketThread = new WebsocketThread()
+    game = new GameThread(scoreThread, websocketThread)
 
     launchThreads
   }
@@ -57,11 +60,13 @@ class ScalatraBootstrap extends LifeCycle
     closeDbConnection
 
     scoreThread.running = false
+    websocketThread.running = false
     game.running = false
   }
 
   def launchThreads: Unit = {
     new Thread(scoreThread).start
+    new Thread(websocketThread).start
     new Thread(game).start
   }
 }
