@@ -5,12 +5,12 @@ import io.aigar.model.PlayerRepository
 import java.util.concurrent.LinkedBlockingQueue
 
 /**
-  * ScoreThread is running all the time. The game thread sends score update
-  * messages and this thread persists them to the DB.
-  */
+ * ScoreThread is running all the time. The game thread sends score update
+ * messages and this thread persists them to the DB.
+ */
 
 class ScoreThread(playerRepository: PlayerRepository) extends Runnable
-    with LazyLogging {
+                                                      with LazyLogging {
   final val modificationQueue = new LinkedBlockingQueue[ScoreModification]
   var running: Boolean = true;
 

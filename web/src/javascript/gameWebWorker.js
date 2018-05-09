@@ -1,6 +1,29 @@
-import {openGameStateWebsocket} from "./network";
+import {fetchState} from "./network";
+import {networkRefresh, failsBeforeNotExisting} from "./constants";
 
-const socket = openGameStateWebsocket(event => {
-  const data = JSON.parse(event.data);
-  postMessage(data);
-});
+let started = false;
+onmessage = (e) => {
+  if(!started) {
+    started = true;
+    updateLoop(e.data, 0);
+  }
+};
+
+async function updateLoop(gameId, successCount) {
+  const startTime = (new Date()).getTime();
+
+  const result = await fetchState(gameId);
+
+  if(result) {
+    successCount = Math.min(failsBeforeNotExisting, successCount + 1);
+    postMessage(result);
+  } else if(successCount === 0) {
+    postMessage(null);
+  } else {
+    --successCount;
+  }
+
+  const elapsed = (new Date()).getTime() - startTime;
+  setTimeout(() => updateLoop(gameId, successCount), 1000 / networkRefresh - elapsed);
+}
+

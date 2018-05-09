@@ -48,7 +48,6 @@ object AigarBuild extends Build {
     "org.eclipse.jetty" % "jetty-plus" % JettyVersion % "container;provided",
     "org.eclipse.jetty" % "jetty-webapp" % JettyVersion % "container",
     "org.eclipse.jetty" % "jetty-continuation" % JettyVersion % "container;provided",
-    "org.eclipse.jetty.websocket" % "websocket-server" % JettyVersion % "container;provided",
     "javax.servlet" % "javax.servlet-api" % "3.1.0" % "container;provided;test" artifacts Artifact("javax.servlet-api", "jar", "jar"),
     "org.json4s" %% "json4s-jackson" % "3.5.2",
     "org.scalatra" %% "scalatra-json" % ScalatraVersion,
@@ -60,8 +59,7 @@ object AigarBuild extends Build {
     "com.github.jpbetz" % "subspace" % "0.1.0",
     "org.mockito" % "mockito-all" % "1.8.4" % "test, it",
     "com.typesafe.scala-logging" %% "scala-logging" % "3.1.0",
-    "ch.qos.logback" % "logback-classic" % "1.2.3",
-    "org.scalatra" %% "scalatra-atmosphere" % ScalatraVersion
+    "ch.qos.logback" % "logback-classic" % "1.2.3"
   )
 
   lazy val scalateTemplates =

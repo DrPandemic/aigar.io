@@ -62,7 +62,7 @@ export const gameRefresh = 24;
 // delay (ms) between the current time and the time of the currently displayed state
 export const gameDelay = 2 * 1000;
 export const leaderboardRefresh = 0.1;
-export const networkRefresh = 3;
+export const networkRefresh = 1;
 export const maximumStoredStates = 10;
 export const failsBeforeNotExisting = 5;
 

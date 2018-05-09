@@ -16,7 +16,6 @@ import scala.concurrent.Await
 import scala.concurrent.Future
 import scala.collection.JavaConversions._
 import io.aigar.score.{ScoreModification, ScoreThread}
-import io.aigar.websocket.WebsocketThread
 import java.util.concurrent.LinkedBlockingQueue
 
 /**
@@ -24,7 +23,7 @@ import java.util.concurrent.LinkedBlockingQueue
  * takes care of updating the individual games and processing the queued inputs
  * of the players.
  */
-class GameThread(scoreThread: ScoreThread, websocketThread: WebsocketThread) extends Runnable
+class GameThread(scoreThread: ScoreThread) extends Runnable
                                            with LazyLogging {
   logger.info("Starting Game thread.")
 
@@ -150,7 +149,6 @@ class GameThread(scoreThread: ScoreThread, websocketThread: WebsocketThread) ext
         Try(Await.result(future, Game.MillisecondsPerTick milliseconds)) match {
           case Success((modifications, state)) => {
             applyScoreModifications(game, modifications)
-            broadcastUpdate(state)
             states = states + (game.id -> state)
           }
           case Failure(error) => logger.error(s"Game with id $game.id failed to update with $error.getGessage")
@@ -163,9 +161,5 @@ class GameThread(scoreThread: ScoreThread, websocketThread: WebsocketThread) ext
     if (game.id == Game.RankedGameId) {
       modifications.foreach { scoreThread.addScoreModification(_) }
     }
-  }
-
-  def broadcastUpdate(state: serializable.GameState): Unit = {
-    websocketThread.addGameState(state)
   }
 }

@@ -1,19 +1,10 @@
 import {sendAdminRequest} from "./network";
 
-document.getElementById("seed-button").onclick = () => {
+const seedButton = document.getElementById("seed-button");
+seedButton.onclick = () => {
   if(confirm("This will delete everything from the database.")) {
     if(confirm("Are you really sure???")) {
-      sendAdminRequest("player", "post", {seed: true, playerCount: 30})
-        .then(() => alert("The DB was seeded."))
-        .catch(e => alert(e));
-    }
-  }
-};
-
-document.getElementById("seed-without-players-button").onclick = () => {
-  if(confirm("This will delete everything from the database.")) {
-    if(confirm("Are you really sure???")) {
-      sendAdminRequest("player", "post", {seed: true, playerCount: 0})
+      sendAdminRequest("player", "post", {seed: true})
         .then(() => alert("The DB was seeded."))
         .catch(e => alert(e));
     }
@@ -53,9 +44,4 @@ document.getElementById("new-player-secret-button").onclick = () => {
 document.getElementById("new-player-id-button").onclick = () => {
   document.getElementById("new-player-id").select();
   document.execCommand("copy");
-};
-
-document.getElementById("danger-zone-button").onclick = () => {
-  const display = document.getElementById("danger-zone").style.display;
-  document.getElementById("danger-zone").style.display = display === "none" ? "block" : "none";
 };

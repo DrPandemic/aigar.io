@@ -1,11 +1,11 @@
 package io.aigar.model
 
 object seed {
-  def seedPlayers(playerRepository: PlayerRepository = new PlayerRepository(None), playerCount: Int): Unit = {
+  def seedPlayers(playerRepository: PlayerRepository = new PlayerRepository(None)): Unit = {
     playerRepository.dropSchema
     playerRepository.createSchema
 
-    for(id <- 1 to playerCount) {
+    for(id <- 1 to 30) {
       playerRepository.createPlayer(PlayerModel(None, "EdgQWhJ!v&" + id, "player" + id, 0f))
     }
   }

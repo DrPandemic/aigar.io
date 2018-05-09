@@ -47,7 +47,7 @@ class AdminController(password: String, game: GameThread, playerRepository: Play
     val result = parse(request.body)
     Try(result.extract[SeedPlayersQuery]).orElse(Try(result.extract[CreatePlayerQuery])) match {
       case Success(query: SeedPlayersQuery) => {
-        if (query.seed) seed.seedPlayers(playerRepository, query.playerCount)
+        if (query.seed) seed.seedPlayers(playerRepository)
         SuccessResponse("ok")
       }
       case Success(query: CreatePlayerQuery) => {
