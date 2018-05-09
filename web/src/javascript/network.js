@@ -57,6 +57,7 @@ export function sendAdminRequest(url, method, data = {}) {
 }
 
 export function openGameStateWebsocket(onMessage) {
+  console.log(`${self.location.origin}/websocket/1`.replace(/^https/, "wss"));
   const socket = new WebSocket(`${self.location.origin}/websocket/1`.replace(/^https/, "wss"));
   socket.addEventListener("message", onMessage);
   return socket;

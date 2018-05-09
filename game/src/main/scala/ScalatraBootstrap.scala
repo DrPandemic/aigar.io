@@ -36,7 +36,7 @@ class ScalatraBootstrap extends LifeCycle
     context.mount(new AdminController(adminPassword, game, playerRepository), s"$path/admin/*")
     context.mount(new LeaderboardController(playerRepository), s"$path/leaderboard/*")
     context.mount(new GameController(game, playerRepository), s"$path/game/*")
-    context.mount(new WebsocketController(game, playerRepository), s"$websocketPath/*")
+    context.mount(new WebsocketController(game, websocketThread, playerRepository), s"$websocketPath/*")
   }
 
   /*

@@ -3,15 +3,16 @@ package io.aigar.controller
 import io.aigar.game._
 import io.aigar.model.PlayerRepository
 import io.aigar.controller.response._
+import io.aigar.websocket.WebsocketThread
+
 import org.json4s.MappingException
 import org.scalatra.json._
 import scala.util.{Success, Try }
-
 import org.scalatra.atmosphere._
 import scala.concurrent.ExecutionContext.Implicits.global
 import com.typesafe.scalalogging.LazyLogging
 
-class WebsocketController(game: GameThread, playerRepository: PlayerRepository)
+class WebsocketController(game: GameThread, websocketThread: WebsocketThread, playerRepository: PlayerRepository)
   extends AigarStack with AtmosphereSupport with LazyLogging {
   atmosphere("/") {
     new AtmosphereClient {
