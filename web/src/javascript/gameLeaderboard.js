@@ -7,7 +7,7 @@ export function drawLeaderboard(state) {
 
   const sortedPlayers = sort(state.players, (a, b) => b.total_mass - a.total_mass);
   // Initial case
-  if(tbody.rows.length === 0) {
+  if(tbody.rows.length !== sortedPlayers.length) {
     createTable(sortedPlayers, null, true);
     return;
   }
