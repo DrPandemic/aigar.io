@@ -1,17 +1,11 @@
 package io.aigar.controller
 
-import io.aigar.controller.response.{
-  AdminQuery,
-  SetRankedDurationCommand,
-  RestartThreadCommand,
-  SetRankedDurationQuery,
-  RestartThreadQuery,
-  SeedPlayersQuery,
-  CreatePlayerQuery,
-  CreatePlayerResponse,
-  PlayerResult,
-  SuccessResponse
-}
+import com.typesafe.scalalogging.LazyLogging
+import org.json4s.MappingException
+import org.scalatra.MethodOverride
+import org.scalatra.json.JacksonJsonSupport
+
+import io.aigar.controller.response._
 import io.aigar.model.PlayerModel
 import scala.util.Success
 import scala.util.Try
@@ -20,14 +14,12 @@ import io.aigar.model.{
   PlayerRepository,
   seed
 }
-import org.json4s.MappingException
-import org.scalatra.MethodOverride
-import org.scalatra.json.JacksonJsonSupport
 
 class AdminController(password: String, game: GameThread, playerRepository: PlayerRepository)
     extends AigarStack
     with JacksonJsonSupport
-    with MethodOverride {
+    with MethodOverride
+    with LazyLogging {
 
   before() {
     try {
@@ -88,5 +80,13 @@ class AdminController(password: String, game: GameThread, playerRepository: Play
     }
 
     SuccessResponse("ok")
+  }
+
+  post("/get_players") {
+    val players = playerRepository.getPlayers
+      .map(player => {
+             AdminPlayerEntry(player.id.get, player.playerName, player.playerSecret)
+           })
+    AdminPlayerResponse(players)
   }
 }

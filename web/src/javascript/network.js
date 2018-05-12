@@ -15,7 +15,9 @@ export function fetchState(gameId) {
       return response.data;
     })
     .catch(error => {
-      if(debug) console.error(error);
+      if(debug) {
+        console.error(error);
+      }
     });
 }
 
@@ -30,7 +32,9 @@ export function fetchLeaderboardEntries() {
         entry.score)).sort((a, b) => a.score - b.score);
     })
     .catch(error => {
-      if(debug) console.error(error);
+      if(debug) {
+        console.error(error);
+      }
     });
 }
 
@@ -51,7 +55,11 @@ export function sendAdminRequest(url, method, data = {}) {
     return response;
   }).then(response => response.json())
     .then(response => {
-      if (!response.data) throw "The server didn't return a success";
-      else return response.data;
+      if (!response.data) {
+        throw "The server didn't return a success";
+      }
+      else {
+        return response.data;
+      }
     });
 }

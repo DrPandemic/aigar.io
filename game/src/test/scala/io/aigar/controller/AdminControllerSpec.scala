@@ -1,5 +1,5 @@
 import io.aigar.controller.AdminController
-import io.aigar.controller.response.{CreatePlayerResponse, RestartThreadCommand, SetRankedDurationCommand}
+import io.aigar.controller.response._
 import io.aigar.model.{PlayerModel, PlayerRepository}
 import io.aigar.game.GameThread
 import io.aigar.score.ScoreThread
@@ -33,6 +33,7 @@ class AdminControllerSpec extends MutableScalatraSpec
     playerRepository.createSchema
 
     playerRepository.createPlayer(PlayerModel(Some(1), "EdgQWhJ!v&", "player1", 0))
+    playerRepository.createPlayer(PlayerModel(Some(2), "SUPERSECRET", "player2", 0))
   }
 
   def before: Unit = cleanState
@@ -94,7 +95,7 @@ class AdminControllerSpec extends MutableScalatraSpec
 
     "not seed the players if the query doesn't contain seed" in {
       postJson("player", defaultActionJson) {
-        playerRepository.getPlayers.size must_== 1
+        playerRepository.getPlayers.size must_== 2
       }
     }
 
@@ -102,7 +103,7 @@ class AdminControllerSpec extends MutableScalatraSpec
       postJson("player", defaultActionJson ~ ("player_name" -> "foo")) {
         status must_== 200
 
-        playerRepository.getPlayers.size must_== 2
+        playerRepository.getPlayers.size must_== 3
         playerRepository.getPlayers must contain((player:PlayerModel) => player.playerName == "foo")
       }
     }
@@ -132,7 +133,7 @@ class AdminControllerSpec extends MutableScalatraSpec
         game.adminCommandQueue.isEmpty() must beFalse
         val command = game.adminCommandQueue.take()
         command must haveClass[RestartThreadCommand]
-        command.asInstanceOf[RestartThreadCommand].playerIDs must be_==(List(1))
+        command.asInstanceOf[RestartThreadCommand].playerIDs must be_==(List(1, 2))
       }
     }
   }
@@ -147,6 +148,32 @@ class AdminControllerSpec extends MutableScalatraSpec
         val command = game.adminCommandQueue.take()
         command must haveClass[SetRankedDurationCommand]
         command.asInstanceOf[SetRankedDurationCommand].duration must be_==(10)
+      }
+    }
+  }
+
+  "POST /get_players on AdminController" should {
+    "return the right data format" in {
+      postJson("get_players", defaultActionJson) {
+        status must_== 200
+
+        val entries = parse(body).extract[AdminPlayerResponse].data
+        entries.foreach(entry => { entry.player_id must be_>=(0) })
+
+        val player_ids = entries.map(_.player_id)
+        player_ids.distinct.size must be_==(player_ids.size)
+      }
+    }
+
+    "return an entry for each player" in {
+      postJson("get_players", defaultActionJson) {
+        status must_== 200
+
+        val entries = parse(body).extract[AdminPlayerResponse].data
+        val players = entries.map(entry => { (entry.player_id, entry.secret) })
+        val db_players = playerRepository.getPlayers.map(entry => { (entry.id.get, entry.playerSecret) })
+
+        players must be_==(db_players)
       }
     }
   }

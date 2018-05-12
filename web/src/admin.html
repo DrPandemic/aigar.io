@@ -74,7 +74,29 @@
           </div><!-- /input-group -->
         </div><!-- /.col-lg-6 -->
       </div>
-      <div class="row">
+
+      <div class="row"><!-- Player zone -->
+        <div class="col-md-12 text-center">
+          <button id="player-zone-button" type="button" class="btn btn-primary">Player zone</button>
+        </div>
+      </div>
+      <div class="row" id="player-zone" style="display: none">
+        <div class="col-md-6 col-md-offset-3">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th class="leaderboardwidth">#</th>
+                <th>Name</th>
+                <th>Secret</th>
+              </tr>
+            </thead>
+            <tbody id="player-list-body">
+            </tbody>
+          </table>
+        </div><!-- leaderboard -->
+      </div><!-- /Player zone -->
+
+      <div class="row"><!-- Danger zone -->
         <div class="col-md-12 text-center">
           <button id="danger-zone-button" type="button" class="btn btn-danger">DANGER ZONE</button>
         </div>
@@ -91,7 +113,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div><!-- /danger zone -->
 
     <script src="vendor/he/he.js"></script>
     <script src="javascript/adminApp.bundle.js"></script>

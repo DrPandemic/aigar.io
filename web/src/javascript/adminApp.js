@@ -1,4 +1,5 @@
 import {sendAdminRequest} from "./network";
+import he from "he";
 
 document.getElementById("seed-button").onclick = () => {
   if(confirm("This will delete everything from the database.")) {
@@ -59,3 +60,37 @@ document.getElementById("danger-zone-button").onclick = () => {
   const display = document.getElementById("danger-zone").style.display;
   document.getElementById("danger-zone").style.display = display === "none" ? "block" : "none";
 };
+
+document.getElementById("player-zone-button").onclick = () => {
+  const display = document.getElementById("player-zone").style.display;
+  document.getElementById("player-zone").style.display = display === "none" ? "block" : "none";
+};
+
+function displayEntries(entries) {
+  const table = document.getElementById("player-list-body");
+  for(const i in entries) {
+    const entry = entries[i];
+    const row = table.insertRow(0);
+    row.insertCell(0).innerHTML = (entries.length - parseInt(i)).toString();
+    row.insertCell(1).innerHTML = he.encode(entry.name);
+    row.insertCell(2).innerHTML = he.encode(entry.secret);
+  }
+}
+
+function clearEntries() {
+  const table = document.getElementById("player-list-body");
+  while (table.firstChild) {
+    table.removeChild(table.firstChild);
+  }
+}
+
+function fetchAndDisplay() {
+  return sendAdminRequest("get_players", "post")
+    .then(entries => {
+      clearEntries();
+      displayEntries(entries);
+    });
+}
+
+setInterval(fetchAndDisplay, 15 * 1000);
+fetchAndDisplay();

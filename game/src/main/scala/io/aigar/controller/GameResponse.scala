@@ -19,6 +19,9 @@ case class SuccessResponse(data: String)
 case class LeaderboardEntry(player_id: Int, name: String, score: Float)
 case class LeaderboardResponse(data: List[LeaderboardEntry])
 
+case class AdminPlayerEntry(player_id: Int, name: String, secret: String)
+case class AdminPlayerResponse(data: List[AdminPlayerEntry])
+
 case class Action(
   cell_id: Int,
   burst: Boolean,
