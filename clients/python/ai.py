@@ -25,3 +25,5 @@ class AI:
             if resources:
                 closest = sorted(resources, key=distance_to_me)[0]
                 cell.move(closest)
+
+            cell.split()

@@ -1,11 +1,23 @@
 import {fetchState} from "./network";
 import {networkRefresh, failsBeforeNotExisting} from "./constants";
 
+function getGameId() {
+  const querystring = location.search.replace("?", "").split("&");
+  const queryObj = {};
+  for (let i = 0; i < querystring.length; i++) {
+    const name = querystring[i].split("=")[0];
+    const value = querystring[i].split("=")[1];
+    queryObj[name] = value;
+  }
+
+  return parseInt(queryObj["gameId"]) || 0;
+}
+
 let started = false;
 onmessage = (e) => {
   if(!started) {
     started = true;
-    updateLoop(e.data, 0);
+    updateLoop(e.data, getGameId);
   }
 };
 

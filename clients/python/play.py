@@ -1,6 +1,9 @@
 from time import sleep
 import json
+import os
+import re
 import sys
+import webbrowser
 
 from game.game_loop import update_game
 from game.api import API
@@ -25,6 +28,7 @@ def main():
         game_id = api.create_private()
         # This is useful since the game creation is not instant
         sleep(0.5)
+        open_browser(game_id, api_url)
 
     while True:
         game = api.fetch_game_state(game_id)
@@ -46,9 +50,9 @@ def read_config():
     try:
         with open(ConfigFile) as f:
             data = json.load(f)
-            id_ = data["player_id"]
-            secret = data["player_secret"]
-            api_url = data["api_url"]
+            id_ =     os.getenv('PLAYER_ID', data["player_id"])
+            secret =  os.getenv('PLAYER_SECRET', data["player_secret"])
+            api_url = os.getenv('API_URL', data["api_url"])
 
             if id_ == DefaultConfigValue or secret == DefaultConfigValue or api_url == DefaultConfigValue:
                 print("WARNING: Did you forget to change your player "
@@ -61,6 +65,12 @@ def read_config():
               "Did you forget to rename '%s' to '%s'?" %
               (ConfigFile, DefaultConfigFile, ConfigFile), file=sys.stderr)
         exit(1)
+
+
+def open_browser(game_id, api_url):
+    m = re.search('(.*)/api/.*', api_url)
+    url = m.group(1)
+    webbrowser.open(f"{url}/web/index.html?gameId={game_id}", new=2)
 
 
 if __name__ == "__main__":
