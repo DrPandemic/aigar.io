@@ -18,7 +18,7 @@ class API:
         :param game_id: ID of a game
         :returns:       Game object
         """
-        response = get("%s%d" % (self.api_url, game_id))
+        response = get("%s%d" % (self.api_url, game_id), verify=False)
         data = self._extract_data(response)
         return Game.parse(data, self.player_id)
 
@@ -34,7 +34,7 @@ class API:
                     } for actions in cell_actions]
                 }
 
-        post("%s%d/action" % (self.api_url, game_id), json=data)
+        post("%s%d/action" % (self.api_url, game_id), json=data,verify=False)
 
     def create_private(self):
         """
@@ -46,7 +46,7 @@ class API:
                 "player_secret": self.player_secret
                 }
 
-        return self._extract_data(post(self.api_url, json=data))["id"]
+        return self._extract_data(post(self.api_url, json=data, verify=False))["id"]
 
     def _extract_data(self, response):
         """

@@ -1,2 +1,8 @@
 __pycache__/
 player.json
+
+# virtualenv
+bin/
+include/
+lib/
+pip-selfcheck.json
