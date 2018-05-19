@@ -17,7 +17,7 @@ object Player {
 class Player(val id: Int, startPosition: Vector2) extends EntityContainer
                                                   with LazyLogging {
   private var currentCellId: Int = 0
-  private var _active = true
+  private var _active = false
 
   def active: Boolean = {
     _active

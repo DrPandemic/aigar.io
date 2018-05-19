@@ -160,7 +160,7 @@ class CellSpec extends FlatSpec with Matchers {
   it should "update its state on update" in {
     val player = new Player(0, Vector2(0f, 0f))
     val cell = player.cells.head
-    cell.aiState = new TestState
+    cell.aiState = new TestState(cell)
 
     cell.update(1f, new Grid(0, 0))
 

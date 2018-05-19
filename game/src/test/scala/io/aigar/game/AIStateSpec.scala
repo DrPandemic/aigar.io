@@ -17,6 +17,7 @@ class AIStateSpec extends FlatSpec with Matchers {
 
   it should "switch to a wandering state after inactivity for too long" in {
     val player = new Player(0, Vector2(0f, 0f))
+    player.active = true
     val cell = player.cells.head
     cell.aiState = new NullState(cell)
 

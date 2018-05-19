@@ -41,7 +41,7 @@ class ResourcesSpec extends FlatSpec with Matchers {
     resources.golds.resources  should have size Gold.Max
   }
 
-  "Resources update" should "return a list of ScoreModification" in {
+  "Resources update" should "return a list of ScoreModification without score when player is inactive" in {
     val grid = new Grid(100, 100)
     val resources = new Resources(new Grid(100, 100))
 
@@ -49,7 +49,31 @@ class ResourcesSpec extends FlatSpec with Matchers {
     val p2 = new Player(2, Vector2(20, 20))
     val p3 = new Player(3, Vector2(30, 30))
 
+    resources.regulars.resources = List(
+      new Resource(p1.cells.head.position, Regular.Mass, Regular.Score),
+      new Resource(p3.cells.head.position, Regular.Mass, Regular.Score))
+    resources.silvers.resources = List(new Resource(p2.cells.head.position, Silver.Mass, Silver.Score))
+    resources.golds.resources = List(new Resource(p3.cells.head.position, Gold.Mass, Gold.Score))
 
+    val resourceMessages = resources.update(new Grid(0, 0), List(p1, p2, p3))
+
+    resourceMessages should contain allOf (
+      ScoreModification(p1.id, 0.0f),
+      ScoreModification(p2.id, 0.0f),
+      ScoreModification(p3.id, 0.0f)
+    )
+  }
+
+  "Resources update" should "return a list of ScoreModification when player is active" in {
+    val grid = new Grid(100, 100)
+    val resources = new Resources(new Grid(100, 100))
+
+    val p1 = new Player(1, Vector2(10, 10))
+    p1.active = true
+    val p2 = new Player(2, Vector2(20, 20))
+    p2.active = true
+    val p3 = new Player(3, Vector2(30, 30))
+    p3.active = true
 
     resources.regulars.resources = List(
       new Resource(p1.cells.head.position, Regular.Mass, Regular.Score),
@@ -103,7 +127,7 @@ class ResourcesSpec extends FlatSpec with Matchers {
     val (resourcesReturn, modifications) = resources.regulars.handleCollision(resources.regulars.resources, List(p1, p2))
 
     resourcesReturn shouldBe empty
-    modifications should contain theSameElementsAs List(ScoreModification(p1.id, Regular.Score), ScoreModification(p2.id, Regular.Score))
+    modifications should contain theSameElementsAs List(ScoreModification(p1.id, 0.0f), ScoreModification(p2.id, 0.0f))
   }
 
   it should "return the original list of entities when no collision occurs" in {

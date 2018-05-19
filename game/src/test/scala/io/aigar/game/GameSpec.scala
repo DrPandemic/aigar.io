@@ -104,7 +104,7 @@ class GameSpec extends FlatSpec with Matchers {
     game.previousTime = 0
     val (resourceModifications, _) = Await.result(game.update, AwaitTime)
 
-    resourceModifications should contain (ScoreModification(player.id, Regular.Score))
+    resourceModifications should contain (ScoreModification(player.id, 0.0f))
   }
 
   "performAction" should "update cell's targets" in {

@@ -90,7 +90,7 @@ object NullState {
 /**
  * Spy state used for testing purposes.
  */
-class TestState extends AIState {
+class TestState(cell: Cell) extends AIState {
   var updated = false
   var active = false
 
@@ -101,5 +101,6 @@ class TestState extends AIState {
 
   def onPlayerActivity: Unit = {
     active = true
+    cell.player.active = true
   }
 }

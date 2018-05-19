@@ -42,7 +42,7 @@ class PlayerSpec extends FlatSpec with Matchers {
     val player = new Player(1, new Vector2(0f, 0f))
     player.cells = List(new Cell(1, player), new Cell(2, player))
     val cell = player.cells.head
-    cell.aiState = new TestState
+    cell.aiState = new TestState(cell)
 
     player.onExternalAction
 
@@ -85,7 +85,7 @@ class PlayerSpec extends FlatSpec with Matchers {
   it should "prevent player from going wandering" in {
     val player = new Player(1, new Vector2(0f, 0f))
     player.cells = List(new Cell(1, player), new Cell(2, player))
-    player.cells.head.aiState = new TestState
+    player.cells.head.aiState = new TestState(player.cells.head)
 
     player.update(NullState.MaxInactivitySeconds * 0.9f, new Grid(0, 0), List(player))
     player.performAction(List(Action(0, false, false, 0, Position(0f, 10f))))
