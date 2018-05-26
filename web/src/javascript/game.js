@@ -362,14 +362,15 @@ function keepInsideMap(pos, bigWidth, smallWidth, bigHeight, smallHeight) {
   if (pos.x < 0) {
     pos.x = 0;
   } else if (pos.x > bigWidth - smallWidth) {
-    pos.x = bigWidth - smallWidth;
+    pos.x = Math.max(0, bigWidth - smallWidth);
   }
 
   if (pos.y < 0) {
     pos.y = 0;
   } else if (pos.y > bigHeight - smallHeight) {
-    pos.y = bigHeight - smallHeight;
+    pos.y = Math.max(0, bigHeight - smallHeight);
   }
+
   return pos;
 }
 
