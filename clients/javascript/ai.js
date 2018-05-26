@@ -5,7 +5,7 @@ module.exports = class AI {
 
   step(game) {
     const resources = game.resources.gold.concat(game.resources.silver)
-          .concat(game.resources.regular);
+      .concat(game.resources.regular);
 
     for(const cell of game.me.cells) {
       resources.sort((a, b) => {

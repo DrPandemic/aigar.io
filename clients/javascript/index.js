@@ -1,3 +1,5 @@
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
 // Libraries
 const argv = require('minimist')(process.argv.slice(2));
 const sleep = require('sleep');

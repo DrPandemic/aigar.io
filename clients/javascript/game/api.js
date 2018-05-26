@@ -7,7 +7,7 @@ module.exports = class API {
   constructor(playerId, playerSecret, apiUrl, fetch = nodeFetch) {
     this.playerId = playerId;
     this.playerSecret = playerSecret;
-    this.apiUrl = urlJoin(apiUrl, '/api/1/game/');
+    this.apiUrl = urlJoin(apiUrl, '/game/');
     this.fetch = fetch;
   }
 
