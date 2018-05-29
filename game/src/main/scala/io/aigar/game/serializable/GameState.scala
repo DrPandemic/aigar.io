@@ -21,7 +21,8 @@ case class Cell(
   mass: Int,
   radius: Int,
   position: Position,
-  target: Position
+  target: Position,
+  burst: Boolean
 )
 case class Player(
   id: Int,

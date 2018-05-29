@@ -20,6 +20,9 @@ export const ratioHeight = 0.6;
 export const backgroundLineThickness = 0.2;
 export const pixelBetweenBackgroundLines = 50;
 export const miniMapColor = "#33333399";
+export const burstLineThickness = 2;
+export const burstLineDistance = 20;
+export const burstLineLength = 70;
 
 export const playerColors = [
   "#F44336",
@@ -62,7 +65,7 @@ export const gameRefresh = 24;
 // delay (ms) between the current time and the time of the currently displayed state
 export const gameDelay = 2 * 1000;
 export const leaderboardRefresh = 0.1;
-export const networkRefresh = 1;
+export const networkRefresh = 1.75;
 export const maximumStoredStates = 10;
 export const failsBeforeNotExisting = 5;
 
