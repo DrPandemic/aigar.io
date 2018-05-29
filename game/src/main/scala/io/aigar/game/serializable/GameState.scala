@@ -22,7 +22,7 @@ case class Cell(
   radius: Int,
   position: Position,
   target: Position,
-  sendBurst: Boolean
+  burst: Boolean
 )
 case class Player(
   id: Int,

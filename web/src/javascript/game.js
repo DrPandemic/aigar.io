@@ -85,19 +85,19 @@ function drawBurst(context, position, radius, color, target) {
 
   let lineStart = calculateLineStartOrEnd(-1, 1, dir, radius, constants.burstLineDistance, position);
   let lineEnd = calculateLineStartOrEnd(-1, 1, dir, radius, constants.burstLineDistance + constants.burstLineLength, position);
-  drawLine(context, lineStart, lineEnd);
+  drawLine(context, lineStart, lineEnd, constants.highlightColor, constants.burstLineThickness);
 
   lineStart = calculateLineStartOrEnd(-1, 1, dir, (radius / 2), constants.burstLineDistance + radius, position);
   lineEnd = calculateLineStartOrEnd(-1, 1, dir, (radius / 2), constants.burstLineDistance + constants.burstLineLength + radius, position);
-  drawLine(context, lineStart, lineEnd);
+  drawLine(context, lineStart, lineEnd, constants.highlightColor, constants.burstLineThickness);
 
   lineStart = calculateLineStartOrEnd(1, -1, dir, (radius / 2), constants.burstLineDistance + radius, position);
   lineEnd = calculateLineStartOrEnd(1, -1, dir, (radius / 2), constants.burstLineDistance + constants.burstLineLength + radius, position);
-  drawLine(context, lineStart, lineEnd);
+  drawLine(context, lineStart, lineEnd, constants.highlightColor, constants.burstLineThickness);
 
   lineStart = calculateLineStartOrEnd(1, -1, dir, radius, constants.burstLineDistance, position);
   lineEnd = calculateLineStartOrEnd(1, -1, dir, radius, constants.burstLineDistance + constants.burstLineLength, position);
-  drawLine(context, lineStart, lineEnd);
+  drawLine(context, lineStart, lineEnd, constants.highlightColor, constants.burstLineThickness);
 }
 
 function calculateLineStartOrEnd(dirxMul, diryMul, dir, radius, length, position) {
@@ -107,15 +107,6 @@ function calculateLineStartOrEnd(dirxMul, diryMul, dir, radius, length, position
   };
 
   return linePos;
-}
-
-function drawLine(context, lineStart, lineEnd){
-  context.beginPath();
-  context.moveTo(lineStart.x, lineStart.y);
-  context.lineTo(lineEnd.x, lineEnd.y);
-  context.lineWidth = constants.burstLineThickness;
-  context.strokeStyle = constants.highlightColor;
-  context.stroke();
 }
 
 function writeCellTeamName(playerName, mapContext, position) {
@@ -189,7 +180,7 @@ export function drawPlayersOnMap(players, gameCanvas, onMinimap, ratio = 1) {
         target: cell.target,
         playerId: player.id,
         id: cell.id,
-        burst: cell.burstActive
+        burst: cell.burst,
       });
     }
   }
@@ -218,7 +209,7 @@ export function drawPlayersOnMap(players, gameCanvas, onMinimap, ratio = 1) {
   }
 }
 
-export function drawLine(context, position, target, color, width = constants.targetLineThickness) {
+export function drawLine(context, position, target, color = "#000000", width = constants.targetLineThickness) {
   context.beginPath();
   context.moveTo(position.x, position.y);
   context.lineTo(target.x, target.y);
