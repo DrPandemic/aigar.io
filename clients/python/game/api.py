@@ -1,5 +1,7 @@
-from requests import get, post
 from urllib.parse import urljoin
+from requests import get, post
+import urllib3
+urllib3.disable_warnings()
 
 from .models import Game
 
@@ -18,7 +20,7 @@ class API:
         :param game_id: ID of a game
         :returns:       Game object
         """
-        response = get("%s%d" % (self.api_url, game_id), verify=False)
+        response = self._get("%s%d" % (self.api_url, game_id))
         data = self._extract_data(response)
         return Game.parse(data, self.player_id)
 
@@ -34,7 +36,7 @@ class API:
                     } for actions in cell_actions]
                 }
 
-        post("%s%d/action" % (self.api_url, game_id), json=data,verify=False)
+        self._post("%s%d/action" % (self.api_url, game_id), data)
 
     def create_private(self):
         """
@@ -46,10 +48,26 @@ class API:
                 "player_secret": self.player_secret
                 }
 
-        return self._extract_data(post(self.api_url, json=data, verify=False))["id"]
+        return self._extract_data(self._post(self.api_url, data))["id"]
 
     def _extract_data(self, response):
         """
         Extracts the application data from a requests Response object.
         """
         return response.json()["data"]
+
+    def _get(self, url):
+        """
+        Sends a GET request.
+        """
+        response = get(url, verify=False, timeout=0.5)
+        response.raise_for_status()
+        return response
+
+    def _post(self, url, payload):
+        """
+        Sends a POST request.
+        """
+        response = post(url, json=payload, verify=False, timeout=0.5)
+        response.raise_for_status()
+        return response

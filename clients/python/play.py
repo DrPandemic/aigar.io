@@ -4,6 +4,7 @@ import os
 import re
 import sys
 import webbrowser
+from requests import RequestException
 
 from game.game_loop import update_game
 from game.api import API
@@ -31,15 +32,17 @@ def main():
         open_browser(game_id, api_url)
 
     while True:
-        game = api.fetch_game_state(game_id)
+        try:
+            game = api.fetch_game_state(game_id)
 
-        if(game.tick < previous_tick):  # After a game reset, it reinstanciates the AI object
-            ai = AI()
-        previous_tick = game.tick
-
-        update_game(api, game, ai.step)
-
-        sleep(1 / UpdatesPerSecond)
+            if(game.tick < previous_tick):  # After a game reset, it reinstanciates the AI object
+                ai = AI()
+            previous_tick = game.tick
+            update_game(api, game, ai.step)
+            sleep(1 / UpdatesPerSecond)
+        except RequestException as e:
+            print("You received an network error: %s" % str(e))
+            sleep(5)
 
 
 def read_config():

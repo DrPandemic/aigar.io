@@ -11,10 +11,14 @@ module.exports = class API {
     this.fetch = fetch;
   }
 
-  fetchGameState(gameId, playerId) {
-    return this.fetch(urlJoin(this.apiUrl, gameId), {method: 'get'})
-      .then(res => res.json())
-      .then(res => Game.parse(res.data, playerId));
+  async fetchGameState(gameId, playerId) {
+    const response = await this.fetch(urlJoin(this.apiUrl, gameId), {method: 'get'});
+
+    if (!response.ok) {
+      throw await response.text();
+    }
+
+    return Game.parse((await response.json()).data, playerId);
   }
 
   sendActions(gameId, cellActions) {

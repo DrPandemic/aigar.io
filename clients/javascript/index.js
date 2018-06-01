@@ -45,31 +45,37 @@ function readArguments(params) {
   });
 }
 
-function loop(gameId, playerId, api, ai, previousTick) {
-  api.fetchGameState(gameId, playerId)
-    .then(game => {
-      if(game.tick < previousTick) {
-        ai = new AI();
-      }
-      game = ai.step(game);
-      api.sendActions(game.id, game.actions);
+async function loop(gameId, playerId, api, ai, previousTick) {
+  try {
+    let game = await api.fetchGameState(gameId, playerId);
+    if(game.tick < previousTick) {
+      ai = new AI();
+    }
+    game = ai.step(game);
+    await api.sendActions(game.id, game.actions);
 
-      setTimeout(() => loop(gameId, playerId, api, ai, game.tick), 1000 / Game.UPDATE_PER_SECOND);
-    })
-    .catch(error => console.error(error));
+    setTimeout(() => loop(gameId, playerId, api, ai, game.tick), 1000 / Game.UPDATE_PER_SECOND);
+  } catch(error) {
+    console.error(error);
+    setTimeout(() => loop(gameId, playerId, api, ai, previousTick), 5000);
+  }
 }
 
-function main(params) {
+async function main(params) {
   let gameId = params.join ? params.playerId : Game.RANKED_GAME_ID;
   const api = new API(params.playerId, params.playerSecret, params.apiUrl);
   let ai = new AI();
 
   if(params.create) {
-    gameId = api.createPrivate();
+    try {
+      gameId = await api.createPrivate();
+    } catch(e) {
+      console.error(`You received an error ${e.message}`);
+    }
     sleep.usleep(50 * 1000);
   }
 
-  loop(gameId, params.playerId, api, ai, -1);
+  return loop(gameId, params.playerId, api, ai, -1);
 }
 
 Promise.resolve(require(configFileName))

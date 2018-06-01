@@ -63,9 +63,9 @@ export const numberOfSpikes = 25;
 export const debug = false;
 export const gameRefresh = 24;
 // delay (ms) between the current time and the time of the currently displayed state
-export const gameDelay = 2 * 1000;
 export const leaderboardRefresh = 0.1;
 export const networkRefresh = 1.75;
+export const gameDelay = 1000 / networkRefresh;
 export const maximumStoredStates = 10;
 export const failsBeforeNotExisting = 5;
 
