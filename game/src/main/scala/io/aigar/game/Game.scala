@@ -16,6 +16,7 @@ import io.aigar.controller.response.Action
 object Game {
   final val RankedGameId = -1
   final val DefaultDuration = 60 * 20
+  final val DefaultMutliplier = 1
   final val PrivateGameDuration = 60 * 10
   final val PrivateGameBotQuantity = 5
   final val MinimumNumberOfPlayerModificator = 10
@@ -37,9 +38,10 @@ object Game {
 
 class Game(val id: Int,
            playerIds: List[Int],
-           val duration: Int = Game.DefaultDuration)
+           val duration: Int = Game.DefaultDuration,
+           val multiplier: Int = Game.DefaultMutliplier)
     extends LazyLogging {
-  logger.info(s"Launching game with ID $id.")
+  logger.info(s"Launching game with ID $id and $multiplier multiplier.")
 
   val grid = new Grid(math.max(Game.MinimumNumberOfPlayerModificator, playerIds.length) * Grid.WidthPerPlayer,
                       math.max(Game.MinimumNumberOfPlayerModificator, playerIds.length) * Grid.HeightPerPlayer)
@@ -92,6 +94,7 @@ class Game(val id: Int,
   def state: serializable.GameState = {
     serializable.GameState(
         id,
+        multiplier,
         tick,
         timeLeft,
         players.map(_.state),

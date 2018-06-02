@@ -81,12 +81,12 @@ class GameSpec extends FlatSpec with Matchers {
   }
 
   it should "create a state with the right info" in {
-    val game = new Game(42, 1 to 10 toList)
+    val game = new Game(42, 1 to 10 toList, 10, 42)
 
     val state = game.state
 
     state.players should have size 10
-    //TODO add more tests as the rest gets implemented
+    state.multiplier shouldBe 42
   }
 
   "update" should "return a list of ScoreModification" in {

@@ -466,7 +466,7 @@ export function prepareCanvases(gameState, gameCanvas, miniMapCanvas, miniMapTmp
   drawVirusesOnMap(gameState.viruses, gameCanvas);
   drawPlayersOnMap(gameState.players, gameCanvas, false);
 
-  updateTimeLeft(gameState.timeLeft);
+  updateTimeLeft(gameState);
 }
 
 export function drawGame(gameState, gameCanvas, miniMapCanvas) {

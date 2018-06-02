@@ -32,6 +32,11 @@ case class RestartThreadQuery(
   running: Boolean
 )
 
+case class SetRankedMultiplierQuery(
+  administrator_password: String,
+  multiplier: Int
+)
+
 /**
   * Class used to transfer commands from the AdminController to the game thread.
   */
@@ -43,4 +48,8 @@ case class SetRankedDurationCommand(
 
 case class RestartThreadCommand(
   playerIDs: List[Int]
+) extends AdminCommand
+
+case class SetRankedMultiplierCommand(
+  multiplier: Int
 ) extends AdminCommand

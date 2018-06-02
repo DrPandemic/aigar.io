@@ -1,4 +1,4 @@
-import {sendAdminRequest} from "./network";
+import {sendAdminRequest, fetchState} from "./network";
 import he from "he";
 
 document.getElementById("seed-button").onclick = () => {
@@ -25,6 +25,7 @@ document.getElementById("reset-button").onclick = () => {
   if(confirm("This will stop the current game a start a new one.")) {
     sendAdminRequest("competition", "put", {running: true})
       .then(() => alert("The thread was reset."))
+      .then(fetchAndDisplay)
       .catch(e => alert(e));
   }
 };
@@ -66,6 +67,12 @@ document.getElementById("player-zone-button").onclick = () => {
   document.getElementById("player-zone").style.display = display === "none" ? "block" : "none";
 };
 
+document.getElementById("change-multiplier-button").onclick = async () => {
+  const multiplier = parseInt(document.getElementById("change-multiplier-input").value) || 0;
+  await sendAdminRequest("multiplier", "put", {multiplier});
+  alert(`The next multiplier was set to ${multiplier}`);
+};
+
 function displayEntries(entries) {
   const table = document.getElementById("player-list-body");
   for(const i in entries) {
@@ -84,12 +91,13 @@ function clearEntries() {
   }
 }
 
-function fetchAndDisplay() {
-  return sendAdminRequest("get_players", "post")
-    .then(entries => {
-      clearEntries();
-      displayEntries(entries);
-    });
+async function fetchAndDisplay() {
+  const entries = await sendAdminRequest("get_players", "post");
+  clearEntries();
+  displayEntries(entries);
+
+  const state = await fetchState(-1);
+  document.getElementById("current-multiplier-input").value = state.multiplier;
 }
 
 setInterval(fetchAndDisplay, 15 * 1000);

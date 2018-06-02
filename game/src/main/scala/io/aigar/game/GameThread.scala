@@ -6,7 +6,8 @@ import io.aigar.controller.response.{
   AdminCommand,
   GameCreationCommand,
   SetRankedDurationCommand,
-  RestartThreadCommand
+  RestartThreadCommand,
+  SetRankedMultiplierCommand
 }
 import scala.util.Failure
 import scala.util.Success
@@ -36,6 +37,7 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
   var playerIDs: List[Int] = List()
 
   var nextRankedDuration = Game.DefaultDuration
+  var nextRankedMultiplier = Game.DefaultMutliplier
   private var states: Map[Int, serializable.GameState] = Map()
   var games: Map[Int, Game] = Map()
 
@@ -59,7 +61,7 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
   }
 
   def createRankedGame: Game = {
-    new Game(Game.RankedGameId, playerIDs, nextRankedDuration)
+    new Game(Game.RankedGameId, playerIDs, nextRankedDuration, nextRankedMultiplier)
   }
 
   def createPrivateGame(gameId: Int): Game = {
@@ -110,6 +112,7 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
         case command: SetRankedDurationCommand => nextRankedDuration = command.duration
         case command: RestartThreadCommand => restart(command.playerIDs)
         case command: GameCreationCommand => games += (command.gameId -> createPrivateGame(command.gameId))
+        case command: SetRankedMultiplierCommand => nextRankedMultiplier = command.multiplier
       }
     }
   }
@@ -159,7 +162,7 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
 
   def applyScoreModifications(game: Game, modifications: List[ScoreModification]): Unit = {
     if (game.id == Game.RankedGameId) {
-      modifications.foreach { scoreThread.addScoreModification(_) }
+      modifications.foreach { scoreThread.addScoreModification(_, game.multiplier) }
     }
   }
 }

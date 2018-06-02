@@ -11,7 +11,7 @@ import java.util.concurrent.LinkedBlockingQueue
 
 class ScoreThread(playerRepository: PlayerRepository) extends Runnable
                                                       with LazyLogging {
-  final val modificationQueue = new LinkedBlockingQueue[ScoreModification]
+  final val modificationQueue = new LinkedBlockingQueue[(ScoreModification, Int)]
   var running: Boolean = true;
 
   def run: Unit = {
@@ -20,14 +20,14 @@ class ScoreThread(playerRepository: PlayerRepository) extends Runnable
     }
   }
 
-  def addScoreModification(modification: ScoreModification): Unit = {
-    modificationQueue.add(modification)
+  def addScoreModification(modification: ScoreModification, multiplier: Int): Unit = {
+    modificationQueue.add((modification, multiplier))
   }
 
   def saveScore: Unit = {
-    val modification = modificationQueue.take
+    val (modification, multiplier) = modificationQueue.take
 
-    logger.debug(s"Player ${modification.player_id} gained ${modification.value} points.")
-    playerRepository.addScore(modification.player_id, modification.value)
+    logger.debug(s"Player ${modification.player_id} gained ${modification.value * multiplier} points.")
+    playerRepository.addScore(modification.player_id, modification.value * multiplier)
   }
 }

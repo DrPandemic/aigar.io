@@ -12,10 +12,11 @@ export function initLineButton() {
   };
 }
 
-export function updateTimeLeft(timeLeft){
-  let myDate = new Date(timeLeft * 1000).toISOString().substr(11, 8);
+export function updateTimeLeft(gameState){
+  let value = new Date(gameState.timeLeft * 1000).toISOString().substr(11, 8);
+  value = `${value} - <b>${gameState.multiplier}X</b> Score Multiplier`;
 
-  document.getElementById("timeLeft").innerText = myDate;
+  document.getElementById("timeLeft").innerHTML = value;
 }
 
 export function createCanvas() {

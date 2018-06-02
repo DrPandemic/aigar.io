@@ -37,19 +37,35 @@
 
       <div class="row">
         <div class="col-md-6 col-md-offset-3">
-          <label>Ranked duration(minutes)</label>
+          <label for="duration-input">Ranked duration(minutes)</label>
           <div class="input-group">
             <input id="duration-input" type="text" class="form-control" placeholder="Next ranked duration">
             <span class="input-group-btn">
               <button id="duration-button" class="btn btn-default" type="button">Set!</button>
             </span>
           </div><!-- /input-group -->
+
+          <div class="row">
+            <div class="col-md-4">
+              <label for="">Current multiplier</label>
+              <input id="current-multiplier-input" class="form-control" readonly></input>
+            </div>
+            <div class="col-md-8">
+              <label for="change-multiplier-input">Change multiplier</label>
+              <div class="input-group">
+                <input id="change-multiplier-input" type="number" class="form-control">
+                <span class="input-group-btn">
+                  <button id="change-multiplier-button" class="btn btn-default" type="button">Set!</button>
+                </span>
+              </div><!-- /input-group -->
+            </div>
+          </div>
         </div><!-- /.col-lg-6 -->
       </div>
 
       <div class="row">
         <div class="col-md-6 col-md-offset-3">
-          <label>Add new player</label>
+          <label for="new-player-input">Add new player</label>
           <div class="input-group">
             <input id="new-player-input" type="text" class="form-control" placeholder="Player's name">
             <span class="input-group-btn">

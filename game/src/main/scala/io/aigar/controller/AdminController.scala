@@ -82,6 +82,18 @@ class AdminController(password: String, game: GameThread, playerRepository: Play
     SuccessResponse("ok")
   }
 
+  put("/multiplier") {
+    try {
+      val query = parse(request.body).extract[SetRankedMultiplierQuery]
+      val command = SetRankedMultiplierCommand(query.multiplier)
+      game.adminCommandQueue.put(command)
+    } catch {
+      case e: MappingException => halt(422)
+    }
+
+    SuccessResponse("ok")
+  }
+
   post("/get_players") {
     val players = playerRepository.getPlayers
       .map(player => {

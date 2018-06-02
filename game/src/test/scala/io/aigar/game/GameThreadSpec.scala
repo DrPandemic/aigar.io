@@ -1,5 +1,9 @@
 import io.aigar.controller.response.GameCreationCommand
-import io.aigar.controller.response.{SetRankedDurationCommand, RestartThreadCommand}
+import io.aigar.controller.response.{
+  SetRankedDurationCommand,
+  SetRankedMultiplierCommand,
+  RestartThreadCommand
+}
 import io.aigar.game.{ActionQueryWithId, Game, GameThread, serializable}
 import io.aigar.score.{ScoreModification, ScoreThread}
 import io.aigar.controller.response.Action
@@ -86,12 +90,25 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
   it should "keep the nextRankedDuration" in {
     val scoreThread = new ScoreThread(null)
     val game = new GameThread(scoreThread)
+    game.nextRankedDuration shouldBe Game.DefaultDuration
     game.nextRankedDuration = 42
 
     game.adminCommandQueue.put(RestartThreadCommand(List()))
     game.transferAdminCommands
 
     game.nextRankedDuration shouldBe 42
+  }
+
+  it should "keep the nextRankedMultiplier" in {
+    val scoreThread = new ScoreThread(null)
+    val game = new GameThread(scoreThread)
+    game.nextRankedMultiplier shouldBe Game.DefaultMutliplier
+    game.nextRankedMultiplier = 42
+
+    game.adminCommandQueue.put(RestartThreadCommand(List()))
+    game.transferAdminCommands
+
+    game.nextRankedMultiplier shouldBe 42
   }
 
   it should "apply the new player's ids" in {
@@ -135,6 +152,13 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
     game.nextRankedDuration = 1337
     val ranked = game.createRankedGame
     ranked.duration should equal (1337)
+  }
+
+  "createRankedGame" should "use the multiplier from the game thread" in {
+    val game = createStartedGameThread()
+    game.nextRankedMultiplier = 42
+    val ranked = game.createRankedGame
+    ranked.multiplier should equal (42)
   }
 
   "transferActions" should "empty the actionQueue" in {
@@ -187,6 +211,15 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
     game.nextRankedDuration shouldBe 1337
   }
 
+  it should "set the nextRankedMultiplier" in {
+    val game = createStartedGameThread()
+    game.adminCommandQueue.put(SetRankedMultiplierCommand(42))
+
+    game.transferAdminCommands
+
+    game.nextRankedMultiplier shouldBe 42
+  }
+
   it should "create a private game" in {
     val game = createStartedGameThread()
     game.games.toList should have length 1
@@ -208,17 +241,18 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
     when(ranked.id).thenReturn(Game.RankedGameId)
     when(ranked.startTime).thenReturn(Game.time)
     when(ranked.duration).thenReturn(Int.MaxValue)
+    when(ranked.multiplier).thenReturn(1)
     when(notRanked.id).thenReturn(Game.RankedGameId + 1)
     val rankedFuture = Future.successful((List(ScoreModification(Game.RankedGameId, 1)),
-                                          serializable.GameState(0,0,0f,List(), serializable.Resources(List(), List(), List()), serializable.Dimensions(0, 0), List())))
+                                          serializable.GameState(0, 1, 0, 0f, List(), serializable.Resources(List(), List(), List()), serializable.Dimensions(0, 0), List())))
     val notRankedFuture = Future.successful((List(ScoreModification(Game.RankedGameId + 1, 2)),
-                                             serializable.GameState(0,0,0f,List(), serializable.Resources(List(), List(), List()), serializable.Dimensions(0, 0), List())))
+                                             serializable.GameState(0, 1, 0, 0f, List(), serializable.Resources(List(), List(), List()), serializable.Dimensions(0, 0), List())))
     when(ranked.update).thenReturn(rankedFuture)
     when(notRanked.update).thenReturn(notRankedFuture)
 
     game.updateGames
 
-    verify(scoreThread).addScoreModification(ScoreModification(ranked.id, 1))
+    verify(scoreThread).addScoreModification(ScoreModification(ranked.id, 1), 1)
   }
 
   it should "remove the ranked game and create a new one after a given time" in {
@@ -265,7 +299,7 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
     when(privateGame.id).thenReturn(id)
     when(privateGame.timeLeft).thenReturn(50)
     when(privateGame.update).thenReturn(Future.successful(List(),
-                                         serializable.GameState(0,0,0f,List(), serializable.Resources(List(), List(), List()), serializable.Dimensions(0, 0), List())))
+      serializable.GameState(0, 1, 0, 0f, List(), serializable.Resources(List(), List(), List()), serializable.Dimensions(0, 0), List())))
     game.games += (id -> privateGame)
 
     game.updateGames
