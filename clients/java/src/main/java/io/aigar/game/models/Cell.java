@@ -16,49 +16,24 @@ public class Cell {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-        cellActions.setCellId(id);
-    }
-
     public int getMass() {
         return mass;
-    }
-
-    public void setMass(int mass) {
-        this.mass = mass;
     }
 
     public int getRadius() {
         return radius;
     }
 
-    public void setRadius(int radius) {
-        this.radius = radius;
-    }
-
     public Coordinate getPosition() {
         return position;
-    }
-
-    public void setPosition(Coordinate position) {
-        this.position = position;
     }
 
     public Coordinate getTarget() {
         return target;
     }
 
-    public void setTarget(Coordinate target) {
-        this.target = target;
-    }
-
     public boolean isBurst() {
         return burst;
-    }
-
-    public void setBurst(boolean burst) {
-        this.burst = burst;
     }
 
     @JsonIgnore
@@ -83,6 +58,6 @@ public class Cell {
 
     @JsonIgnore
     public CellActions getActions() {
-        return cellActions;
+        return cellActions.withCellId(id);
     }
 }

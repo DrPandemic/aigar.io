@@ -15,24 +15,12 @@ public class Resources {
         return regular;
     }
 
-    public void setRegular(List<Coordinate> regular) {
-        this.regular = regular;
-    }
-
     public List<Coordinate> getSilver() {
         return silver;
     }
 
-    public void setSilver(List<Coordinate> silver) {
-        this.silver = silver;
-    }
-
     public List<Coordinate> getGold() {
         return gold;
-    }
-
-    public void setGold(List<Coordinate> gold) {
-        this.gold = gold;
     }
 
     @JsonIgnore

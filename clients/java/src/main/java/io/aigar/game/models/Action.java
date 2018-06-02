@@ -13,8 +13,4 @@ public class Action extends ProtectedData {
     public List<CellActions> getActions() {
         return actions;
     }
-
-    public void setActions(List<CellActions> actions) {
-        this.actions = actions;
-    }
 }

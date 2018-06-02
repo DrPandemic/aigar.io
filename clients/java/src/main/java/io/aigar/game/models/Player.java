@@ -16,39 +16,19 @@ public class Player {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public int getTotalMass() {
         return totalMass;
     }
 
-    public void setTotalMass(int totalMass) {
-        this.totalMass = totalMass;
-    }
-
     public boolean getIsActive() {
         return isActive;
     }
 
-    public void setIsActive(boolean isActive) {
-        this.isActive = isActive;
-    }
-
     public List<Cell> getCells() {
         return cells;
-    }
-
-    public void setCells(List<Cell> cells) {
-        this.cells = cells;
     }
 }
