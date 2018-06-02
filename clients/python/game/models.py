@@ -100,7 +100,7 @@ class Cell:
         self._actions = CellActions(self.id)
 
     def move(self, target):
-        self.target = target
+        self._actions.target = target
 
     def split(self):
         self._actions.split = True
@@ -126,11 +126,6 @@ class Cell:
                  format_vec2(self.position), format_vec2(self.target)))
 
     def actions(self):
-        actions = self._actions
-        actions.target = self.target
-
-        self._actions = CellActions(self.id)
-
         return actions
 
 
