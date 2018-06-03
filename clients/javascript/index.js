@@ -3,6 +3,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 // Libraries
 const argv = require('minimist')(process.argv.slice(2));
 const sleep = require('sleep');
+const opn = require('opn');
 
 // Models
 const Game = require('./game/game.js');
@@ -68,7 +69,9 @@ async function main(params) {
 
   if(params.create) {
     try {
-      gameId = await api.createPrivate();
+      await api.createPrivate();
+      const url = /(.*)\/api\/.*/.exec(params.apiUrl)[1];
+      await opn(`${url}/web/index.html?gameId=${params.playerId}`);
     } catch(e) {
       console.error(`You received an error ${e.message}`);
     }
