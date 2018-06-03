@@ -82,7 +82,7 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
   def run: Unit = {
     while (running) {
       transferAdminCommands
-      if (started || !paused) {
+      if (started && !paused) {
         transferActions
         updateGames
       }

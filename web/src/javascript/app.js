@@ -15,6 +15,7 @@ import {
   hideLoading,
   displayDoesntExist,
   getCurrentGameId,
+  updateInformationHeader,
 } from "./gameUI";
 
 let gameLoadingHandle = displayLoading();
@@ -56,6 +57,8 @@ networkWorker.onmessage = message => {
 setTimeout(() => networkWorker, 1000);
 
 function triggerStart() {
+  updateInformationHeader(states[0]);
+
   if(!canInterpolateStates()) {
     return;
   }

@@ -1,6 +1,6 @@
 import * as constants from "./constants";
 import sort from "immutable-sort";
-import {updateInformationHeader, resizeCanvas, createCanvas} from "./gameUI";
+import {resizeCanvas, createCanvas} from "./gameUI";
 
 let canvasWidth = 0;
 let canvasHeight = 0;
@@ -465,8 +465,6 @@ export function prepareCanvases(gameState, gameCanvas, miniMapCanvas, miniMapTmp
   drawResourcesOnMap(gameState.resources, gameCanvas);
   drawVirusesOnMap(gameState.viruses, gameCanvas);
   drawPlayersOnMap(gameState.players, gameCanvas, false);
-
-  updateInformationHeader(gameState);
 }
 
 export function drawGame(gameState, gameCanvas, miniMapCanvas) {
