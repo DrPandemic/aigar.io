@@ -10,8 +10,8 @@ const Utils = require('../../game/utils.js');
 
 describe('API', function() {
   it('concatenate correctly urls', function() {
-    const api0 = new API(0, 'foo', 'http://foo.bar', () => {});
-    const api1 = new API(0, 'foo', 'http://foo.bar/', () => {});
+    const api0 = new API(0, 'foo', 'http://foo.bar/api/1', () => {});
+    const api1 = new API(0, 'foo', 'http://foo.bar/api/1/', () => {});
 
     expect(api0).to.have.property('apiUrl').to.equal('http://foo.bar/api/1/game/');
     expect(api1).to.have.property('apiUrl').to.equal('http://foo.bar/api/1/game/');
@@ -20,8 +20,8 @@ describe('API', function() {
   describe('fetchGameState', function() {
     it('calls the appropriated route', function() {
       const stub = sinon.stub();
-      stub.returns(Promise.resolve({json: () => responseExample}));
-      const api = new API(0, 'foo', 'http://foo.bar', stub);
+      stub.returns(Promise.resolve({ok: true, json: () => responseExample}));
+      const api = new API(0, 'foo', 'http://foo.bar/api/1', stub);
 
       return api.fetchGameState(1337, 1)
         .then(() => {
@@ -35,8 +35,8 @@ describe('API', function() {
 
     it('returns a Game object', function() {
       const stub = sinon.stub();
-      stub.returns(Promise.resolve({json: () => responseExample}));
-      const api = new API(0, 'foo', 'http://foo.bar', stub);
+      stub.returns(Promise.resolve({ok: true, json: () => responseExample}));
+      const api = new API(0, 'foo', 'http://foo.bar/api/1', stub);
 
       return api.fetchGameState(1337, 1)
         .then(response => {
@@ -49,7 +49,7 @@ describe('API', function() {
     it('sends the actions to the right url', function() {
       const stub = sinon.stub();
       stub.returns(Promise.resolve());
-      const api = new API(0, 'foo', 'http://foo.bar', stub);
+      const api = new API(0, 'foo', 'http://foo.bar/api/1', stub);
 
       return api.sendActions(1337, {})
         .then(() => {
@@ -65,7 +65,7 @@ describe('API', function() {
     it('passes the right body', function() {
       const stub = sinon.stub();
       stub.returns(Promise.resolve());
-      const api = new API(0, 'foo', 'http://foo.bar', stub);
+      const api = new API(0, 'foo', 'http://foo.bar/api/1', stub);
 
       const game = Game.parse(responseExample.data, 1);
       game.me.cells[0].target = new Vector(42, 42);
@@ -97,7 +97,7 @@ describe('API', function() {
     it('sends the request to the right url', function() {
       const stub = sinon.stub();
       stub.returns(Promise.resolve());
-      const api = new API(0, 'foo', 'http://foo.bar', stub);
+      const api = new API(0, 'foo', 'http://foo.bar/api/1', stub);
 
       return api.createPrivate()
         .then(() => {
@@ -112,7 +112,7 @@ describe('API', function() {
     it('passes the player\'s secret', function() {
       const stub = sinon.stub();
       stub.returns(Promise.resolve());
-      const api = new API(0, 'foo', 'http://foo.bar', stub);
+      const api = new API(0, 'foo', 'http://foo.bar/api/1', stub);
 
       return api.createPrivate()
         .then(() => {

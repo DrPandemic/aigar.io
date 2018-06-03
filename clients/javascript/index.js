@@ -63,7 +63,7 @@ async function loop(gameId, playerId, api, ai, previousTick) {
 }
 
 async function main(params) {
-  let gameId = params.join ? params.playerId : Game.RANKED_GAME_ID;
+  const gameId = (params.join || params.create) ? params.playerId : Game.RANKED_GAME_ID;
   const api = new API(params.playerId, params.playerSecret, params.apiUrl);
   let ai = new AI();
 
