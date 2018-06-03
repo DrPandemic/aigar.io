@@ -73,6 +73,18 @@ document.getElementById("change-multiplier-button").onclick = async () => {
   alert(`The next multiplier was set to ${multiplier}`);
 };
 
+document.getElementById("resume-button").onclick = async () => {
+  await sendAdminRequest("paused", "put", {paused: false});
+  await fetchAndDisplay();
+  alert("The game was resumed");
+};
+
+document.getElementById("pause-button").onclick = async () => {
+  await sendAdminRequest("paused", "put", {paused: true});
+  await fetchAndDisplay();
+  alert("The game was paused");
+};
+
 function displayEntries(entries) {
   const table = document.getElementById("player-list-body");
   for(const i in entries) {
@@ -91,6 +103,16 @@ function clearEntries() {
   }
 }
 
+function togglePauseButtons(gameState) {
+  if (gameState.paused) {
+    document.getElementById("resume-button").className = "btn btn-primary";
+    document.getElementById("pause-button").className = "btn btn-secondary";
+  } else {
+    document.getElementById("resume-button").className = "btn btn-secondary";
+    document.getElementById("pause-button").className = "btn btn-primary";
+  }
+}
+
 async function fetchAndDisplay() {
   const entries = await sendAdminRequest("get_players", "post");
   clearEntries();
@@ -98,7 +120,8 @@ async function fetchAndDisplay() {
 
   const state = await fetchState(-1);
   document.getElementById("current-multiplier-input").value = state.multiplier;
+  togglePauseButtons(state);
 }
 
-setInterval(fetchAndDisplay, 15 * 1000);
+setInterval(fetchAndDisplay, 5 * 1000);
 fetchAndDisplay();

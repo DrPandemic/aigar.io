@@ -147,6 +147,13 @@ $primary-btn-border-color: #adadad;
   border-color: $primary-btn-border-color;
 }
 
+.btn-secondary {
+  border-top-color: rgb(85, 85, 85);
+  border-right-color: rgb(85, 85, 85);
+  border-bottom-color: rgb(85, 85, 85);
+  border-left-color: rgb(85, 85, 85);
+}
+
 
 /* Override Table */
 $primary-table-color: #f7f7f7;

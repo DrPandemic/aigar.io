@@ -12,9 +12,10 @@ export function initLineButton() {
   };
 }
 
-export function updateTimeLeft(gameState){
+export function updateInformationHeader(gameState){
   let value = new Date(gameState.timeLeft * 1000).toISOString().substr(11, 8);
   value = `${value} - <b>${gameState.multiplier}X</b> Score Multiplier`;
+  value = gameState.paused ? `${value} - The game is <b>PAUSED</b>` : value;
 
   document.getElementById("timeLeft").innerHTML = value;
 }
