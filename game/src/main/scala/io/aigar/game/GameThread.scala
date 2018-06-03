@@ -7,7 +7,8 @@ import io.aigar.controller.response.{
   GameCreationCommand,
   SetRankedDurationCommand,
   RestartThreadCommand,
-  SetRankedMultiplierCommand
+  SetRankedMultiplierCommand,
+  PauseCommand
 }
 import scala.util.Failure
 import scala.util.Success
@@ -41,6 +42,8 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
   private var states: Map[Int, serializable.GameState] = Map()
   var games: Map[Int, Game] = Map()
 
+  var paused = false
+
   var running = true
   var started = false
 
@@ -57,7 +60,13 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
    * Safe way to get the game state of a particular game from another thread.
    */
   def gameState(gameId: Int): Option[serializable.GameState] = {
-    states get gameId
+    states get gameId match {
+      case Some(state) => {
+        state.paused = paused
+        Some(state)
+      }
+      case None => None
+    }
   }
 
   def createRankedGame: Game = {
@@ -73,9 +82,13 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
   def run: Unit = {
     while (running) {
       transferAdminCommands
-      if (started) {
+      if (started || !paused) {
         transferActions
         updateGames
+      }
+
+      if (paused) {
+        actionQueue.clear
       }
 
       Thread.sleep(math.max(0, round(Game.MillisecondsPerTick - (currentTime - previousTime) * Game.MillisecondsPerSecond)))
@@ -85,16 +98,19 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
   }
 
   def transferActions: Unit = {
-    var actions = new java.util.ArrayList[ActionQueryWithId]()
+    val actions = new java.util.ArrayList[ActionQueryWithId]()
     actionQueue.drainTo(actions)
 
-    val futures = actions.toList
-      .filter(action => games.contains(action.game_id))
+    val futures = actions
       .map(action =>
       games.get(action.game_id) match {
         case Some(game) => (game, game.performAction(action.player_id, action.actions))
+        case None => null
       }
-    )
+      ).filter({
+        case (_, _) => true
+        case _ => false
+      })
 
     futures.foreach {
       case(game, future) => {
@@ -113,6 +129,7 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
         case command: RestartThreadCommand => restart(command.playerIDs)
         case command: GameCreationCommand => games += (command.gameId -> createPrivateGame(command.gameId))
         case command: SetRankedMultiplierCommand => nextRankedMultiplier = command.multiplier
+        case command: PauseCommand => paused = command.paused
       }
     }
   }

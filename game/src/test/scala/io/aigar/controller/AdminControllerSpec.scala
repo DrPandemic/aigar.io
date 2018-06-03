@@ -166,6 +166,20 @@ class AdminControllerSpec extends MutableScalatraSpec
     }
   }
 
+  "PUT /paused" should {
+    "put the action in the admin queue" in {
+      game.adminCommandQueue.isEmpty() must be_==(true)
+      putJson("paused", defaultActionJson ~ ("paused" -> true)) {
+        status must_== 200
+
+        game.adminCommandQueue.isEmpty() must be_==(false)
+        val command = game.adminCommandQueue.take()
+        command must haveClass[PauseCommand]
+        command.asInstanceOf[PauseCommand].paused must be_==(true)
+      }
+    }
+  }
+
   "POST /get_players on AdminController" should {
     "return the right data format" in {
       postJson("get_players", defaultActionJson) {

@@ -94,6 +94,7 @@ class Game(val id: Int,
   def state: serializable.GameState = {
     serializable.GameState(
         id,
+        false,
         multiplier,
         tick,
         timeLeft,

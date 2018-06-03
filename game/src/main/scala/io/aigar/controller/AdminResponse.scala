@@ -37,6 +37,11 @@ case class SetRankedMultiplierQuery(
   multiplier: Int
 )
 
+case class PauseQuery(
+  administrator_password: String,
+  paused: Boolean
+)
+
 /**
   * Class used to transfer commands from the AdminController to the game thread.
   */
@@ -52,4 +57,8 @@ case class RestartThreadCommand(
 
 case class SetRankedMultiplierCommand(
   multiplier: Int
+) extends AdminCommand
+
+case class PauseCommand(
+  paused: Boolean
 ) extends AdminCommand

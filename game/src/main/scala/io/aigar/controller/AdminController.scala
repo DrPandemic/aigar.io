@@ -94,6 +94,18 @@ class AdminController(password: String, game: GameThread, playerRepository: Play
     SuccessResponse("ok")
   }
 
+  put("/paused") {
+    try {
+      val query = parse(request.body).extract[PauseQuery]
+      val command = PauseCommand(query.paused)
+      game.adminCommandQueue.put(command)
+    } catch {
+      case e: MappingException => halt(422)
+    }
+
+    SuccessResponse("ok")
+  }
+
   post("/get_players") {
     val players = playerRepository.getPlayers
       .map(player => {
