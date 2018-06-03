@@ -109,7 +109,7 @@ Every error will contain a root element named `error` with an error message.
 **Response**
 ```json
 {
-    "game_id": "int",
+    "id": "int",
     "url": "string"
 }
 ```
