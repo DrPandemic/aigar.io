@@ -23,7 +23,9 @@ describe('Cell', function() {
     const c0 = Cell.parse(responseExample.data.players[0].cells[0]);
     c0.burst();
 
-    expect(c0.actions()).to.have.property('burst').to.be.true;
+    const actions = c0.actions();
+    expect(actions).to.have.property('burst').to.be.true;
+    expect(actions).to.have.property('target').to.be.not.null;
   });
 
   it('can move', function() {
@@ -37,14 +39,18 @@ describe('Cell', function() {
     const c0 = Cell.parse(responseExample.data.players[0].cells[0]);
     c0.split();
 
-    expect(c0.actions()).to.have.property('split').to.be.true;
+    const actions = c0.actions();
+    expect(actions).to.have.property('split').to.be.true;
+    expect(actions).to.have.property('target').to.be.not.null;
   });
 
   it('can trade', function() {
     const c0 = Cell.parse(responseExample.data.players[0].cells[0]);
     c0.trade(42);
 
-    expect(c0.actions()).to.have.property('trade').to.be.equal(42);
+    const actions = c0.actions();
+    expect(actions).to.have.property('trade').to.be.equal(42);
+    expect(actions).to.have.property('target').to.be.not.null;
   });
 
   it('can do nothing', function() {
