@@ -52,6 +52,7 @@ class Game(val id: Int,
   val startTime = Game.time
   var previousTime = startTime
   var currentTime = startTime + Game.MillisecondsPerTick / Game.MillisecondsPerSecond // avoid having an initial 0 delta time
+  var pausedTime = 0f
   var tick = 0
 
   def update: Future[(List[ScoreModification], serializable.GameState)] = {
@@ -72,6 +73,13 @@ class Game(val id: Int,
     }
   }
 
+  def updatePaused: Unit = {
+    pausedTime += currentTime - previousTime
+
+    previousTime = currentTime
+    currentTime = Game.time
+  }
+
   def performAction(player_id: Int, actions: List[Action]): Future[List[ScoreModification]] = {
     Future {
       this.synchronized {
@@ -88,7 +96,7 @@ class Game(val id: Int,
   }
 
   def timeLeft: Float = {
-    duration - (Game.time - startTime)
+    duration + pausedTime - (Game.time - startTime)
   }
 
   def state: serializable.GameState = {

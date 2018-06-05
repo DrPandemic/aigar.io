@@ -89,6 +89,7 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
 
       if (paused) {
         actionQueue.clear
+        games.foreach { case (_, g) => g.updatePaused }
       }
 
       Thread.sleep(math.max(0, round(Game.MillisecondsPerTick - (currentTime - previousTime) * Game.MillisecondsPerSecond)))
@@ -150,8 +151,7 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
     // Reset ranked
     games.get(Game.RankedGameId) match {
       case Some(ranked) => {
-        val elapsed = Game.time - ranked.startTime
-        if (ranked.duration < elapsed) {
+        if (ranked.timeLeft < 0f) {
           games += (Game.RankedGameId -> createRankedGame)
         }
       }
