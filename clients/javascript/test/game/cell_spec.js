@@ -19,14 +19,6 @@ describe('Cell', function() {
     expect(Utils.almostEqual(c0.target, new Vector(590.6243, 305.7435))).to.be.true;
   });
 
-  it('actions() resets the actions', function() {
-    const c0 = Cell.parse(responseExample.data.players[0].cells[0]);
-    c0.burst();
-
-    expect(c0.actions()).to.have.property('burst').to.be.true;
-    expect(c0.actions()).to.be.null;
-  });
-
   it('can burst', function() {
     const c0 = Cell.parse(responseExample.data.players[0].cells[0]);
     c0.burst();
@@ -38,7 +30,6 @@ describe('Cell', function() {
     const c0 = Cell.parse(responseExample.data.players[0].cells[0]);
     c0.move(new Vector(42, 42));
 
-    expect(Utils.almostEqual(c0.target, new Vector(42, 42))).to.be.true;
     expect(Utils.almostEqual(c0.actions().target, new Vector(42, 42))).to.be.true;
   });
 
