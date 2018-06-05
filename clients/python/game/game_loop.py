@@ -10,4 +10,4 @@ def update_game(api, game, step_fn):
     """
     step_fn(game)
 
-    api.send_actions(game.id, [cell.actions() for cell in game.me.cells])
+    api.send_actions(game.id, list(filter(None.__ne__, [cell.actions() for cell in game.me.cells])))
