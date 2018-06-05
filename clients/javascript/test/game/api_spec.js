@@ -68,7 +68,7 @@ describe('API', function() {
       const api = new API(0, 'foo', 'http://foo.bar/api/1', stub);
 
       const game = Game.parse(responseExample.data, 1);
-      game.me.cells[0].target = new Vector(42, 42);
+      game.me.cells[0].move(new Vector(42, 42));
 
       return api.sendActions(1337, game.actions)
         .then(() => {

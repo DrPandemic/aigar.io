@@ -40,6 +40,12 @@ module.exports = class Cell {
   }
 
   actions() {
-    return this.actions_.export();
+    const actions = this.actions_.export();
+
+    if(actions && !actions.target) {
+      actions.target = this.target;
+    }
+
+    return actions;
   }
 };
