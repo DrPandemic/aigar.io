@@ -2,6 +2,8 @@ package io.aigar.game.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.util.Optional;
+
 public class Cell {
     private int id;
     private int mass;
@@ -57,7 +59,13 @@ public class Cell {
     }
 
     @JsonIgnore
-    public CellActions getActions() {
-        return cellActions.withCellId(id);
+    public Optional<CellActions> getActions() {
+        if(!cellActions.getChanged())
+            return Optional.empty();
+
+        if(cellActions.getTarget() == null)
+            cellActions.setTarget(target);
+
+        return Optional.of(cellActions.withCellId(id));
     }
 }

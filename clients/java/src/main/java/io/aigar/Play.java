@@ -5,21 +5,19 @@ import io.aigar.config.ConfigReader;
 import io.aigar.game.Api;
 import io.aigar.game.NetworkException;
 import io.aigar.game.models.Cell;
-import io.aigar.game.models.Game;
 import io.aigar.game.models.GameState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.io.IOException;
-
-
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Play {
-    private static final String BASE_GAME_URL="web/index.html";
+    private static final String BASE_GAME_URL = "web/index.html";
     private static final int RANKED_GAME_ID = -1;
     private static final int UPDATES_PER_SECOND = 3; // how many times we should contact the server per second
     private static final Logger logger = LoggerFactory.getLogger(Play.class);
@@ -73,7 +71,13 @@ public class Play {
 
             // Actual loop
             ai.step(gameState);
-            api.sendActions(gameId, gameState.getMe().getCells().stream().map(Cell::getActions).collect(Collectors.toList()));
+            api.sendActions(gameId, gameState.getMe()
+                    .getCells()
+                    .stream()
+                    .map(Cell::getActions)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .collect(Collectors.toList()));
 
             Thread.sleep(1000 / UPDATES_PER_SECOND);
         }
