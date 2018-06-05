@@ -1,5 +1,6 @@
 package io.aigar.game.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class CellActions {
@@ -9,6 +10,8 @@ public class CellActions {
     private boolean split = false;
     private int trade = 0;
     private Coordinate target = null;
+    @JsonIgnore
+    private boolean changed = false;
 
     public CellActions() {
     }
@@ -23,6 +26,7 @@ public class CellActions {
 
     public void setCellId(int cellId) {
         this.cellId = cellId;
+        changed = true;
     }
 
     public CellActions withCellId(int cellId) {
@@ -36,6 +40,7 @@ public class CellActions {
 
     public void setBurst(boolean burst) {
         this.burst = burst;
+        changed = true;
     }
 
     public CellActions withBurst(boolean burst) {
@@ -49,6 +54,7 @@ public class CellActions {
 
     public void setSplit(boolean split) {
         this.split = split;
+        changed = true;
     }
 
     public CellActions withSplit(boolean split) {
@@ -62,6 +68,7 @@ public class CellActions {
 
     public void setTrade(int trade) {
         this.trade = trade;
+        changed = true;
     }
 
     public CellActions withTrade(int trade) {
@@ -75,10 +82,14 @@ public class CellActions {
 
     public void setTarget(Coordinate target) {
         this.target = target;
+        changed = true;
     }
 
     public CellActions withTarget(Coordinate target) {
         setTarget(target);
         return this;
     }
+
+    @JsonIgnore
+    public boolean getChanged() { return changed; }
 }
