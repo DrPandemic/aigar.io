@@ -1,8 +1,8 @@
 from unittest import TestCase
 from planar import Vec2
 
-from .models import (Game, Map, Player, Cell, Resources, Virus,
-                     UnknownPlayerIdException)
+from game.models import (Game, Map, Player, Cell, Resources, Virus,
+                         UnknownPlayerIdException)
 
 
 class GameTests(TestCase):
@@ -159,16 +159,9 @@ class CellTests(TestCase):
         self.assertTrue(cell.position.almost_equals(Vec2(1241, 442)))
         self.assertTrue(cell.target.almost_equals(Vec2(1448, 1136)))
 
-    def test_move_sets_target(self):
-        cell = Cell(1, 2, 3, Vec2(4, 5), Vec2(6, 7))
-
-        target = Vec2(8, 9)
-        cell.move(target)
-
-        self.assertEqual(target, cell.target)
-
     def test_actions_sets_actions_target(self):
         cell = Cell(1, 2, 3, Vec2(4, 5), Vec2(6, 7))
+        cell.move(Vec2(6, 7))
 
         actions = cell.actions()
 
@@ -182,6 +175,7 @@ class CellTests(TestCase):
 
         actions = cell.actions()
         self.assertTrue(actions.split)
+        self.assertIsNotNone(actions.target)
 
     def test_burst_sets_actions_burst(self):
         cell = Cell(1, 2, 3, Vec2(4, 5), Vec2(6, 7))
@@ -190,6 +184,7 @@ class CellTests(TestCase):
 
         actions = cell.actions()
         self.assertTrue(actions.burst)
+        self.assertIsNotNone(actions.target)
 
     def test_trade_sets_actions_trade(self):
         cell = Cell(1, 2, 3, Vec2(4, 5), Vec2(6, 7))
@@ -198,6 +193,14 @@ class CellTests(TestCase):
 
         actions = cell.actions()
         self.assertEqual(42, actions.trade)
+        self.assertIsNotNone(actions.target)
+
+    def test_actions_do_nothing(self):
+        cell = Cell(1, 2, 3, Vec2(4, 5), Vec2(6, 7))
+
+        actions = cell.actions()
+
+        self.assertIsNone(actions)
 
 
 class ResourcesTests(TestCase):

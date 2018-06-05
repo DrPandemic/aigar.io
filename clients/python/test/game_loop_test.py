@@ -1,14 +1,15 @@
 from unittest import TestCase
 from planar import Vec2
 
-from .game_loop import update_game
-from .models import Game, Cell, Player, Map, Resources
+from game.game_loop import update_game
+from game.models import Game, Cell, Player, Map, Resources
 
 
 class GameLoopTests(TestCase):
     def test_update_game_calls_send_actions(self):
         cells = [Cell(0, 5, 10, Vec2(0, 0), Vec2(1, 1)),
-                 Cell(1, 5, 10, Vec2(0, 0), Vec2(1, 1))]
+                 Cell(1, 5, 10, Vec2(0, 0), Vec2(1, 1)),
+                 Cell(2, 5, 10, Vec2(0, 0), Vec2(1, 1))]
         player = Player(0, "", 10, True, cells)
         game = Game(0, 0, 0, [player], Resources([], [], []), Map(0, 0), [])
 
@@ -26,6 +27,7 @@ class GameLoopTests(TestCase):
 
         update_game(api, game, lambda x: None)
 
+        self.assertEqual(len(api.actions), 2)
         self.assertTrue(
             api.actions[0].target.almost_equals(Vec2(2, 2)))
         self.assertTrue(api.actions[0].burst)

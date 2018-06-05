@@ -126,6 +126,11 @@ class Cell:
                  format_vec2(self.position), format_vec2(self.target)))
 
     def actions(self):
+        actions = self._actions.export()
+
+        if actions is not None and actions.target is None:
+            actions.target = self.target
+
         return actions
 
 
@@ -164,11 +169,62 @@ class Virus:
 
 class CellActions:
     def __init__(self, cell_id):
-        self.cell_id = cell_id
-        self.target = None
-        self.burst = False
-        self.split = False
-        self.trade = 0
+        self._cell_id = cell_id
+        self._target = None
+        self._burst = False
+        self._split = False
+        self._trade = 0
+        self._changed = False
+
+    @property
+    def cell_id(self):
+        return self._cell_id
+
+    @cell_id.setter
+    def cell_id(self, c):
+        self._cell_id = c
+        self._changed = True
+
+    @property
+    def target(self):
+        return self._target
+
+    @target.setter
+    def target(self, t):
+        self._target = t
+        self._changed = True
+
+    @property
+    def burst(self):
+        return self._burst
+
+    @burst.setter
+    def burst(self, b):
+        self._burst = b
+        self._changed = True
+
+    @property
+    def split(self):
+        return self._split
+
+    @split.setter
+    def split(self, s):
+        self._split = s
+        self._changed = True
+
+    @property
+    def trade(self):
+        return self._trade
+
+    @trade.setter
+    def trade(self, t):
+        self._trade = t
+        self._changed = True
+
+    def export(self):
+        if not self._changed:
+            return None
+        return self
 
 
 def parse_vec2(obj):
