@@ -30,7 +30,7 @@ const resourceCache = [
   [constants.regularColor, constants.regularRGBColor, constants.regularResourceMass],
   [constants.silverColor, constants.silverRGBColor, constants.resourceMass],
   [constants.goldColor, constants.goldRGBColor, constants.resourceMass],
-].map(([c, r, m]) => prerenderResource(c, r, m));
+].map(([c, r, m]) => ({canvas: prerenderResource(c, r, m), radius: m}));
 const virusCache = {};
 const nameCache = {};
 
@@ -220,9 +220,9 @@ export function drawLine(context, position, target, color = "#000000", width = c
 
 export function drawResourcesOnMap(resources, gameCanvas) {
   const context = gameCanvas.getContext("2d");
-  const drawResources = (resources, resourceCanvas) => {
+  const drawResources = (resources, {canvas, radius}) => {
     for(const resource of resources) {
-      context.drawImage(resourceCanvas, resource.x, resource.y);
+      context.drawImage(canvas, resource.x - radius, resource.y - radius);
     }
   };
 
