@@ -151,7 +151,7 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
     // Reset ranked
     games.get(Game.RankedGameId) match {
       case Some(ranked) => {
-        if (ranked.timeLeft < 0f) {
+        if (ranked.timeLeft <= 0f) {
           games += (Game.RankedGameId -> createRankedGame)
         }
       }

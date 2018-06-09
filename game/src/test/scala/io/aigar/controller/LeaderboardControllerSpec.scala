@@ -10,16 +10,15 @@ import org.specs2.matcher._
 import org.specs2.specification.BeforeAfterEach
 
 class LeaderboardControllerSpec extends MutableScalatraSpec
-    with BeforeAfterEach {
+    with BeforeAfterEach
+    with io.aigar.test.TestWithDatabase {
   implicit val jsonFormats: Formats = DefaultFormats
   sequential
 
-  val playerRepository = new PlayerRepository(None)
   addServlet(new LeaderboardController(playerRepository), "/*")
 
   def cleanState = {
-    playerRepository.dropSchema
-    playerRepository.createSchema
+    cleanDB()
 
     playerRepository.createPlayer(PlayerModel(Some(1), "EdgQWhJ!v&", "player1", 789))
     playerRepository.createPlayer(PlayerModel(Some(2), "EdgQWhJ!v&2", "player2", 50))

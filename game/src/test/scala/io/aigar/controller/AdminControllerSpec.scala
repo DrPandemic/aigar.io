@@ -1,6 +1,6 @@
 import io.aigar.controller.AdminController
 import io.aigar.controller.response._
-import io.aigar.model.{PlayerModel, PlayerRepository}
+import io.aigar.model._
 import io.aigar.game.GameThread
 import io.aigar.score.ScoreThread
 
@@ -14,23 +14,22 @@ import org.specs2.specification.BeforeAfterEach
 
 class AdminControllerSpec extends MutableScalatraSpec
     with JsonMatchers
-    with BeforeAfterEach {
+    with BeforeAfterEach
+    with io.aigar.test.TestWithDatabase {
   implicit val jsonFormats: Formats = DefaultFormats
   sequential
 
-  val playerRepository = new PlayerRepository(None)
   val scoreThread = new ScoreThread(playerRepository)
   val game = new GameThread(scoreThread)
   game.adminCommandQueue.put(RestartThreadCommand(List(1)))
   game.transferAdminCommands
   game.updateGames // run once to initialize the game states
 
-  addServlet(new AdminController("unicorn-revenge", game, playerRepository), "/*")
+  addServlet(new AdminController("unicorn-revenge", game, playerRepository, scoreRepository), "/*")
 
   def cleanState: Unit = {
     game.actionQueue.clear()
-    playerRepository.dropSchema
-    playerRepository.createSchema
+    cleanDB()
 
     playerRepository.createPlayer(PlayerModel(Some(1), "EdgQWhJ!v&", "player1", 0))
     playerRepository.createPlayer(PlayerModel(Some(2), "SUPERSECRET", "player2", 0))

@@ -2,10 +2,11 @@ import javax.servlet.ServletContext
 
 import com.typesafe.scalalogging.LazyLogging
 import org.scalatra.{LifeCycle}
+import slick.driver.H2Driver.api.Database
 
 import io.aigar.controller.{AdminController, GameController, LeaderboardController}
 import io.aigar.game.GameThread
-import io.aigar.model.PlayerRepository
+import io.aigar.model._
 import io.aigar.score.ScoreThread
 
 object ScalatraBootstrap {
@@ -16,6 +17,7 @@ class ScalatraBootstrap extends LifeCycle
                         with LazyLogging {
   logger.info("Bootstrapping application.")
   var playerRepository: PlayerRepository = null
+  var scoreRepository: ScoreRepository = null
   var game: GameThread = null
   var scoreThread: ScoreThread = null
   final val adminPassword = (new scala.util.Random(new java.security.SecureRandom())).alphanumeric.take(ScalatraBootstrap.PasswordLength).mkString
@@ -23,14 +25,15 @@ class ScalatraBootstrap extends LifeCycle
   final val path = s"/api$version"
 
   override def init(context: ServletContext): Unit = {
-    appInit()
+    val database = AigarDatabase.createDatabase(AigarDatabase.getRandomName, false)
+    appInit(database)
 
     logger.info("****************************")
     logger.info("***Administrator password***")
     logger.info(adminPassword)
     logger.info("****************************")
 
-    context.mount(new AdminController(adminPassword, game, playerRepository), s"$path/admin/*")
+    context.mount(new AdminController(adminPassword, game, playerRepository, scoreRepository), s"$path/admin/*")
     context.mount(new LeaderboardController(playerRepository), s"$path/leaderboard/*")
     context.mount(new GameController(game, playerRepository), s"$path/game/*")
   }
@@ -38,8 +41,9 @@ class ScalatraBootstrap extends LifeCycle
   /*
    * Separated method for testing purposes.
    */
-  def appInit(players: Option[PlayerRepository] = None): Unit = {
-    playerRepository = players.getOrElse(new PlayerRepository(None))
+  def appInit(database: Database): Unit = {
+    playerRepository = new PlayerRepository(database)
+    scoreRepository = new ScoreRepository(database)
     scoreThread = new ScoreThread(playerRepository)
     game = new GameThread(scoreThread)
 
@@ -47,7 +51,7 @@ class ScalatraBootstrap extends LifeCycle
   }
 
   private def closeDbConnection: Unit = {
-    playerRepository.closeConnection
+    AigarDatabase.closeConnection
   }
 
   override def destroy(context: ServletContext): Unit = {

@@ -10,13 +10,14 @@ import io.aigar.model.PlayerModel
 import scala.util.Success
 import scala.util.Try
 import io.aigar.game.GameThread
-import io.aigar.model.{
-  PlayerRepository,
-  seed
-}
+import io.aigar.model._
 
-class AdminController(password: String, game: GameThread, playerRepository: PlayerRepository)
-    extends AigarStack
+class AdminController(
+  password: String,
+  game: GameThread,
+  playerRepository: PlayerRepository,
+  scoreRepository: ScoreRepository
+) extends AigarStack
     with JacksonJsonSupport
     with MethodOverride
     with LazyLogging {
@@ -39,7 +40,7 @@ class AdminController(password: String, game: GameThread, playerRepository: Play
     val result = parse(request.body)
     Try(result.extract[SeedPlayersQuery]).orElse(Try(result.extract[CreatePlayerQuery])) match {
       case Success(query: SeedPlayersQuery) => {
-        if (query.seed) seed.seedPlayers(playerRepository, query.playerCount)
+        if (query.seed) seed.seedPlayers(playerRepository, scoreRepository, query.playerCount)
         SuccessResponse("ok")
       }
       case Success(query: CreatePlayerQuery) => {

@@ -256,9 +256,8 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
     val notRanked = mock[Game]
     game.games = Map(Game.RankedGameId -> ranked, Game.RankedGameId + 1 -> notRanked)
     when(ranked.id).thenReturn(Game.RankedGameId)
-    when(ranked.startTime).thenReturn(Game.time)
-    when(ranked.duration).thenReturn(Int.MaxValue)
     when(ranked.multiplier).thenReturn(1)
+    when(ranked.timeLeft).thenReturn(10f)
     when(notRanked.id).thenReturn(Game.RankedGameId + 1)
     val rankedFuture = Future.successful((List(ScoreModification(Game.RankedGameId, 1)),
                                           serializable.GameState(0, false, 1, 0, 0f, List(), serializable.Resources(List(), List(), List()), serializable.Dimensions(0, 0), List())))
@@ -276,8 +275,7 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
     val scoreThread = mock[ScoreThread]
     val ranked = mock[Game]
     when(ranked.id).thenReturn(Game.RankedGameId)
-    when(ranked.startTime).thenReturn(0L)
-    when(ranked.duration).thenReturn(0)
+    when(ranked.timeLeft).thenReturn(-1f)
     val game = new GameThread(scoreThread)
     game.adminCommandQueue.put(RestartThreadCommand(List(0)))
     game.transferAdminCommands

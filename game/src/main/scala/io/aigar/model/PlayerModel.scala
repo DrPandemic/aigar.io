@@ -110,10 +110,16 @@ object PlayerDAO extends TableQuery(new Players(_)) {
   }
 
   def dropSchema(db: Database): Unit = {
-    Await.result(
-      db.run(
-        players.schema.drop
-      ), Duration.Inf
-    )
+    def deleteTableIfNotInTables(tables: Vector[MTable]): Future[Unit] = {
+      if (tables.exists(_.name.name == players.baseTableRow.tableName)) {
+        db.run(players.schema.drop)
+      } else {
+        Future()
+      }
+    }
+
+    val deleteTableIfNotExist: Future[Unit] = db.run(MTable.getTables).flatMap(deleteTableIfNotInTables)
+
+    Await.result(deleteTableIfNotExist, Duration.Inf)
   }
 }

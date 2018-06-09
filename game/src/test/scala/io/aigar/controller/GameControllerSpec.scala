@@ -14,11 +14,11 @@ import org.specs2.specification.BeforeAfterEach
 
 class GameControllerSpec extends MutableScalatraSpec
     with JsonMatchers
-    with BeforeAfterEach {
+    with BeforeAfterEach
+    with io.aigar.test.TestWithDatabase {
   implicit val jsonFormats: Formats = DefaultFormats
   sequential
 
-  val playerRepository = new PlayerRepository(None)
   val scoreThread = new ScoreThread(playerRepository)
   val game = new GameThread(scoreThread)
   game.adminCommandQueue.put(RestartThreadCommand(List(1)))
@@ -30,8 +30,7 @@ class GameControllerSpec extends MutableScalatraSpec
   def cleanState = {
     game.actionQueue.clear()
     game.adminCommandQueue.clear()
-    playerRepository.dropSchema
-    playerRepository.createSchema
+    cleanDB()
 
     playerRepository.createPlayer(PlayerModel(Some(1), "EdgQWhJ!v&", "player1", 0))
   }
