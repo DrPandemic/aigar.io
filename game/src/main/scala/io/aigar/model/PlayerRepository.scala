@@ -17,8 +17,8 @@ class PlayerRepository(db: Database) {
     PlayerDAO.findPlayerBySecret(db, playerSecret)
   }
 
-  def addScore(player_id: Int, value: Float): Unit ={
-    PlayerDAO.addScore(db, player_id, value)
+  def addScore(playerId: Int, value: Float): Unit ={
+    PlayerDAO.addScore(db, playerId, value)
   }
 
   def updatePlayer(player: PlayerModel): Option[PlayerModel] = {

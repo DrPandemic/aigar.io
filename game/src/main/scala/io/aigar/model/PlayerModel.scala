@@ -53,10 +53,10 @@ object PlayerDAO extends TableQuery(new Players(_)) {
     )
   }
 
-  def addScore(db: Database, player_id: Int, value: Float): Unit = {
+  def addScore(db: Database, playerId: Int, value: Float): Unit = {
     val sql = sqlu"""update PLAYERS
                      set score = score + ${value}
-                     where id = ${player_id}"""
+                     where id = ${playerId}"""
     // TODO Log errors if there's any
     Await.result(
       db.run(
