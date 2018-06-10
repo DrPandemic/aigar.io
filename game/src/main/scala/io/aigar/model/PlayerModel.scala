@@ -21,6 +21,14 @@ class Players(tag: Tag) extends Table[PlayerModel](tag, "PLAYERS") {
 object PlayerDAO extends TableQuery(new Players(_)) {
   lazy val players = TableQuery[Players]
 
+  def findPlayersWithScores(db: Database): List[(PlayerModel, ScoreModel)] = {
+    val query = for {
+      (p, s) <- players join ScoreDAO.scores on (_.id === _.playerId)
+    } yield (p, s)
+
+    Await.result(db.run(query.result), Duration.Inf).toList
+  }
+
   /**
    * This function uses the TableQuery[Players] to access all the players and find the one
    * we just added (with no id) and returns it from the database with the auto-generated id.

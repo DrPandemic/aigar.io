@@ -67,4 +67,22 @@ class PlayerRepositorySpec extends FlatSpec
   it should "get a player by its secret" in withInMemDatabase { (listPlayers) =>
     assert(!playerRepository.readPlayerBySecret("EdgQWhJ!v&").isEmpty)
   }
+
+  "findPlayerWithScores" should "return a player with joined scores" in withInMemDatabase { (players) =>
+    val player0Id = players(0).id.get
+    val player1Id = players(1).id.get
+    scoreRepository.addScore(player0Id, 5f)
+    scoreRepository.addScore(player0Id, 10f)
+    scoreRepository.addScore(player1Id, 42f)
+
+    val scores = playerRepository.findPlayersWithScores map {
+      case (PlayerModel(Some(playerId), _, _, _), ScoreModel(_, _, value, _)) => (playerId, value)
+    }
+
+    scores should contain allOf (
+      (player0Id, 5f),
+      (player0Id, 10f),
+      (player1Id, 42f)
+    )
+  }
 }

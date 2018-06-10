@@ -17,7 +17,7 @@ class ScoreRepositorySpec extends FlatSpec
     scoreRepository.getScoresForPlayer(player.id.get) shouldBe empty
   }
 
-  "getScoresForPlayer" should "returns a list of saved scores" in withInMemDatabase { (player) =>
+  it should "returns a list of saved scores" in withInMemDatabase { (player) =>
     val playerId = player.id.get
     scoreRepository.addScore(playerId, 10f)
     scoreRepository.addScore(playerId, 5f)
@@ -32,5 +32,17 @@ class ScoreRepositorySpec extends FlatSpec
       (playerId, 5f),
       (playerId, -42f)
     )
+  }
+
+  "addScore" should "create entries with increasing timestamp" in withInMemDatabase { (player) =>
+    val playerId = player.id.get
+    scoreRepository.addScore(playerId, 10f)
+    scoreRepository.addScore(playerId, 5f)
+
+    val scores = scoreRepository.getScoresForPlayer(playerId) map {
+      case ScoreModel(_, _, _, timestamp) => timestamp
+    }
+
+    assert(scores(0).get.before(scores(1).get))
   }
 }

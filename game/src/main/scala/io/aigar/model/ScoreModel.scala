@@ -8,9 +8,8 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.Await
 import scala.concurrent.{Await, Future}
 import java.sql.Timestamp
-import java.util.Date
 
-case class ScoreModel(id: Option[Int], playerId: Int, scoreModification: Float, timestamp: Timestamp)
+case class ScoreModel(id: Option[Int], playerId: Int, scoreModification: Float, timestamp: Option[Timestamp])
 
 class Scores(tag: Tag) extends Table[ScoreModel](tag, "SCORES") {
   def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
@@ -18,7 +17,7 @@ class Scores(tag: Tag) extends Table[ScoreModel](tag, "SCORES") {
   def scoreModification = column[Float]("SCORE_MODIFICATION", O.Default(0f))
   def timestamp = column[Timestamp]("TIMESTAMP", O.SqlType("TIMESTAMP AS CURRENT_TIMESTAMP"))
 
-  def * = (id.?, playerId, scoreModification, timestamp) <> (ScoreModel.tupled, ScoreModel.unapply)
+  def * = (id.?, playerId, scoreModification, timestamp.?) <>  (ScoreModel.tupled, ScoreModel.unapply)
 }
 
 object ScoreDAO extends TableQuery(new Scores(_)) {
@@ -28,7 +27,7 @@ object ScoreDAO extends TableQuery(new Scores(_)) {
     Await.result(
       db.run(
         (scores returning scores.map(_.id) into ((s, id) => s.copy(id = Some(id)))) +=
-          ScoreModel(None, playerId, value, new Timestamp((new Date).getTime()))
+          ScoreModel(None, playerId, value, None)
       ), Duration.Inf
     )
   }
