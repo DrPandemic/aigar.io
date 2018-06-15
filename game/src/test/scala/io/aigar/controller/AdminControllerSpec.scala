@@ -19,7 +19,7 @@ class AdminControllerSpec extends MutableScalatraSpec
   implicit val jsonFormats: Formats = DefaultFormats
   sequential
 
-  val scoreThread = new ScoreThread(playerRepository)
+  val scoreThread = new ScoreThread(scoreRepository)
   val game = new GameThread(scoreThread)
   game.adminCommandQueue.put(RestartThreadCommand(List(1)))
   game.transferAdminCommands
@@ -31,8 +31,8 @@ class AdminControllerSpec extends MutableScalatraSpec
     game.actionQueue.clear()
     cleanDB()
 
-    playerRepository.createPlayer(PlayerModel(Some(1), "EdgQWhJ!v&", "player1", 0))
-    playerRepository.createPlayer(PlayerModel(Some(2), "SUPERSECRET", "player2", 0))
+    playerRepository.createPlayer(PlayerModel(Some(1), "EdgQWhJ!v&", "player1"))
+    playerRepository.createPlayer(PlayerModel(Some(2), "SUPERSECRET", "player2"))
   }
 
   def before: Unit = cleanState

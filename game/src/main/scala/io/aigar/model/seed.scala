@@ -8,7 +8,7 @@ object seed {
     scoreRepository.createSchema
 
     for(id <- 1 to playerCount) {
-      playerRepository.createPlayer(PlayerModel(None, "EdgQWhJ!v&" + id, "player" + id, 0f))
+      playerRepository.createPlayer(PlayerModel(None, "EdgQWhJ!v&" + id, "player" + id))
     }
   }
 }

@@ -3,6 +3,8 @@ package io.aigar.controller.response
 import io.aigar.controller.response.AdminCommand
 import io.aigar.game.serializable.{GameState, Position}
 
+import java.sql.Timestamp
+
 case class ErrorResponse(error: String)
 
 case class GameStateResponse(data: GameState)
@@ -16,7 +18,7 @@ case class GameCreationCommand(
 
 case class SuccessResponse(data: String)
 
-case class LeaderboardEntry(player_id: Int, name: String, score: Float)
+case class LeaderboardEntry(player_id: Int, name: String, score: Float, timestamp: Timestamp)
 case class LeaderboardResponse(data: List[LeaderboardEntry])
 
 case class AdminPlayerEntry(player_id: Int, name: String, secret: String)

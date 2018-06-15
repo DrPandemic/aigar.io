@@ -8,7 +8,7 @@ class ScoreRepositorySpec extends FlatSpec
 
   def withInMemDatabase(testCode: (PlayerModel) => Any) {
     cleanDB()
-    val player = playerRepository.createPlayer(PlayerModel(None, "EdgQWhJ!v&", "player1", 0))
+    val player = playerRepository.createPlayer(PlayerModel(None, "EdgQWhJ!v&", "player1"))
 
     testCode(player)
   }

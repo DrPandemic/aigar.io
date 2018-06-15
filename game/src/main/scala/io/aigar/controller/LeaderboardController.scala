@@ -7,10 +7,10 @@ import org.scalatra.json._
 
 class LeaderboardController(playerRepository: PlayerRepository) extends AigarStack with JacksonJsonSupport {
   get("/") {
-    val players = playerRepository.getPlayers
-      .map(player => {
-             LeaderboardEntry(player.id.get, player.playerName, player.score)
-           })
+    val players = playerRepository.getPlayersWithScores
+      .map{ case(player, score) => {
+             LeaderboardEntry(player.id.get, player.playerName, score.scoreModification, score.timestamp.get)
+           }}
     LeaderboardResponse(players)
   }
 }

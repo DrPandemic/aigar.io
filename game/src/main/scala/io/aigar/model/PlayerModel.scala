@@ -8,20 +8,19 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.Await
 import scala.concurrent.{Await, Future}
 
-case class PlayerModel(id: Option[Int], playerSecret: String, playerName: String, var score: Float)
+case class PlayerModel(id: Option[Int], playerSecret: String, playerName: String)
 
 class Players(tag: Tag) extends Table[PlayerModel](tag, "PLAYERS") {
   def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
   def playerSecret = column[String]("PLAYER_SECRET")
   def playerName = column[String]("PLAYER_NAME", O.SqlType("VARCHAR(50)"))
-  def score = column[Float]("SCORE", O.Default(0f))
-  def * = (id.?, playerSecret, playerName, score) <> (PlayerModel.tupled, PlayerModel.unapply)
+  def * = (id.?, playerSecret, playerName) <> (PlayerModel.tupled, PlayerModel.unapply)
 }
 
 object PlayerDAO extends TableQuery(new Players(_)) {
   lazy val players = TableQuery[Players]
 
-  def findPlayersWithScores(db: Database): List[(PlayerModel, ScoreModel)] = {
+  def getPlayersWithScores(db: Database): List[(PlayerModel, ScoreModel)] = {
     val query = for {
       (p, s) <- players join ScoreDAO.scores on (_.id === _.playerId)
     } yield (p, s)
@@ -58,19 +57,6 @@ object PlayerDAO extends TableQuery(new Players(_)) {
           .result
       ).map(_.headOption
       ), Duration.Inf
-    )
-  }
-
-  def addScore(db: Database, playerId: Int, value: Float): Unit = {
-    val sql = sqlu"""update PLAYERS
-                     set score = score + ${value}
-                     where id = ${playerId}"""
-    // TODO Log errors if there's any
-    Await.result(
-      db.run(
-        sql
-      )
-      , Duration.Inf
     )
   }
 

@@ -44,7 +44,7 @@ class AdminController(
         SuccessResponse("ok")
       }
       case Success(query: CreatePlayerQuery) => {
-        val player = playerRepository.createPlayer(PlayerModel(None, createRandomSecret, query.player_name, 0))
+        val player = playerRepository.createPlayer(PlayerModel(None, createRandomSecret, query.player_name))
         CreatePlayerResponse(PlayerResult(player.playerSecret, player.id.get))
       }
       case _ => halt(422)

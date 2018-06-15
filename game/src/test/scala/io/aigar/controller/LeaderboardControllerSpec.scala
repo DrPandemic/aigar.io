@@ -20,9 +20,13 @@ class LeaderboardControllerSpec extends MutableScalatraSpec
   def cleanState = {
     cleanDB()
 
-    playerRepository.createPlayer(PlayerModel(Some(1), "EdgQWhJ!v&", "player1", 789))
-    playerRepository.createPlayer(PlayerModel(Some(2), "EdgQWhJ!v&2", "player2", 50))
-    playerRepository.createPlayer(PlayerModel(Some(3), "EdgQWhJ!v&3", "player3", 5))
+    playerRepository.createPlayer(PlayerModel(Some(1), "EdgQWhJ!v&", "player1"))
+    playerRepository.createPlayer(PlayerModel(Some(2), "EdgQWhJ!v&2", "player2"))
+    playerRepository.createPlayer(PlayerModel(Some(3), "EdgQWhJ!v&3", "player3"))
+
+    scoreRepository.addScore(1, 5f)
+    scoreRepository.addScore(2, 10f)
+    scoreRepository.addScore(3, 15f)
   }
 
   def before = cleanState
@@ -39,20 +43,29 @@ class LeaderboardControllerSpec extends MutableScalatraSpec
                           entry.score must be_>=(0f)
                         })
 
-        val player_ids = entries.map(_.player_id)
-        player_ids.distinct.size must be_==(player_ids.size)
+        val playerIds = entries.map(_.player_id)
+        playerIds.distinct.size must be_==(playerIds.size)
       }
     }
 
-    "return an entry for each player" in {
+    "return many entries for each player" in {
+      scoreRepository.addScore(1, 15f)
+      scoreRepository.addScore(2, 42f)
+
       get("/") {
         status must_== 200
 
-        val entries = parse(body).extract[LeaderboardResponse].data
-        val player_ids = entries.map(_.player_id)
-        val db_player_ids = playerRepository.getPlayers.map(_.id.get)
+        val entries = parse(body).extract[LeaderboardResponse].data.map {
+          case LeaderboardEntry(id, name, score, _) => (id, name, score)
+        }
 
-        player_ids must be_==(db_player_ids)
+        entries should contain(allOf(
+          (1, "player1", 5f),
+          (1, "player1", 15f),
+          (2, "player2", 10f),
+          (2, "player2", 42f),
+          (3, "player3", 15f)
+        ))
       }
     }
   }

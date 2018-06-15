@@ -1,7 +1,7 @@
 package io.aigar.score
 
 import com.typesafe.scalalogging.LazyLogging
-import io.aigar.model.PlayerRepository
+import io.aigar.model.ScoreRepository
 import java.util.concurrent.LinkedBlockingQueue
 
 /**
@@ -9,7 +9,7 @@ import java.util.concurrent.LinkedBlockingQueue
  * messages and this thread persists them to the DB.
  */
 
-class ScoreThread(playerRepository: PlayerRepository) extends Runnable
+class ScoreThread(scoreRepository: ScoreRepository) extends Runnable
                                                       with LazyLogging {
   final val modificationQueue = new LinkedBlockingQueue[(ScoreModification, Int)]
   var running: Boolean = true;
@@ -28,6 +28,6 @@ class ScoreThread(playerRepository: PlayerRepository) extends Runnable
     val (modification, multiplier) = modificationQueue.take
 
     logger.debug(s"Player ${modification.player_id} gained ${modification.value * multiplier} points.")
-    playerRepository.addScore(modification.player_id, modification.value * multiplier)
+    scoreRepository.addScore(modification.player_id, modification.value * multiplier)
   }
 }

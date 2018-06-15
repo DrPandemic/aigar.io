@@ -17,12 +17,8 @@ class PlayerRepository(db: Database) {
     PlayerDAO.findPlayerBySecret(db, playerSecret)
   }
 
-  def findPlayersWithScores(): List[(PlayerModel, ScoreModel)] = {
-    PlayerDAO.findPlayersWithScores(db)
-  }
-
-  def addScore(playerId: Int, value: Float): Unit ={
-    PlayerDAO.addScore(db, playerId, value)
+  def getPlayersWithScores(): List[(PlayerModel, ScoreModel)] = {
+    PlayerDAO.getPlayersWithScores(db)
   }
 
   def updatePlayer(player: PlayerModel): Option[PlayerModel] = {
