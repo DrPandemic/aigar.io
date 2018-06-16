@@ -459,8 +459,8 @@ export function prepareCanvases(gameState, gameCanvas, miniMapCanvas, miniMapTmp
   initMap(gameCanvas, gameState.map);
   findMiniMapScreenPositionPlayer(gameState.players);
   initMiniMap(gameCanvas, miniMapCanvas, miniMapTmpCanvas, gameState.players);
-  drawResourcesOnMap(gameState.resources, gameCanvas);
   drawVirusesOnMap(gameState.viruses, gameCanvas);
+  drawResourcesOnMap(gameState.resources, gameCanvas);
   drawPlayersOnMap(gameState.players, gameCanvas, false);
 }
 
