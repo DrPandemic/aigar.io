@@ -1,9 +1,6 @@
-export const regularColor = "#00B200";
-export const regularRGBColor = "rgba(0, 60, 0, 0.1)";
-export const silverColor = "#454545";
-export const silverRGBColor = "rgba(40, 40, 40, 0.3)";
-export const goldColor = "#FFD700";
-export const goldRGBColor = "rgba(100, 84, 0, 0.1)";
+export const regularColor = "rgba(0,230,0,0.5)";
+export const silverColor = "rgba(180,180,180,0.8)";
+export const goldColor = "rgba(255,230,0,0.6)";
 export const resourceMass = 9;
 export const regularResourceMass = 6;
 export const scrollBarWidth = 20;

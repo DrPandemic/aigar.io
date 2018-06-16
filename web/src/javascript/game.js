@@ -27,22 +27,19 @@ export let cellFocused = null;
 
 const circleCache = {};
 const resourceCache = [
-  [constants.regularColor, constants.regularRGBColor, constants.regularResourceMass],
-  [constants.silverColor, constants.silverRGBColor, constants.resourceMass],
-  [constants.goldColor, constants.goldRGBColor, constants.resourceMass],
-].map(([c, r, m]) => ({canvas: prerenderResource(c, r, m), radius: m}));
+  [constants.regularColor, constants.regularResourceMass],
+  [constants.silverColor, constants.resourceMass],
+  [constants.goldColor, constants.resourceMass],
+].map(([c, m]) => ({canvas: prerenderResource(c, m), radius: m}));
 const virusCache = {};
 const nameCache = {};
 
-function prerenderResource(color, rgba, radius) {
+function prerenderResource(color, radius) {
   const canvas = createCanvas();
   resizeCanvas(canvas, radius * 2, radius * 2);
   const context = canvas.getContext("2d");
 
-  const grid = context.createRadialGradient(radius, radius, .5, radius, radius, constants.resourceMass);
-  grid.addColorStop(0, color);
-  grid.addColorStop(1, rgba);
-  drawCircle(context, {x: radius, y: radius}, radius, grid);
+  drawCircle(context, {x: radius, y: radius}, radius, color);
 
   return canvas;
 }
@@ -227,8 +224,8 @@ export function drawResourcesOnMap(resources, gameCanvas) {
   };
 
   drawResources(resources.regular, resourceCache[0]);
-  drawResources(resources.silver, resourceCache[1]);
   drawResources(resources.gold, resourceCache[2]);
+  drawResources(resources.silver, resourceCache[1]);
 }
 
 export function drawVirusesOnMap(viruses, gameCanvas) {
