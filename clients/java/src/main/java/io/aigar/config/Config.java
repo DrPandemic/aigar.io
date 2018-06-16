@@ -14,6 +14,10 @@ public class Config {
     }
 
     public String getApiUrl() {
+        if(apiUrl.charAt(apiUrl.length() - 1) != '/') {
+            return apiUrl.concat("/");
+        }
+
         return apiUrl;
     }
 }
