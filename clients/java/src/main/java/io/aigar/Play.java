@@ -57,7 +57,7 @@ public class Play {
             Thread.sleep(500);
         }
 
-        if (Desktop.isDesktopSupported())
+        if (Desktop.isDesktopSupported() && (createPrivate || joinPrivate))
             Desktop.getDesktop().browse(new URI(config.getApiUrl().concat(BASE_GAME_URL.concat("?gameId=" + gameId))));
 
         // Game loop

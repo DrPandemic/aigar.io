@@ -7,6 +7,8 @@ import java.util.List;
 public class GameState {
     private int id;
     private int tick;
+    private boolean paused;
+    private int multiplier;
     private float timeLeft;
     private List<Player> players;
     private Resources resources;
@@ -23,6 +25,14 @@ public class GameState {
 
     public int getTick() {
         return tick;
+    }
+
+    public boolean isPaused() {
+        return paused;
+    }
+
+    public int getMultiplier() {
+        return multiplier;
     }
 
     public float getTimeLeft() {
