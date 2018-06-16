@@ -163,8 +163,7 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
 
     if (action.split) split
     if (action.burst) burst
-    val modifications = tradeMass(action.trade)
-    modifications
+    tradeMass(action.trade)
   }
 
   def burst(): Unit = {
@@ -213,7 +212,6 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
   }
 
   def tradeMass(massToTrade: Int): Option[ScoreModification] = {
-
     val amount = min(massToTrade, max(mass - Cell.MinMass, 0)).toInt
 
     if (amount > 0 && mass - amount >= Cell.MinMass) {

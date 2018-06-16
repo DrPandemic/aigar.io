@@ -2,6 +2,7 @@ package io.aigar.score
 
 import com.typesafe.scalalogging.LazyLogging
 import io.aigar.model.ScoreRepository
+
 import java.util.concurrent.LinkedBlockingQueue
 
 /**
@@ -27,7 +28,11 @@ class ScoreThread(scoreRepository: ScoreRepository) extends Runnable
   def saveScore: Unit = {
     val (modification, multiplier) = modificationQueue.take
 
-    logger.debug(s"Player ${modification.player_id} gained ${modification.value * multiplier} points.")
-    scoreRepository.addScore(modification.player_id, modification.value * multiplier)
+    val value = modification.value * multiplier
+
+    if (value > 0.001f || value < -0.001f) {
+      logger.debug(s"Player ${modification.player_id} gained ${modification.value * multiplier} points.")
+      scoreRepository.addScore(modification.player_id, value)
+    }
   }
 }

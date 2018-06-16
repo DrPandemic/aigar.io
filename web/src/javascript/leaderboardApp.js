@@ -21,9 +21,21 @@ function clearEntries() {
 
 function fetchAndDisplay() {
   return fetchLeaderboardEntries()
-    .then((entries) => {
+    .then(entries => {
+      const result = Object.entries(entries.reduce((acc, val) => {
+        if (!acc[val.player_id]) {
+          acc[val.player_id] = val;
+        } else {
+          acc[val.player_id].score += val.score;
+        }
+
+        return acc;
+      }, {})).reduce((acc, [_, val]) => {
+        acc.push(val);
+        return acc;
+      }, []);
       clearEntries();
-      displayEntries(entries);
+      displayEntries(result);
     });
 }
 
