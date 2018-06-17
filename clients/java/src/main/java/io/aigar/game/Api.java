@@ -40,6 +40,8 @@ public class Api {
         state.setMe(state.getPlayers().stream().filter(p -> p.getId() == playerId).findFirst().orElse(null));
         state.setEnemies(state.getPlayers().stream().filter(p -> p.getId() != playerId).collect(Collectors.toList()));
 
+        state.getMe().getCells().forEach(Cell::initCellActions);
+
         return state;
     }
 
