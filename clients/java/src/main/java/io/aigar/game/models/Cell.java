@@ -12,7 +12,7 @@ public class Cell {
     private Coordinate target;
     private boolean burst;
     @JsonIgnore
-    private CellActions cellActions = new CellActions();
+    private CellActions cellActions;
 
     public int getId() {
         return id;
@@ -56,6 +56,11 @@ public class Cell {
     @JsonIgnore
     public void trade(int quantity) {
         cellActions.setTrade(quantity);
+    }
+
+    @JsonIgnore
+    public void initCellActions() {
+        cellActions = new CellActions();
     }
 
     @JsonIgnore

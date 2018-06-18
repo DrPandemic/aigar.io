@@ -62,24 +62,28 @@ public class Play {
 
         // Game loop
         while (true) {
-            GameState gameState = api.fetchGameState(gameId);
+            try {
+                GameState gameState = api.fetchGameState(gameId);
 
-            // After a game reset, it reinstanciates the AI object
-            if (gameState.getTick() < previousTick)
-                ai = new Ai();
-            previousTick = gameState.getTick();
+                // After a game reset, it reinstanciates the AI object
+                if (gameState.getTick() < previousTick)
+                    ai = new Ai();
+                previousTick = gameState.getTick();
 
-            // Actual loop
-            ai.step(gameState);
-            api.sendActions(gameId, gameState.getMe()
-                    .getCells()
-                    .stream()
-                    .map(Cell::getActions)
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
-                    .collect(Collectors.toList()));
+                // Actual loop
+                ai.step(gameState);
+                api.sendActions(gameId, gameState.getMe()
+                        .getCells()
+                        .stream()
+                        .map(Cell::getActions)
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .collect(Collectors.toList()));
 
-            Thread.sleep(1000 / UPDATES_PER_SECOND);
+                Thread.sleep(1000 / UPDATES_PER_SECOND);
+            } catch(Exception e) {
+                logger.error("Exception occurred: {}", e.getMessage());
+            }
         }
     }
 }
