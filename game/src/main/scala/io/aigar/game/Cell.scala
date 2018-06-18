@@ -53,18 +53,25 @@ object Cell {
   final val ExcessVelocityReductionPerSec = 0.25f
 
   /**
-   * How much mass is required to gain a small burst of movement.
+   * How much mass is required to gain a small burst of movement for a short
+   * amount of time.
    *
    * IMPORTANT keep this value in sync with the client documentation
    */
   final val BurstMassCost = 1f
 
   /**
-   * Bursting works by adding a certain amount of times the force that is
-   * normally applied when moving. This value controls how many "seconds" of
-   * movement force are added to the velocity on burst.
+   * Bursting works by increasing the max speed of a cell for a certain amount
+   * of time. This value controls how many seconds of additional burst
+   * (increased speed) the cell gets.
    */
-  final val BurstSecondsOfMovement = 5f
+  final val BurstDurationSeconds = 0.25f
+
+  /**
+   * By how much we should multiply the max speed of a cell while it is
+   * bursting.
+   */
+  final val BurstMaxSpeedMultiplier = 3f
 
   final val SplitPushSecondsOfMovement = 10f
 
@@ -79,16 +86,16 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
   var aiState: AIState = defineAiState
   _mass = Cell.MinMass
 
-  var burstActive = false
-  var showBurstCount = 0;
+  var burstTimeRemaining = 0f
 
   /**
    * The maximum speed (length of the velocity) for the cell, in units per
    * second.
    */
   def maxSpeed: Float = {
+    val multiplier = if (isBursting) Cell.BurstMaxSpeedMultiplier else 1f
     max(Cell.MaxMaximumSpeed - mass*Cell.SpeedLimitReductionPerMassUnit,
-      Cell.MinMaximumSpeed)
+      Cell.MinMaximumSpeed) * multiplier
   }
 
   override def mass_=(m: Float): Unit = {
@@ -104,7 +111,6 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
   }
 
   def update(deltaSeconds: Float, grid: Grid): Unit = {
-    showBurstCount = if(showBurstCount > 0) showBurstCount - 1 else 0
     mass = decayedMass(deltaSeconds)
 
     target = aiState.update(deltaSeconds, grid)
@@ -113,11 +119,8 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
     keepInGrid(grid)
 
     velocity += movement(deltaSeconds)
-    if (burstActive) {
-      showBurstCount = 40
-      applyBurst(deltaSeconds)
-    }
     velocity += drag(deltaSeconds)
+    burstTimeRemaining = max(burstTimeRemaining - deltaSeconds, 0f)
   }
 
   def keepInGrid(grid: Grid): Unit = {
@@ -170,12 +173,11 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
     if (mass < Cell.MinMass + Cell.BurstMassCost) return
 
     mass -= Cell.BurstMassCost
-    burstActive = true
+    burstTimeRemaining += Cell.BurstDurationSeconds
   }
 
-  def applyBurst(deltaSeconds: Float): Unit = {
-    velocity += movement(Cell.BurstSecondsOfMovement)
-    burstActive = false
+  def isBursting(): Boolean = {
+    burstTimeRemaining > 0f
   }
 
   def split(): List[Cell] = {
@@ -233,6 +235,6 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
                       round(radius),
                       position.state,
                       target.state,
-                      showBurstCount > 0)
+                      isBursting)
   }
 }
