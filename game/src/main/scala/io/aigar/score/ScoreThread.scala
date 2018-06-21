@@ -2,6 +2,8 @@ package io.aigar.score
 
 import com.typesafe.scalalogging.LazyLogging
 import io.aigar.model.ScoreRepository
+import scala.collection.JavaConversions._
+import scala.collection.immutable._
 
 import java.util.concurrent.LinkedBlockingQueue
 
@@ -18,6 +20,7 @@ class ScoreThread(scoreRepository: ScoreRepository) extends Runnable
   def run: Unit = {
     while (running) {
       saveScore
+      Thread.sleep(2)
     }
   }
 
@@ -26,13 +29,17 @@ class ScoreThread(scoreRepository: ScoreRepository) extends Runnable
   }
 
   def saveScore: Unit = {
-    val (modification, multiplier) = modificationQueue.take
+    val scores = new java.util.ArrayList[(ScoreModification, Int)]()
+    modificationQueue.drainTo(scores)
 
-    val value = modification.value * multiplier
-
-    if (value > 0.001f || value < -0.001f) {
-      logger.debug(s"Player ${modification.player_id} gained ${modification.value * multiplier} points.")
-      scoreRepository.addScore(modification.player_id, value)
+    scores.map {
+      case (ScoreModification(player_id, value), multiplier) => (player_id, value * multiplier)
+    }.groupBy(_._1).foreach { case (player_id, value) =>
+        val score = value.foldLeft(0f) { case (acc, (_, score)) => acc + score }
+        if (score > 0.001f || score < -0.001f) {
+          logger.debug(s"Player ${player_id} gained ${score} points.")
+          scoreRepository.addScore(player_id, score)
+        }
     }
   }
 }

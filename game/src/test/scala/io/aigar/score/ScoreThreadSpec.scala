@@ -27,6 +27,19 @@ class ScoreThreadSpec extends FlatSpec with Matchers with MockitoSugar {
     verify(repo, times(0)).addScore(any[Int], any[Float])
   }
 
+  it should "squash values" in {
+    val repo = mock[ScoreRepository]
+    val score = new ScoreThread(repo)
+    score.modificationQueue.add((ScoreModification(0, 10f), 2))
+    score.modificationQueue.add((ScoreModification(0, 30f), 4))
+    // score.modificationQueue.add((ScoreModification(1, 30f), 4))
+
+    score.saveScore
+
+    verify(repo).addScore(0, 140f)
+    // verify(repo).addScore(1, 120f)
+  }
+
   "addScoreModification" should "add a ScoreModification to the modificationQueue" in {
     val score = new ScoreThread(null)
 
