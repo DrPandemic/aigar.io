@@ -30,5 +30,8 @@
     "space-infix-ops": ["error"],
     "comma-spacing": ["error", { "before": false, "after": true }],
     "curly": ["error"]
+  },
+  "globals": {
+    "Chart": true
   }
 }

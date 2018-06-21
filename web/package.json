@@ -36,6 +36,7 @@
   },
   "dependencies": {
     "bootstrap": "^3.3.7",
+    "chart.js": "^2.7.2",
     "he": "^1.1.0",
     "immutable-sort": "^0.1.0"
   }

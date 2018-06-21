@@ -29,7 +29,8 @@ export function fetchLeaderboardEntries() {
       return response.data.map(entry => new LeaderboardEntry(
         entry.player_id,
         entry.name,
-        entry.score)).sort((a, b) => a.score - b.score);
+        entry.score,
+        entry.timestamp)).sort((a, b) => a.score - b.score);
     })
     .catch(error => {
       if(debug) {

@@ -70,3 +70,5 @@ export const stateApiURL = "/api/1/game/";
 export const rankedGameId = -1;
 export const adminApiURL = "/api/1/admin/";
 export const leaderboardApiURL = "/api/1/leaderboard/";
+
+export const leaderboardSlices = 20;
