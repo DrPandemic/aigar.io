@@ -195,7 +195,7 @@ export function drawPlayersOnMap(players, gameCanvas, onMinimap, ratio = 1) {
       writeCellTeamName(cell.playerName, context, cell.position);
     }
 
-    if(cell.burst){
+    if(cell.burst && !onMinimap){
       drawBurst(context, cell.position, cell.radius, cell.color, cell.target);
     }
 
