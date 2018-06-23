@@ -90,7 +90,7 @@ function displayEntries(entries) {
   for(const i in entries) {
     const entry = entries[i];
     const row = table.insertRow(0);
-    row.insertCell(0).innerHTML = (entries.length - parseInt(i)).toString();
+    row.insertCell(0).innerHTML = he.encode(entry.player_id.toString());
     row.insertCell(1).innerHTML = he.encode(entry.name);
     row.insertCell(2).innerHTML = he.encode(entry.secret);
   }
