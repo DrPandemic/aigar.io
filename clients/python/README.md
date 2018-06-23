@@ -145,7 +145,7 @@ There are three available resource types:
 | Resource Type | Cell Mass Gain | Player Score Gain |
 | ------------- | -------------- | ----------------- |
 | `regular`     | 1              | 0.1               |
-| `silver`      | 3              | 1                 |
+| `silver`      | 2              | 1                 |
 | `gold`        | 0              | 10                |
 
 #### Attributes

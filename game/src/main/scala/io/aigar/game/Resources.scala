@@ -21,7 +21,7 @@ object Silver {
   final val Min = 12
 
   // IMPORTANT: keep those values in sync with the client documentation
-  final val Mass = 3
+  final val Mass = 2
   final val Score = 1f
 }
 
