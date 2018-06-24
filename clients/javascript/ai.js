@@ -15,7 +15,7 @@ module.exports = class AI {
       });
 
       cell.move(resources[0].clone());
-      cell.split();
+      cell.burst();
     }
 
     return game;

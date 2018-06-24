@@ -58,7 +58,7 @@ object Cell {
    *
    * IMPORTANT keep this value in sync with the client documentation
    */
-  final val BurstMassCost = 1f
+  final val BurstMassPercentCost = 0.04f
 
   /**
    * Bursting works by increasing the max speed of a cell for a certain amount
@@ -170,9 +170,10 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
   }
 
   def burst(): Unit = {
-    if (mass < Cell.MinMass + Cell.BurstMassCost) return
+    val burstCost = mass * Cell.BurstMassPercentCost
+    if (mass < Cell.MinMass + burstCost) return
 
-    mass -= Cell.BurstMassCost
+    mass -= burstCost
     burstTimeRemaining += Cell.BurstDurationSeconds
   }
 

@@ -444,6 +444,15 @@ class CellSpec extends FlatSpec with Matchers {
     cell.isBursting should equal(false)
   }
 
+  it should "consume mass and become underweight" in {
+    val player = new Player(0, Vector2(0f, 0f))
+    val cell = player.cells.head
+    cell.mass = Cell.MinMass + 1
+
+    cell.burst()
+    cell.mass should be >=(Cell.MinMass)
+  }
+
   "performAction" should "change target to match the one from the action" in {
     val player = new Player(0, Vector2(12f, 12f))
     val cell = player.cells.head
