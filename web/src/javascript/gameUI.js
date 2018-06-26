@@ -26,11 +26,11 @@ export function createCanvas() {
 
 export function resizeCanvas(canvas, width, height) {
   let resized = false;
-  if(canvas.width !== width) {
+  if(canvas.width >= width + 1 || canvas.width <= width - 1) {
     canvas.width = width;
     resized = true;
   }
-  if(canvas.height !== height) {
+  if(canvas.height >= height + 1 || canvas.height <= height - 1) {
     canvas.height = height;
     resized = true;
   }

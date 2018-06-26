@@ -1,14 +1,14 @@
 import he from "he";
-import {getPlayerColor, setFocusScreen, cellFocused, findNextCell} from "./game";
+import {getPlayerColor, setFocusScreen, findNextCell} from "./game";
 import sort from "immutable-sort";
 
-export function drawLeaderboard(state) {
+export function drawLeaderboard(state, gameState) {
   const tbody = document.getElementById("leaderboard-body");
 
-  const sortedPlayers = sort(state.players, (a, b) => b.total_mass - a.total_mass);
+  const sortedPlayers = sort(gameState.players, (a, b) => b.total_mass - a.total_mass);
   // Initial case
   if(tbody.rows.length !== sortedPlayers.length) {
-    createTable(sortedPlayers, null, true);
+    createTable(state, sortedPlayers, null, true);
     return;
   }
 
@@ -17,10 +17,10 @@ export function drawLeaderboard(state) {
     return result;
   }, {});
 
-  createTable(sortedPlayers, oldBounding, false);
+  createTable(state, sortedPlayers, oldBounding, false);
 }
 
-function createTable(players, oldBounding, firstTime) {
+function createTable(state, players, oldBounding, firstTime) {
   const new_tbody = document.createElement("tbody");
   new_tbody.setAttribute("id", "leaderboard-body");
 
@@ -31,7 +31,7 @@ function createTable(players, oldBounding, firstTime) {
     const row = new_tbody.insertRow();
     row.id = `player-${player.id}`;
     row.onclick = function() {
-      focusOnPlayer(player);
+      focusOnPlayer(state, player);
     };
 
     if(!player.isActive) {
@@ -75,9 +75,9 @@ function cleanEventListeners(old) {
   }
 }
 
-function focusOnPlayer(player) {
-  findNextCell(player.cells, player.id);
-  if(cellFocused) {
-    setFocusScreen(cellFocused.position);
+function focusOnPlayer(state, player) {
+  findNextCell(state, player.cells, player.id);
+  if(state.display.cellFocused) {
+    setFocusScreen(state.display.cellFocused.position);
   }
 }

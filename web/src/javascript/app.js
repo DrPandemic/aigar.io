@@ -1,5 +1,11 @@
 import {drawLeaderboard} from "./gameLeaderboard";
-import {drawGame, interpolateState, initCanvas, prepareCanvases} from "./game";
+import {
+  drawGame,
+  interpolateState,
+  initCanvas,
+  prepareCanvases,
+  initState,
+} from "./game";
 import {
   debug,
   gameDelay,
@@ -10,7 +16,6 @@ import {
 } from "./constants";
 import {
   initLineButton,
-  createCanvas,
   displayLoading,
   hideLoading,
   displayDoesntExist,
@@ -20,13 +25,11 @@ import {
 
 let gameLoadingHandle = displayLoading();
 
-const gameCanvas = createCanvas();
-const miniMapCanvas = createCanvas();
-const miniMapTmpCanvas = createCanvas();
+const state = initState();
 let gameRunning = false;
 let leaderboardRunning = false;
 
-const states = [];
+const gameStates = [];
 
 const networkWorker = new Worker("javascript/gameWebWorker.bundle.js");
 const gameId = getCurrentGameId();
@@ -40,24 +43,24 @@ networkWorker.onmessage = message => {
     return;
   }
 
-  states.push({
+  gameStates.push({
     ...message.data,
     timestamp: new Date().getTime(),
   });
 
-  if(states.length > maximumStoredStates) {
-    states.shift();
+  if(gameStates.length > maximumStoredStates) {
+    gameStates.shift();
   }
 
-  triggerStart(states);
+  triggerStart(state);
 };
 
 // This is to prevent Chrome's GC from deleting the worker.
 // It's happening on Chrome but not on FF.
 setTimeout(() => networkWorker, 1000);
 
-function triggerStart() {
-  updateInformationHeader(states[0]);
+function triggerStart(state) {
+  updateInformationHeader(gameStates[0]);
 
   if(!canInterpolateStates()) {
     return;
@@ -71,28 +74,32 @@ function triggerStart() {
       gameLoadingHandle = undefined;
     }
 
-    updateGame(getGameState());
+    state.game = getGameState();
+    updateGame(state);
   }
   if(!leaderboardRunning) {
     leaderboardRunning = true;
-    updateLeaderboard();
+    updateLeaderboard(state);
   }
 }
 
 function canInterpolateStates() {
-  return (states.length >= 2) &&
-    states[0].timestamp < new Date().getTime() - gameDelay;
+  return (gameStates.length >= 2) &&
+    gameStates[0].timestamp < new Date().getTime() - gameDelay;
 }
 
-function updateGame(previousState) {
+function updateGame(state) {
   if(!gameRunning) {
     return;
   }
   try {
     const startTime = (new Date()).getTime();
-    drawGame(previousState, gameCanvas, miniMapCanvas);
+    drawGame(state);
 
-    const currentState = getGameState(startTime);
+    state.game = getGameState(startTime);
+    state.display.canvasWidth = state.game.map.width;
+    state.display.canvasHeight = state.game.map.height;
+
 
     gameRunning = false;
     if(!canInterpolateStates()) {
@@ -100,10 +107,10 @@ function updateGame(previousState) {
     }
     gameRunning = true;
 
-    prepareCanvases(currentState, gameCanvas, miniMapCanvas, miniMapTmpCanvas);
+    prepareCanvases(state);
 
     const elapsed = new Date().getTime() - startTime;
-    setTimeout(() => updateGame(currentState), 1000 / gameRefresh - elapsed);
+    setTimeout(() => updateGame(state), 1000 / gameRefresh - elapsed);
   } catch(error) {
     gameRunning = false;
     if(debug) {
@@ -113,19 +120,19 @@ function updateGame(previousState) {
 }
 
 function getGameState(startTime = new Date().getTime()) {
-  const prev = states[0];
-  const next = states[1];
+  const prev = gameStates[0];
+  const next = gameStates[1];
   const ratio = (startTime - gameDelay - prev.timestamp) / (next.timestamp - prev.timestamp);
 
   const currentState = interpolateState(prev, next, ratio);
   if(currentState.tick === next.tick) {
-    states.shift();
+    gameStates.shift();
   }
 
   return currentState;
 }
 
-function updateLeaderboard() {
+function updateLeaderboard(state) {
   if(!leaderboardRunning) {
     return;
   }
@@ -138,10 +145,10 @@ function updateLeaderboard() {
     }
     leaderboardRunning = true;
 
-    drawLeaderboard(states[0]);
+    drawLeaderboard(state, gameStates[0]);
 
     const elapsed = new Date().getTime() - startTime;
-    setTimeout(updateLeaderboard, 1000 / leaderboardRefresh - elapsed);
+    setTimeout(() => updateLeaderboard(state), 1000 / leaderboardRefresh - elapsed);
   } catch(error) {
     leaderboardRunning = false;
     if(debug) {
@@ -150,5 +157,5 @@ function updateLeaderboard() {
   }
 }
 
-initCanvas();
+initCanvas(state);
 initLineButton();

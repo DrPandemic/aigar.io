@@ -2,51 +2,19 @@ import * as constants from "./constants";
 import sort from "immutable-sort";
 import {resizeCanvas, createCanvas} from "./gameUI";
 
-let canvasWidth = 0;
-let canvasHeight = 0;
-
-let screenWidth;
-let screenHeight;
-
-let xScreenPosOnMap = 0;
-let yScreenPosOnMap = 0;
-
-let screenToMapRatioWidth;
-let screenToMapRatioHeight;
-
-let miniMapWidth;
-let miniMapHeight;
-let miniMapPosX;
-
-let miniMapScreenPosWidth;
-let miniMapScreenPosHeight;
-
-let playerFocused = null;
-
-export let cellFocused = null;
-
-const circleCache = {};
-const resourceCache = [
-  [constants.regularColor, constants.regularResourceMass],
-  [constants.silverColor, constants.resourceMass],
-  [constants.goldColor, constants.resourceMass],
-].map(([c, m]) => ({canvas: prerenderResource(c, m), radius: m}));
-const virusCache = {};
-const nameCache = {};
-
-function prerenderResource(color, radius) {
+function prerenderResource(state, color, radius) {
   const canvas = createCanvas();
   resizeCanvas(canvas, radius * 2, radius * 2);
   const context = canvas.getContext("2d");
 
-  drawCircle(context, {x: radius, y: radius}, radius, color);
+  drawCircle(state, context, {x: radius, y: radius}, radius, color);
 
   return canvas;
 }
 
-function drawCircle(context, position, radius, color, drawBorder = false) {
+function drawCircle(state, context, position, radius, color, drawBorder = false) {
   const key = JSON.stringify([radius, color, drawBorder]);
-  let canvas = circleCache[key];
+  let canvas = state.circleCache[key];
   let diff = radius;
   if (drawBorder) {
     diff += constants.highlightThickness;
@@ -54,7 +22,7 @@ function drawCircle(context, position, radius, color, drawBorder = false) {
   if (!canvas) {
     canvas = createCanvas();
     resizeCanvas(canvas, diff * 2 + 1, diff * 2 + 1);
-    circleCache[key] = canvas;
+    state.circleCache[key] = canvas;
     const newContext = canvas.getContext("2d");
     newContext.beginPath();
     newContext.arc(diff, diff, radius, 0, Math.PI * 2, false);
@@ -106,8 +74,8 @@ function calculateLineStartOrEnd(dirxMul, diryMul, dir, radius, length, position
   return linePos;
 }
 
-function writeCellTeamName(playerName, mapContext, position) {
-  let canvas = nameCache[playerName];
+function writeCellTeamName(state, playerName, mapContext, position) {
+  let canvas = state.nameCache[playerName];
   if (!canvas) {
     canvas = createCanvas();
     const context = canvas.getContext("2d");
@@ -123,31 +91,54 @@ function writeCellTeamName(playerName, mapContext, position) {
     context.fillText(playerName, 350, 13);
     context.strokeText(playerName, 350, 13);
 
-    nameCache[playerName] = canvas;
+    state.nameCache[playerName] = canvas;
   }
   mapContext.drawImage(canvas, position.x - 350, position.y - 13);
 }
 
-function initGlobals(gameCanvas, map) {
-  const screenCanvas = document.getElementById("screenCanvas");
-
-  canvasWidth = map.width;
-  canvasHeight = map.height;
-
-  screenWidth = document.getElementById("gameDiv").offsetWidth - constants.scrollBarWidth;
-  screenHeight = screenWidth * constants.ratioHeight;
-  screenCanvas.width = screenWidth;
-  screenCanvas.height = screenHeight;
-  miniMapWidth = screenWidth / 4;
-  miniMapPosX = screenWidth - miniMapWidth;
-
-  screenToMapRatioWidth = gameCanvas.width / screenCanvas.width;
-  screenToMapRatioHeight = gameCanvas.height / screenCanvas.height;
-  miniMapScreenPosWidth = miniMapWidth / screenToMapRatioWidth;
-  miniMapScreenPosHeight = miniMapHeight / screenToMapRatioHeight;
+export function initState() {
+  const state = {
+    gameCanvas: createCanvas(),
+    screenCanvas: document.getElementById("screenCanvas"),
+    miniMapCanvas: createCanvas(),
+    miniMapTmpCanvas: createCanvas(),
+    circleCache: {},
+    virusCache: {},
+    nameCache: {},
+    display: {
+      screenWidth: 0,
+      screenHeight: 0,
+      xScreenPosOnMap: 0,
+      yScreenPosOnMap: 0,
+      canvasWidth: 0,
+      canvasHeight: 0,
+      screenToMapRatioWidth: 0,
+      screenToMapRatioHeight: 0,
+    },
+  };
+  const resourceCache = [
+    [constants.regularColor, constants.regularResourceMass],
+    [constants.silverColor, constants.resourceMass],
+    [constants.goldColor, constants.resourceMass],
+  ].map(([c, m]) => ({canvas: prerenderResource(state, c, m), radius: m}));
+  state.resourceCache = resourceCache;
+  return state;
 }
 
-export function initMap(gameCanvas) {
+export function refreshState(state) {
+  state.display.screenWidth = document.getElementById("gameDiv").offsetWidth - constants.scrollBarWidth;
+  state.display.screenHeight = state.display.screenWidth * constants.ratioHeight;
+  resizeCanvas(state.screenCanvas, state.display.screenWidth, state.display.screenHeight);
+  state.display.miniMapWidth = state.display.screenWidth / 4;
+  state.display.miniMapPosX = state.display.screenWidth - state.display.miniMapWidth;
+
+  state.display.screenToMapRatioWidth = state.gameCanvas.width / state.screenCanvas.width;
+  state.display.screenToMapRatioHeight = state.gameCanvas.height / state.screenCanvas.height;
+  state.display.miniMapScreenPosWidth = state.display.miniMapWidth / state.display.screenToMapRatioWidth;
+  state.display.miniMapScreenPosHeight = state.display.miniMapHeight / state.display.screenToMapRatioHeight;
+}
+
+export function initMap({gameCanvas, display: {canvasWidth, canvasHeight}}) {
   if(!resizeCanvas(gameCanvas, canvasWidth, canvasHeight)) {
     const context = gameCanvas.getContext("2d");
     context.clearRect(0, 0, canvasWidth, canvasHeight);
@@ -160,9 +151,10 @@ export function getPlayerColor(players, currentPlayer) {
   return constants.playerColors[playerPosition];
 }
 
-export function drawPlayersOnMap(players, gameCanvas, onMinimap, ratio = 1) {
-  const context = gameCanvas.getContext("2d");
-  let cellArray = [];
+export function drawPlayersOnMap(state, canvas, onMinimap, ratio = 1) {
+  const {game: {players}, display: {playerFocused, cellFocused}} = state;
+  const context = canvas.getContext("2d");
+  const cellArray = [];
   for(const player of players) {
     const color = getPlayerColor(players, player);
     for(const cell of player.cells) {
@@ -182,17 +174,16 @@ export function drawPlayersOnMap(players, gameCanvas, onMinimap, ratio = 1) {
     }
   }
 
-  const cellsToDraw = sort(cellArray, (a, b) => a.radius - b.radius);
-  for(const cell of cellsToDraw){
+  for(const cell of sort(cellArray, (a, b) => a.radius - b.radius)) {
     if(cell.playerId === playerFocused && cell.id === cellFocused.id) {
-      drawCircle(context, cell.position, cell.radius, cell.color, true);
+      drawCircle(state, context, cell.position, cell.radius, cell.color, true);
     }
     else {
-      drawCircle(context, cell.position, cell.radius, cell.color);
+      drawCircle(state, context, cell.position, cell.radius, cell.color);
     }
 
     if (!onMinimap) {
-      writeCellTeamName(cell.playerName, context, cell.position);
+      writeCellTeamName(state, cell.playerName, context, cell.position);
     }
 
     if(cell.burst && !onMinimap){
@@ -215,7 +206,7 @@ export function drawLine(context, position, target, color = "#000000", width = c
   context.stroke();
 }
 
-export function drawResourcesOnMap(resources, gameCanvas) {
+export function drawResourcesOnMap({game: {resources}, gameCanvas, resourceCache}) {
   const context = gameCanvas.getContext("2d");
   const drawResources = (resources, {canvas, radius}) => {
     for(const resource of resources) {
@@ -228,14 +219,15 @@ export function drawResourcesOnMap(resources, gameCanvas) {
   drawResources(resources.silver, resourceCache[1]);
 }
 
-export function drawVirusesOnMap(viruses, gameCanvas) {
+export function drawVirusesOnMap(state) {
+  const {gameCanvas, game: {viruses}} = state;
   const context = gameCanvas.getContext("2d");
 
   for(const virus of viruses) {
-    let canvas = virusCache[virus.radius];
+    let canvas = state.virusCache[virus.radius];
     if (!canvas) {
       canvas = drawVirusShape(virus.radius);
-      virusCache[virus.radius] = canvas;
+      state.virusCache[virus.radius] = canvas;
     }
     context.drawImage(canvas, virus.position.x, virus.position.y);
   }
@@ -274,10 +266,8 @@ function drawVirusShape(radius) {
   return canvas;
 }
 
-function drawBackgroud(screenCanvas) {
+function drawBackgroud({display: {screenWidth, screenHeight, xScreenPosOnMap, yScreenPosOnMap}, screenCanvas}) {
   const screenContext = screenCanvas.getContext("2d");
-  const screenWidth = screenCanvas.width;
-  const screenHeight = screenCanvas.height;
   screenContext.fillStyle = "#fafafa";
   screenContext.fillRect(0, 0, screenWidth, screenHeight);
 
@@ -289,52 +279,60 @@ function drawBackgroud(screenCanvas) {
   }
 }
 
-export function drawMap(gameCanvas) {
-  const screenCanvas = document.getElementById("screenCanvas");
-  const screenContext = screenCanvas.getContext("2d");
-  const screenWidth = screenCanvas.width;
-  const screenHeight = screenCanvas.height;
-  drawBackgroud(screenCanvas);
-  screenContext.drawImage(gameCanvas, xScreenPosOnMap, yScreenPosOnMap, screenWidth, screenHeight, 0, 0, screenWidth, screenHeight);
+export function drawMap(state) {
+  const screenContext = state.screenCanvas.getContext("2d");
+  drawBackgroud(state);
+  screenContext.drawImage(
+    state.gameCanvas,
+    state.display.xScreenPosOnMap,
+    state.display.yScreenPosOnMap,
+    state.display.screenWidth,
+    state.display.screenHeight,
+    0,
+    0,
+    state.display.screenWidth,
+    state.display.screenHeight
+  );
 }
 
-export function initMiniMap(gameCanvas, miniMapCanvas, miniMapTmpCanvas, players) {
-  miniMapHeight = miniMapWidth * gameCanvas.height / gameCanvas.width;
+export function initMiniMap(state) {
+  const {gameCanvas, miniMapCanvas, display: {miniMapWidth}} = state;
+  const miniMapHeight = miniMapWidth * gameCanvas.height / gameCanvas.width;
+  state.display.miniMapHeight = miniMapHeight;
 
   //set dimensions
   resizeCanvas(miniMapCanvas, miniMapWidth, miniMapHeight);
 
   //MiniMap background
   const miniMapContext = miniMapCanvas.getContext("2d");
-  miniMapContext.clearRect(0, 0, canvasWidth, canvasHeight);
+  miniMapContext.clearRect(0, 0, miniMapWidth, miniMapHeight);
   miniMapContext.rect(0, 0, miniMapWidth, miniMapHeight);
   miniMapContext.fillStyle = constants.miniMapColor;
   miniMapContext.fill();
 
-  drawPlayersOnMap(players, miniMapCanvas, true, gameCanvas.width / miniMapWidth);
+  drawPlayersOnMap(state, miniMapCanvas, true, gameCanvas.width / miniMapWidth);
 }
 
-export function drawMiniMap(gameCanvas, miniMapCanvas) {
-  const screenCanvas = document.getElementById("screenCanvas");
-  const screenContext = screenCanvas.getContext("2d");
+export function drawMiniMap(state) {
+  const screenContext = state.screenCanvas.getContext("2d");
 
-  drawMiniMapScreenPos(gameCanvas, miniMapCanvas);
-  screenContext.drawImage(miniMapCanvas, miniMapPosX, 0);
+  drawMiniMapScreenPos(state);
+  screenContext.drawImage(state.miniMapCanvas, state.display.miniMapPosX, 0);
 }
 
-function findMiniMapScreenPositionPlayer(players){
-  if(playerFocused != null){
-    let player = players.find(p => p.id === playerFocused);
+function findMiniMapScreenPositionPlayer(state) {
+  if(state.display.playerFocused != null) {
+    const player = state.game.players.find(p => p.id === state.display.playerFocused);
     checkIfCellFocusedStillExists(player.cells);
-    setFocusScreen(cellFocused.position);
+    setFocusScreen(state);
   }
 }
 
-export function findNextCell(cells, playerId){
+export function findNextCell(state, cells, playerId) {
   let cell = cells[0];
-  if(playerFocused === playerId){
-    for(let i = 0; i < cells.length; i++){
-      if(cellFocused.id === cells[i].id){
+  if(state.display.playerFocused === playerId) {
+    for(let i = 0; i < cells.length; i++) {
+      if(state.display.cellFocused.id === cells[i].id) {
         cell = cells[i + 1];
 
         if(!cell) {
@@ -344,49 +342,57 @@ export function findNextCell(cells, playerId){
       }
     }
   }
-  else{
-    playerFocused = playerId;
+  else {
+    state.display.playerFocused = playerId;
   }
-  cellFocused = cell;
+  state.display.cellFocused = cell;
 }
 
-function checkIfCellFocusedStillExists(cells){
-  let cell = cells.find(p => p.id === cellFocused.id);
+function checkIfCellFocusedStillExists(state, cells){
+  let cell = cells.find(p => p.id === state.display.cellFocused.id);
   if(!cell){
-    cellFocused = cells[0];
+    state.display.cellFocused = cells[0];
   }
   else{
-    cellFocused = cell;
+    state.display.cellFocused = cell;
   }
 }
 
-function drawMiniMapScreenPos(canvas, miniMapCanvas) {
-  const miniMapContext = miniMapCanvas.getContext("2d");
+function drawMiniMapScreenPos(state) {
+  const miniMapContext = state.miniMapCanvas.getContext("2d");
 
   miniMapContext.strokeStyle = "#fff";
-  const xMiniMapPos = miniMapWidth / canvas.width * xScreenPosOnMap;
-  const yMiniMapPos = miniMapHeight / canvas.height * yScreenPosOnMap;
-  miniMapContext.strokeRect(xMiniMapPos, yMiniMapPos, miniMapScreenPosWidth, miniMapScreenPosHeight);
+  const xMiniMapPos = state.display.miniMapWidth / state.gameCanvas.width * state.display.xScreenPosOnMap;
+  const yMiniMapPos = state.display.miniMapHeight / state.gameCanvas.height * state.display.yScreenPosOnMap;
+  miniMapContext.strokeRect(
+    xMiniMapPos,
+    yMiniMapPos,
+    state.display.miniMapScreenPosWidth,
+    state.display.miniMapScreenPosHeight
+  );
 }
 
-export function setFocusScreen(position) {
-  const screenCanvas = document.getElementById("screenCanvas");
-  const screenWidth = screenCanvas.width;
-  const screenHeight = screenCanvas.height;
+export function setFocusScreen(state) {
+  const position = state.display.cellFocused.position;
 
   let newPosition = {
-    x: position.x - (screenWidth / 2),
-    y: position.y - (screenHeight / 2)
+    x: position.x - (state.display.screenWidth / 2),
+    y: position.y - (state.display.screenHeight / 2)
   };
-  newPosition = keepInsideMap(newPosition, canvasWidth, screenWidth, canvasHeight, screenHeight);
-  xScreenPosOnMap = newPosition.x;
-  yScreenPosOnMap = newPosition.y;
+  newPosition = keepInsideMap(
+    newPosition,
+    state.display.canvasWidth,
+    state.display.screenWidth,
+    state.display.canvasHeight,
+    state.display.screenHeight
+  );
+  state.display.xScreenPosOnMap = newPosition.x;
+  state.display.yScreenPosOnMap = newPosition.y;
 }
 
-function changeScreenPos(mousePos) {
-  const screenCanvas = document.getElementById("screenCanvas");
-  const screenWidth = screenCanvas.width;
-  const screenHeight = screenCanvas.height;
+function changeScreenPos(state, mousePos) {
+  const {miniMapPosX, miniMapScreenPosWidth, miniMapScreenPosHeight, miniMapWidth, miniMapHeight,
+    screenToMapRatioWidth, screenToMapRatioHeight, screenWidth, screenHeight} = state.display;
 
   let miniMapPos = {
     x : (mousePos.x - miniMapPosX) - (miniMapScreenPosWidth / 2),
@@ -394,8 +400,8 @@ function changeScreenPos(mousePos) {
   };
   miniMapPos = keepInsideMap(miniMapPos, miniMapWidth, miniMapScreenPosWidth, miniMapHeight, miniMapScreenPosHeight);
 
-  xScreenPosOnMap = miniMapPos.x * screenToMapRatioWidth * (screenWidth / miniMapWidth);
-  yScreenPosOnMap = miniMapPos.y * screenToMapRatioHeight * (screenHeight / miniMapHeight);
+  state.display.xScreenPosOnMap = miniMapPos.x * screenToMapRatioWidth * (screenWidth / miniMapWidth);
+  state.display.yScreenPosOnMap = miniMapPos.y * screenToMapRatioHeight * (screenHeight / miniMapHeight);
 }
 
 function keepInsideMap(pos, bigWidth, smallWidth, bigHeight, smallHeight) {
@@ -414,7 +420,7 @@ function keepInsideMap(pos, bigWidth, smallWidth, bigHeight, smallHeight) {
   return pos;
 }
 
-export function initCanvas() {
+export function initCanvas(state) {
   const screenCanvas = document.getElementById("screenCanvas");
   let mouseIsDown = false;
 
@@ -428,9 +434,9 @@ export function initCanvas() {
 
   function mouseClick(e) {
     const mousePos = getMousePos(e);
-    if (mousePos.x > miniMapPosX && mousePos.y < miniMapHeight) {
-      playerFocused = null;
-      changeScreenPos(mousePos);
+    if (mousePos.x > state.display.miniMapPosX && mousePos.y < state.display.miniMapHeight) {
+      state.display.playerFocused = null;
+      changeScreenPos(state, mousePos);
     }
   }
 
@@ -455,19 +461,21 @@ export function initCanvas() {
   };
 }
 
-export function prepareCanvases(gameState, gameCanvas, miniMapCanvas, miniMapTmpCanvas) {
-  initMap(gameCanvas, gameState.map);
-  findMiniMapScreenPositionPlayer(gameState.players);
-  initMiniMap(gameCanvas, miniMapCanvas, miniMapTmpCanvas, gameState.players);
-  drawVirusesOnMap(gameState.viruses, gameCanvas);
-  drawResourcesOnMap(gameState.resources, gameCanvas);
-  drawPlayersOnMap(gameState.players, gameCanvas, false);
+export function prepareCanvases(state) {
+  initMap(state);
+  findMiniMapScreenPositionPlayer(state);
+  initMiniMap(state);
+  drawVirusesOnMap(state);
+  drawResourcesOnMap(state);
+  drawPlayersOnMap(state, state.gameCanvas, false);
 }
 
-export function drawGame(gameState, gameCanvas, miniMapCanvas) {
-  initGlobals(gameCanvas, gameState.map);
-  drawMap(gameCanvas);
-  drawMiniMap(gameCanvas, miniMapCanvas);
+export function drawGame(state) {
+  refreshState(state);
+  drawMap(state);
+  drawMiniMap(state);
+
+  return state;
 }
 
 function interpolate(prev, next, ratio) {
