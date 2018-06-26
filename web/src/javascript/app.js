@@ -1,5 +1,5 @@
 import {drawLeaderboard} from "./gameLeaderboard";
-import {drawGame, interpolateState, initCanvas, prepareCanvases} from "./game";
+import {drawGame, interpolateState, initCanvas, prepareCanvases, updateState} from "./game";
 import {
   debug,
   gameDelay,
@@ -23,6 +23,10 @@ let gameLoadingHandle = displayLoading();
 const gameCanvas = createCanvas();
 const miniMapCanvas = createCanvas();
 const miniMapTmpCanvas = createCanvas();
+const state = {
+  gameCanvas: createCanvas(),
+  miniMapCanvas: createCanvas()
+};
 let gameRunning = false;
 let leaderboardRunning = false;
 
@@ -49,7 +53,7 @@ networkWorker.onmessage = message => {
     states.shift();
   }
 
-  triggerStart(states);
+  triggerStart();
 };
 
 // This is to prevent Chrome's GC from deleting the worker.
@@ -90,9 +94,10 @@ function updateGame(previousState) {
   }
   try {
     const startTime = (new Date()).getTime();
-    drawGame(previousState, gameCanvas, miniMapCanvas);
+    const state = initState(previousState, gameCanvas, minimapCanvas, miniMapTmpCanvas);
+    drawGame(state);
 
-    const currentState = getGameState(startTime);
+    state.game = getGameState(startTime);
 
     gameRunning = false;
     if(!canInterpolateStates()) {
@@ -100,7 +105,7 @@ function updateGame(previousState) {
     }
     gameRunning = true;
 
-    prepareCanvases(currentState, gameCanvas, miniMapCanvas, miniMapTmpCanvas);
+    prepareCanvases(state);
 
     const elapsed = new Date().getTime() - startTime;
     setTimeout(() => updateGame(currentState), 1000 / gameRefresh - elapsed);
