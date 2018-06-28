@@ -78,6 +78,6 @@ function cleanEventListeners(old) {
 function focusOnPlayer(state, player) {
   findNextCell(state, player.cells, player.id);
   if(state.display.cellFocused) {
-    setFocusScreen(state.display.cellFocused.position);
+    setFocusScreen(state);
   }
 }

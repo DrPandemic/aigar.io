@@ -59,7 +59,7 @@ export const numberOfSpikes = 25;
 
 export const debug = true;
 export const gameRefresh = 24;
-export const leaderboardRefresh = 0.5;
+export const leaderboardRefresh = 0.2;
 export const networkRefresh = 1.75;
 export const gameDelay = 1000 / networkRefresh;
 export const maximumStoredStates = 10;

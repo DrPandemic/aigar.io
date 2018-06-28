@@ -323,7 +323,7 @@ export function drawMiniMap(state) {
 function findMiniMapScreenPositionPlayer(state) {
   if(state.display.playerFocused != null) {
     const player = state.game.players.find(p => p.id === state.display.playerFocused);
-    checkIfCellFocusedStillExists(player.cells);
+    checkIfCellFocusedStillExists(state, player.cells);
     setFocusScreen(state);
   }
 }
