@@ -70,8 +70,7 @@ async function main(params) {
   if(params.create) {
     try {
       await api.createPrivate();
-      const url = /(.*)\/api\/.*/.exec(params.apiUrl)[1];
-      await opn(`${url}/web/index.html?gameId=${params.playerId}`);
+      await opn(`${params.apiUrl}/web/index.html?gameId=${params.playerId}`);
     } catch(e) {
       console.error(`You received an error ${e.message}`);
     }

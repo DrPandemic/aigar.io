@@ -6,44 +6,49 @@ import org.scalatest._
 
 class ResourcesSpec extends FlatSpec with Matchers {
   "Resources" should "spawn at the right quantity" in {
-    val resources = new Resources(new Grid(0, 0))
+    val resources0 = new Resources(new Grid(0, 0), 30)
+    val resources1 = new Resources(new Grid(0, 0), 10)
 
-    val state = resources.state
+    val state0 = resources0.state
+    val state1 = resources1.state
 
-    state.regular should have size Regular.Max
-    state.silver should have size Silver.Max
-    state.gold should have size Gold.Max
+    state0.regular should have size (Regular.Max * 30).toInt
+    state0.silver should have size (Silver.Max * 30).toInt
+    state0.gold should have size (Gold.Max * 30).toInt
+    state1.regular should have size (Regular.Max * 10).toInt
+    state1.silver should have size (Silver.Max * 10).toInt
+    state1.gold should have size (Gold.Max * 10).toInt
   }
 
   it should "respawn when the quantity is minimal" in {
     val grid = new Grid(100000, 1000000)
-    val resources = new Resources(grid)
+    val resources = new Resources(grid, 30)
 
-    resources.regulars.resources = resources.regulars.resources.take(Regular.Min - 1)
-    resources.silvers.resources = resources.silvers.resources.take(Silver.Min - 1)
-    resources.golds.resources = resources.golds.resources.take(Gold.Min - 1)
+    resources.regulars.resources = resources.regulars.resources.take((Regular.Min * 30).toInt - 1)
+    resources.silvers.resources = resources.silvers.resources.take((Silver.Min * 30).toInt - 1)
+    resources.golds.resources = resources.golds.resources.take((Gold.Min * 30).toInt - 1)
 
     resources.update(grid, List(new Player(1, Vector2(0, 0))))
 
-    resources.regulars.resources.size should be >= Regular.Min
-    resources.silvers.resources.size should be >= Silver.Min
-    resources.golds.resources.size should be >= Gold.Min
+    resources.regulars.resources.size should be >= (Regular.Min * 30).toInt
+    resources.silvers.resources.size should be >= (Silver.Min * 30).toInt
+    resources.golds.resources.size should be >= (Gold.Min * 30).toInt
   }
 
   it should "not respawn when the quantity is maximal" in {
     val grid = new Grid(100000, 1000000)
-    val resources = new Resources(grid)
+    val resources = new Resources(grid, 30)
 
     resources.update(grid, List(new Player(1, Vector2(0, 0))))
 
-    resources.regulars.resources should have size Regular.Max
-    resources.silvers.resources  should have size Silver.Max
-    resources.golds.resources  should have size Gold.Max
+    resources.regulars.resources should have size (Regular.Max * 30).toInt
+    resources.silvers.resources  should have size (Silver.Max * 30).toInt
+    resources.golds.resources  should have size (Gold.Max * 30).toInt
   }
 
   "Resources update" should "return a list of ScoreModification without score when player is inactive" in {
     val grid = new Grid(100, 100)
-    val resources = new Resources(new Grid(100, 100))
+    val resources = new Resources(new Grid(100, 100), 30)
 
     val p1 = new Player(1, Vector2(10, 10))
     val p2 = new Player(2, Vector2(20, 20))
@@ -66,7 +71,7 @@ class ResourcesSpec extends FlatSpec with Matchers {
 
   "Resources update" should "return a list of ScoreModification when player is active" in {
     val grid = new Grid(100, 100)
-    val resources = new Resources(new Grid(100, 100))
+    val resources = new Resources(new Grid(100, 100), 30)
 
     val p1 = new Player(1, Vector2(10, 10))
     p1.active = true
@@ -92,7 +97,7 @@ class ResourcesSpec extends FlatSpec with Matchers {
   }
 
   "A Resource" should "be consumed on collision" in {
-    val resources = new Resources(new Grid(100, 100))
+    val resources = new Resources(new Grid(100, 100), 30)
     val regular = resources.regulars.resources.head
     val player = new Player(1, Vector2(10f, 10f))
     val cell = player.cells.head
@@ -104,7 +109,7 @@ class ResourcesSpec extends FlatSpec with Matchers {
   }
 
   it should "reward the cell accordingly" in {
-    val resources = new Resources(new Grid(100, 100))
+    val resources = new Resources(new Grid(100, 100), 30)
     val player = new Player(1, Vector2(10f, 10f))
     val cell = player.cells.head
     val initialMass = 25
@@ -116,7 +121,7 @@ class ResourcesSpec extends FlatSpec with Matchers {
   }
 
   "Resources collision" should "return the original list of entities minus the ones that collided with a player" in {
-    val resources = new Resources(new Grid(0, 0))
+    val resources = new Resources(new Grid(0, 0), 30)
     val p1 = new Player(1, Vector2(10f, 10f))
     val p2 = new Player(2, Vector2(50f, 50f))
 
@@ -131,7 +136,7 @@ class ResourcesSpec extends FlatSpec with Matchers {
   }
 
   it should "return the original list of entities when no collision occurs" in {
-    val resources = new Resources(new Grid(0, 0))
+    val resources = new Resources(new Grid(0, 0), 30)
     val p1 = new Player(1, Vector2(10f, 10f))
     val p2 = new Player(2, Vector2(50f, 50f))
 

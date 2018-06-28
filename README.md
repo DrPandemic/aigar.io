@@ -13,6 +13,9 @@ Be patient, generating the TLS certificate can be slow (multiple minutes).
 ## API
 The [complete API](API.md) can be found in the repository.
 
+## Documentation
+The [user documentation](documentation.md) can be found in the repository.
+
 ## Admin
 You can login to the admin at https://127.0.0.1/web/adminLogin.html. The password
 can be found in the server's logs.

@@ -71,9 +71,7 @@ def read_config():
 
 
 def open_browser(game_id, api_url):
-    m = re.search('(.*)/api/.*', api_url)
-    url = m.group(1)
-    webbrowser.open(f"{url}/web/index.html?gameId={game_id}", new=2)
+    webbrowser.open(f"{api_url}/web/index.html?gameId={game_id}", new=2)
 
 
 if __name__ == "__main__":

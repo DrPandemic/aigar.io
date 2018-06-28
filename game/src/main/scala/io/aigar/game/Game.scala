@@ -47,7 +47,7 @@ class Game(val id: Int,
                       math.max(Game.MinimumNumberOfPlayerModificator, playerIds.length) * Grid.HeightPerPlayer)
   val players = createPlayers
   val viruses = new Viruses(grid, math.max(Game.MinimumNumberOfPlayerModificator, playerIds.length))
-  val resources = new Resources(grid)
+  val resources = new Resources(grid, playerIds.length)
 
   val startTime = Game.time
   var previousTime = startTime

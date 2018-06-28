@@ -7,9 +7,10 @@ object Resource {
   final val RespawnRetryAttempts = 10
 }
 
+// The quatities will be multiplied by the number of players
 object Regular {
-  final val Max = 250
-  final val Min = 100
+  final val Max = 10f
+  final val Min = 3.3f
 
   // IMPORTANT: keep those values in sync with the client documentation
   final val Mass = 1
@@ -17,8 +18,8 @@ object Regular {
 }
 
 object Silver {
-  final val Max = 25
-  final val Min = 12
+  final val Max = 1f
+  final val Min = 0.5f
 
   // IMPORTANT: keep those values in sync with the client documentation
   final val Mass = 2
@@ -26,35 +27,35 @@ object Silver {
 }
 
 object Gold {
-  final val Max = 3
-  final val Min = 1
+  final val Max = 0.2f
+  final val Min = 0.1f
 
   // IMPORTANT: keep those values in sync with the client documentation
   final val Mass = 0
   final val Score = 10f
 }
 
-class Resources(grid: Grid) {
+class Resources(grid: Grid, playerCount: Int) {
   val regulars = new ResourceType(
     grid,
     Regular.Mass,
     Regular.Score,
-    Regular.Min,
-    Regular.Max
+    (Regular.Min * playerCount).toInt,
+    (Regular.Max * playerCount).toInt
   )
   val silvers = new ResourceType(
     grid,
     Silver.Mass,
     Silver.Score,
-    Silver.Min,
-    Silver.Max
+    (Silver.Min * playerCount).toInt,
+    (Silver.Max * playerCount).toInt
   )
   val golds = new ResourceType(
     grid,
     Gold.Mass,
     Gold.Score,
-    Gold.Min,
-    Gold.Max
+    (Gold.Min * playerCount).toInt,
+    (Gold.Max * playerCount).toInt
   )
   val resourceTypes = List(regulars, silvers, golds)
 
