@@ -149,7 +149,8 @@ There are three available resource types:
 
 ### Virus
 Dangerous stationary cell on the map that, when eaten, causes the eating cell
-to explode (split and lose mass).
+to explode (split and lose mass). It will remove 40% of the cell's mass and force
+it to split once and its `children` to split once.
 
 A `Cell` will explode if it mostly overlaps a virus and has 10% more mass. It
 is safe to hide under a virus if the cell is smaller.
@@ -162,6 +163,5 @@ is safe to hide under a virus if the cell is smaller.
 
 ### Vector
 A 2D vector from the [`victor.js`](http://victorjs.org/#documentation) Javascript
-library. Refer to
-[its documentation](http://victorjs.org/#documentation)
-for details.
+library. Refer to [its documentation](http://victorjs.org/#documentation) for
+details.

@@ -15,7 +15,7 @@ The [complete API](API.md) can be found in the repository.
 
 ## Admin
 You can login to the admin at https://127.0.0.1/web/adminLogin.html. The password
-can be found in the server logs.
+can be found in the server's logs.
 
 ### Seed
 In the danger zone, there's two options to seed the database. For development,

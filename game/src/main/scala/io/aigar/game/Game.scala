@@ -15,7 +15,7 @@ import io.aigar.controller.response.Action
  */
 object Game {
   final val RankedGameId = -1
-  final val DefaultDuration = 60 * 20
+  final val DefaultDuration = 60 * 10
   final val DefaultMutliplier = 1
   final val PrivateGameDuration = 60 * 10
   final val PrivateGameBotQuantity = 5
