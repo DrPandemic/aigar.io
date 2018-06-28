@@ -496,6 +496,47 @@ class CellSpec extends FlatSpec with Matchers {
     modification shouldBe empty
   }
 
+  it should "not be able to do actions right after a trade" in {
+    val player = new Player(1, Vector2(12f, 12f))
+    val cell = player.cells.head
+
+    cell.mass = Cell.MinMass + 100  // enough mass to trade at least twice
+    var modification = cell.performAction(Action(cell.id, false, false, 1, Position(12f, 12f)))
+    modification.get should equal(ScoreModification(player.id, 1 * Cell.MassToScoreRatio))
+    modification = cell.performAction(Action(cell.id, false, false, 1, Position(1f, 1f)))
+
+    modification shouldBe empty  // no trade happened
+  }
+
+  it should "be able to do actions again after a trade after waiting long enough" in {
+    val grid = new Grid(1000, 1000)
+    val player = new Player(1, Vector2(12f, 12f))
+    val cell = player.cells.head
+
+    cell.mass = Cell.MinMass + 100  // enough mass to trade at least twice
+    val modification = cell.performAction(Action(cell.id, false, false, 1, Position(12f, 12f)))
+    modification.get should equal(ScoreModification(player.id, 1 * Cell.MassToScoreRatio))
+    player.update(100f, grid, List())
+    cell.performAction(Action(cell.id, false, false, 1, Position(12f, 12f)))
+
+    modification.get should equal(ScoreModification(
+      player.id, 1 * Cell.MassToScoreRatio))  // trade happened
+  }
+
+  it should "stop the cell's movements after a trade" in {
+    val grid = new Grid(1000, 1000)
+    val player = new Player(1, Vector2(12f, 12f))
+    player.active = true
+    val cell = player.cells.head
+
+    cell.mass = Cell.MinMass + 100
+    val modification = cell.performAction(Action(cell.id, false, false, 1, Position(99f, 99f)))
+    modification.get should equal(ScoreModification(player.id, 1 * Cell.MassToScoreRatio))
+    cell.update(1f, grid)
+
+    cell.target should equal(Vector2(12f, 12f))  // sleeping stopped our move
+  }
+
   "scoreModification" should "give 1 score" in {
     val player = new Player(1, Vector2(12f, 12f))
     val cell = player.cells.head

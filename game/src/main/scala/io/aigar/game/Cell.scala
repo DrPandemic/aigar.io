@@ -73,6 +73,12 @@ object Cell {
    */
   final val BurstMaxSpeedMultiplier = 3f
 
+  /**
+   * How long the cell stays in a "sleeping" state after a trade, during which
+   * it can't control its movements or send new actions.
+   */
+  final val TradeSleepingDurationSeconds = 5f
+
   final val SplitPushSecondsOfMovement = 10f
 
   def radius(mass: Float): Float = {
@@ -87,6 +93,7 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
   _mass = Cell.MinMass
 
   var burstTimeRemaining = 0f
+  var sleepingTimeRemaining = 0f
 
   /**
    * The maximum speed (length of the velocity) for the cell, in units per
@@ -114,6 +121,7 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
     mass = decayedMass(deltaSeconds)
 
     target = aiState.update(deltaSeconds, grid)
+    if (isSleeping) target = position
 
     position += velocity * deltaSeconds
     keepInGrid(grid)
@@ -121,6 +129,7 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
     velocity += movement(deltaSeconds)
     velocity += drag(deltaSeconds)
     burstTimeRemaining = max(burstTimeRemaining - deltaSeconds, 0f)
+    sleepingTimeRemaining = max(sleepingTimeRemaining - deltaSeconds, 0f)
   }
 
   def keepInGrid(grid: Grid): Unit = {
@@ -162,6 +171,7 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
   }
 
   def performAction(action: Action): Option[ScoreModification] = {
+    if (isSleeping) return None
     target = action.target.toVector
 
     if (action.split) split
@@ -179,6 +189,10 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
 
   def isBursting(): Boolean = {
     burstTimeRemaining > 0f
+  }
+
+  def isSleeping(): Boolean = {
+    sleepingTimeRemaining > 0f
   }
 
   def split(): List[Cell] = {
@@ -219,6 +233,7 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
 
     if (amount > 0 && mass - amount >= Cell.MinMass) {
       mass -= amount
+      sleepingTimeRemaining = Cell.TradeSleepingDurationSeconds
       return Some(ScoreModification(player.id, amount * Cell.MassToScoreRatio))
     }
 
