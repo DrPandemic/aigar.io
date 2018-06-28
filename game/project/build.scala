@@ -47,7 +47,6 @@ object AigarBuild extends Build {
     "org.slf4j" % "slf4j-nop" % "1.7.13" % "test,it",
     "org.eclipse.jetty" % "jetty-plus" % JettyVersion % "container;provided",
     "org.eclipse.jetty" % "jetty-webapp" % JettyVersion % "container",
-    "org.eclipse.jetty" % "jetty-continuation" % JettyVersion % "container;provided",
     "javax.servlet" % "javax.servlet-api" % "3.1.0" % "container;provided;test" artifacts Artifact("javax.servlet-api", "jar", "jar"),
     "org.json4s" %% "json4s-jackson" % "3.5.2",
     "org.scalatra" %% "scalatra-json" % ScalatraVersion,

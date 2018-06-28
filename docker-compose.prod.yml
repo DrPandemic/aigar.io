@@ -1,0 +1,23 @@
+version: '3'
+
+volumes:
+  database_data:
+    driver: local
+  web_data:
+
+services:
+  api:
+    image: drpandemic/aigario-api
+    environment:
+      - APP_HOSTNAME=default
+    ports:
+      - 80:80
+      - 443:443
+    links:
+      - "game:game"
+
+  game:
+    image: drpandemic/aigario-game
+    expose:
+      - 8080
+    command: [sbt, "~;jetty:stop;jetty:start"]
