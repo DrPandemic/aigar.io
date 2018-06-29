@@ -94,6 +94,7 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
 
   var burstTimeRemaining = 0f
   var sleepingTimeRemaining = 0f
+  var massTraded = 0
 
   /**
    * The maximum speed (length of the velocity) for the cell, in units per
@@ -117,7 +118,7 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
     (1 + log(mass) - log(Cell.MinMass)).toFloat
   }
 
-  def update(deltaSeconds: Float, grid: Grid): Unit = {
+  def update(deltaSeconds: Float, grid: Grid): Option[ScoreModification] = {
     mass = decayedMass(deltaSeconds)
 
     target = aiState.update(deltaSeconds, grid)
@@ -129,7 +130,19 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
     velocity += movement(deltaSeconds)
     velocity += drag(deltaSeconds)
     burstTimeRemaining = max(burstTimeRemaining - deltaSeconds, 0f)
-    sleepingTimeRemaining = max(sleepingTimeRemaining - deltaSeconds, 0f)
+    updateTrade(deltaSeconds)
+  }
+
+  def updateTrade(deltaSeconds: Float): Option[ScoreModification] = {
+    if (sleepingTimeRemaining > 0f) {
+      sleepingTimeRemaining = max(sleepingTimeRemaining - deltaSeconds, 0f)
+      if (sleepingTimeRemaining == 0f) {  // trade complete
+        val modification = ScoreModification(player.id, massTraded * Cell.MassToScoreRatio)
+        massTraded = 0
+        return Some(modification)
+      }
+    }
+    None
   }
 
   def keepInGrid(grid: Grid): Unit = {
@@ -176,7 +189,8 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
 
     if (action.split) split
     if (action.burst) burst
-    tradeMass(action.trade)
+    if (action.trade > 0) tradeMass(action.trade)
+    None
   }
 
   def burst(): Unit = {
@@ -228,16 +242,14 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
     other.velocity -= pushForce
   }
 
-  def tradeMass(massToTrade: Int): Option[ScoreModification] = {
+  def tradeMass(massToTrade: Int): Unit = {
     val amount = min(massToTrade, max(mass - Cell.MinMass, 0)).toInt
 
     if (amount > 0 && mass - amount >= Cell.MinMass) {
       mass -= amount
+      massTraded = amount
       sleepingTimeRemaining = Cell.TradeSleepingDurationSeconds
-      return Some(ScoreModification(player.id, amount * Cell.MassToScoreRatio))
     }
-
-    None
   }
 
   def defineAiState: AIState = {

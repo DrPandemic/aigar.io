@@ -462,13 +462,15 @@ class CellSpec extends FlatSpec with Matchers {
     cell.target.state should equal(Position(0f, 10f))
   }
 
-  "performAction" should "trade mass for score when mass is sufficient" in {
+  "Trade" should "trade mass for eventual score when mass is sufficient" in {
+    val grid = new Grid(1000, 1000)
     val player = new Player(1, Vector2(12f, 12f))
     val cell = player.cells.head
     val massToTrade = 11
 
     cell.mass = Cell.MinMass + massToTrade
-    val modification = cell.performAction(Action(cell.id, false, false, massToTrade, Position(0f, 10f)))
+    cell.performAction(Action(cell.id, false, false, massToTrade, Position(0f, 10f)))
+    val modification = cell.update(100f, grid)
 
     modification.isEmpty shouldBe false
     modification.get should equal(ScoreModification(player.id, massToTrade * Cell.MassToScoreRatio))
@@ -477,21 +479,22 @@ class CellSpec extends FlatSpec with Matchers {
   it should "trade mass so that the cell keeps at least the minimal mass" in {
     val player = new Player(1, Vector2(12f, 12f))
     val cell = player.cells.head
-    val massToTrade = 100
 
     cell.mass = Cell.MinMass + 10
-    val modification = cell.performAction(Action(cell.id, false, false, massToTrade, Position(0f, 10f)))
+    cell.performAction(Action(cell.id, false, false, 100, Position(0f, 10f)))
 
-    modification.get should equal(ScoreModification(player.id, 10 * Cell.MassToScoreRatio))
+    cell.mass should equal(Cell.MinMass)
   }
 
   it should "not trade mass for score when mass is insufficient" in {
+    val grid = new Grid(1000, 1000)
     val player = new Player(1, Vector2(12f, 12f))
     val cell = player.cells.head
     val massToTrade = 1
 
     cell.mass = Cell.MinMass
-    val modification = cell.performAction(Action(cell.id, false, false, massToTrade, Position(0f, 10f)))
+    cell.performAction(Action(cell.id, false, false, massToTrade, Position(0f, 10f)))
+    val modification = cell.update(100f, grid)
 
     modification shouldBe empty
   }
@@ -500,12 +503,11 @@ class CellSpec extends FlatSpec with Matchers {
     val player = new Player(1, Vector2(12f, 12f))
     val cell = player.cells.head
 
-    cell.mass = Cell.MinMass + 100  // enough mass to trade at least twice
-    var modification = cell.performAction(Action(cell.id, false, false, 1, Position(12f, 12f)))
-    modification.get should equal(ScoreModification(player.id, 1 * Cell.MassToScoreRatio))
-    modification = cell.performAction(Action(cell.id, false, false, 1, Position(1f, 1f)))
+    cell.mass = Cell.MinMass + 100  // enough mass to trade and split
+    cell.performAction(Action(cell.id, false, false, 1, Position(12f, 12f)))  // trade
+    cell.performAction(Action(cell.id, false, true, 0, Position(12f, 12f)))  // split
 
-    modification shouldBe empty  // no trade happened
+    player.cells should have size 1  // no split took place
   }
 
   it should "be able to do actions again after a trade after waiting long enough" in {
@@ -513,14 +515,13 @@ class CellSpec extends FlatSpec with Matchers {
     val player = new Player(1, Vector2(12f, 12f))
     val cell = player.cells.head
 
-    cell.mass = Cell.MinMass + 100  // enough mass to trade at least twice
-    val modification = cell.performAction(Action(cell.id, false, false, 1, Position(12f, 12f)))
+    cell.mass = Cell.MinMass + 100  // enough mass to trade and split
+    cell.performAction(Action(cell.id, false, false, 1, Position(12f, 12f)))  // trade
+    val modification = cell.update(100f, grid)
     modification.get should equal(ScoreModification(player.id, 1 * Cell.MassToScoreRatio))
-    player.update(100f, grid, List())
-    cell.performAction(Action(cell.id, false, false, 1, Position(12f, 12f)))
+    cell.performAction(Action(cell.id, false, true, 0, Position(12f, 12f)))  // split
 
-    modification.get should equal(ScoreModification(
-      player.id, 1 * Cell.MassToScoreRatio))  // trade happened
+    player.cells should have size 2  // split took place
   }
 
   it should "stop the cell's movements after a trade" in {
@@ -530,11 +531,22 @@ class CellSpec extends FlatSpec with Matchers {
     val cell = player.cells.head
 
     cell.mass = Cell.MinMass + 100
-    val modification = cell.performAction(Action(cell.id, false, false, 1, Position(99f, 99f)))
-    modification.get should equal(ScoreModification(player.id, 1 * Cell.MassToScoreRatio))
+    cell.performAction(Action(cell.id, false, false, 1, Position(99f, 99f)))
     cell.update(1f, grid)
 
     cell.target should equal(Vector2(12f, 12f))  // sleeping stopped our move
+  }
+
+  it should "lose mass on trade, but not gain score right away" in {
+    val grid = new Grid(1000, 1000)
+    val player = new Player(1, Vector2(12f, 12f))
+    player.active = true
+    val cell = player.cells.head
+
+    cell.mass = 110
+    val modification = cell.performAction(Action(cell.id, false, false, 10, Position(12f, 12f)))
+    cell.mass should equal(100)
+    modification shouldBe empty
   }
 
   "scoreModification" should "give 1 score" in {
