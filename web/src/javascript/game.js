@@ -12,7 +12,8 @@ function prerenderResource(state, color, radius) {
   return canvas;
 }
 
-function drawCircle(state, context, position, radius, color, drawBorder = false) {
+function drawCircle(state, context, position, realRadius, color, drawBorder = false) {
+  const radius = Math.round(realRadius);
   const key = JSON.stringify([radius, color, drawBorder]);
   let canvas = state.circleCache[key];
   let diff = radius;
