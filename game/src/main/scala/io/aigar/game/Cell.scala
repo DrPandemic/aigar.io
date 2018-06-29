@@ -135,8 +135,9 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
 
   def updateTrade(deltaSeconds: Float): Option[ScoreModification] = {
     if (sleepingTimeRemaining > 0f) {
-      sleepingTimeRemaining = max(sleepingTimeRemaining - deltaSeconds, 0f)
-      if (sleepingTimeRemaining == 0f) {  // trade complete
+      sleepingTimeRemaining -= deltaSeconds
+      if (sleepingTimeRemaining <= 0f) {  // trade complete
+        sleepingTimeRemaining = 0f
         val modification = ScoreModification(player.id, massTraded * Cell.MassToScoreRatio)
         massTraded = 0
         return Some(modification)
