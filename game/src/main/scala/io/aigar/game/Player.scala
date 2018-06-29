@@ -39,7 +39,7 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer
   def update(deltaSeconds: Float, grid: Grid, players: List[Player]): List[ScoreModification] = {
     cells = merge(cells, this)
     opponents = players diff List(this)
-    val (cellsReturn, modifications) = handleCollision(cells, opponents)
+    var (cellsReturn, modifications) = handleCollision(cells, opponents)
 
     cells = cellsReturn.asInstanceOf[List[Cell]]
 
@@ -51,7 +51,12 @@ class Player(val id: Int, startPosition: Vector2) extends EntityContainer
         case _ =>
       }
     }
-    cells.foreach { _.update(deltaSeconds, grid) }
+    cells.foreach {
+      _.update(deltaSeconds, grid) match {
+        case Some(modification) => modifications :::= List(modification)
+        case None =>
+      }
+    }
     modifications
   }
 
