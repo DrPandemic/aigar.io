@@ -37,6 +37,10 @@ means that a larger cell will lose more mass than a smaller one.
 This is the formula we use to calculate the radius of a cell from its mass.
 `def radius(mass) = 4f + sqrt(mass) * 3f`.
 
+### Grid
+The background pattern is a grid of 50x50 units. This means that a cell with a
+radius of 25 should exactly match in one square.
+
 ## Score
 There's a difference between mass and score. On the round leaderboard we see
 the sum of the masses of a team. On the competition leaderboard we see scores.
