@@ -1,6 +1,8 @@
 """
 This is the file that should be used to code your AI.
 """
+import random
+from planar import Vec2
 
 
 class AI:
@@ -15,15 +17,9 @@ class AI:
         :param game: Game object
         """
 
-        resources = (game.resources.gold + game.resources.silver +
-                     game.resources.regular)
-
         for cell in game.me.cells:
-            def distance_to_me(position):
-                return cell.position.distance_to(position)
+            distance = cell.position.distance_to(cell.target)
 
-            if resources:
-                closest = sorted(resources, key=distance_to_me)[0]
-                cell.move(closest)
-
-            cell.split()
+            if distance < 10:
+                target = Vec2(random.randint(0, game.map.width), random.randint(0, game.map.height))
+                cell.move(target)

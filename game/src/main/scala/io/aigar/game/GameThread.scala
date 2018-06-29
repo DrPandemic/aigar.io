@@ -117,7 +117,7 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
       case(game, future) => {
         Try(Await.result(future, Game.MillisecondsPerTick milliseconds)) match {
           case Success(result) => applyScoreModifications(game, result)
-          case Failure(error) => logger.error(s"Game with id $game.id failed to perform actions with $error.getGessage")
+          case Failure(error) => logger.error(s"Game with id ${game.id} failed to perform actions with ${error.printStackTrace()}")
         }
       }
     }
