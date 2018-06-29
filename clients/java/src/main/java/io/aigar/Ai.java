@@ -6,31 +6,20 @@ import io.aigar.game.models.GameState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Random;
 
 public class Ai {
     private static final Logger logger = LoggerFactory.getLogger(Ai.class);
+    private Random rand = new Random();
 
     public void step(GameState game) {
-        List<Coordinate> resources = game.getResources().getAllResources();
-
         for (Cell cell : game.getMe().getCells()) {
-            Coordinate target = findClosest(resources, cell.getPosition());
+            double distance = cell.getPosition().distanceTo(cell.getTarget());
 
-            cell.move(target);
-            cell.split();
+            if (distance < 10) {
+                Coordinate target = new Coordinate(rand.nextDouble() * game.getMap().width, rand.nextDouble() * game.getMap().height);
+                cell.move(target);
+            }
         }
-    }
-
-    private Coordinate findClosest(List<Coordinate> coordinates, Coordinate currentPosition) {
-        return coordinates.stream()
-                .collect(Collectors.toMap(currentPosition::distanceTo, r -> r))
-                .entrySet()
-                .stream()
-                .sorted(Map.Entry.comparingByKey()).map(Map.Entry::getValue)
-                .findFirst()
-                .orElse(null);
     }
 }
