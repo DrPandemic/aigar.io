@@ -11,6 +11,6 @@ class LeaderboardController(playerRepository: PlayerRepository) extends AigarSta
       .map{ case(player, score) => {
              LeaderboardEntry(player.id.get, player.playerName, score.scoreModification, score.timestamp.get)
            }}
-    LeaderboardResponse(players)
+    LeaderboardResponse(players, true)
   }
 }

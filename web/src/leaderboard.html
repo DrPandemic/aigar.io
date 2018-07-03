@@ -28,29 +28,38 @@
       </div><!-- container -->
     </nav>
 
-    <div class="row leaderboard-row">
-      <div class="col-md-12 text-center">
-        <div class="header">
-          <h1 class="title">Leaderboard</h1>
-        </div><!-- header -->
+    <span id="default-container">
+      <div class="row leaderboard-row">
+        <div class="col-md-12 text-center">
+          <div class="header">
+            <h1 class="title">Leaderboard</h1>
+          </div><!-- header -->
+        </div>
+        <div class="col-md-8">
+          <canvas id="myChart" width="400" height="230"></canvas>
+        </div>
+        <div class="col-md-4">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th class="leaderboardwidth">#</th>
+                <th>Name</th>
+                <th>Score</th>
+              </tr>
+            </thead>
+            <tbody id="leaderboard-body">
+            </tbody>
+          </table>
+        </div>
+      </div><!-- row -->
+    </span>
+    <span id="disabled-container" style="display: none">
+      <div class="row leaderboard-row">
+        <div class="col-md-12 text-center">
+          <h1>The leaderboard is currently disabled.</h1>
+        </div>
       </div>
-      <div class="col-md-8">
-        <canvas id="myChart" width="400" height="230"></canvas>
-      </div>
-      <div class="col-md-4">
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th class="leaderboardwidth">#</th>
-              <th>Name</th>
-              <th>Score</th>
-            </tr>
-          </thead>
-          <tbody id="leaderboard-body">
-          </tbody>
-        </table>
-      </div>
-    </div><!-- row -->
+    </span>
 
     <script src="vendor/he/he.js"></script>
     <script src="vendor/chart.js/dist/Chart.bundle.min.js"></script>

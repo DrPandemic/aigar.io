@@ -114,10 +114,15 @@ function clearEntries() {
 
 function fetchAndDisplay() {
   return fetchLeaderboardEntries()
-    .then(entries => {
-      clearEntries();
-      displayEntries(entries);
-      displayChart(entries);
+    .then(({entries, enabled}) => {
+      if (enabled) {
+        clearEntries();
+        displayEntries(entries);
+        displayChart(entries);
+      } else {
+        document.getElementById("disabled-container").style.display = "block";
+        document.getElementById("default-container").style.display = "none";
+      }
     });
 }
 

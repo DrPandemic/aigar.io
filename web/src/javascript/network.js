@@ -26,11 +26,14 @@ export function fetchLeaderboardEntries() {
     .then(response => {
       return response.json();
     }).then(response => {
-      return response.data.map(entry => new LeaderboardEntry(
-        entry.player_id,
-        entry.name,
-        entry.score,
-        entry.timestamp)).sort((a, b) => a.score - b.score);
+      return {
+        entries: response.data.map(entry => new LeaderboardEntry(
+          entry.player_id,
+          entry.name,
+          entry.score,
+          entry.timestamp)).sort((a, b) => a.score - b.score),
+        enabled: response.enabled,
+      }
     })
     .catch(error => {
       if(debug) {
