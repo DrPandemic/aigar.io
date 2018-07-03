@@ -107,6 +107,18 @@ class AdminController(
     SuccessResponse("ok")
   }
 
+  put("/leaderboard") {
+    try {
+      val query = parse(request.body).extract[DisableLeaderboardQuery]
+      val command = DisableLeaderboardCommand(query.disabled)
+      game.adminCommandQueue.put(command)
+    } catch {
+      case e: MappingException => halt(422)
+    }
+
+    SuccessResponse("ok")
+  }
+
   post("/get_players") {
     val players = playerRepository.getPlayers
       .map(player => {

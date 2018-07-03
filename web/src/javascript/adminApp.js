@@ -78,12 +78,23 @@ document.getElementById("resume-button").onclick = async () => {
   await fetchAndDisplay();
   alert("The game was resumed");
 };
-
 document.getElementById("pause-button").onclick = async () => {
   await sendAdminRequest("paused", "put", {paused: true});
   await fetchAndDisplay();
   alert("The game was paused");
 };
+
+document.getElementById("enable-leaderboard-button").onclick = async () => {
+  await sendAdminRequest("leaderboard", "put", {disabled: false});
+  await fetchAndDisplay();
+  alert("The leaderboard was enabled");
+};
+document.getElementById("disable-leaderboard-button").onclick = async () => {
+  await sendAdminRequest("leaderboard", "put", {disabled: true});
+  await fetchAndDisplay();
+  alert("The leaderboard was disabled");
+};
+
 
 function displayEntries(entries) {
   const table = document.getElementById("player-list-body");
@@ -113,6 +124,16 @@ function togglePauseButtons(gameState) {
   }
 }
 
+function toggleLeaderboardButtons(gameState) {
+  if (!gameState.disabledLeaderboard) {
+    document.getElementById("enable-leaderboard-button").className = "btn btn-secondary";
+    document.getElementById("disable-leaderboard-button").className = "btn btn-primary";
+  } else {
+    document.getElementById("enable-leaderboard-button").className = "btn btn-primary";
+    document.getElementById("disable-leaderboard-button").className = "btn btn-secondary";
+  }
+}
+
 async function fetchAndDisplay() {
   const entries = await sendAdminRequest("get_players", "post");
   clearEntries();
@@ -121,6 +142,7 @@ async function fetchAndDisplay() {
   const state = await fetchState(-1);
   document.getElementById("current-multiplier-input").value = state.multiplier;
   togglePauseButtons(state);
+  toggleLeaderboardButtons(state);
 }
 
 setInterval(fetchAndDisplay, 5 * 1000);

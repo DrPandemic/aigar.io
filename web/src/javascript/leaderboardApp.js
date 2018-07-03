@@ -114,14 +114,16 @@ function clearEntries() {
 
 function fetchAndDisplay() {
   return fetchLeaderboardEntries()
-    .then(({entries, enabled}) => {
-      if (enabled) {
+    .then(({entries, disabled}) => {
+      if (disabled) {
+        document.getElementById("disabled-container").style.display = "block";
+        document.getElementById("default-container").style.display = "none";
+      } else {
+        document.getElementById("disabled-container").style.display = "none";
+        document.getElementById("default-container").style.display = "block";
         clearEntries();
         displayEntries(entries);
         displayChart(entries);
-      } else {
-        document.getElementById("disabled-container").style.display = "block";
-        document.getElementById("default-container").style.display = "none";
       }
     });
 }

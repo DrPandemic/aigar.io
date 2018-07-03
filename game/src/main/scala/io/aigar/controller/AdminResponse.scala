@@ -41,6 +41,10 @@ case class PauseQuery(
   administrator_password: String,
   paused: Boolean
 )
+case class DisableLeaderboardQuery(
+  administrator_password: String,
+  disabled: Boolean
+)
 
 /**
   * Class used to transfer commands from the AdminController to the game thread.
@@ -61,4 +65,8 @@ case class SetRankedMultiplierCommand(
 
 case class PauseCommand(
   paused: Boolean
+) extends AdminCommand
+
+case class DisableLeaderboardCommand(
+  disabled: Boolean
 ) extends AdminCommand

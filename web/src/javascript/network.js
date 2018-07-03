@@ -32,7 +32,7 @@ export function fetchLeaderboardEntries() {
           entry.name,
           entry.score,
           entry.timestamp)).sort((a, b) => a.score - b.score),
-        enabled: response.enabled,
+        disabled: response.disabled,
       }
     })
     .catch(error => {

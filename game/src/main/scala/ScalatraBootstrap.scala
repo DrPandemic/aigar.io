@@ -34,7 +34,7 @@ class ScalatraBootstrap extends LifeCycle
     logger.info("****************************")
 
     context.mount(new AdminController(adminPassword, game, playerRepository, scoreRepository), s"$path/admin/*")
-    context.mount(new LeaderboardController(playerRepository), s"$path/leaderboard/*")
+    context.mount(new LeaderboardController(game, playerRepository), s"$path/leaderboard/*")
     context.mount(new GameController(game, playerRepository), s"$path/game/*")
   }
 

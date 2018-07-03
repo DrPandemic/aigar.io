@@ -8,7 +8,8 @@ import io.aigar.controller.response.{
   SetRankedDurationCommand,
   RestartThreadCommand,
   SetRankedMultiplierCommand,
-  PauseCommand
+  PauseCommand,
+  DisableLeaderboardCommand
 }
 import scala.util.Failure
 import scala.util.Success
@@ -46,6 +47,7 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
 
   var running = true
   var started = false
+  var disabledLeaderboard = false
 
   def restart(playerIDs: List[Int]): Unit = {
     actionQueue.clear
@@ -63,6 +65,7 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
     states get gameId match {
       case Some(state) => {
         state.paused = paused
+        state.disabledLeaderboard = disabledLeaderboard
         Some(state)
       }
       case None => None
@@ -131,6 +134,7 @@ class GameThread(scoreThread: ScoreThread) extends Runnable
         case command: GameCreationCommand => games += (command.gameId -> createPrivateGame(command.gameId))
         case command: SetRankedMultiplierCommand => nextRankedMultiplier = command.multiplier
         case command: PauseCommand => paused = command.paused
+        case command: DisableLeaderboardCommand => disabledLeaderboard = command.disabled
       }
     }
   }

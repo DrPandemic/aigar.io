@@ -44,6 +44,7 @@ case class Virus(
 case class GameState(
   id: Int,
   var paused: Boolean,
+  var disabledLeaderboard: Boolean,
   multiplier: Int,
   tick: Int,
   timeLeft: Float,

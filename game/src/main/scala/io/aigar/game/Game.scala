@@ -103,6 +103,7 @@ class Game(val id: Int,
     serializable.GameState(
         id,
         false,
+        false,
         multiplier,
         tick,
         timeLeft,
