@@ -1,6 +1,8 @@
 import io.aigar.controller._
 import io.aigar.controller.response._
 import io.aigar.model._
+import io.aigar.game.GameThread
+import io.aigar.score.ScoreThread
 
 import org.json4s._
 import org.json4s.jackson.JsonMethods._
@@ -15,7 +17,9 @@ class LeaderboardControllerSpec extends MutableScalatraSpec
   implicit val jsonFormats: Formats = DefaultFormats
   sequential
 
-  addServlet(new LeaderboardController(playerRepository), "/*")
+  val scoreThread = new ScoreThread(scoreRepository)
+  val game = new GameThread(scoreThread)
+  addServlet(new LeaderboardController(game, playerRepository), "/*")
 
   def cleanState = {
     cleanDB()

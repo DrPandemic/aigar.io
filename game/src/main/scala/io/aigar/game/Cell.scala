@@ -147,10 +147,10 @@ class Cell(val id: Int, val player: Player, var position: Vector2 = new Vector2(
   }
 
   def keepInGrid(grid: Grid): Unit = {
-    if (position.x <= 0 || position.x >= grid.width){
+    if (position.x < 0 || position.x > grid.width){
       velocity = new Vector2(0f, velocity.y)
     }
-    if (position.y <= 0 || position.y >= grid.height){
+    if (position.y < 0 || position.y > grid.height){
       velocity = new Vector2(velocity.x, 0f)
     }
 
