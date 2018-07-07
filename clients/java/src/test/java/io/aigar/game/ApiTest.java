@@ -62,7 +62,7 @@ public class ApiTest {
 
     @Test
     void testCreateGame() throws NetworkException {
-        server.enqueue(new MockResponse().setBody("{\"data\":{\"game_id\": 0,\"url\": \"string\"}}"));
+        server.enqueue(new MockResponse().setBody("{\"data\":{\"id\": 0}}"));
 
         Api api = new Api(1, "", server.url("").toString());
 

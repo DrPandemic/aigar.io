@@ -1,9 +1,11 @@
 package io.aigar.game.models;
 
+import org.mini2Dx.gdx.math.Vector2;
+
 public class Virus {
     private int radius;
     private int mass;
-    private Coordinate position;
+    private Vector2 position;
 
     public int getRadius() {
         return radius;
@@ -21,11 +23,11 @@ public class Virus {
         this.mass = mass;
     }
 
-    public Coordinate getPosition() {
+    public Vector2 getPosition() {
         return position;
     }
 
-    public void setPosition(Coordinate position) {
+    public void setPosition(Vector2 position) {
         this.position = position;
     }
 }
