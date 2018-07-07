@@ -19,6 +19,9 @@ class LeaderboardControllerSpec extends MutableScalatraSpec
 
   val scoreThread = new ScoreThread(scoreRepository)
   val game = new GameThread(scoreThread)
+  game.adminCommandQueue.put(RestartThreadCommand(List(1)))
+  game.transferAdminCommands
+  game.updateGames // run once to initialize the game states
   addServlet(new LeaderboardController(game, playerRepository), "/*")
 
   def cleanState = {
@@ -70,6 +73,28 @@ class LeaderboardControllerSpec extends MutableScalatraSpec
           (2, "player2", 42f),
           (3, "player3", 15f)
         ))
+      }
+    }
+
+    "can return a disabled leaderboard" in {
+      game.disabledLeaderboard = true
+      get("/") {
+        status must_== 200
+
+        val content = parse(body).extract[LeaderboardResponse]
+        content.disabled must be_==(true)
+        content.data should be empty
+      }
+    }
+
+    "can return an enabled leaderboard" in {
+      game.disabledLeaderboard = false
+      get("/") {
+        status must_== 200
+
+        val content = parse(body).extract[LeaderboardResponse]
+        content.disabled must be_==(false)
+        content.data should not be empty
       }
     }
   }

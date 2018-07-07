@@ -57,7 +57,7 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
     game.started shouldBe false
   }
 
-  it should "returns paused games when it's paused" in {
+  it should "returns a paused games when it's paused" in {
     val gameThread = createStartedGameThread()
     gameThread.updateGames
     gameThread.gameState(Game.RankedGameId).get.paused shouldBe false
@@ -66,6 +66,22 @@ class GameThreadSpec extends FlatSpec with Matchers with MockitoSugar {
     gameThread.transferAdminCommands
 
     gameThread.gameState(Game.RankedGameId).get.paused shouldBe true
+  }
+
+  it should "returns a disabled leaderboard when it's disabled" in {
+    val gameThread = createStartedGameThread()
+    gameThread.updateGames
+    gameThread.gameState(Game.RankedGameId).get.disabledLeaderboard shouldBe false
+
+    gameThread.adminCommandQueue.put(DisableLeaderboardCommand(true))
+    gameThread.transferAdminCommands
+
+    gameThread.gameState(Game.RankedGameId).get.disabledLeaderboard shouldBe true
+
+    gameThread.adminCommandQueue.put(DisableLeaderboardCommand(false))
+    gameThread.transferAdminCommands
+
+    gameThread.gameState(Game.RankedGameId).get.disabledLeaderboard shouldBe false
   }
 
   "sending RestartThreadCommand" should "put started to true" in {
