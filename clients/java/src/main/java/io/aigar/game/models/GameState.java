@@ -8,6 +8,7 @@ public class GameState {
     private int id;
     private int tick;
     private boolean paused;
+    private boolean disabledLeaderboard;
     private int multiplier;
     private float timeLeft;
     private List<Player> players;
@@ -30,6 +31,8 @@ public class GameState {
     public boolean isPaused() {
         return paused;
     }
+
+    public boolean isDisabledLeaderboard() { return disabledLeaderboard; }
 
     public int getMultiplier() {
         return multiplier;
