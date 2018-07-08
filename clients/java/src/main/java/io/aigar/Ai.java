@@ -1,8 +1,8 @@
 package io.aigar;
 
 import io.aigar.game.models.Cell;
-import io.aigar.game.models.Coordinate;
 import io.aigar.game.models.GameState;
+import org.mini2Dx.gdx.math.Vector2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,10 +14,10 @@ public class Ai {
 
     public void step(GameState game) {
         for (Cell cell : game.getMe().getCells()) {
-            double distance = cell.getPosition().distanceTo(cell.getTarget());
+            double distance = cell.getPosition().dst(cell.getTarget());
 
             if (distance < 10) {
-                Coordinate target = new Coordinate(rand.nextDouble() * game.getMap().width, rand.nextDouble() * game.getMap().height);
+                Vector2 target = new Vector2(rand.nextFloat() * game.getMap().getWidth(), rand.nextFloat() * game.getMap().getHeight());
                 cell.move(target);
             }
         }

@@ -13,7 +13,7 @@ public class GameState {
     private float timeLeft;
     private List<Player> players;
     private Resources resources;
-    private Size map;
+    private Map map;
     private List<Virus> viruses;
     @JsonIgnore
     private Player me;
@@ -50,7 +50,7 @@ public class GameState {
         return resources;
     }
 
-    public Size getMap() {
+    public Map getMap() {
         return map;
     }
 

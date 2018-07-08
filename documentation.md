@@ -39,7 +39,7 @@ This is the formula we use to calculate the radius of a cell from its mass.
 
 ### Grid
 The background pattern is a grid of 50x50 units. This means that a cell with a
-radius of 25 should exactly match in one square.
+radius of 25 should exactly fit in one square.
 
 ## Score
 There's a difference between mass and score. On the round leaderboard we see

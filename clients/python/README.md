@@ -34,6 +34,8 @@ The private game needs to already exist.
 `python -m unittest discover -p "*_test.py"`
 
 ## Documentation
+**All objects attributes should be considered read-only. Use provided functions to interact with them.**
+
 ### Game
 State of a game.
 
@@ -48,7 +50,7 @@ State of a game.
 
 - `map`: Dimensions of the map (`Map` object)
 
-- `viruses`: List of viruses that split a cell when consumed
+- `viruses`: List of viruses (`Virus` objects) that split a cell when consumed
 
 - `me`: Your `Player` instance
 
@@ -85,7 +87,7 @@ You can access your player via `game.me`.
 Individual entity controlled by a `Player`. Through movement, it can consume
 resources and enemy cells to grow. It loses a portion of its mass over time.
 
-A cell can be moved by changing its `target`.
+A cell can be moved by calling `move(target)` on it.
 
 To collect a resource, a cell must collide with it.
 
@@ -105,8 +107,10 @@ To eat an enemy cell, a cell must almost completely overlap its enemy and be
 
 - `position`: Current position (`Vec2` object) of the cell in the `Map`
 
-- `target`: Target (`Vec2` object) that the cell should go for.
-            Move the cell by changing this value.
+- `target`: Current target (`Vec2` object) that the cell should go for.
+            MODIFYING THIS VALUE WILL NOT CHANGE THE TARGET. USE THE `move` FUNCTION.
+
+- `burst`: If the cell is currently bursting.
 
 #### Methods
 *Note: the following methods will only have an effect when called on cells
@@ -163,6 +167,8 @@ A `Cell` will explode if it mostly overlaps a virus and has 10% more mass. It
 is safe to hide under a virus if the cell is smaller.
 
 #### Attributes
+- `radius`: Radius of the virus, influenced by its current mass
+
 - `mass`: Mass of the virus.
           A `Cell` eating the virus will explode if it is 10% bigger than this.
 

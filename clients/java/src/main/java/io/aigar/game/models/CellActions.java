@@ -2,6 +2,7 @@ package io.aigar.game.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.mini2Dx.gdx.math.Vector2;
 
 public class CellActions {
     @JsonProperty("cell_id")
@@ -9,7 +10,7 @@ public class CellActions {
     private boolean burst = false;
     private boolean split = false;
     private int trade = 0;
-    private Coordinate target = null;
+    private Vector2 target = null;
     @JsonIgnore
     private boolean changed = false;
 
@@ -76,16 +77,16 @@ public class CellActions {
         return this;
     }
 
-    public Coordinate getTarget() {
+    public Vector2 getTarget() {
         return target;
     }
 
-    public void setTarget(Coordinate target) {
+    public void setTarget(Vector2 target) {
         this.target = target;
         changed = true;
     }
 
-    public CellActions withTarget(Coordinate target) {
+    public CellActions withTarget(Vector2 target) {
         setTarget(target);
         return this;
     }

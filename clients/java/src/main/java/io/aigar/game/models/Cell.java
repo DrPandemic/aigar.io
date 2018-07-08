@@ -1,6 +1,7 @@
 package io.aigar.game.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.mini2Dx.gdx.math.Vector2;
 
 import java.util.Optional;
 
@@ -8,8 +9,8 @@ public class Cell {
     private int id;
     private int mass;
     private int radius;
-    private Coordinate position;
-    private Coordinate target;
+    private Vector2 position;
+    private Vector2 target;
     private boolean burst;
     @JsonIgnore
     private CellActions cellActions;
@@ -26,11 +27,11 @@ public class Cell {
         return radius;
     }
 
-    public Coordinate getPosition() {
+    public Vector2 getPosition() {
         return position;
     }
 
-    public Coordinate getTarget() {
+    public Vector2 getTarget() {
         return target;
     }
 
@@ -39,7 +40,7 @@ public class Cell {
     }
 
     @JsonIgnore
-    public void move(Coordinate target) {
+    public void move(Vector2 target) {
         cellActions.setTarget(target);
     }
 

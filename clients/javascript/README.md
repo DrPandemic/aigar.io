@@ -27,6 +27,8 @@ If your private game already exists, it will destroy it and create a new one.
 `npm test`
 
 ## Documentation
+**All objects attributes should be considered read-only. Use provided functions to interact with them.**
+
 ### Game
 State of a game.
 
@@ -41,7 +43,7 @@ State of a game.
 
 - `map`: Dimensions of the map (`Map` object)
 
-- `viruses`: List of viruses that split a cell when consumed
+- `viruses`: List of viruses (`Virus` objects) that split a cell when consumed
 
 - `me`: Your `Player` instance
 
@@ -78,7 +80,7 @@ You can access your player via `game.me`.
 Individual entity controlled by a `Player`. Through movement, it can consume
 resources and enemy cells to grow. It loses a portion of its mass over time.
 
-A cell can be moved by changing its `target`.
+A cell can be moved by calling `move(target)` on it.
 
 To collect a resource, a cell must collide with it.
 
@@ -96,16 +98,18 @@ To eat an enemy cell, a cell must almost completely overlap its enemy and be
 
 - `radius`: Radius of the cell, influenced by its current mass
 
-- `position`: Current position (`Vec2` object) of the cell in the `Map`
+- `position`: Current position (`Victor` object) of the cell in the `Map`
 
-- `target`: Target (`Vec2` object) that the cell should go for.
-            Move the cell by changing this value.
+- `target`: Current target (`Victor` object) that the cell should go for.
+            MODIFYING THIS VALUE WILL NOT CHANGE THE TARGET. USE THE `move` FUNCTION.
+
+- `burst`: If the cell is currently bursting.
 
 #### Methods
 *Note: the following methods will only have an effect when called on cells
        owned by your player.*
 
-- `move(target)`: Moves towards the given `Vec2` target.
+- `move(target)`: Moves towards the given `Victor` target.
                   Convenience method that sets `cell.target`.
 
 - `split()`: Splits the cell into two distinct cells with half their parent's
@@ -141,11 +145,11 @@ There are three available resource types:
 | `gold`        | 0              | 10                |
 
 #### Attributes
-- `regular`: List of positions (`Vec2` objects) for *regular* resources
+- `regular`: List of positions (`Victor` objects) for *regular* resources
 
-- `silver`: List of positions (`Vec2` objects) for *silver* resources
+- `silver`: List of positions (`Victor` objects) for *silver* resources
 
-- `gold`: List of positions (`Vec2` objects) for *gold* resources
+- `gold`: List of positions (`Victor` objects) for *gold* resources
 
 ### Virus
 Dangerous stationary cell on the map that, when eaten, causes the eating cell
@@ -156,12 +160,17 @@ A `Cell` will explode if it mostly overlaps a virus and has 10% more mass. It
 is safe to hide under a virus if the cell is smaller.
 
 #### Attributes
+- `radius`: Radius of the virus, influenced by its current mass
+
 - `mass`: Mass of the virus.
           A `Cell` eating the virus will explode if it is 10% bigger than this.
 
-- `position`: Position (`Vec2` object) of the virus
+- `position`: Position (`Victor` object) of the virus
 
-### Vector
+### Victor
 A 2D vector from the [`victor.js`](http://victorjs.org/#documentation) Javascript
 library. Refer to [its documentation](http://victorjs.org/#documentation) for
 details.
+
+#### Interesting Methods
+- `distance`: Calculates the distance between two `Victor`s
