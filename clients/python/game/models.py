@@ -1,4 +1,5 @@
 from planar import Vec2
+from typing import List
 
 
 class UnknownPlayerIdException(Exception):
@@ -9,8 +10,8 @@ class UnknownPlayerIdException(Exception):
 class Game:
     RANKED_GAME_ID = -1
 
-    def __init__(self, id_, tick, player_id, players,
-                 resources, map_, viruses):
+    def __init__(self, id_: int, tick: int, player_id: int, players: List['Player'],
+                 resources: 'Resources', map_: 'Map', viruses: List['Virus']):
         self.id = id_
         self.tick = tick
         self.players = players
@@ -26,7 +27,7 @@ class Game:
 
         self.enemies = [player for player in players if player.id != player_id]
 
-    def parse(obj, player_id):
+    def parse(obj, player_id) -> 'Game':
         return Game(
                 obj["id"],
                 obj["tick"],
@@ -53,11 +54,11 @@ Resources:
 
 
 class Map:
-    def __init__(self, width, height):
+    def __init__(self, width: float, height: float):
         self.width = width
         self.height = height
 
-    def parse(obj):
+    def parse(obj) -> 'Map':
         return Map(obj["width"], obj["height"])
 
     def __str__(self):
@@ -65,14 +66,14 @@ class Map:
 
 
 class Player:
-    def __init__(self, id_, name, total_mass, active, cells):
+    def __init__(self, id_: int, name: str, total_mass: int, active: bool, cells: List['Cell']):
         self.id = id_
         self.name = name
         self.total_mass = total_mass
         self.active = active
         self.cells = cells
 
-    def parse(obj):
+    def parse(obj) -> 'Player':
         return Player(
                 obj["id"],
                 obj["name"],
@@ -90,7 +91,7 @@ class Player:
 
 
 class Cell:
-    def __init__(self, id_, mass, radius, position, target):
+    def __init__(self, id_: int, mass: int, radius: float, position: Vec2, target: Vec2):
         self.id = id_
         self.mass = mass
         self.radius = radius
@@ -99,7 +100,7 @@ class Cell:
 
         self._actions = CellActions(self.id)
 
-    def move(self, target):
+    def move(self, target: Vec2):
         self._actions.target = target
 
     def split(self):
@@ -108,10 +109,10 @@ class Cell:
     def burst(self):
         self._actions.burst = True
 
-    def trade(self, quantity):
+    def trade(self, quantity: int):
         self._actions.trade = quantity
 
-    def parse(obj):
+    def parse(obj) -> 'Cell':
         return Cell(
                 obj["id"],
                 obj["mass"],
@@ -135,12 +136,12 @@ class Cell:
 
 
 class Resources:
-    def __init__(self, regular_positions, silver_positions, gold_positions):
+    def __init__(self, regular_positions: Vec2, silver_positions: Vec2, gold_positions: Vec2):
         self.regular = regular_positions
         self.silver = silver_positions
         self.gold = gold_positions
 
-    def parse(obj):
+    def parse(obj) -> 'Resources':
         return Resources(
                 [parse_vec2(pos) for pos in obj["regular"]],
                 [parse_vec2(pos) for pos in obj["silver"]],
@@ -153,7 +154,7 @@ class Resources:
 
 
 class Virus:
-    def __init__(self, mass, position):
+    def __init__(self, mass: int, position: Vec2):
         self.mass = mass
         self.position = position
 
@@ -168,7 +169,7 @@ class Virus:
 
 
 class CellActions:
-    def __init__(self, cell_id):
+    def __init__(self, cell_id: int):
         self._cell_id = cell_id
         self._target = None
         self._burst = False
@@ -177,7 +178,7 @@ class CellActions:
         self._changed = False
 
     @property
-    def cell_id(self):
+    def cell_id(self) -> int:
         return self._cell_id
 
     @cell_id.setter
@@ -186,7 +187,7 @@ class CellActions:
         self._changed = True
 
     @property
-    def target(self):
+    def target(self) -> Vec2:
         return self._target
 
     @target.setter
@@ -221,7 +222,7 @@ class CellActions:
         self._trade = t
         self._changed = True
 
-    def export(self):
+    def export(self) -> 'CellActions':
         if not self._changed:
             return None
         return self
