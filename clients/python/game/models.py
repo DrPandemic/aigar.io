@@ -136,10 +136,11 @@ class Cell:
 
 
 class Resources:
-    def __init__(self, regular_positions: Vec2, silver_positions: Vec2, gold_positions: Vec2):
+    def __init__(self, regular_positions: List[Vec2], silver_positions: List[Vec2], gold_positions: List[Vec2]):
         self.regular = regular_positions
         self.silver = silver_positions
         self.gold = gold_positions
+        self.allResources = regular_positions + silver_positions + gold_positions
 
     def parse(obj) -> 'Resources':
         return Resources(

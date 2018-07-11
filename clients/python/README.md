@@ -158,6 +158,8 @@ There are three available resource types:
 
 - `gold`: List of positions (`Vec2` objects) for *gold* resources
 
+- `allResources`: List of positions (`Vec2` objects) for *all three types* of resources
+
 ### Virus
 Dangerous stationary cell on the map that, when eaten, causes the eating cell
 to explode (split and lose mass). It will remove 40% of the cell's mass and force
