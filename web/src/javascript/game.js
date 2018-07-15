@@ -230,7 +230,7 @@ export function drawVirusesOnMap(state) {
       canvas = drawVirusShape(virus.radius);
       state.virusCache[virus.radius] = canvas;
     }
-    context.drawImage(canvas, virus.position.x, virus.position.y);
+    context.drawImage(canvas, virus.position.x - virus.radius, virus.position.y - virus.radius);
   }
 }
 
