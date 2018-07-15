@@ -44,6 +44,8 @@ State of a game.
 
 - `tick`: How many updates the game has gone through so far
 
+- `time_left`: How many seconds are left to the round
+
 - `players`: List of players (`Player` objects) in the game
 
 - `resources`: Resources in the game that can be collected to gain mass/points
