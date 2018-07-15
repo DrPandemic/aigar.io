@@ -55,7 +55,12 @@ class Viruses(grid: Grid, val MaximumNumberOfViruses: Int)
       logger.info(s"Player ${player.id}'s ${cell.id} (mass ${cell.mass}) ate a virus.")
 
       cell.mass = cell.mass * Virus.ImpactOnMass
-      cell.split.foreach(_.split)
+      val mass = cell.mass / 4
+
+      var cells = cell.split
+      cells :::= cells.flatMap{ _.split }
+      cells.foreach { _.mass = mass }
+
       entitiesReturn :::= List(entity)
     }
     (entitiesReturn, new ScoreModification(player.id, 0))

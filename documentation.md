@@ -65,8 +65,8 @@ A cell can also eat a cell from another team. To do so, a cell must almost
 completely overlap its enemy and be 10% bigger than it. The winning cell steals
 all the mass from the losing cell.
 
-When a team doesn't have any remaining cells, the game will respawn a new cell for
-this team with a mass of 20. 
+When a team doesn't have any remaining cells, the game will respawn a new cell
+for this team with a mass of 20.
 
 ## Virus
 Viruses are scattered across the map, and you need to be careful to not eat them.
@@ -74,8 +74,11 @@ Every virus has a mass of 100. This means that if your cell is small enough you
 can hide it inside a virus and it won't affect it.
 
 If your cell is 10% bigger than the virus, it will eat it.
-Eating a virus will remove 40% of the cell's mass. It will also force it to split once and
-force its `children` to split once (you will then have 4 cells).
+Eating a virus will remove 40% of the cell's mass. It will also force it to split
+once and force its `children` to split once (you will then have 4 cells).
+
+If you eat a virus but you can't split (when you already have too many cells),
+you will still lose mass as if you were splitted 4 times.
 
 ## Actions
 A cell can perform many different actions. 
