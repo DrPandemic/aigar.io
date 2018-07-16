@@ -24,6 +24,24 @@ class PlayerRepositorySpec extends FlatSpec
     assert(player4.playerName === "player4")
   }
 
+  it should "not be possible to create two players with the same name" in withInMemDatabase { (listPlayers) =>
+    an [org.h2.jdbc.JdbcSQLException] should be thrownBy playerRepository.createPlayer(
+      PlayerModel(None, "EdgQWhJ!v&", "player1")
+    )
+  }
+
+  it should "not be possible to create a player with an empty name" in withInMemDatabase { (listPlayers) =>
+    an [IllegalArgumentException] should be thrownBy playerRepository.createPlayer(
+      PlayerModel(None, "EdgQWhJ!v&", "")
+    )
+  }
+
+  it should "not be possible to create a player with a whitespace name" in withInMemDatabase { (listPlayers) =>
+    an [IllegalArgumentException] should be thrownBy playerRepository.createPlayer(
+      PlayerModel(None, "EdgQWhJ!v&", "  ")
+    )
+  }
+
   it should "read the player 2 by its id and equal it" in withInMemDatabase { (listPlayers) =>
     assert(playerRepository.readPlayer(listPlayers(1).id.get).get === listPlayers(1))
   }

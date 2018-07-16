@@ -6,6 +6,11 @@ import java.util.logging.{Level, Logger}
 
 class PlayerRepository(db: Database) {
   def createPlayer(player: PlayerModel): PlayerModel = {
+    player.playerName = player.playerName.trim()
+
+    if (player.playerName.length() < 1) {
+      throw new IllegalArgumentException("Player's name is too short")
+    }
     PlayerDAO.createPlayer(db, player)
   }
 

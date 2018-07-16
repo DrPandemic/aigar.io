@@ -8,12 +8,14 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.Await
 import scala.concurrent.{Await, Future}
 
-case class PlayerModel(id: Option[Int], playerSecret: String, playerName: String)
+case class PlayerModel(id: Option[Int], playerSecret: String, var playerName: String)
 
 class Players(tag: Tag) extends Table[PlayerModel](tag, "PLAYERS") {
   def id = column[Int]("ID", O.PrimaryKey, O.AutoInc)
   def playerSecret = column[String]("PLAYER_SECRET")
   def playerName = column[String]("PLAYER_NAME", O.SqlType("VARCHAR(50)"))
+  def idx = index("idx_player_name", (playerName), unique = true)
+
   def * = (id.?, playerSecret, playerName) <> (PlayerModel.tupled, PlayerModel.unapply)
 }
 
