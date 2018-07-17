@@ -1,6 +1,6 @@
 # Jascript Client
 ## Requirements
-- Node >= 5.11.0
+- Node >= 7.10.1
 
 ## Setup
 1. `npm install`

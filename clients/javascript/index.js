@@ -2,7 +2,6 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 // Libraries
 const argv = require('minimist')(process.argv.slice(2));
-const sleep = require('sleep');
 const opn = require('opn');
 
 // Models
@@ -74,7 +73,9 @@ async function main(params) {
     } catch(e) {
       console.error(`You received an error ${e.message}`);
     }
-    sleep.usleep(50 * 1000);
+    console.log(1);
+    await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+    console.log(2);
   }
 
   return loop(gameId, params.playerId, api, ai, -1);
