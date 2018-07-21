@@ -26,7 +26,7 @@ class ScalatraBootstrap extends LifeCycle
 
   override def init(context: ServletContext): Unit = {
     val database = AigarDatabase.createDatabase(AigarDatabase.getRandomName, false)
-    appInit(database)
+    appInit(database, false)
 
     logger.info("****************************")
     logger.info("***Administrator password***")
@@ -41,13 +41,15 @@ class ScalatraBootstrap extends LifeCycle
   /*
    * Separated method for testing purposes.
    */
-  def appInit(database: Database): Unit = {
+  def appInit(database: Database, testing: Boolean): Unit = {
     playerRepository = new PlayerRepository(database)
     scoreRepository = new ScoreRepository(database)
     scoreThread = new ScoreThread(scoreRepository)
     game = new GameThread(scoreThread)
 
-    launchThreads
+    if (!testing) {
+      launchThreads
+    }
   }
 
   private def closeDbConnection: Unit = {

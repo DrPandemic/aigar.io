@@ -20,7 +20,8 @@ class ScoreThread(scoreRepository: ScoreRepository) extends Runnable
   def run: Unit = {
     while (running) {
       saveScore
-      Thread.sleep(2)
+      scoreRepository.compress
+      Thread.sleep(4)
     }
   }
 

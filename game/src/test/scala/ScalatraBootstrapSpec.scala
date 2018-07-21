@@ -8,7 +8,7 @@ class ScalatraBootstrapSpec extends FlatSpec with Matchers {
     val db = AigarDatabase.createDatabase(AigarDatabase.getRandomName, true)
     val bootstrap = new ScalatraBootstrap
 
-    bootstrap.appInit(db)
+    bootstrap.appInit(db, true)
     val players = bootstrap.playerRepository
     val scores = bootstrap.scoreRepository
     bootstrap.destroy(null)
@@ -21,7 +21,7 @@ class ScalatraBootstrapSpec extends FlatSpec with Matchers {
     val db = AigarDatabase.createDatabase(AigarDatabase.getRandomName, true)
     val bootstrap = new ScalatraBootstrap
 
-    bootstrap.appInit(db)
+    bootstrap.appInit(db, true)
     // let the game update once to set the state of the ranked game
     bootstrap.game.updateGames
     val games = bootstrap.game.games
