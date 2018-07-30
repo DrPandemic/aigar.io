@@ -4,24 +4,27 @@ AIgar.io is an artificial intelligence competition written to be used at
 Sherbrooke University by its
 [computer science student group](https://github.com/jdis).
 
+Game visualizer
 ![image](https://user-images.githubusercontent.com/3250155/43427356-30a688aa-9427-11e8-8da4-59d310e9a212.png)
 
+Leaderboard
 ![image](https://user-images.githubusercontent.com/3250155/43427370-3957d42c-9427-11e8-9ccf-390dbf434999.png)
 
 The project contains:
-- Game server
-- Game visualizer
-- Leaderboard
-- Admin panel
-- API for bots
+- A game server
+- A visualizer
+- A leaderboard
+- An admin panel
+- An API for bots
 - 3 SDKs (Javascript, Python and Java)
 
 The project is healthy enough to be used in a competition event. If you want to
-use this project and want more information, feel free to contact @DrPandemic.
+use this project and want more information, feel free to contact 
+[me](https://github.com/DrPandemic).
 
 ## Events
 It was organized for the first time on July 14th 2018. There was 30 teams and
-everything went mostly well. We had an issue with bandwidth pressure created by
+everything went well. We had an issue with bandwidth pressure created by
 the leaderboard, but that solved in the following week. The competition lasted 8
 hours.
 
