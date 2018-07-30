@@ -19,8 +19,7 @@ The project contains:
 - 3 SDKs (Javascript, Python and Java)
 
 The project is healthy enough to be used in a competition event. If you want to
-use this project and want more information, feel free to contact 
-[me](https://github.com/DrPandemic).
+use this project and want more information, feel free to open an issue.
 
 ## Events
 It was organized for the first time on July 14th 2018. There was 30 teams and
