@@ -4,10 +4,10 @@ AIgar.io is an artificial intelligence competition written to be used at
 Sherbrooke University by its
 [computer science student group](https://github.com/jdis).
 
-Game visualizer
+**Game visualizer**
 ![image](https://user-images.githubusercontent.com/3250155/43427356-30a688aa-9427-11e8-8da4-59d310e9a212.png)
 
-Leaderboard
+**Leaderboard**
 ![image](https://user-images.githubusercontent.com/3250155/43427370-3957d42c-9427-11e8-9ccf-390dbf434999.png)
 
 The project contains:
