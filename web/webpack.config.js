@@ -15,21 +15,20 @@ module.exports = {
   },
   devtool: "source-map",
   module: {
-    loaders: [
+    rules: [
       {
-        test: /.js$/,
+        test: /\.js$/,
         loader: "babel-loader",
         exclude: /node_modules/,
-        query: {
+        options: {
           plugins: [
             "transform-runtime",
             "syntax-async-functions",
             "transform-regenerator",
             "transform-object-rest-spread",
-          ],
-          presets: ["es2015"]
+          ]
         }
-      }
+      },
     ]
   },
 };
