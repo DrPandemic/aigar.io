@@ -1,6 +1,6 @@
-# aigar #
+# aigar
 
-## Build & Run ##
+## Build & Run
 
 ```sh
 $ cd aigar

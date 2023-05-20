@@ -42,4 +42,5 @@ services:
       - ./game/project/:/game/project/
       - ./game/src/:/game/src/
       - ./game/target/:/game/target/
+      - ./game/.lib/:/game/.lib/
     command: [sbt, "~;jetty:stop;jetty:start"]
