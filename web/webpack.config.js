@@ -14,21 +14,4 @@ module.exports = {
     chunkFilename: "[id].bundle.js"
   },
   devtool: "source-map",
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        loader: "babel-loader",
-        exclude: /node_modules/,
-        options: {
-          plugins: [
-            "transform-runtime",
-            "syntax-async-functions",
-            "transform-regenerator",
-            "transform-object-rest-spread",
-          ]
-        }
-      },
-    ]
-  },
 };

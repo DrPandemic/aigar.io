@@ -29,8 +29,17 @@ hours.
 
 ## Development
 ### Docker
+First, create a selfsigned certificate.
+```
+openssl req -x509 -nodes -days 365 -subj "/C=CA/ST=QC/O=Company, Inc./CN=aigar.io" -addext "subjectAltName=DNS:aigar.io" -newkey rsa:2048 -keyout ssl/default.key -out ssl/default.crt;
+```
+
+Add `127.0.0.1       aigar.io` to `/etc/hosts`.
+
 Install `docker` and `docker-compose`. Run
 `docker-compose -f docker-compose.yml up` in the root folder.
+
+Navigate to http://aigar.io.
 
 ## Production
 Install `docker` and `docker-compose`. Run
