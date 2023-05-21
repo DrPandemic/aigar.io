@@ -19,8 +19,8 @@ services:
       - ./api/logs/:/etc/nginx/logs/
       - ./ssl/:/etc/nginx/ssl/
       - web_data:/src/dist/
-    # links:
-    #   - "game:game"
+    links:
+      - "game:game"
 
   web:
     build: ./web/
