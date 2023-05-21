@@ -29,7 +29,7 @@ hours.
 
 ## Development
 ### Docker
-First, create a selfsigned certificate.
+First, create a self-signed certificate.
 ```
 openssl req -x509 -nodes -days 365 -subj "/C=CA/ST=QC/O=Company, Inc./CN=aigar.io" -addext "subjectAltName=DNS:aigar.io" -newkey rsa:2048 -keyout ssl/default.key -out ssl/default.crt;
 ```
@@ -37,20 +37,37 @@ openssl req -x509 -nodes -days 365 -subj "/C=CA/ST=QC/O=Company, Inc./CN=aigar.i
 Install `docker` and `docker-compose`. Run
 `docker-compose -f docker-compose.yml up` in the root folder.
 
-Navigate to https://127.0.0.1/web/adminLogin.html. The password is in the server log. Once connected, go in the
-`DANGER ZONE` and seed the database.
+Navigate to https://127.0.0.1/web/adminLogin.html. The password is in the server
+log. Once connected, go in the `DANGER ZONE` and seed the database.
+
+## Build production docker images
+- `docker-compose -f docker-compose.build.yml up --build`
+- `docker tag aigario_game drpandemic/aigario-game`
+- `docker build -t drpandemic/aigario-api -f api/Dockerfile .`
+- `sudo docker push drpandemic/aigario-game && sudo docker push drpandemic/aigario-api`
 
 ## Production
+If you have a real certificate for `aigar.io`, you can move it to `ssl/` as
+`default.crt` and `default.key`. However, if you don't, you can still use a
+self-signed certificate.
+```
+openssl req -x509 -nodes -days 365 -subj "/C=CA/ST=QC/O=Company, Inc./CN=aigar.io" -addext "subjectAltName=DNS:aigar.io" -newkey rsa:2048 -keyout ssl/default.key -out ssl/default.crt;
+```
+
 Install `docker` and `docker-compose`. Run
 `docker-compose -f docker-compose.prod.yml up` in the root folder.
 
-Be patient, generating the TLS certificate can be slow (multiple minutes).
+Navigate to https://127.0.0.1/web/adminLogin.html. The password is in the server
+log. Once connected, go in the `DANGER ZONE` and seed the database.
 
 ## API
 The [complete API](API.md) can be found in the repository.
 
 ## Documentation
 The [user documentation](documentation.md) can be found in the repository.
+
+## Leaderboard
+The leaderboard can be accessed at https://127.0.0.1/web/leaderboard.html.
 
 ## Admin
 You can login to the admin at https://127.0.0.1/web/adminLogin.html. The password

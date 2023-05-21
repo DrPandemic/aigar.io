@@ -14,7 +14,7 @@ services:
       - ./web/gulpfile.js:/src/gulpfile.js
       - ./web/webpack.config.js:/src/webpack.config.js
       - ./web/dist/:/src/dist/
-    command: [npm, run, watch]
+    command: [npm, run, build]
 
   game:
     build: ./game/
@@ -22,3 +22,4 @@ services:
       - ./game/project/:/game/project/
       - ./game/src/:/game/src/
       - ./game/target/:/game/target/
+      - ./game/.lib/:/game/.lib/
