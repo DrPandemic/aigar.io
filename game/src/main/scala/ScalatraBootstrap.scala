@@ -44,6 +44,10 @@ class ScalatraBootstrap extends LifeCycle
   def appInit(database: Database, testing: Boolean): Unit = {
     playerRepository = new PlayerRepository(database)
     scoreRepository = new ScoreRepository(database)
+
+    scoreRepository.createSchema
+    playerRepository.createSchema
+
     scoreThread = new ScoreThread(scoreRepository)
     game = new GameThread(scoreThread)
 

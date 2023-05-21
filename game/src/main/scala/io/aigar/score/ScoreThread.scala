@@ -19,9 +19,13 @@ class ScoreThread(scoreRepository: ScoreRepository) extends Runnable
 
   def run: Unit = {
     while (running) {
-      saveScore
-      scoreRepository.compress
-      Thread.sleep(4)
+      try {
+        saveScore
+        scoreRepository.compress
+        Thread.sleep(2000)
+      } catch {
+        case e: org.h2.jdbc.JdbcSQLException => logger.debug(s"A SQL statement failed: ${e}.")
+      }
     }
   }
 
