@@ -42,7 +42,7 @@ log. Once connected, go in the `DANGER ZONE` and seed the database.
 
 ## Build production docker images
 - `docker-compose -f docker-compose.build.yml up --build`
-- `docker tag aigario_game drpandemic/aigario-game`
+- `docker tag aigario-game drpandemic/aigario-game`
 - `docker build -t drpandemic/aigario-api -f api/Dockerfile .`
 - `sudo docker push drpandemic/aigario-game && sudo docker push drpandemic/aigario-api`
 

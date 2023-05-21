@@ -39,10 +39,9 @@ object ScoreDAO extends TableQuery(new Scores(_)) {
 
   private def compressScores(scoreList: Seq[ScoreModel]): Seq[ScoreModel] = {
     val nbPlayers = scoreList.map { score: ScoreModel => score.playerId }.distinct.length
-    if (scoreList.length < ScoreRepository.MaximumNumberOfScore * nbPlayers) {
+    if (scoreList.isEmpty || scoreList.length < ScoreRepository.MaximumNumberOfScore * nbPlayers) {
       return scoreList
     }
-    println("yup")
 
     val min = scoreList.min.timestamp.get.getTime()
     val max = scoreList.max.timestamp.get.getTime()
