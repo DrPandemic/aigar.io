@@ -23,7 +23,7 @@ ERROR: Could not find '${configFileName}'.
 Did you forget to rename '${defaultConfigFileName}' to '${configFileName}'? `;
 
 function readConfigFile(c) {
-  const id = parseInt(c.player_id);
+  const id = parseInt(process.env.PLAYER_ID || c.player_id);
 
   if(id === defaultConfigValue ||
      c.player_secret === defaultConfigValue ||
@@ -33,7 +33,7 @@ function readConfigFile(c) {
 
   return {
     playerId: id,
-    playerSecret: c.player_secret,
+    playerSecret: process.env.PLAYER_SECRET || c.player_secret,
     apiUrl: c.api_url
   };
 }
